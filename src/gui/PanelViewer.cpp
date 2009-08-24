@@ -62,6 +62,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <wx/dcbuffer.h>
 #include <wx/statusbr.h>
 #include <wx/confbase.h>
+#include <wx/artprov.h>
 #include <wx/dataobj.h>
 #include <wx/clipbrd.h>
 #include <wx/toolbar.h>
@@ -78,15 +79,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/LayerControl.hpp"
 #include "gui/define_id.hpp"
 
-#include "bitmaps/new.xpm"
-#include "bitmaps/artprov.xpm"
-#include "bitmaps/open.xpm"
-#include "bitmaps/save.xpm"
 #include "bitmaps/icone_move16_16.xpm"
 #include "bitmaps/layers_16x16.xpm"
 #include "bitmaps/log_icon.xpm"
 #include "bitmaps/snapshot.xpm"
-#include "bitmaps/Nuvola_apps_kcmsystem.xpm"
 #include "bitmaps/mActionToggleEditing.xpm"
 
 #include "bitmaps/geometry_null_16x16.xpm"
@@ -361,18 +357,21 @@ wxMenuBar* PanelViewer::GetMenuBar()
 bool PanelViewer::InitToolbar()
 {
 	if ( !m_toolBar )
-		m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+                m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-	m_toolBar->AddTool(wxID_NEW, _("N"), wxBitmap(new_xpm), wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
-	m_toolBar->AddTool(wxID_OPEN, _("O"), wxBitmap(open_xpm), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
-	m_toolBar->AddTool(wxID_SAVE, _("S"), wxBitmap(save_xpm), wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
-	m_toolBar->AddTool(wxID_ABOUT, _("A"), wxBitmap(artprov_xpm), wxNullBitmap, wxITEM_NORMAL, _("About"));
+        // Creating an image list storing the toolbar icons
+        const wxSize imageSize(16,16);
+
+        m_toolBar->AddTool(wxID_NEW, _("N"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
+        m_toolBar->AddTool(wxID_OPEN, _("O"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
+        m_toolBar->AddTool(wxID_SAVE, _("S"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
+        m_toolBar->AddTool(wxID_ABOUT, _("A"), wxArtProvider::GetBitmap(wxART_INFORMATION, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("About"));
 	m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxBitmap(layers_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
 	m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxBitmap(log_icon_xpm), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
 
 	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxBitmap(snapshot_xpm), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
 
-	m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxBitmap(Nuvola_apps_kcmsystem_xpm), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
+        m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_BUTTON, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
 	m_toolBar->AddSeparator();
 	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));

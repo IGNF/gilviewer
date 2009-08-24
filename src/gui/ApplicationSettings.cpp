@@ -67,8 +67,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <wx/slider.h>
 #include <wx/choice.h>
 
-#include "bitmaps/Nuvola_apps_kcmsystem.xpm"
-
 #include "gui/ApplicationSettings.hpp"
 #include "gui/VectorLayerSettingsControl.hpp"
 
@@ -84,10 +82,10 @@ END_EVENT_TABLE()
 ApplicationSettings::ApplicationSettings(wxWindow *parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	wxDialog(parent, id, title, pos, size, style)
 {
-	SetIcon(wxICON(Nuvola_apps_kcmsystem));
+        const wxSize imageSize(24, 24);
 
+        SetIcon(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE, wxART_FRAME_ICON, imageSize));
 
-	const wxSize imageSize(24, 24);
 	m_imageList = new wxImageList(imageSize.GetWidth(), imageSize.GetHeight());
 	m_imageList-> Add(wxArtProvider::GetIcon(wxART_FOLDER, wxART_TOOLBAR, imageSize));
 	m_imageList-> Add(wxArtProvider::GetIcon(wxART_EXECUTABLE_FILE, wxART_TOOLBAR, imageSize));
