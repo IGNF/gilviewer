@@ -94,7 +94,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "io/XMLDisplayConfigurationIO.hpp"
 #include "tools/Orientation2D.h"
 
-#include "bitmaps/eldel.xpm"
 #include "bitmaps/Gnome_clear.xpm"
 #include "bitmaps/eye.xpm"
 #include "bitmaps/Measure.xpm"
@@ -367,8 +366,7 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
         toolBar->AddTool(wxID_NEW, _("N"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("New file"));
         toolBar->AddTool(wxID_OPEN, _("O"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Open file"));
         toolBar->AddTool(wxID_SAVE, _("S"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Save file"));
-	toolBar->AddTool(wxID_RESET, _("R"), wxBitmap(gnome_clear_xpm), wxNullBitmap, wxITEM_NORMAL, _("Reset"));
-        toolBar->AddTool(wxID_RESET, _("R"), wxArtProvider::GetBitmap(wxID_CLEAR, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Reset"));
+        toolBar->AddTool(wxID_RESET, _("R"), wxBitmap(gnome_clear_xpm), wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
 	toolBar->Realize();
 }
