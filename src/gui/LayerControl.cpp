@@ -94,12 +94,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "io/XMLDisplayConfigurationIO.hpp"
 #include "tools/Orientation2D.h"
 
-#include "bitmaps/Gnome_clear.xpm"
 #include "bitmaps/eye.xpm"
 #include "bitmaps/Measure.xpm"
 #include "bitmaps/polygon_icon.xpm"
 #include "bitmaps/image_icon.xpm"
-#include "bitmaps/layers_16x16.xpm"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                                                                                  ///
@@ -236,7 +234,7 @@ LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_numberOfLayers(0), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 
 {
-	SetIcon(wxICON(layers_16x16));
+        SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
 	// Couleur de fond grisee
 	wxColour bgcolor(220, 220, 220);
 	SetBackgroundColour(bgcolor);
@@ -366,7 +364,7 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
         toolBar->AddTool(wxID_NEW, _("N"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("New file"));
         toolBar->AddTool(wxID_OPEN, _("O"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Open file"));
         toolBar->AddTool(wxID_SAVE, _("S"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Save file"));
-        toolBar->AddTool(wxID_RESET, _("R"), wxBitmap(gnome_clear_xpm), wxNullBitmap, wxITEM_NORMAL, _("Reset"));
+        toolBar->AddTool(wxID_RESET, _("R"), wxArtProvider::GetBitmap(wxART_CROSS_MARK, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
 	toolBar->Realize();
 }

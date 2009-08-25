@@ -80,12 +80,9 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/define_id.hpp"
 
 #include "bitmaps/icone_move16_16.xpm"
-#include "bitmaps/layers_16x16.xpm"
-#include "bitmaps/log_icon.xpm"
 #include "bitmaps/snapshot.xpm"
 #include "bitmaps/mActionToggleEditing.xpm"
 
-#include "bitmaps/geometry_null_16x16.xpm"
 #include "bitmaps/capture_point_16x16.xpm"
 #include "bitmaps/capture_line_16x16.xpm"
 #include "bitmaps/capture_rectangle_16x16.xpm"
@@ -366,8 +363,8 @@ bool PanelViewer::InitToolbar()
         m_toolBar->AddTool(wxID_OPEN, _("O"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
         m_toolBar->AddTool(wxID_SAVE, _("S"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
         m_toolBar->AddTool(wxID_ABOUT, _("A"), wxArtProvider::GetBitmap(wxART_INFORMATION, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("About"));
-	m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxBitmap(layers_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
-	m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxBitmap(log_icon_xpm), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+        m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+        m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxArtProvider::GetBitmap(wxART_HELP_BOOK, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
 
 	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxBitmap(snapshot_xpm), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
 
@@ -382,7 +379,7 @@ bool PanelViewer::InitToolbar()
 
 	m_toolBar->AddSeparator();
 
-	m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxBitmap(geometry_null_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Aucun"));
+        m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxArtProvider::GetBitmap(wxART_CROSS_MARK, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_RADIO, _("None"));
 	m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxBitmap(capture_point_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Point"));
 	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
 	m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxBitmap(capture_line_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Line"));
