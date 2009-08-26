@@ -12,20 +12,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT(GilViewer)
 INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
 
-# Ca, je ne sais plus trop a quoi ca sert ... Surement apres un passage a la version 2.6 de cmake ...
-IF(COMMAND cmake_policy)
-	CMAKE_POLICY(SET CMP0003 NEW)
-ENDIF(COMMAND cmake_policy)
-
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
 ####
 INCLUDE( GilViewer_build_external_lib.cmake )
-
-####
-#### Repertoire de sortie de toutes les librairies
-####
-SET( LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib )
 
 ####
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
