@@ -115,6 +115,9 @@ void GlobalSettingsControl::OnApplyButton(wxCommandEvent &event)
 		(*it)->IntensityMin(MinDouble);
 		(*it)->IntensityMax(MaxDouble);
 		(*it)->HasToBeUpdated(true);
+
+                // MAJ de l'interface
+                (*it)->notifyLayerSettingsControl_();
 	}
 
 	m_parent->GetPanelViewer()->Refresh();
