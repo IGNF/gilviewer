@@ -72,6 +72,8 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <wx/menu.h>
 #include <wx/log.h>
 
+#include <wx/xrc/xmlres.h>
+
 #include "layers/VectorLayerGhost.h"
 #include "layers/VectorLayer.hpp"
 
@@ -79,18 +81,20 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/LayerControl.hpp"
 #include "gui/define_id.hpp"
 
-#include "bitmaps/icone_move16_16.xpm"
-#include "bitmaps/snapshot.xpm"
-#include "bitmaps/mActionToggleEditing.xpm"
+#include "resources/icone_move16_16.xpm"
+#include "resources/snapshot.xpm"
+#include "resources/mActionToggleEditing.xpm"
 
-#include "bitmaps/capture_point_16x16.xpm"
-#include "bitmaps/capture_line_16x16.xpm"
-#include "bitmaps/capture_rectangle_16x16.xpm"
-#include "bitmaps/capture_polygon_16x16.xpm"
-#include "bitmaps/geometry_moving_16x16.xpm"
-#include "bitmaps/select_16x16.xpm"
+#include "resources/capture_point_16x16.xpm"
+#include "resources/capture_line_16x16.xpm"
+#include "resources/capture_rectangle_16x16.xpm"
+#include "resources/capture_polygon_16x16.xpm"
+#include "resources/geometry_moving_16x16.xpm"
+#include "resources/select_16x16.xpm"
 
 #include "gui/PanelManager.h"
+
+extern void InitXmlResource();
 
 
 BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
@@ -220,10 +224,12 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	//Setting des modes d'interface :
 	m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT)
 {
-
 	if(PanelManager::Instance()->GetPanelsList().size() == 0)
 		m_applicationSettings = new ApplicationSettings(this, wxID_ANY);
 
+        // Initialising resources ...
+        wxXmlResource::Get()->InitAllHandlers();
+        InitXmlResource();
 
 #if wxUSE_DRAG_AND_DROP
 	SetDropTarget(new ITKViewerFileDropTarget(this));
@@ -359,14 +365,15 @@ bool PanelViewer::InitToolbar()
         // Creating an image list storing the toolbar icons
         const wxSize imageSize(16,16);
 
+        m_toolBar->AddTool(wxID_OPEN, _("O"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
         m_toolBar->AddTool(wxID_NEW, _("N"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
         m_toolBar->AddTool(wxID_OPEN, _("O"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
         m_toolBar->AddTool(wxID_SAVE, _("S"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
         m_toolBar->AddTool(wxID_ABOUT, _("A"), wxArtProvider::GetBitmap(wxART_INFORMATION, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("About"));
         m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
-        m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxArtProvider::GetBitmap(wxART_HELP_BOOK, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+        m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("ACCESSORIES_TEXT_EDITOR_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
 
-	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxBitmap(snapshot_xpm), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+        m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("CAMERA_PHOTO_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
 
         m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_BUTTON, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 

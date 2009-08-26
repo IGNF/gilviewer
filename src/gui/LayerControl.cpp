@@ -94,10 +94,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "io/XMLDisplayConfigurationIO.hpp"
 #include "tools/Orientation2D.h"
 
-#include "bitmaps/eye.xpm"
-#include "bitmaps/Measure.xpm"
-#include "bitmaps/polygon_icon.xpm"
-#include "bitmaps/image_icon.xpm"
+#include "resources/eye.xpm"
+#include "resources/Measure.xpm"
+#include "resources/polygon_icon.xpm"
+#include "resources/image_icon.xpm"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                                                                                  ///

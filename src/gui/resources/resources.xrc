@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<resource version="2.3.0.1">
+
+        <object class="wxBitmap" name="CAMERA_PHOTO_16x16">tango-icon-theme-0.8.90/16x16/devices/camera-photo.png</object>
+        <object class="wxBitmap" name="CAMERA_PHOTO_22x22">tango-icon-theme-0.8.90/22x22/devices/camera-photo.png</object>
+        <object class="wxBitmap" name="CAMERA_PHOTO_32x32">tango-icon-theme-0.8.90/32x32/devices/camera-photo.png</object>
+		
+		<object class="wxBitmap" name="ACCESSORIES_TEXT_EDITOR_16x16">tango-icon-theme-0.8.90/16x16/apps/accessories-text-editor.png</object>
+		<object class="wxBitmap" name="ACCESSORIES_TEXT_EDITOR_22x22">tango-icon-theme-0.8.90/22x22/apps/accessories-text-editor.png</object>
+		<object class="wxBitmap" name="ACCESSORIES_TEXT_EDITOR_32x32">tango-icon-theme-0.8.90/32x32/apps/accessories-text-editor.png</object>
+
+</resource>
