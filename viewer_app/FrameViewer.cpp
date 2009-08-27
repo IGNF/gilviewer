@@ -71,7 +71,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/PanelViewer.hpp"
 #include "gui/define_id.hpp"
 
-#include "gui/bitmaps/LOGO_MATIS_small.xpm"
+#include "gui/resources/LOGO_MATIS_small.xpm"
 #include "gui/PanelManager.h"
 
 BEGIN_EVENT_TABLE(FrameViewer,wxFrame)
