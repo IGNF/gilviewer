@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-a2f556b8908776a5b6d8eac72d2c9078 ../src/gui/resources/resources.cpp

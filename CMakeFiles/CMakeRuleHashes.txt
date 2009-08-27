@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-5e71945e68ed5de2eba4e08a46f12197 src/gui/bitmaps/resources.cpp
