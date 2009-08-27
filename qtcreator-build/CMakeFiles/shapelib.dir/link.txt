@@ -1,0 +1,1 @@
+/usr/bin/gcc  -fPIC   -shared -Wl,-soname,libshapelib.so -o ../lib/libshapelib.so CMakeFiles/shapelib.dir/extern/shapelib/shpopen.c.o CMakeFiles/shapelib.dir/extern/shapelib/dbfopen.c.o CMakeFiles/shapelib.dir/extern/shapelib/shptree.c.o 

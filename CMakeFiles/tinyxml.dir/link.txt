@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC  -pthread  -shared -Wl,-soname,libtinyxml.so -o lib/libtinyxml.so CMakeFiles/tinyxml.dir/extern/tinyxml/tinystr.cpp.o CMakeFiles/tinyxml.dir/extern/tinyxml/tinyxml.cpp.o CMakeFiles/tinyxml.dir/extern/tinyxml/tinyxmlerror.cpp.o CMakeFiles/tinyxml.dir/extern/tinyxml/tinyxmlparser.cpp.o 
