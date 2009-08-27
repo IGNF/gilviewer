@@ -85,6 +85,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "layers/VectorLayerGhost.h"
 #include "layers/VectorLayerContent.hpp"
 
+#ifdef WIN32
+#	include <wx/msw/winundef.h>
+#endif // WIN32
+
 #include "gui/VectorLayerSettingsControl.hpp"
 #include "gui/ImageLayerSettingsControl.hpp"
 #include "gui/GlobalSettingsControl.hpp"
