@@ -72,12 +72,37 @@ ELSE()
 ENDIF()
 		
 # Find BOOST
+set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" )
 FIND_PACKAGE( Boost 1.34.1 COMPONENTS filesystem system thread )
-IF( NOT Boost_FOUND AND UNIX )
+IF( NOT Boost_FOUND )
 	MESSAGE(FATAL_ERROR "Boost not found ! Please set Boost path ...")
 ELSE()
 	INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 ENDIF()
+
+# Find TIFF
+find_package( TIFF )
+if( NOT TIFF_FOUND )
+	message( FATAL_ERROR "libTIFF not found ! Please set tiff paths ..." )
+else()
+	include_directories( ${TIFF_INCLUDE_DIR} )
+endif()
+
+# Find JPEG
+find_package( JPEG )
+if( NOT JPEG_FOUND )
+	message( FATAL_ERROR "libJPEG not found ! Please set jpeg paths ..." )
+else()
+	include_directories( ${JPEG_INCLUDE_DIR} )
+endif()
+
+# Find PNG
+find_package( PNG )
+if( NOT PNG_FOUND )
+	message( FATAL_ERROR "libPNG not found ! Please set png paths ..." )
+else()
+	include_directories( ${PNG_INCLUDE_DIR} )
+endif()
 #####################################
 ###                     Fin recherche des packages                         ###
 #####################################
