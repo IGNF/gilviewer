@@ -22,19 +22,16 @@ INCLUDE( GilViewer_build_external_lib.cmake )
 ####
 FILE( GLOB ALL_CONVENIENT_HEADER_FILES src/convenient/*.h src/convenient/*.hpp src/convenient/*.hxx src/convenient/*.inl )
 FILE( GLOB ALL_GUI_HEADER_FILES src/gui/*.h src/gui/*.hpp src/gui/*.hxx src/gui/*.inl )
-FILE( GLOB ALL_GUI_BITMAPS_HEADER_FILES src/gui/bitmaps/*.xpm )
 FILE( GLOB ALL_GUI_WXFB_HEADER_FILES src/gui/wxFB/*.h src/gui/wxFB/*.hpp src/gui/wxFB/*.hxx src/gui/wxFB/*.inl )
 FILE( GLOB ALL_IO_HEADER_FILES src/convenient/*.h src/convenient/*.hpp src/convenient/*.hxx src/convenient/*.inl )
 FILE( GLOB ALL_ITK_HEADER_FILES src/itk/*.h src/itk/*.hpp src/itk/*.hxx src/itk/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES src/layers/*.h src/layers/*.hpp src/layers/*.hxx src/layers/*.inl )
-#FILE( GLOB ALL_PLUGINS_HEADER_FILES src/plugins/*.h src/plugins/*.hpp src/plugins/*.hxx src/plugins/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES src/tools/*.h src/tools/*.hpp src/tools/*.hxx src/tools/*.inl )
 FILE( GLOB ALL_VECTORUTILS_HEADER_FILES src/vectorutils/*.h src/vectorutils/*.hpp src/vectorutils/*.hxx src/vectorutils/*.inl )
 FILE( GLOB ALL_WRAPPERS_HEADER_FILES src/wrappers/*.h src/wrappers/*.hpp src/wrappers/*.hxx src/wrappers/*.inl )
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
-                        ${ALL_GUI_BITMAPS_HEADER_FILES}
                         ${ALL_GUI_WXFB_HEADER_FILES}
                         ${ALL_IO_HEADER_FILES}
                         #${ALL_ITK_HEADER_FILES}
@@ -49,8 +46,6 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
 #### ATTENTION : si un fichier est ajoute dans un de ces dossiers mais que le CMakeLists.txt n'est pas modifie, il faut relancer le cmake 
 ####  a la main avant de compiler par make (ca, c'est pas vrai sous windows ! en fait je n'en suis pas si sur ...)
 SET(SRC_DIR src/)
-#AUX_SOURCE_DIRECTORY(${SRC_DIR}itk  SRC_ITK)
-#AUX_SOURCE_DIRECTORY(${SRC_DIR}itk/gdal_reader  SRC_ITK_GDAL)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}convenient SRC_CONVENIENT)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}gui SRC_GUI)
@@ -58,33 +53,17 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}tools SRC_OUTILS)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}vectorutils SRC_VECTOR_UTILS)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}wrappers SRC_WRAPPERS)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}gui/wxFB SRC_WXFB)
-#AUX_SOURCE_DIRECTORY(${SRC_DIR}plugins SRC_PLUGINS)
-# Une variable regroupant toutes les sources ...
-SET( ALL_VIEWER_SOURCES 
-    #${SRC_ITK} ${SRC_ITK_GDAL}
-     ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} ${SRC_WXFB} ${SRC_PLUGINS} )
 
-#########
-##OPTION Pour générer automatiquement VisuITK.cpp avec le bon nombre de canaux
-#SET( MAX_NB_CHANNELS_IMAGE "4" CACHE STRING "Max number of channels" )
-#CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}/itk/config_visu.h.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}/itk/config_visu.h @only immediate)
+# Une variable regroupant toutes les sources ...
+SET( ALL_VIEWER_SOURCES
+     ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
 
 
 #####################################
 ### Recherche des packages necessaires a la compilation ###
 #####################################
-# Find ITK.
-#FIND_PACKAGE(ITK REQUIRED)
-#IF(ITK_FOUND)
-#    INCLUDE(${ITK_USE_FILE})
-#ELSE()
-#   # For convenience. When we cannot continue, inform the user
-#   MESSAGE(FATAL_ERROR "ITK not found ! Please set ITK path ...")
-#ENDIF()
-
 #Find wxWidgets
-FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui)
+FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc )
 IF(wxWidgets_FOUND)  
 	INCLUDE(${wxWidgets_USE_FILE})
 ELSE()
@@ -103,6 +82,13 @@ ENDIF()
 ###                     Fin recherche des packages                         ###
 #####################################
 
+### Generation du fichier de resources
+add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
+                    COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
+                    DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+
+SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp )
+
 ####
 #### Construction de la librarie
 ####
@@ -112,7 +98,7 @@ INCLUDE( GilViewer_build_library.cmake )
 #### Construction du sample
 ####
 INCLUDE( GilViewer_build_sample.cmake )
-		
+
 # Ajout du repertoire d'include des lib externes (pour l'instant,  shapelib et tinyxml)
 INCLUDE_DIRECTORIES( ${INCLUDE_DIRECTORIES} "extern/" )
 # Ajout du repertoire d'include des sources du viewer

@@ -59,6 +59,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#include <wx/xrc/xmlres.h>
 #include <wx/dcbuffer.h>
 #include <wx/statusbr.h>
 #include <wx/confbase.h>
@@ -78,27 +79,20 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/LayerControl.hpp"
 #include "gui/define_id.hpp"
 
-#include "bitmaps/new.xpm"
-#include "bitmaps/artprov.xpm"
-#include "bitmaps/open.xpm"
-#include "bitmaps/save.xpm"
-#include "bitmaps/icone_move16_16.xpm"
-#include "bitmaps/layers_16x16.xpm"
-#include "bitmaps/log_icon.xpm"
-#include "bitmaps/snapshot.xpm"
-#include "bitmaps/Nuvola_apps_kcmsystem.xpm"
-#include "bitmaps/mActionToggleEditing.xpm"
+#include "resources/icone_move16_16.xpm"
+#include "resources/snapshot.xpm"
+#include "resources/mActionToggleEditing.xpm"
 
-#include "bitmaps/geometry_null_16x16.xpm"
-#include "bitmaps/capture_point_16x16.xpm"
-#include "bitmaps/capture_line_16x16.xpm"
-#include "bitmaps/capture_rectangle_16x16.xpm"
-#include "bitmaps/capture_polygon_16x16.xpm"
-#include "bitmaps/geometry_moving_16x16.xpm"
-#include "bitmaps/select_16x16.xpm"
+#include "resources/capture_point_16x16.xpm"
+#include "resources/capture_line_16x16.xpm"
+#include "resources/capture_rectangle_16x16.xpm"
+#include "resources/capture_polygon_16x16.xpm"
+#include "resources/geometry_moving_16x16.xpm"
+#include "resources/select_16x16.xpm"
 
 #include "gui/PanelManager.h"
 
+extern void InitXmlResource();
 
 BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
 EVT_MOTION(PanelViewer::OnMouseMove)
@@ -227,10 +221,8 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	//Setting des modes d'interface :
 	m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT)
 {
-
 	if(PanelManager::Instance()->GetPanelsList().size() == 0)
-		m_applicationSettings = new ApplicationSettings(this, wxID_ANY);
-
+                m_applicationSettings = new ApplicationSettings(this, wxID_ANY);
 
 #if wxUSE_DRAG_AND_DROP
 	SetDropTarget(new ITKViewerFileDropTarget(this));
@@ -361,18 +353,21 @@ wxMenuBar* PanelViewer::GetMenuBar()
 bool PanelViewer::InitToolbar()
 {
 	if ( !m_toolBar )
-		m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+                m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-	m_toolBar->AddTool(wxID_NEW, _("N"), wxBitmap(new_xpm), wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
-	m_toolBar->AddTool(wxID_OPEN, _("O"), wxBitmap(open_xpm), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
-	m_toolBar->AddTool(wxID_SAVE, _("S"), wxBitmap(save_xpm), wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
-	m_toolBar->AddTool(wxID_ABOUT, _("A"), wxBitmap(artprov_xpm), wxNullBitmap, wxITEM_NORMAL, _("About"));
-	m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxBitmap(layers_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
-	m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxBitmap(log_icon_xpm), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+        // Creating an image list storing the toolbar icons
+        const wxSize imageSize(16,16);
 
-	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxBitmap(snapshot_xpm), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+        m_toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
+        m_toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
+        m_toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
+        m_toolBar->AddTool(wxID_ABOUT, _("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
+        m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+        m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
 
-	m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxBitmap(Nuvola_apps_kcmsystem_xpm), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
+        m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("CAMERA_PHOTO_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+
+        m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
 	m_toolBar->AddSeparator();
 	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
@@ -383,12 +378,12 @@ bool PanelViewer::InitToolbar()
 
 	m_toolBar->AddSeparator();
 
-	m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxBitmap(geometry_null_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Aucun"));
-	m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxBitmap(capture_point_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Point"));
+        m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxArtProvider::GetBitmap(wxART_CROSS_MARK, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_RADIO, _("None"));
+        m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Point"));
 	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-	m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxBitmap(capture_line_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Line"));
+        m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYLINES_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Line"));
 	m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-	m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxBitmap(capture_polygon_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+        m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYGONS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Polygone"));
 
 	m_toolBar->AddSeparator();
 

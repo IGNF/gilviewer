@@ -59,13 +59,16 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 
+#include <wx/xrc/xmlres.h>
 #include <wx/checkbox.h>
 #include <wx/scrolwin.h>
 #include <wx/bmpbuttn.h>
 #include <wx/textctrl.h>
 #include <wx/confbase.h>
+#include <wx/image.h>
 #include <wx/progdlg.h>
 #include <wx/toolbar.h>
+#include <wx/tooltip.h>
 #include <wx/tooltip.h>
 #include <wx/filedlg.h>
 #include <wx/slider.h>
@@ -93,19 +96,12 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "io/XMLDisplayConfigurationIO.hpp"
 #include "tools/Orientation2D.h"
 
-#include "bitmaps/new.xpm"
-#include "bitmaps/Nuvola_apps_kcmsystem.xpm"
-#include "bitmaps/eldel.xpm"
-#include "bitmaps/open.xpm"
-#include "bitmaps/save.xpm"
-#include "bitmaps/Gnome_clear.xpm"
-#include "bitmaps/up_arrow.xpm"
-#include "bitmaps/down_arrow.xpm"
-#include "bitmaps/eye.xpm"
-#include "bitmaps/Measure.xpm"
-#include "bitmaps/polygon_icon.xpm"
-#include "bitmaps/image_icon.xpm"
-#include "bitmaps/layers_16x16.xpm"
+#include "resources/eye.xpm"
+#include "resources/Measure.xpm"
+#include "resources/polygon_icon.xpm"
+#include "resources/image_icon.xpm"
+
+extern void InitXmlResource();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                                                                                  ///
@@ -182,26 +178,28 @@ LayerControlRow::LayerControlRow(LayerControl* parent, const std::string &name, 
 
 	m_boxSizer = new wxBoxSizer(wxHORIZONTAL);
 
+        const wxSize imageSize(16,16);
+
 	// L'icone du bouton  info depend du type : vecteur ou image
 	if (dynamic_cast<VectorLayerSettingsControl*> (layersettings) != NULL)
-		m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxBitmap(polygon_icon_xpm));
+                m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-OTHERS_16x16") ));
 	else
-		m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxBitmap(image_icon_xpm));
+                m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-GRAPHICS_16x16") ) );
 	m_infoButton->SetToolTip(wxT("Display layer informations"));
 	m_boxSizer->Add(m_infoButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_infoButton->Connect(ID_INFO + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnInfoButton), NULL, m_parent);
 
-	m_saveButton = new wxBitmapButton(m_parent->m_scroll, ID_SAVE + m_index, wxBitmap(save_xpm));
+        m_saveButton = new wxBitmapButton(m_parent->m_scroll, ID_SAVE + m_index, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ));
 	m_saveButton->SetToolTip(wxT("Save layer"));
 	m_boxSizer->Add(m_saveButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_saveButton->Connect(ID_SAVE + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnSaveButton), NULL, m_parent);
 
-	m_deleteButton = new wxBitmapButton(m_parent->m_scroll, ID_DELETE + m_index, wxBitmap(eldel_xpm));
+        m_deleteButton = new wxBitmapButton(m_parent->m_scroll, ID_DELETE + m_index, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, imageSize));
 	m_deleteButton->SetToolTip(wxT("Delete layer"));
 	m_boxSizer->Add(m_deleteButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_deleteButton->Connect(ID_DELETE + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnDeleteButton), NULL, m_parent);
 
-	m_settingsButton = new wxBitmapButton(m_parent->m_scroll, ID_SETTINGS + m_index, wxBitmap(Nuvola_apps_kcmsystem_xpm));
+        m_settingsButton = new wxBitmapButton(m_parent->m_scroll, ID_SETTINGS + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) );
 	m_settingsButton->SetToolTip(wxT("Layer settings"));
 	m_boxSizer->Add(m_settingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_settingsButton->Connect(ID_SETTINGS + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnSettingsButton), NULL, m_parent);
@@ -240,12 +238,15 @@ LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_numberOfLayers(0), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 
 {
-	SetIcon(wxICON(layers_16x16));
+        // Initialising resources ...
+        wxXmlResource::Get()->InitAllHandlers();
+        InitXmlResource();
+
+        SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
 	// Couleur de fond grisee
 	wxColour bgcolor(220, 220, 220);
 	SetBackgroundColour(bgcolor);
-	ClearBackground();
-
+        ClearBackground();
 
 	// Ajout de la barre d'outils
 	this->CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL, 500);
@@ -260,38 +261,41 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost)
 	m_scroll->SetScrollRate(20,20);//,50,50);
 
 	// On ajoute l'ensemble des boutons "globaux"
+        const wxSize smallButtonSize(12,12);
 	// Un sizer pour les fleches "up" et "down"
 	wxBoxSizer* upDownButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	// Fleche "up"
-	wxBitmapButton* upButton = new wxBitmapButton(m_scroll, wxID_UP, wxBitmap(up_arrow_xpm));
+        // Fleche "up"
+        //wxImage im_up = wxXmlResource::Get()->LoadBitmap( wxT("GO-UP_16x16") ).ConvertToImage().Rescale(12,12,wxIMAGE_QUALITY_HIGH);
+        wxBitmapButton* upButton = new wxBitmapButton(m_scroll, wxID_UP, wxXmlResource::Get()->LoadBitmap( wxT("GO-UP_16x16") ) );
+        //wxBitmapButton* upButton = new wxBitmapButton(m_scroll, wxID_UP, wxArtProvider::GetBitmap(wxART_GO_UP, wxART_BUTTON, smallButtonSize) );
 	//upButton->SetToolTip( _("
 	upDownButtonSizer->Add(upButton, 0, wxALL | wxALIGN_CENTRE, 5);
-	// Fleche "down"
-	upDownButtonSizer->Add(new wxBitmapButton(m_scroll, wxID_DOWN, wxBitmap(down_arrow_xpm)), 0, wxALL | wxALIGN_CENTRE, 5);
+        // Fleche "down"
+        upDownButtonSizer->Add(new wxBitmapButton(m_scroll, wxID_DOWN, wxXmlResource::Get()->LoadBitmap( wxT("GO-DOWN_16x16") ) ) , 0, wxALL | wxALIGN_CENTRE, 5);
 	m_sizer->Add(upDownButtonSizer, 0, wxALL | wxALIGN_CENTRE, 5);
-	// Bonuton pour inverser la visibilite de tous les calques selectionnes
-	wxBitmapButton* visibilityButton = new wxBitmapButton(m_scroll, ID_VISIBILITY_BUTTON, wxBitmap(eye_xpm));
+        // Bonuton pour inverser la visibilite de tous les calques selectionnes
+        wxBitmapButton* visibilityButton = new wxBitmapButton(m_scroll, ID_VISIBILITY_BUTTON, wxXmlResource::Get()->LoadBitmap( wxT("EYE_16x16") ));
 	visibilityButton->SetToolTip(_("Change selected layers visibility"));
 	m_sizer->Add(visibilityButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	// Bouton pour inverser la transformabilite (!!!) de tous les calques selectionnes
-	wxBitmapButton* transformabilityButton = new wxBitmapButton(m_scroll, ID_TRANSFORMATION_BUTTON, wxBitmap(measure_xpm));
+        wxBitmapButton* transformabilityButton = new wxBitmapButton(m_scroll, ID_TRANSFORMATION_BUTTON, wxXmlResource::Get()->LoadBitmap( wxT("MEASURE_16x16") ) );
 	transformabilityButton->SetToolTip(_("Change selected layers transformability"));
 	m_sizer->Add(transformabilityButton, 0, wxALL | wxALIGN_CENTRE, 5);
 
 	wxBoxSizer *globalSettingsSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	// Bouton pour les modifications globales
-	wxBitmapButton* globalSettingsButton = new wxBitmapButton(m_scroll, ID_GLOBAL_SETTINGS_BUTTON, wxBitmap(Nuvola_apps_kcmsystem_xpm));
+        wxBitmapButton* globalSettingsButton = new wxBitmapButton(m_scroll, ID_GLOBAL_SETTINGS_BUTTON, wxXmlResource::Get()->LoadBitmap( wxT("PREFERENCES-SYSTEM_16x16") ) );
 	globalSettingsButton->SetToolTip(_("Global settings control. Apply to all layers ..."));
 	globalSettingsSizer->Add(globalSettingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
 
 	// Bouton pour la sauvegarde de la configuration d'affichage
-	wxBitmapButton* saveDisplayConfig = new wxBitmapButton(m_scroll, wxID_SAVE, wxBitmap(save_xpm));
+        wxBitmapButton* saveDisplayConfig = new wxBitmapButton(m_scroll, wxID_SAVE, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ) );
 	saveDisplayConfig->SetToolTip(_("Save display configuration"));
 	globalSettingsSizer->Add(saveDisplayConfig, 0, wxALL | wxALIGN_CENTRE, 5);
 
 	// Bouton pour l'ouverture d'une configuration d'affichage
-	wxBitmapButton* loadDisplayConfig = new wxBitmapButton(m_scroll, wxID_OPEN, wxBitmap(open_xpm));
+        wxBitmapButton* loadDisplayConfig = new wxBitmapButton(m_scroll, wxID_OPEN, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_16x16") ) );
 	loadDisplayConfig->SetToolTip(_("Load display configuration"));
 	globalSettingsSizer->Add(loadDisplayConfig, 0, wxALL | wxALIGN_CENTRE, 5);
 
@@ -365,10 +369,12 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
 	if ( !toolBar )
 		toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-	toolBar->AddTool(wxID_NEW, _("N"), wxBitmap(new_xpm), wxNullBitmap, wxITEM_NORMAL, _("New file"));
-	toolBar->AddTool(wxID_OPEN, _("O"), wxBitmap(open_xpm), wxNullBitmap, wxITEM_NORMAL, _("Open file"));
-	toolBar->AddTool(wxID_SAVE, _("S"), wxBitmap(save_xpm), wxNullBitmap, wxITEM_NORMAL, _("Save file"));
-	toolBar->AddTool(wxID_RESET, _("R"), wxBitmap(gnome_clear_xpm), wxNullBitmap, wxITEM_NORMAL, _("Reset"));
+        const wxSize imageSize(16,16);
+
+        toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("New file"));
+        toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
+        toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
+        toolBar->AddTool(wxID_RESET, _("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
 	toolBar->Realize();
 }
