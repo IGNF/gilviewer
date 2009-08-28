@@ -106,6 +106,7 @@ find_package( PNG )
 if( NOT PNG_FOUND )
 	message( FATAL_ERROR "libPNG not found ! Please set png paths ..." )
 else()
+	add_definitions( ${PNG_DEFINITIONS} )
 	include_directories( ${PNG_INCLUDE_DIR} )
 endif()
 #####################################
