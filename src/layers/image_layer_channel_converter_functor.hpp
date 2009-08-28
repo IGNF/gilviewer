@@ -139,3 +139,26 @@ void channel_converter_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& s
 			else
 				at_c<2>(dst) = (at_c<2>(src) - m_min_src)/(m_max_src - m_min_src)*255;
 }
+
+template <>
+void channel_converter_functor::operator()<rgb32_pixel_t>(const rgb32_pixel_t& src, dev3n8_pixel_t& dst) const
+{
+        if (at_c<0>(src) < m_min_src)
+                at_c<0>(dst)  = at_c<0>(m_min_dst);
+                else if (at_c<0>(src) > m_max_src)
+                        at_c<0>(dst)  = at_c<0>(m_max_dst);
+                        else
+                                at_c<0>(dst) = (at_c<0>(src) - m_min_src)/(m_max_src - m_min_src)*255;
+        if (at_c<1>(src) < m_min_src)
+                at_c<1>(dst)  = at_c<1>(m_min_dst);
+                else if (at_c<1>(src) > m_max_src)
+                        at_c<1>(dst)  = at_c<1>(m_max_dst);
+                        else
+                                at_c<1>(dst) = (at_c<1>(src) - m_min_src)/(m_max_src - m_min_src)*255;
+        if (at_c<2>(src) < m_min_src)
+                at_c<2>(dst)  = at_c<2>(m_min_dst);
+                else if (at_c<2>(src) > m_max_src)
+                        at_c<2>(dst)  = at_c<2>(m_max_dst);
+                        else
+                                at_c<2>(dst) = (at_c<2>(src) - m_min_src)/(m_max_src - m_min_src)*255;
+}
