@@ -12,6 +12,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT(GilViewer)
 INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
 
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
+
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
 ####
@@ -63,7 +67,7 @@ SET( ALL_VIEWER_SOURCES
 ### Recherche des packages necessaires a la compilation ###
 #####################################
 #Find wxWidgets
-FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc )
+FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html )
 IF(wxWidgets_FOUND)  
 	INCLUDE(${wxWidgets_USE_FILE})
 ELSE()
@@ -78,6 +82,7 @@ IF( NOT Boost_FOUND )
 	MESSAGE(FATAL_ERROR "Boost not found ! Please set Boost path ...")
 ELSE()
 	INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
+	link_directories( ${Boost_LIBRARY_DIRS} )
 ENDIF()
 
 # Find TIFF
