@@ -113,9 +113,15 @@ endif()
 #####################################
 
 ### Generation du fichier de resources
-add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
-                    COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
-                    DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+if( WIN32 )
+	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
+		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
+			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+else()
+	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
+		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
+			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+endif()
 
 SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp )
 
