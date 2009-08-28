@@ -334,9 +334,9 @@ void ImageLayer::Update(const int width, const int height)
 			m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
 
 		}
-		catch(...)
+		catch(const std::exception &e)
 		{
-
+			throw e;
 		}
 	}
 

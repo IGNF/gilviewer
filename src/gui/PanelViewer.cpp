@@ -412,7 +412,20 @@ void PanelViewer::OnPaint(wxPaintEvent& evt)
 		{
 			if ((*it)->HasToBeUpdated())
 			{
-				(*it)->Update(tailleImage.GetX(), tailleImage.GetY());
+				try
+				{
+					(*it)->Update(tailleImage.GetX(), tailleImage.GetY());
+				}
+				catch (const std::exception &e)
+				{
+					std::ostringstream oss;
+					oss << "File : " << __FILE__ << "\n";
+					oss << "Function : " << __FUNCTION__ << "\n";
+					oss << "Line : " << __LINE__ << "\n";
+					oss << e.what();
+					wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent) , _("Error!") , wxICON_ERROR );
+					return;
+				}
 				(*it)->HasToBeUpdated(false);
 			}
 
