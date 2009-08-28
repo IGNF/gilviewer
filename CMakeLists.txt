@@ -67,13 +67,21 @@ SET( ALL_VIEWER_SOURCES
 ### Recherche des packages necessaires a la compilation ###
 #####################################
 #Find wxWidgets
-FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html )
+FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html tiff jpeg png)
 IF(wxWidgets_FOUND)  
 	INCLUDE(${wxWidgets_USE_FILE})
+	include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
+	include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
+	include_directories( ${wxWidgets_ROOT_DIR}/src/png )
+	include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
 ELSE()
 	# For convenience. When we cannot continue, inform the user
 	MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
 ENDIF()
+
+message( STATUS ${wxWidgets_ROOT_DIR} )
+
+
 		
 # Find BOOST
 set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" )
@@ -86,29 +94,29 @@ ELSE()
 ENDIF()
 
 # Find TIFF
-find_package( TIFF )
-if( NOT TIFF_FOUND )
-	message( FATAL_ERROR "libTIFF not found ! Please set tiff paths ..." )
-else()
-	include_directories( ${TIFF_INCLUDE_DIR} )
-endif()
+#find_package( TIFF )
+#if( NOT TIFF_FOUND )
+#	message( FATAL_ERROR "libTIFF not found ! Please set tiff paths ..." )
+#else()
+#	include_directories( ${TIFF_INCLUDE_DIR} )
+#endif()
 
 # Find JPEG
-find_package( JPEG )
-if( NOT JPEG_FOUND )
-	message( FATAL_ERROR "libJPEG not found ! Please set jpeg paths ..." )
-else()
-	include_directories( ${JPEG_INCLUDE_DIR} )
-endif()
+#find_package( JPEG )
+#if( NOT JPEG_FOUND )
+#	message( FATAL_ERROR "libJPEG not found ! Please set jpeg paths ..." )
+#else()
+#	include_directories( ${JPEG_INCLUDE_DIR} )
+#endif()
 
 # Find PNG
-find_package( PNG )
-if( NOT PNG_FOUND )
-	message( FATAL_ERROR "libPNG not found ! Please set png paths ..." )
-else()
-	add_definitions( ${PNG_DEFINITIONS} )
-	include_directories( ${PNG_INCLUDE_DIR} )
-endif()
+#find_package( PNG )
+#if( NOT PNG_FOUND )
+#	message( FATAL_ERROR "libPNG not found ! Please set png paths ..." )
+#else()
+#	add_definitions( ${PNG_DEFINITIONS} )
+#	include_directories( ${PNG_INCLUDE_DIR} )
+#endif()
 #####################################
 ###                     Fin recherche des packages                         ###
 #####################################

@@ -25,7 +25,7 @@ IF(WIN32)
                                           ./viewer_app/FrameViewer.hpp
                                           ./viewer_app/GilViewer.rc )
     # Comme c'est sous visual (a priori ...), il y a l'auto link de Boost, donc pas besoin d'ajouter les libs ...
-   	TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer shapelib tinyxml ${TIFF_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} )
+   	TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer shapelib tinyxml )
 ENDIF(WIN32)
 
 #set_target_properties( GilViewerApp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
