@@ -1,0 +1,29 @@
+GilViewer
+
+GilViewer is an open source 2D viewer (raster and vector) based on Boost
+GIL and wxWidgets. GilViewer is distributed under the CeCILL-B licence. 
+See Licence_CeCILL-B_V1-en.txt or http://www.cecill.info for more details.
+
+GilViewer is also based on TinyXML (http://www.grinninglizard.com/tinyxml/)
+and Shapelib (http://shapelib.maptools.org/).
+
+
+Homepage: 
+
+	http://launchpad.net/gilviewer
+	
+Copyright:
+	
+	Institut Geographique National (2009)
+
+Authors: 
+
+	Olivier Tournaire, Adrien Chauve
+	
+	
+ 
+Installation instructions:
+--------------------------
+
+TODO
+
