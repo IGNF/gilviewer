@@ -60,22 +60,11 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <boost/mpl/vector.hpp>
 
 #include "gil/extension/matis/float_images.hpp"
-#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
-#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
-
-//#include <boost/gil/extension/io_new/jpeg_read.hpp>
-//#include <boost/gil/extension/io_new/tiff_all.hpp>
-//#include <boost/gil/extension/dynamic_image/any_image.hpp>
-//#include <boost/gil/extension/dynamic_image/any_image_view.hpp>
-
+#include <boost/gil/extension/dynamic_image/any_image.hpp>
 
 #include "layers/Layer.hpp"
 
-
-
 using namespace boost::gil;
-
-
 
 class ImageLayer : public Layer
 {

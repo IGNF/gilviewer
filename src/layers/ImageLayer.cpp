@@ -55,24 +55,18 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <limits>
 #include <utility>
 
-//#include <boost/gil/extension/io/png_io.hpp>
-
-//#include <boost/gil/image.hpp>
-//#include <boost/gil/typedefs.hpp>
+#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
+#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
+#include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
-
-
 #include <boost/gil/algorithm.hpp>
-
-
 
 #include <wx/dc.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/log.h>
 #include <wx/config.h>
-
 
 #include "tools/ColorLookupTable.h"
 
@@ -162,10 +156,10 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
 
 	if(ext == ".TIF" || ext == ".TIFF" || ext == ".tif" || ext == ".tiff")
 		tiff_read_image(filename, *image);
-	else //if(ext == ".JPG" || ext == ".JPEG" || ext == ".jpg" || ext == ".jpeg")
+        else if(ext == ".JPG" || ext == ".JPEG" || ext == ".jpg" || ext == ".jpeg")
 		jpeg_read_image(filename, *image);
-	//else
-	//	png_read_image(filename, m_img);
+        else if(ext == ".PNG" || ext == ".png")
+                png_read_image(filename, *image);
 
 
 	//Creation de la couche image
@@ -178,7 +172,7 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
 	maLayer->Filename( full.string() );
 
 	//Lecture de l'ori et test d'existence
-	try
+        try
 	{
 		maLayer->m_ori.ReadOriFromImageFile(filename);
 		maLayer->m_hasOri = true;
