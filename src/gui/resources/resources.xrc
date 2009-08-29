@@ -33,6 +33,18 @@
                 <object class="wxBitmap" name="EDIT-CLEAR_22x22">tango-icon-theme-0.8.90/22x22/actions/edit-clear.png</object>
                 <object class="wxBitmap" name="EDIT-CLEAR_32x32">tango-icon-theme-0.8.90/32x32/actions/edit-clear.png</object>
 
+                <object class="wxBitmap" name="PROCESS-STOP_16x16">tango-icon-theme-0.8.90/16x16/actions/process-stop.png</object>
+                <object class="wxBitmap" name="PROCESS-STOP_22x22">tango-icon-theme-0.8.90/22x22/actions/process-stop.png</object>
+                <object class="wxBitmap" name="PROCESS-STOP_32x32">tango-icon-theme-0.8.90/32x32/actions/process-stop.png</object>
+
+                <object class="wxBitmap" name="USER-TRASH_16x16">tango-icon-theme-0.8.90/16x16/places/user-trash.png</object>
+                <object class="wxBitmap" name="USER-TRASH_22x22">tango-icon-theme-0.8.90/22x22/places/user-trash.png</object>
+                <object class="wxBitmap" name="USER-TRASH_32x32">tango-icon-theme-0.8.90/32x32/places/user-trash.png</object>
+
+                <object class="wxBitmap" name="EMBLEM-UNREADABLE_16x16">tango-icon-theme-0.8.90/16x16/emblems/emblem-unreadable.png</object>
+                <object class="wxBitmap" name="EMBLEM-UNREADABLE_22x22">tango-icon-theme-0.8.90/22x22/emblems/emblem-unreadable.png</object>
+                <object class="wxBitmap" name="EMBLEM-UNREADABLE_32x32">tango-icon-theme-0.8.90/32x32/emblems/emblem-unreadable.png</object>
+
                 <object class="wxBitmap" name="PREFERENCES-SYSTEM_16x16">tango-icon-theme-0.8.90/16x16/categories/preferences-system.png</object>
                 <object class="wxBitmap" name="PREFERENCES-SYSTEM_22x22">tango-icon-theme-0.8.90/22x22/categories/preferences-system.png</object>
                 <object class="wxBitmap" name="PREFERENCES-SYSTEM_32x32">tango-icon-theme-0.8.90/32x32/categories/preferences-system.png</object>
