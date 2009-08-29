@@ -378,7 +378,7 @@ bool PanelViewer::InitToolbar()
 
 	m_toolBar->AddSeparator();
 
-        m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, imageSize), wxNullBitmap, wxITEM_RADIO, _("None"));
+        m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("None"));
         m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Point"));
 	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
         m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYLINES_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Line"));
