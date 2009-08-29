@@ -38,9 +38,7 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
                         ${ALL_GUI_WXFB_HEADER_FILES}
                         ${ALL_IO_HEADER_FILES}
-                        #${ALL_ITK_HEADER_FILES}
                         ${ALL_LAYERS_HEADER_FILES}
-                        #${ALL_PLUGINS_HEADER_FILES}
                         ${ALL_TOOLS_HEADER_FILES}
                         ${ALL_VECTORUTILS_HEADER_FILES}
                         ${ALL_WRAPPERS_HEADER_FILES} )
