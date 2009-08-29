@@ -65,17 +65,25 @@ SET( ALL_VIEWER_SOURCES
 ### Recherche des packages necessaires a la compilation ###
 #####################################
 #Find wxWidgets
-FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html tiff jpeg png)
-IF(wxWidgets_FOUND)  
-	INCLUDE(${wxWidgets_USE_FILE})
-	include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
-	include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
-	include_directories( ${wxWidgets_ROOT_DIR}/src/png )
-	include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
-ELSE()
-	# For convenience. When we cannot continue, inform the user
-	MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
-ENDIF()
+if ( WIN32 )
+	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html tiff jpeg png)
+	IF(wxWidgets_FOUND)  
+		INCLUDE(${wxWidgets_USE_FILE})
+		include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/png )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
+	ELSE()
+		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
+	ENDIF()
+else()
+	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html )
+	IF(wxWidgets_FOUND)  
+		INCLUDE(${wxWidgets_USE_FILE})
+	ELSE()
+		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
+	ENDIF()
+endif()
 
 message( STATUS ${wxWidgets_ROOT_DIR} )
 
