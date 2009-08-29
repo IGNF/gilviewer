@@ -50,6 +50,11 @@ knowledge of the CeCILL-B license and that you accept its terms.
  
 ***********************************************************************/
 
+#ifdef WIN32
+#	undef min
+#	undef max
+#endif // WIN32
+
 struct min_max_functor
 {
 	min_max_functor():

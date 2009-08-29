@@ -426,10 +426,11 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
 	}
 	else // calque image
 	{
-                wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
+		wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
 		wildcard << _("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
 		wildcard << _("PNG (*.png)|*.png|");
-                wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
+		wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
+		wildcard << _("BMP (*.bmp)|*.bmp");
 	}
 	wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), _(""), _(""), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
 	if (fileDialog->ShowModal() == wxID_OK)
@@ -559,11 +560,12 @@ void LayerControl::OnReset(wxCommandEvent& event)
 void LayerControl::OnOpenLayer(wxCommandEvent& event)
 {
 	wxString wildcard;
-        wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.shp;*.SHP|");
-        wildcard << _("Image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
+	wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP|");
+	wildcard << _("Image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
 	wildcard << _("TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|");
 	wildcard << _("PNG (*.png;*.PNG)|*.png;*.PNG|");
-        wildcard << _("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
+	wildcard << _("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
+	wildcard << _("BMP (*.bmp)|*.bmp;*.BMP|");
 	wildcard << _("Shapefile (*.shp)|*.shp;*.SHP|");
 	wildcard << _("CustomFormat (*)|*");
 	wxString str;
@@ -599,13 +601,15 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 	listeFormatsGeres.push_back(".tiff");
 	listeFormatsGeres.push_back(".jpg");
 	listeFormatsGeres.push_back(".jpeg");
-        listeFormatsGeres.push_back(".png");
+	listeFormatsGeres.push_back(".png");
+	listeFormatsGeres.push_back(".bmp");
 	// On rajoute les mêmes, mais avec des majuscules ...
 	listeFormatsGeres.push_back(".TIF");
 	listeFormatsGeres.push_back(".TIFF");
 	listeFormatsGeres.push_back(".JPG");
 	listeFormatsGeres.push_back(".JPEG");
-        listeFormatsGeres.push_back(".PNG");
+	listeFormatsGeres.push_back(".PNG");
+	listeFormatsGeres.push_back(".BMP");
 
 //	boost::algorithm::to_upper_copy
 //	std::transform(listeFormatsGeres.begin(),
