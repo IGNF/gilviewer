@@ -12,6 +12,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT(GilViewer)
 INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
 
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
+
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
 ####
@@ -34,9 +38,7 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
                         ${ALL_GUI_WXFB_HEADER_FILES}
                         ${ALL_IO_HEADER_FILES}
-                        #${ALL_ITK_HEADER_FILES}
                         ${ALL_LAYERS_HEADER_FILES}
-                        #${ALL_PLUGINS_HEADER_FILES}
                         ${ALL_TOOLS_HEADER_FILES}
                         ${ALL_VECTORUTILS_HEADER_FILES}
                         ${ALL_WRAPPERS_HEADER_FILES} )
@@ -63,29 +65,78 @@ SET( ALL_VIEWER_SOURCES
 ### Recherche des packages necessaires a la compilation ###
 #####################################
 #Find wxWidgets
-FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc )
-IF(wxWidgets_FOUND)  
-	INCLUDE(${wxWidgets_USE_FILE})
-ELSE()
-	# For convenience. When we cannot continue, inform the user
-	MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
-ENDIF()
+if ( WIN32 )
+	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html tiff jpeg png)
+	IF(wxWidgets_FOUND)  
+		INCLUDE(${wxWidgets_USE_FILE})
+		include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/png )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
+	ELSE()
+		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
+	ENDIF()
+else()
+	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html )
+	IF(wxWidgets_FOUND)  
+		INCLUDE(${wxWidgets_USE_FILE})
+	ELSE()
+		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
+	ENDIF()
+endif()
+
+message( STATUS ${wxWidgets_ROOT_DIR} )
+
+
 		
 # Find BOOST
+set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" )
 FIND_PACKAGE( Boost 1.34.1 COMPONENTS filesystem system thread )
-IF( NOT Boost_FOUND AND UNIX )
+IF( NOT Boost_FOUND )
 	MESSAGE(FATAL_ERROR "Boost not found ! Please set Boost path ...")
 ELSE()
 	INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
+	link_directories( ${Boost_LIBRARY_DIRS} )
 ENDIF()
+
+# Find TIFF
+#find_package( TIFF )
+#if( NOT TIFF_FOUND )
+#	message( FATAL_ERROR "libTIFF not found ! Please set tiff paths ..." )
+#else()
+#	include_directories( ${TIFF_INCLUDE_DIR} )
+#endif()
+
+# Find JPEG
+#find_package( JPEG )
+#if( NOT JPEG_FOUND )
+#	message( FATAL_ERROR "libJPEG not found ! Please set jpeg paths ..." )
+#else()
+#	include_directories( ${JPEG_INCLUDE_DIR} )
+#endif()
+
+# Find PNG
+#find_package( PNG )
+#if( NOT PNG_FOUND )
+#	message( FATAL_ERROR "libPNG not found ! Please set png paths ..." )
+#else()
+#	add_definitions( ${PNG_DEFINITIONS} )
+#	include_directories( ${PNG_INCLUDE_DIR} )
+#endif()
 #####################################
 ###                     Fin recherche des packages                         ###
 #####################################
 
 ### Generation du fichier de resources
-add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
-                    COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
-                    DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+if( WIN32 )
+	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
+		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
+			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+else()
+	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
+		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
+			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+endif()
 
 SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp )
 

@@ -28,4 +28,4 @@ IF(WIN32)
    	TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer shapelib tinyxml )
 ENDIF(WIN32)
 
-set_target_properties( GilViewerApp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR} )
+#set_target_properties( GilViewerApp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
