@@ -426,11 +426,10 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
 	}
 	else // calque image
 	{
-		wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
+		wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
 		wildcard << _("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
 		wildcard << _("PNG (*.png)|*.png|");
 		wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
-		wildcard << _("BMP (*.bmp)|*.bmp");
 	}
 	wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), _(""), _(""), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
 	if (fileDialog->ShowModal() == wxID_OK)

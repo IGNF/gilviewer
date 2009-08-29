@@ -80,7 +80,9 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "image_layer_to_string_functor.hpp"
 #include "image_layer_infos_functor.hpp"
 
-ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const std::string &name):
+using namespace std;
+
+ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const string &name):
 	m_img(image)
 {
 	m_startInput[0] = m_startInput[1] = 0;
@@ -114,7 +116,7 @@ ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const st
 //	m_infos = m_visuITK->GetInfos();
 	m_infos = "";
 
-	std::ostringstream oss;
+	ostringstream oss;
 	oss << "Dimensions : " << m_img->width()  << " x " << m_img->height() << "\n";
 	oss << "Nb canaux : " << GetNbComponents() << "\n";
 	oss << "Type pixels : " << GetTypeChannel() << "\n";
@@ -126,29 +128,29 @@ ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const st
 }
 
 
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const boost::shared_ptr<usable_images_t> &image, const std::string &name)
+Layer::ptrLayerType ImageLayer::CreateImageLayer(const boost::shared_ptr<usable_images_t> &image, const string &name)
 {
 	return boost::shared_ptr<ImageLayer> (new ImageLayer(image, name));
 }
 
 
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
+Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
 {
 	if ( !boost::filesystem::exists(filename) )
 	{
-		std::ostringstream oss;
-		oss << "Le fichier image demande n'existe pas : "<<filename<< " ! " << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		std::cout << oss.str() << std::endl;
+		ostringstream oss;
+		oss << "Le fichier image demande n'existe pas : "<<filename<< " ! " << endl;
+		oss << "File : " <<__FILE__ << endl;
+		oss << "Line : " << __LINE__ << endl;
+		oss << "Function : " << __FUNCTION__ << endl;
+		cout << oss.str() << endl;
 		wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
 		return boost::shared_ptr<Layer>();
-		//throw std::logic_error( oss.str() );
+		//throw logic_error( oss.str() );
 	}
 
 
-	const std::string ext(boost::filesystem::extension(filename));
+	const string ext(boost::filesystem::extension(filename));
 
 //	image_read_info< tiff_tag > info = read_image_info(filename, tiff_tag());
 
@@ -177,9 +179,9 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
 		maLayer->m_ori.ReadOriFromImageFile(filename);
 		maLayer->m_hasOri = true;
 	}
-	catch(std::exception &e) // Putain, ca ca fait chier, ca me fout plein de warnings ('e' n'est pas utilise)!
+	catch(exception &e) // Putain, ca ca fait chier, ca me fout plein de warnings ('e' n'est pas utilise)!
 	{
-        std::ostringstream message;
+        ostringstream message;
         message << "Pas d'orientation pour l'image " << filename;
         message << "\n" << e.what();
 		wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
@@ -221,11 +223,11 @@ void ImageLayer::Update(const int width, const int height)
 		m_startInput[0] = std::min(m_startInput[0], static_cast<int>(view(*m_img).width()));
 		m_startInput[1] = std::min(m_startInput[1], static_cast<int>(view(*m_img).height()));
 
-		m_sizeInput[0] = std::ceil(m_zoomFactor * width)+1;// - m_translationX - m_startInput[0];
-		m_sizeInput[1] = std::ceil(m_zoomFactor * height)+1;// - m_translationY - m_startInput[1];
+		m_sizeInput[0] = ceil(m_zoomFactor * width)+1;// - m_translationX - m_startInput[0];
+		m_sizeInput[1] = ceil(m_zoomFactor * height)+1;// - m_translationY - m_startInput[1];
 
-	//	m_sizeInput[0] = std::max(m_sizeInput[0], 0);
-	//	m_sizeInput[1] = std::max(m_sizeInput[1], 0);
+	//	m_sizeInput[0] = max(m_sizeInput[0], 0);
+	//	m_sizeInput[1] = max(m_sizeInput[1], 0);
 
 		m_sizeInput[0] = std::min(m_sizeInput[0], static_cast<int>(view(*m_img).width()) - m_startInput[0]);
 		m_sizeInput[1] = std::min(m_sizeInput[1], static_cast<int>(view(*m_img).height()) - m_startInput[1]);
@@ -235,12 +237,12 @@ void ImageLayer::Update(const int width, const int height)
 
 
 
-	//	std::cout << "Region : \n";
-	//	std::cout << "\tHG : (" << m_startInput[0] << "," << m_startInput[1] << ")\n";
-	//	std::cout << "\ttaille : (" << m_sizeInput[0] << "," << m_sizeInput[1] << ")" << std::endl;
-	//	std::cout << "\técran : (" << width << "," << height << ")" << std::endl;
-	//	std::cout << "\ttranslation : (" << m_translationX << "," << m_translationY << ")" << std::endl;
-	//	std::cout << "\tzoom : " << m_zoomFactor << std::endl;
+	//	cout << "Region : \n";
+	//	cout << "\tHG : (" << m_startInput[0] << "," << m_startInput[1] << ")\n";
+	//	cout << "\ttaille : (" << m_sizeInput[0] << "," << m_sizeInput[1] << ")" << endl;
+	//	cout << "\técran : (" << width << "," << height << ")" << endl;
+	//	cout << "\ttranslation : (" << m_translationX << "," << m_translationY << ")" << endl;
+	//	cout << "\tzoom : " << m_zoomFactor << endl;
 
 	//	read_image( m_filename, m_img, point_t(m_startInput[0], m_startInput[1]), point_t(m_sizeInput[0], m_sizeInput[1]), tiff_tag() );
 
@@ -248,7 +250,7 @@ void ImageLayer::Update(const int width, const int height)
 
 	//	usable_views_t geometric_view = view(m_img);
 
-	//	std::cout << "min,max :" << IntensityMin() << ", " << IntensityMax() << std::endl;
+	//	cout << "min,max :" << IntensityMin() << ", " << IntensityMax() << endl;
 
 	//	rgb8_image_t visu_img(view(m_img).dimensions());
 		channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
@@ -328,7 +330,7 @@ void ImageLayer::Update(const int width, const int height)
 			m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
 
 		}
-		catch(const std::exception &e)
+		catch(const exception &e)
 		{
 			throw e;
 		}
@@ -343,9 +345,15 @@ void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 }
 
 
-void ImageLayer::Save(const std::string &name)
+void ImageLayer::Save(const string &name)
 {
-
+	string ext = boost::filesystem::extension(name);
+	if ( ext == ".tiff" || ext == ".tif" || ext == ".TIF" || ext == ".TIFF" )
+		tiff_write_view( name.c_str() , view(*m_img) );
+	else if ( ext == ".jpeg" || ext == ".jpg" || ext == ".JPEG" || ext == ".JPG" )
+		jpeg_write_view( name.c_str() , view(*m_img) );
+	else if ( ext == ".png" || ext == ".PNG" )
+		png_write_view( name.c_str() , view(*m_img) );
 }
 
 unsigned int ImageLayer::GetNbComponents() const
@@ -353,12 +361,12 @@ unsigned int ImageLayer::GetNbComponents() const
 	return apply_operation(const_view(*m_img), nb_components_functor());
 }
 
-std::string ImageLayer::GetTypeChannel() const
+string ImageLayer::GetTypeChannel() const
 {
 	return apply_operation(const_view(*m_img), type_channel_functor());
 }
 
-void ImageLayer::Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const
+void ImageLayer::Histogram(vector< vector<double> > &histo, double &min, double &max) const
 {
 	min = m_minmaxResult.first;
 	max = m_minmaxResult.second;
@@ -377,9 +385,9 @@ inline bool isInside(const ViewT& src, const CoordT i, const CoordT j)
 
 
 
-std::string ImageLayer::GetPixelValue(const int i, const int j) const
+string ImageLayer::GetPixelValue(const int i, const int j) const
 {
-	std::ostringstream oss;
+	ostringstream oss;
 	oss.precision(6);
 	oss<<"(";
 	apply_operation(const_view(*m_img), any_view_to_string(static_cast<int>(-m_translationX+i*m_zoomFactor), static_cast<int>(-m_translationY+j*m_zoomFactor), oss));
@@ -393,7 +401,7 @@ ImageLayer::ptrLayerType ImageLayer::crop( int x0 , int y0 , int width , int hei
 	tiff_write_view( "test.tif" , crop_view );
 	boost::shared_ptr<usable_images_t> any_img = apply_operation( crop_view , get_any_image_functor() );
 
-	std::cout << "iuyiuyiuy" << std::endl;
+	cout << "iuyiuyiuy" << endl;
 
 	return boost::shared_ptr<ImageLayer> ( new ImageLayer(any_img) );
 }
