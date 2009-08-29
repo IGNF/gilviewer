@@ -84,10 +84,6 @@ else()
 		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
 	ENDIF()
 endif()
-
-message( STATUS ${wxWidgets_ROOT_DIR} )
-
-
 		
 # Find BOOST
 set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" )
