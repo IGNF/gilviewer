@@ -251,9 +251,9 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	////Main menu
 	m_menuBar = new wxMenuBar(); //wxMB_DOCKABLE
 	wxMenu* menuFile = new wxMenu;
-	menuFile->Append(wxID_NEW, _("New") );
-	menuFile->Append(wxID_OPEN, _("Open") );
-	menuFile->Append(wxID_CLOSE, _("Quit") );
+	menuFile->Append(wxID_NEW, _("New\tCtrl-N") );
+	menuFile->Append(wxID_OPEN, _("Open\tCtrl-O") );
+	menuFile->Append(wxID_CLOSE, _("Quit\tCtrl-Q") );
 	wxMenu* menuOptions = new wxMenu;
 	menuOptions->Append(wxID_PREFERENCES, _("Application settings ...") );
 	wxMenu* menuAbout = new wxMenu;
