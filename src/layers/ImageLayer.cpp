@@ -56,7 +56,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <utility>
 
 #include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
-#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
+
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
