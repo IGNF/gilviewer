@@ -59,7 +59,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <boost/shared_ptr.hpp>
 #include <boost/mpl/vector.hpp>
 
-#include <boost/gil/extension/matis/float_images.hpp>
+#include "extern/gil/extension/matis/float_images.hpp"
 #include <boost/gil/extension/io/tiff_dynamic_io.hpp>
 
 #include "layers/Layer.hpp"

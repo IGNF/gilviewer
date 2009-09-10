@@ -48,6 +48,7 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
 #### ATTENTION : si un fichier est ajoute dans un de ces dossiers mais que le CMakeLists.txt n'est pas modifie, il faut relancer le cmake 
 ####  a la main avant de compiler par make (ca, c'est pas vrai sous windows ! en fait je n'en suis pas si sur ...)
 SET(SRC_DIR src/)
+include_directories( . )
 AUX_SOURCE_DIRECTORY(${SRC_DIR}layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}convenient SRC_CONVENIENT)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}gui SRC_GUI)
@@ -60,14 +61,17 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}wrappers SRC_WRAPPERS)
 SET( ALL_VIEWER_SOURCES
      ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
 
+set( BUILD_SHARED_LIBS ON )
 
 #####################################
 ### Recherche des packages necessaires a la compilation ###
 #####################################
 #Find wxWidgets
+#set( wxWidgets_USE_STATIC OFF )
 if ( WIN32 )
 	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html tiff jpeg png)
-	IF(wxWidgets_FOUND)  
+	IF(wxWidgets_FOUND)
+		add_definitions(${wxWidgets_DEFINITIONS})
 		INCLUDE(${wxWidgets_USE_FILE})
 		include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
 		include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
@@ -79,6 +83,7 @@ if ( WIN32 )
 else()
 	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html )
 	IF(wxWidgets_FOUND)  
+		add_definitions(${wxWidgets_DEFINITIONS})
 		INCLUDE(${wxWidgets_USE_FILE})
 	ELSE()
 		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")

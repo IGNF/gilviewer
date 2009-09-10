@@ -55,8 +55,9 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <limits>
 #include <utility>
 
-#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
+#include "ImageLayer.hpp"
 
+#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
@@ -69,8 +70,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <wx/config.h>
 
 #include "tools/ColorLookupTable.h"
-
-#include "ImageLayer.hpp"
 
 #include "image_layer_channel_converter_functor.hpp"
 #include "image_layer_min_max_functor.hpp"
