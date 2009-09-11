@@ -101,7 +101,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "resources/polygon_icon.xpm"
 #include "resources/image_icon.xpm"
 
-extern void InitXmlResource();
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                                                                                  ///
@@ -238,9 +238,6 @@ LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_numberOfLayers(0), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 
 {
-        // Initialising resources ...
-        wxXmlResource::Get()->InitAllHandlers();
-        InitXmlResource();
 
         SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
 	// Couleur de fond grisee
