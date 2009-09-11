@@ -3,36 +3,36 @@
 This file is part of the GilViewer project source files.
 
 GilViewer is an open source 2D viewer (raster and vector) based on Boost
-GIL and wxWidgets. GilViewer is distributed under the CeCILL-B licence. 
+GIL and wxWidgets. GilViewer is distributed under the CeCILL-B licence.
 See Licence_CeCILL-B_V1-en.txt or http://www.cecill.info for more details.
 
 
-Homepage: 
+Homepage:
 
 	http://launchpad.net/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
 This software is governed by the CeCILL-B license under French law and
-abiding by the rules of distribution of free software.  You can  use, 
+abiding by the rules of distribution of free software.  You can  use,
 modify and/ or redistribute the software under the terms of the CeCILL-B
 license as circulated by CEA, CNRS and INRIA at the following URL
-"http://www.cecill.info". 
+"http://www.cecill.info".
 
 As a counterpart to the access to the source code and  rights to copy,
 modify and redistribute granted by the license, users are provided only
 with a limited warranty  and the software's author,  the holder of the
 economic rights,  and the successive licensors  have only  limited
-liability. 
+liability.
 
 In this respect, the user's attention is drawn to the risks associated
 with loading,  using,  modifying and/or developing or reproducing the
@@ -41,13 +41,13 @@ that may mean  that it is complicated to manipulate,  and  that  also
 therefore means  that it is reserved for developers  and  experienced
 professionals having in-depth computer knowledge. Users are therefore
 encouraged to load and test the software's suitability as regards their
-requirements in conditions enabling the security of their systems and/or 
-data to be ensured and,  more generally, to use and operate it in the 
-same conditions as regards security. 
+requirements in conditions enabling the security of their systems and/or
+data to be ensured and,  more generally, to use and operate it in the
+same conditions as regards security.
 
 The fact that you are presently reading this means that you have had
 knowledge of the CeCILL-B license and that you accept its terms.
- 
+
 ***********************************************************************/
 
 #include "gui/PanelViewer.hpp"
@@ -61,7 +61,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 #include <wx/xrc/xmlres.h>
 #include <wx/dcbuffer.h>
-#include <wx/statusbr.h>
 #include <wx/confbase.h>
 #include <wx/dataobj.h>
 #include <wx/clipbrd.h>
@@ -71,6 +70,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <wx/image.h>
 #include <wx/menu.h>
 #include <wx/log.h>
+#include <wx/statusbr.h>
 
 #include "layers/VectorLayerGhost.h"
 #include "layers/VectorLayer.hpp"
@@ -92,7 +92,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 #include "gui/PanelManager.h"
 
-extern void InitXmlResource();
 
 BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
 EVT_MOTION(PanelViewer::OnMouseMove)
@@ -208,9 +207,8 @@ ApplicationSettings* PanelViewer::GetApplicationSettings() const
 
 PanelViewer::PanelViewer(wxFrame* parent) :
 	wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
-	m_isLogWindowVisible(false),
 	m_parent(parent),
-	m_statusBar(NULL), m_toolBar(NULL), m_menuBar(NULL), m_menuMain(NULL),
+	m_toolBar(NULL), m_menuBar(NULL), m_menuMain(NULL),
 	m_mouseMovementStarted(false), m_translationDrag(0,0),
 	// Construction des differentes fenetres liees au PanelViewer :
 	//		- layer control
@@ -229,24 +227,11 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 #endif // wxUSE_DRAG_AND_DROP
 
 	// Avoids flickering effect under windows !!!
-	SetFocus();
+//	SetFocus();
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 
+	this->InitToolbar();
 
-	//Construction de la log window
-	wxLog::SetActiveTarget(NULL);
-	m_logWindow = new wxLogWindow(this, _("Log window"));
-	m_logWindow->Show(m_isLogWindowVisible);
-
-	if (m_parent)
-	{
-		m_statusBar = m_parent->GetStatusBar();
-		if (!m_statusBar)
-			m_statusBar = new wxStatusBar(m_parent, wxID_ANY, wxST_SIZEGRIP, _("statusBar"));
-		m_statusBar->SetStatusText(_("GilViewer - Adrien Chauve & Olivier Tournaire"));
-
-		this->InitToolbar();
-	}
 
 	////Main menu
 	m_menuBar = new wxMenuBar(); //wxMB_DOCKABLE
@@ -322,23 +307,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 
 }
 
-wxAboutDialogInfo PanelViewer::getAboutInfo() const
-{
-	wxAboutDialogInfo info;
-	info.AddDeveloper(_("Olivier Tournaire"));
-	info.AddDeveloper(_("Adrien Chauve"));
-	info.SetName(_("GilViewer"));
-	info.SetVersion(_("0.0.5"));
-	info.SetWebSite(_("http://launchpad.net/gilviewer"), _("Home page") );
-	info.SetDescription(_("2D raster and vector viewer."));
-	info.SetCopyright(_T("olivier.tournaire@gmail.com\nadrien.chauve@gmail.com"));
-	return info;
-}
 
-wxStatusBar* PanelViewer::GetStatusBar()
-{
-	return m_statusBar;
-}
 
 wxToolBar* PanelViewer::GetToolBar()
 {
@@ -355,19 +324,17 @@ bool PanelViewer::InitToolbar()
 	if ( !m_toolBar )
                 m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-        // Creating an image list storing the toolbar icons
-        const wxSize imageSize(16,16);
+	// Creating an image list storing the toolbar icons
+	const wxSize imageSize(16,16);
 
-        m_toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
-        m_toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
-        m_toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
-        m_toolBar->AddTool(wxID_ABOUT, _("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
-        m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
-        m_toolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+	m_toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Add layer"));
+	m_toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
+	m_toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Save layer"));
+	m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
 
-        m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("CAMERA_PHOTO_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("CAMERA_PHOTO_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
 
-        m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
+	m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
 	m_toolBar->AddSeparator();
 	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
@@ -378,12 +345,12 @@ bool PanelViewer::InitToolbar()
 
 	m_toolBar->AddSeparator();
 
-        m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("None"));
-        m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Point"));
+	m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("None"));
+	m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Point"));
 	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-        m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYLINES_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Line"));
+	m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYLINES_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Line"));
 	m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-        m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYGONS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+	m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYGONS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Polygone"));
 
 	m_toolBar->AddSeparator();
 
@@ -621,7 +588,7 @@ void PanelViewer::OnMouseMove(wxMouseEvent &event)
 
 
 	UpdateStatusBar(event.m_x, event.m_y);
-	SetFocus();
+//	SetFocus();
 }
 
 
