@@ -74,14 +74,14 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/resources/LOGO_MATIS_small.xpm"
 #include "gui/PanelManager.h"
 
-BEGIN_EVENT_TABLE(FrameViewer,wxFrame)
-	ADD_ITKVIEWER_EVENTS_TO_TABLE(FrameViewer)
+BEGIN_EVENT_TABLE(FrameViewer,BasicViewerFrame)
+	//ADD_ITKVIEWER_EVENTS_TO_TABLE(FrameViewer)
 END_EVENT_TABLE()
 
-IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(FrameViewer,m_drawPane)
+//IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(FrameViewer,m_drawPane)
 
 FrameViewer::FrameViewer(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
-	wxFrame(parent, id, title, pos, size, style, name)
+	BasicViewerFrame(parent, id, title, pos, size, style, name)
 {
 #if defined(__WXMSW__)
 	// Sous windows, on va chercher l'image dans les resources
@@ -91,27 +91,23 @@ FrameViewer::FrameViewer(wxWindow* parent, wxWindowID id, const wxString &title,
 	SetIcon(wxICON(LOGO_MATIS_small));
 #endif
 
-	//m_mgr.SetManagedWindow(this);
 
 	PanelViewer::Register(this);
 	m_drawPane = PanelManager::Instance()->createObject("PanelViewer");
 
-	m_status = m_drawPane->GetStatusBar();
-	this->SetStatusBar(m_status);
-	wxConfigBase *pConfig = wxConfigBase::Get();
-	double fontSize;
-	if ( pConfig )
-		wxConfigBase::Get()->Read(_T("/Options/FontSize"), &fontSize, 8);
-	// On tente un setting de la font pour pouvoir afficher les infos dans la status bar qd il y a bcp d'images ...
-	wxFont fontFrameViewer((unsigned int)fontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-	this->GetStatusBar()->SetFont(fontFrameViewer);
+	m_statusBar->SetStatusText(_("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
-	this->SetToolBar(m_drawPane->GetToolBar());
-	//m_mgr.AddPane(m_drawPane->GetToolBar(),wxTOP);
+	//this->SetToolBar(m_drawPane->GetToolBar());
 
-	//m_mgr.Update();
 
-	this->Show();
+	wxAuiPaneInfo paneInfoDrawPane;
+	paneInfoDrawPane.Caption( _("viewer panel") );
+	paneInfoDrawPane.Center();
+	paneInfoDrawPane.CloseButton(false);
+	paneInfoDrawPane.CaptionVisible(false);
+	m_dockManager.AddPane( m_drawPane, paneInfoDrawPane );
+
+	m_dockManager.Update();
 }
 
 void FrameViewer::AddLayer(const Layer::ptrLayerType &layer)
@@ -127,31 +123,7 @@ void FrameViewer::AddLayersFromFiles(const wxArrayString &names)
 #if wxUSE_MENUS
 void FrameViewer::BuildPluginsMenu()
 {
-	this->SetMenuBar(m_drawPane->GetMenuBar());
+//	this->SetMenuBar(m_drawPane->GetMenuBar());
 
-//	//plugins
-//	const ArrayOfPlugins &plugins = PluginManager::Instance()->GetPluginsList();
-//
-//	//const std::multimap<wxString,wxString> & loadedPlugins = PluginManager::Instance()->GetLoadedPlugins();
-//
-//	// Bah, c'est carrement degueulasse le subMenu ...
-//
-//	wxMenu *menu = new wxMenu;
-//	GetMenuBar()->Insert(2,menu,_("Plugins"));
-//	wxMenu *menuFilters = new wxMenu;
-//	menu->AppendSubMenu( menuFilters , _("Filters") );
-//
-//	for (size_t i=0;i<plugins.GetCount();i++)
-//	{
-//		unsigned int pluginID = ID_FIRST_PLUGIN + i;
-//		wxMenuItem *item = new wxMenuItem(menu, pluginID, plugins[i]->getPluginName(), plugins[i]->getPluginDescription() + _(" - ") + plugins[i]->getPluginAuthor());
-//		std::cout << plugins[i]->getPluginName() << std::endl;
-//		if ( wxString( plugins[i]->getPluginName().c_str() , *wxConvCurrent ).Contains(_("Filter")) || wxString( plugins[i]->getPluginName().c_str() , *wxConvCurrent ).Contains(_("filter")) )
-//			menuFilters->Append( item );
-//		else
-//			menu->Append( item );
-//		this->Connect(pluginID, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&PluginBase::execute, NULL, plugins[i]);
-//		plugins[i]->setPluginIndex(i);
-//	}
 }
 #endif // wxUSE_MENUS

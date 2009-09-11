@@ -63,7 +63,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 class ApplicationSettings;
 class LayerControl;
 class wxLogWindow;
-class wxStatusBar;
 class wxToolBar;
 class wxMenuBar;
 class VectorLayerGhost;
@@ -93,13 +92,10 @@ public:
 	DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
 	void OnMouseWheel(wxMouseEvent& event);
 
-	wxStatusBar* GetStatusBar();
 	wxToolBar* GetToolBar();
 	wxMenuBar* GetMenuBar();
 	bool InitToolbar();
 
-	bool m_isLogWindowVisible;
-	wxLogWindow* m_logWindow;
 
 
 	// Drag and Drop
@@ -120,7 +116,6 @@ public:
 	void SetGeometryLine();
 	void SetGeometryPolygone();
 
-	virtual wxAboutDialogInfo getAboutInfo() const;
 	void OnSnapshot(wxCommandEvent& event);
 
 	void SingleCrop();
@@ -161,7 +156,6 @@ protected:
 	bool GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const;
 	bool GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double&j) const;
 
-	wxStatusBar* m_statusBar;
 	wxToolBar* m_toolBar;
 	wxMenuBar* m_menuBar;
 	wxMenu *m_menuMain;

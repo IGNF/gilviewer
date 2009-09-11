@@ -52,7 +52,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 #ifndef MACROSITKVIEWER_HPP_
 #define MACROSITKVIEWER_HPP_
-#include <wx/aboutdlg.h>
 
 /**
  * Un ensemble de macros pour faciliter la vie de l'utilisateur ...
@@ -65,11 +64,8 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #define ADD_ITKVIEWER_EVENTS_TO_TABLE(classname) \
 	EVT_TOOL(wxID_NEW, classname::OnNewLayer) \
 	EVT_TOOL(wxID_OPEN, classname::OnOpenLayer) \
-	EVT_TOOL(wxID_ABOUT, classname::OnAbout) \
 	EVT_TOOL(ID_BASIC_SNAPSHOT, classname::OnSnapShot) \
 	EVT_TOOL(ID_SHOW_HIDE_LAYER_CONTROL, classname::OnShowHideLayerControl) \
-	EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, classname::OnShowHideLogWindow) \
-	EVT_TOOL(wxID_PREFERENCES, classname::OnApplicationSettings) \
 	EVT_TOOL(ID_MODE_NAVIGATION, classname::OnModeNavigation) \
 	EVT_TOOL(ID_MODE_GEOMETRY_MOVING, classname::OnModeGeometryMoving) \
 	EVT_TOOL(ID_MODE_EDITION, classname::OnModeEdition) \
@@ -93,11 +89,8 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #define DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE() \
 	void OnOpenLayer(wxCommandEvent& event); \
 	void OnNewLayer(wxCommandEvent& event); \
-	void OnAbout(wxCommandEvent& event); \
 	void OnSnapShot(wxCommandEvent& event); \
 	void OnShowHideLayerControl(wxCommandEvent& event); \
-	void OnShowHideLogWindow(wxCommandEvent& event); \
-	void OnApplicationSettings(wxCommandEvent& event); \
 	void OnModeNavigation(wxCommandEvent& event); \
 	void OnModeGeometryMoving(wxCommandEvent& event); \
 	void OnModeEdition(wxCommandEvent& event); \
@@ -132,19 +125,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 	void classname::OnShowHideLayerControl(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->GetLayerControl()->Show(!variablePanelViewer->GetLayerControl()->IsVisible()); \
-	} \
-	void classname::OnShowHideLogWindow(wxCommandEvent& event) \
-	{ \
-		variablePanelViewer->m_isLogWindowVisible = !variablePanelViewer->m_isLogWindowVisible; \
-		variablePanelViewer->m_logWindow->Show(!variablePanelViewer->m_isLogWindowVisible); \
-	} \
-	void classname::OnAbout(wxCommandEvent& event) \
-	{ \
-		wxAboutBox(variablePanelViewer->getAboutInfo()); \
-	} \
-	void classname::OnApplicationSettings(wxCommandEvent& event) \
-	{ \
-		variablePanelViewer->GetApplicationSettings()->Show(true); \
 	} \
 	void classname::OnModeNavigation(wxCommandEvent& event) \
 	{ \
