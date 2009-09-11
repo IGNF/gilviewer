@@ -85,10 +85,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "layers/VectorLayerGhost.h"
 #include "layers/VectorLayerContent.hpp"
 
-#ifdef WIN32
-#	include <wx/msw/winundef.h>
-#endif
-
 #include "gui/VectorLayerSettingsControl.hpp"
 #include "gui/ImageLayerSettingsControl.hpp"
 #include "gui/GlobalSettingsControl.hpp"
@@ -97,37 +93,13 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/PanelViewer.hpp"
 #include "gui/define_id.hpp"
 
-
-
 #include "io/XMLDisplayConfigurationIO.hpp"
 #include "tools/Orientation2D.h"
-
 
 #include "resources/eye.xpm"
 #include "resources/Measure.xpm"
 #include "resources/polygon_icon.xpm"
 #include "resources/image_icon.xpm"
-
-extern void InitXmlResource();
-
-
-#ifdef _WINDOWS
-/* 
-
-	wx bug on windows MSVC (debug configuration)
-	tip found on: http://onegazhang.spaces.live.com/Blog/cns!D5E642BC862BA286!480.entry
-
-*/
-#include <wx/apptrait.h>
-#if wxUSE_STACKWALKER && defined( __WXDEBUG__ )
-// silly workaround for the link error with debug configuration:
-// \src\common\appbase.cpp
-wxString wxAppTraitsBase::GetAssertStackTrace()
-{
-   return wxT("");
-}
-#endif
-#endif
 
 
 
@@ -266,9 +238,6 @@ LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_numberOfLayers(0), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 
 {
-        // Initialising resources ...
-        wxXmlResource::Get()->InitAllHandlers();
-        InitXmlResource();
 
         SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
 	// Couleur de fond grisee
