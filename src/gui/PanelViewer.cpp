@@ -321,6 +321,7 @@ wxMenuBar* PanelViewer::GetMenuBar()
 
 bool PanelViewer::InitToolbar()
 {
+#ifndef _WINDOWS
 	if ( !m_toolBar )
                 m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
@@ -359,7 +360,7 @@ bool PanelViewer::InitToolbar()
 
 	m_toolBar->Realize();
 
-
+#endif
 	return true;
 }
 
