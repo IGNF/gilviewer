@@ -92,7 +92,7 @@ public:
 	DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
 	void OnMouseWheel(wxMouseEvent& event);
 
-	wxToolBar* GetToolBar();
+	//wxToolBar* GetToolBar();
 	wxMenuBar* GetMenuBar();
 	bool InitToolbar();
 
@@ -156,7 +156,7 @@ protected:
 	bool GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const;
 	bool GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double&j) const;
 
-	wxToolBar* m_toolBar;
+	//wxToolBar* m_toolBar;
 	wxMenuBar* m_menuBar;
 	wxMenu *m_menuMain;
 	bool m_mouseMovementStarted;

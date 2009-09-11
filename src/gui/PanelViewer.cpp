@@ -119,33 +119,37 @@ void PanelViewer::OnSize(wxSizeEvent &e)
 
 void PanelViewer::SetModeNavigation()
 {
-	m_mode = MODE_NAVIGATION; m_toolBar->ToggleTool(ID_MODE_NAVIGATION, true); m_menuMain->Check(ID_MODE_NAVIGATION, true);
+	m_mode = MODE_NAVIGATION; 
+	//m_toolBar->ToggleTool(ID_MODE_NAVIGATION, true); 
+	m_menuMain->Check(ID_MODE_NAVIGATION, true);
 }
 
 void PanelViewer::SetModeCapture()
 {
-	m_mode = MODE_CAPTURE; m_toolBar->ToggleTool(ID_MODE_CAPTURE, true); m_menuMain->Check(ID_MODE_CAPTURE, true);
+	m_mode = MODE_CAPTURE; 
+	//m_toolBar->ToggleTool(ID_MODE_CAPTURE, true); 
+	m_menuMain->Check(ID_MODE_CAPTURE, true);
 }
 
 
 void PanelViewer::SetModeGeometryMoving()
 {
 	m_mode = MODE_GEOMETRY_MOVING;
-	m_toolBar->ToggleTool(ID_MODE_GEOMETRY_MOVING, true);
+	//m_toolBar->ToggleTool(ID_MODE_GEOMETRY_MOVING, true);
 	m_menuMain->Check(ID_MODE_GEOMETRY_MOVING, true);
 }
 
 void PanelViewer::SetModeEdition()
 {
 	m_mode = MODE_EDITION;
-	m_toolBar->ToggleTool(ID_MODE_EDITION, true);
+	//m_toolBar->ToggleTool(ID_MODE_EDITION, true);
 	m_menuMain->Check(ID_MODE_EDITION, true);
 }
 
 void PanelViewer::SetModeSelection()
 {
 	m_mode = MODE_SELECTION;
-	m_toolBar->ToggleTool(ID_MODE_SELECTION, true);
+	//m_toolBar->ToggleTool(ID_MODE_SELECTION, true);
 	m_menuMain->Check(ID_MODE_SELECTION, true);
 }
 
@@ -155,7 +159,8 @@ void PanelViewer::SetGeometryNull()
 	m_ghostLayer.m_drawCircle = false;
 	m_ghostLayer.m_drawRectangleSelection = false;
 
-	m_geometry = GEOMETRY_NULL; m_toolBar->ToggleTool(ID_GEOMETRY_NULL, true);
+	m_geometry = GEOMETRY_NULL; 
+	//m_toolBar->ToggleTool(ID_GEOMETRY_NULL, true);
 	m_menuMain->Check(ID_GEOMETRY_NULL, true);
 	Refresh();
 }
@@ -163,35 +168,35 @@ void PanelViewer::SetGeometryNull()
 void PanelViewer::SetGeometryPoint()
 {
 	m_geometry = GEOMETRY_POINT;
-	m_toolBar->ToggleTool(ID_GEOMETRY_POINT, true);
+	//m_toolBar->ToggleTool(ID_GEOMETRY_POINT, true);
 	m_menuMain->Check(ID_GEOMETRY_POINT, true);
 }
 
 void PanelViewer::SetGeometryCircle()
 {
 	m_geometry = GEOMETRY_CIRCLE;
-	m_toolBar->ToggleTool(ID_GEOMETRY_CIRCLE, true);
+	//m_toolBar->ToggleTool(ID_GEOMETRY_CIRCLE, true);
 	m_menuMain->Check(ID_GEOMETRY_CIRCLE, true);
 }
 
 void PanelViewer::SetGeometryRectangle()
 {
 	m_geometry = GEOMETRY_RECTANGLE;
-	m_toolBar->ToggleTool(ID_GEOMETRY_RECTANGLE, true);
+	//m_toolBar->ToggleTool(ID_GEOMETRY_RECTANGLE, true);
 	m_menuMain->Check(ID_GEOMETRY_RECTANGLE, true);
 }
 
 void PanelViewer::SetGeometryLine()
 {
 	m_geometry = GEOMETRY_LINE;
-	m_toolBar->ToggleTool(ID_GEOMETRY_LINE, true);
+	//m_toolBar->ToggleTool(ID_GEOMETRY_LINE, true);
 	m_menuMain->Check(ID_GEOMETRY_LINE, true);
 }
 
 void PanelViewer::SetGeometryPolygone()
 {
 	m_geometry = GEOMETRY_POLYGONE;
-	m_toolBar->ToggleTool(ID_GEOMETRY_POLYGONE, true);
+	//m_toolBar->ToggleTool(ID_GEOMETRY_POLYGONE, true);
 	m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
 }
 
@@ -208,7 +213,8 @@ ApplicationSettings* PanelViewer::GetApplicationSettings() const
 PanelViewer::PanelViewer(wxFrame* parent) :
 	wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
 	m_parent(parent),
-	m_toolBar(NULL), m_menuBar(NULL), m_menuMain(NULL),
+	//m_toolBar(NULL), 
+	m_menuBar(NULL), m_menuMain(NULL),
 	m_mouseMovementStarted(false), m_translationDrag(0,0),
 	// Construction des differentes fenetres liees au PanelViewer :
 	//		- layer control
@@ -309,10 +315,10 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 
 
 
-wxToolBar* PanelViewer::GetToolBar()
-{
-	return m_toolBar;
-}
+//wxToolBar* PanelViewer::GetToolBar()
+//{
+//	return m_toolBar;
+//}
 
 wxMenuBar* PanelViewer::GetMenuBar()
 {
