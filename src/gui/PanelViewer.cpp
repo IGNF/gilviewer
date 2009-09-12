@@ -327,8 +327,8 @@ wxMenuBar* PanelViewer::GetMenuBar()
 
 bool PanelViewer::InitToolbar()
 {
-#ifndef _WINDOWS
-	if ( !m_toolBar )
+
+/*	if ( !m_toolBar )
                 m_toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
 	// Creating an image list storing the toolbar icons
@@ -364,9 +364,9 @@ bool PanelViewer::InitToolbar()
 	m_toolBar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
 	m_toolBar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
 
-	m_toolBar->Realize();
+	m_toolBar->Realize();*/
 
-#endif
+
 	return true;
 }
 
