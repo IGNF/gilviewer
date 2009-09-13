@@ -61,13 +61,11 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}wrappers SRC_WRAPPERS)
 SET( ALL_VIEWER_SOURCES
      ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
 
-set( BUILD_SHARED_LIBS ON )
 
 #####################################
 ### Recherche des packages necessaires a la compilation ###
 #####################################
 #Find wxWidgets
-#set( wxWidgets_USE_STATIC OFF )
 if ( WIN32 )
 	FIND_PACKAGE(wxWidgets REQUIRED adv base core xml aui xrc html tiff jpeg png)
 	IF(wxWidgets_FOUND)
