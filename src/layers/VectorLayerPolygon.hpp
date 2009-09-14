@@ -8,7 +8,7 @@ GIL and wxWidgets.
 
 Homepage: 
 
-	http://launchpad.net/gilviewer
+	http://code.google.com/p/gilviewer
 	
 Copyright:
 	
