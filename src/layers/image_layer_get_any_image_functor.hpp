@@ -44,16 +44,75 @@ struct get_any_image_functor
 	result_type operator()(ViewT& src) const
 	{
 		gray8_image_t im( src.dimensions() );
-		//boost::gil::copy_pixels( src , view(im) );
+		boost::gil::copy_pixels( src , view(im) );
 		return result_type(new ImageLayer::usable_images_t(im));
 	}
 };
+
+// TODO : use boost pp to generate all that ...
 
 template <>
 get_any_image_functor::result_type get_any_image_functor::operator()<gray8_view_t>( gray8_view_t& src ) const
 {
 	gray8_image_t im( src.dimensions() );
 	boost::gil::copy_pixels( src , view(im) );
-	std::cout << "sdlhsdfmhj" << std::endl;
 	return result_type(new ImageLayer::usable_images_t(im));
 }
+
+/*
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<gray16_image_t>( gray16_image_t& src ) const
+{
+	gray16_image_t im( src.dimensions() );
+	boost::gil::copy_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<gray32_image_t>( gray32_image_t& src ) const
+{
+	gray32_image_t im( src.dimensions() );
+	boost::gil::copy_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<gray32F_image_t>( gray32F_image_t& src ) const
+{
+	gray32F_image_t im( src.dimensions() );
+	boost::gil::copy_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<gray64F_image_t>( gray64F_image_t& src ) const
+{
+	gray64F_image_t im( src.dimensions() );
+	boost::gil::copy_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<rgb8_image_t>( rgb8_image_t& src ) const
+{
+	rgb8_image_t im( src.dimensions() );
+	boost::gil::copy_and_convert_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<rgb16_image_t>( rgb16_image_t& src ) const
+{
+	rgb16_image_t im( src.dimensions() );
+	boost::gil::copy_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+
+template <>
+get_any_image_functor::result_type get_any_image_functor::operator()<rgb32_image_t>( rgb32_image_t& src ) const
+{
+	rgb32_image_t im( src.dimensions() );
+	boost::gil::copy_pixels( src , view(im) );
+	return result_type(new ImageLayer::usable_images_t(im));
+}
+*/

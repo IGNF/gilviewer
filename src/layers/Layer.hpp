@@ -87,7 +87,7 @@ public:
 	virtual std::string GetInfos() const {return m_infos;}
 	virtual void Save(const std::string &name) {}
 
-	virtual ptrLayerType crop( int x0 , int y0 , int width , int height ) = 0;
+	virtual ptrLayerType crop( int x0 , int y0 , int width , int height , std::string filename = "" ) = 0;
 
 	void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
 	void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }

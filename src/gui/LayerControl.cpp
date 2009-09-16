@@ -82,8 +82,6 @@ Authors:
 #include "io/XMLDisplayConfigurationIO.hpp"
 #include "tools/Orientation2D.h"
 
-#include "resources/eye.xpm"
-#include "resources/Measure.xpm"
 #include "resources/polygon_icon.xpm"
 #include "resources/image_icon.xpm"
 
