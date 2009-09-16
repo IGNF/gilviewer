@@ -106,7 +106,7 @@ public:
     void GetInfos();
     virtual void Save(const std::string &name);
 
-    virtual ptrLayerType crop( int x0 , int y0 , int width , int height ) { return ptrLayerType(); }
+    virtual ptrLayerType crop( int x0 , int y0 , int width , int height , std::string filename = "" ) { return ptrLayerType(); }
 
     virtual void PointsColour( const wxColour &colour , bool update = true );
 	virtual wxColour PointsColour();

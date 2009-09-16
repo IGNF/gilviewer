@@ -57,6 +57,7 @@ Authors:
 #include <wx/menu.h>
 #include <wx/log.h>
 #include <wx/statusbr.h>
+#include <wx/filedlg.h>
 
 #include "layers/VectorLayerGhost.h"
 #include "layers/VectorLayer.hpp"
@@ -65,18 +66,11 @@ Authors:
 #include "gui/LayerControl.hpp"
 #include "gui/define_id.hpp"
 
-#include "resources/icone_move16_16.xpm"
-#include "resources/snapshot.xpm"
-#include "resources/mActionToggleEditing.xpm"
-
-#include "resources/capture_point_16x16.xpm"
-#include "resources/capture_line_16x16.xpm"
-#include "resources/capture_rectangle_16x16.xpm"
-#include "resources/capture_polygon_16x16.xpm"
-#include "resources/geometry_moving_16x16.xpm"
-#include "resources/select_16x16.xpm"
-
 #include "gui/PanelManager.h"
+
+//#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
+//#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
+//#include <boost/gil/extension/io/png_dynamic_io.hpp>
 
 
 BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
@@ -95,6 +89,8 @@ ADD_ITKVIEWER_EVENTS_TO_TABLE(PanelViewer)
 END_EVENT_TABLE()
 
 IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(PanelViewer,this)
+
+using namespace std;
 
 void PanelViewer::OnSize(wxSizeEvent &e)
 {
@@ -274,6 +270,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	m_menuMain->AppendRadioItem(ID_MODE_GEOMETRY_MOVING, _("Move"));
 	m_menuMain->AppendRadioItem(ID_MODE_EDITION, _("Edition"));
 	m_menuMain->AppendRadioItem(ID_MODE_SELECTION, _("Selection"));
+	m_menuMain->AppendRadioItem(ID_SINGLE_CROP, _("Crop"));
 
 	m_menuMain->AppendSeparator();
 	m_menuMain->Append(wxID_ABOUT, _("About"));
@@ -1188,10 +1185,51 @@ void PanelViewer::SingleCrop()
 			const VectorLayerGhost &ghost = PanelManager::Instance()->GetPanelsList()[0]->GetVectorLayerGhost();
 			wxPoint p1 = ghost.m_rectangleSelection.first;
 			wxPoint p2 = ghost.m_rectangleSelection.second;
-			this->AddLayer( (*it)->crop(p1.x,p1.y,std::abs(p2.x-p1.x),std::abs(p2.y-p1.y)) );
-			//this->m_layerControl->Layers().back()->ZoomFactor( (*it)->ZoomFactor() );
-			this->m_layerControl->Layers().back()->TranslationX(p1.x);
-			this->m_layerControl->Layers().back()->TranslationY(p1.y);
+			std::string layer_filename = (*it)->Filename();
+			std::string ext = boost::filesystem::extension(layer_filename);
+			std::string layer_base_filename = boost::filesystem::basename(layer_filename) + ext;
+			std::cout << "layer_base_filename = " << layer_base_filename << std::endl;
+			
+			
+			
+			
+			
+			
+	boost::shared_ptr<VectorLayer> vl = boost::dynamic_pointer_cast<VectorLayer>(*it);
+	wxString wildcard;
+	if (vl) // calque vectoriel
+	{
+		wildcard << _("Shapefile (*.shp)|*.shp");
+	}
+	else // calque image
+	{
+		wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
+		wildcard << _("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
+		wildcard << _("PNG (*.png)|*.png|");
+		wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
+	}
+	wxString default_crop_filename;
+	default_crop_filename << _("crop_");
+	default_crop_filename = default_crop_filename + wxString(layer_base_filename.c_str(), *wxConvCurrent);
+	wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), _(""), default_crop_filename , wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
+	if (fileDialog->ShowModal() == wxID_OK)
+	{
+		try
+		{
+			// TODO : (minx,miny) - (width,height)
+			Layer::ptrLayerType l = (*it)->crop(std::min(p1.x,p2.x),std::min(p1.y,p2.y),std::abs(p2.x-p1.x),std::abs(p2.y-p1.y) , string( fileDialog->GetFilename().To8BitData() ));
+		}
+		catch( std::exception &err )
+		{
+			std::ostringstream oss;
+			oss << "File : " << __FILE__ << "\n";
+			oss << "Function : " << __FUNCTION__ << "\n";
+			oss << "Line : " << __LINE__ << "\n";
+			oss << err.what();
+			wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+		}
+	}
+				
 			break;
 		}
 	}

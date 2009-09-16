@@ -380,13 +380,23 @@ string ImageLayer::GetPixelValue(const int i, const int j) const
 	return oss.str();
 }
 
-ImageLayer::ptrLayerType ImageLayer::crop( int x0 , int y0 , int width , int height )
+ImageLayer::ptrLayerType ImageLayer::crop( int x0 , int y0 , int width , int height , string filename )
 {
 	usable_views_t crop_view = subimage_view(view(*m_img), x0 , y0 , width , height );
-	tiff_write_view( "test.tif" , crop_view );
+	
+	if ( filename != "" )
+	{
+		string ext = boost::filesystem::extension(filename);
+		if ( ext == ".tiff" || ext == ".tif" || ext == ".TIF" || ext == ".TIFF" )
+			tiff_write_view( filename.c_str() , crop_view );
+		else if ( ext == ".jpeg" || ext == ".jpg" || ext == ".JPEG" || ext == ".JPG" )
+			jpeg_write_view( filename.c_str() , crop_view );
+		else if ( ext == ".png" || ext == ".PNG" )
+			png_write_view( filename.c_str() , crop_view );
+	}
+	
+	// TODO : only works for gray8 images ...
 	boost::shared_ptr<usable_images_t> any_img = apply_operation( crop_view , get_any_image_functor() );
-
-	cout << "iuyiuyiuy" << endl;
 
 	return boost::shared_ptr<ImageLayer> ( new ImageLayer(any_img) );
 }

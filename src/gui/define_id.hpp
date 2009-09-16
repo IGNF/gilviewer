@@ -97,6 +97,7 @@ enum
 	ID_MODE_EDITION, //modification de primitives existantes
 	ID_MODE_CAPTURE, //saisie de nouvelles primitives
 	ID_MODE_SELECTION, //sélection raster
+	ID_MODE_CROP, //crop raster
 
 	//Boutons pour changer de géométrie courante
 	ID_GEOMETRY_NULL,
