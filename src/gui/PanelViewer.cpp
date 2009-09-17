@@ -68,10 +68,6 @@ Authors:
 
 #include "gui/PanelManager.h"
 
-//#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
-//#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
-//#include <boost/gil/extension/io/png_dynamic_io.hpp>
-
 
 BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
 EVT_MOTION(PanelViewer::OnMouseMove)
@@ -85,10 +81,10 @@ EVT_MOUSEWHEEL(PanelViewer::OnMouseWheel)
 EVT_KEY_DOWN(PanelViewer::OnKeydown)
 EVT_PAINT(PanelViewer::OnPaint)
 EVT_SIZE(PanelViewer::OnSize)
-ADD_ITKVIEWER_EVENTS_TO_TABLE(PanelViewer)
+ADD_GILVIEWER_EVENTS_TO_TABLE(PanelViewer)
 END_EVENT_TABLE()
 
-IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(PanelViewer,this)
+IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(PanelViewer,this)
 
 using namespace std;
 

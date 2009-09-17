@@ -41,7 +41,6 @@ Authors:
 
 
 #include "layers/Layer.hpp"
-#include "convenient/MacrosITKViewer.hpp"
 #include "gui/BasicViewerFrame.h"
 
 #include "GilViewer.h"
@@ -65,7 +64,6 @@ public:
 private:
 	PanelViewer* m_drawPane;
 
-	//DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
 	DECLARE_EVENT_TABLE();
 };
 

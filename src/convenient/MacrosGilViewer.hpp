@@ -36,8 +36,8 @@ Authors:
  
 ***********************************************************************/
 
-#ifndef MACROSITKVIEWER_HPP_
-#define MACROSITKVIEWER_HPP_
+#ifndef MACROSGILVIEWER_HPP_
+#define MACROSGILVIEWER_HPP_
 
 /**
  * Un ensemble de macros pour faciliter la vie de l'utilisateur ...
@@ -47,7 +47,7 @@ Authors:
  * Comme son nom l'indique, cette macro permet d'ajouter les evenements "classiques" de la barre d'outils a la table d'evenements.
  * Voir FrameViewer.cpp pour un exemple d'utilisation
  */
-#define ADD_ITKVIEWER_EVENTS_TO_TABLE(classname) \
+#define ADD_GILVIEWER_EVENTS_TO_TABLE(classname) \
 	EVT_TOOL(wxID_NEW, classname::OnNewLayer) \
 	EVT_TOOL(wxID_OPEN, classname::OnOpenLayer) \
 	EVT_TOOL(ID_BASIC_SNAPSHOT, classname::OnSnapShot) \
@@ -72,7 +72,7 @@ Authors:
  * Comme son nom l'indique, cette macro permet de declarer les evenements "classiques" de la table d'evenements.
  * Voir FrameViewer.hpp pour un exemple d'utilisation
  */
-#define DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE() \
+#define DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE() \
 	void OnOpenLayer(wxCommandEvent& event); \
 	void OnNewLayer(wxCommandEvent& event); \
 	void OnSnapShot(wxCommandEvent& event); \
@@ -95,7 +95,7 @@ Authors:
  * Comme son nom l'indique, cette macro permet d'implementer les evenements "classiques" de la table d'evenements.
  * Voir FrameViewer.cpp pour un exemple d'utilisation
  */
-#define IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(classname,variablePanelViewer) \
+#define IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(classname,variablePanelViewer) \
 	void classname::OnOpenLayer(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->GetLayerControl()->OnOpenLayer(event); \
@@ -177,4 +177,4 @@ Authors:
 	}
 
 
-#endif /* MACROSITKVIEWER_HPP_ */
+#endif /* MACROSGILVIEWER_HPP_ */
