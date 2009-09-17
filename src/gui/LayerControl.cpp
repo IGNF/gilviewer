@@ -564,8 +564,8 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
 	wildcard << _("Shapefile (*.shp)|*.shp;*.SHP|");
 	wildcard << _("CustomFormat (*)|*");
 	wxString str;
-	wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
-	wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), str, _(""), wildcard, wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
+	//wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
+	wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), _(""), _(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
 
 	if (fileDialog->ShowModal() == wxID_OK)
 	{
@@ -573,7 +573,7 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
 		fileDialog->GetPaths(names);
 		AddLayersFromFiles(names);
 	}
-	fileDialog->Destroy();
+	//fileDialog->Destroy();
 	m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 
 	Layout();
