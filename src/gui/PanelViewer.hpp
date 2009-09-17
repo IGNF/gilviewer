@@ -44,7 +44,7 @@ Authors:
 
 #include "layers/Layer.hpp"
 
-#include "convenient/MacrosITKViewer.hpp"
+#include "convenient/MacrosGilViewer.hpp"
 
 class ApplicationSettings;
 class LayerControl;
@@ -75,7 +75,7 @@ public:
 	ApplicationSettings* GetApplicationSettings() const;
 
 	// On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
-	DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
+	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 	void OnMouseWheel(wxMouseEvent& event);
 
 	//wxToolBar* GetToolBar();
