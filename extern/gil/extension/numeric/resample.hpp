@@ -12,7 +12,7 @@
 ///modif Adrien : bind au lieu de lambda/bind
 #include <boost/bind.hpp>
 
-#include "../../extension/dynamic_image/dynamic_image_all.hpp"
+#include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 #include "affine.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////

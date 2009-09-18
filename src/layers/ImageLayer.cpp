@@ -45,8 +45,8 @@ Authors:
 
 #include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
-#include <boost/gil/extension/numeric/sampler.hpp>
-#include <boost/gil/extension/numeric/resample.hpp>
+#include "extern/gil/extension/numeric/sampler.hpp"
+#include "extern/gil/extension/numeric/resample.hpp"
 #include <boost/gil/algorithm.hpp>
 
 #include <wx/dc.h>
