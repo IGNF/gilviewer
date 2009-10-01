@@ -786,7 +786,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 
 		double newZoomFactor = m_ori.Step() / oriLayer.Step();
 		double translationInitX = (oriLayer.OriginX() - m_ori.OriginX()) / oriLayer.Step();//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
-		double translationInitY = (oriLayer.OriginY() - m_ori.OriginY()) / oriLayer.Step();//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
+		double translationInitY = -(oriLayer.OriginY() - m_ori.OriginY()) / oriLayer.Step();//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
 
 		layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
 		layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);//* layer->ZoomFactor());
