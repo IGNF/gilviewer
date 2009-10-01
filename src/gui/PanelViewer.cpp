@@ -398,7 +398,7 @@ void PanelViewer::OnPaint(wxPaintEvent& evt)
 	{
 		//alias
 		Layer::ptrLayerType firstLayer = *m_layerControl->begin();
-		GetLayerControl()->m_ghostLayer->Draw(dc, static_cast<int> (m_translationDrag.x), static_cast<int> (m_translationDrag.y), false, firstLayer->ZoomFactor(), firstLayer->TranslationX(), firstLayer->TranslationY());
+		GetLayerControl()->m_ghostLayer->Draw(dc, static_cast<int> (m_translationDrag.x), static_cast<int> (m_translationDrag.y), false, firstLayer->ZoomFactor(), firstLayer->TranslationX(), firstLayer->TranslationY(), firstLayer->Resolution());
 	}
 }
 
@@ -534,7 +534,7 @@ void PanelViewer::OnMouseWheel(wxMouseEvent& event)
 	pConfig->Read(_T("/Options/Zoom"), &zoom, 0.5);
 	pConfig->Read(_T("/Options/Dezoom"), &dezoom, 2.);
 	int deltaMouseWheel = event.GetWheelRotation();
-	float zoomFactor;
+	double zoomFactor;
 	if (deltaMouseWheel < 0)
 		zoomFactor = dezoom;
 	else
@@ -766,14 +766,14 @@ void PanelViewer::UpdateStatusBar(const int i, const int j)
 	}
 }
 
-void PanelViewer::Zoom(float zoomFactor, wxMouseEvent &event)
+void PanelViewer::Zoom(double zoomFactor, wxMouseEvent &event)
 {
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
 	{
 		if ((*it)->IsTransformable())
 		{
-			(*it)->TranslationX((*it)->TranslationX() - event.m_x * (*it)->ZoomFactor() + event.m_x * (*it)->ZoomFactor() * zoomFactor);
-			(*it)->TranslationY((*it)->TranslationY() - event.m_y * (*it)->ZoomFactor() + event.m_y * (*it)->ZoomFactor() * zoomFactor);
+			(*it)->TranslationX((*it)->TranslationX() + event.m_x * (*it)->ZoomFactor() *( zoomFactor - 1));
+			(*it)->TranslationY((*it)->TranslationY() + event.m_y * (*it)->ZoomFactor() *( zoomFactor - 1));
 			(*it)->ZoomFactor((*it)->ZoomFactor() * zoomFactor);
 			(*it)->HasToBeUpdated(true);
 		}

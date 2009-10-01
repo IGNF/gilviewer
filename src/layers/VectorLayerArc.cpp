@@ -44,7 +44,7 @@ Authors:
 
 #include "layers/VectorLayerArc.hpp"
 
-inline void limite(float &x)
+inline void limite(double &x)
 {
 	if (x< -500)
 		x = -500;
@@ -64,7 +64,7 @@ void GenericVectorLayerArc::Clear()
 	m_numberOfEntities = 0;
 }
 
-void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY)
+void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
 {
 	wxPen penColour( m_arcsColour , m_width , m_penStyle );
 	dc.SetPen( penColour );
@@ -72,10 +72,13 @@ void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparen
 		// On met en place 2 methodes pour eviter de parcourir 2 fois les elements :
 		//     - la premiere avec les etiquettes
 		//     - la seconde sans les etiquettes
+
+		const double delta = 0.5 * resolution;
+
 		if ( FlagDBF() && m_drawAttribute > 0 )
 		{
 			const std::vector < wxString > & tab_att = m_dbfAttributesValues[m_drawAttribute-1];
-			float sizex = 0, sizey = 0;
+			double sizex = 0, sizey = 0;
 			if (tab_att[0].length() != 0)
 			{
 				wxSize text_size = dc.GetTextExtent(tab_att[0]);
@@ -87,20 +90,20 @@ void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparen
 				const simpleArcType &local_tab = m_arcs[i];
 				for (unsigned int j=0;j<local_tab.size()-1;++j)
 				{
-					float posx1 = (0.5+local_tab[j].first+translationX)/zoomFactor;
+					double posx1 = (delta +local_tab[j].first+translationX)/zoomFactor;
 					limite(posx1);
-					float posy1 = (0.5+m_flagPRJ*local_tab[j].second+translationY)/zoomFactor ;
+					double posy1 = (delta+m_flagPRJ*local_tab[j].second+translationY)/zoomFactor ;
 					limite(posy1);
-					float posx2 = (0.5+local_tab[j+1].first+translationX)/zoomFactor;
+					double posx2 = (delta+local_tab[j+1].first+translationX)/zoomFactor;
 					limite(posx2);
-					float posy2 = (0.5+m_flagPRJ*local_tab[j+1].second+translationY)/zoomFactor;
+					double posy2 = (delta+m_flagPRJ*local_tab[j+1].second+translationY)/zoomFactor;
 					limite(posy2);
 					dc.DrawLine( posx1, posy1, posx2, posy2);
 				}
-				float posx = ((0.5+local_tab[0].first+translationX)/zoomFactor+(0.5+local_tab[local_tab.size()-1].first+translationX)/zoomFactor)/2.;
-				float posy = ((0.5+m_flagPRJ*local_tab[0].second+translationY)/zoomFactor + (0.5+m_flagPRJ*local_tab[local_tab.size()-1].second+translationY)/zoomFactor)/2.;
+				double posx = ((delta+local_tab[0].first+translationX)/zoomFactor+(delta+local_tab[local_tab.size()-1].first+translationX)/zoomFactor)/2.;
+				double posy = ((delta+m_flagPRJ*local_tab[0].second+translationY)/zoomFactor + (delta+m_flagPRJ*local_tab[local_tab.size()-1].second+translationY)/zoomFactor)/2.;
 
-				float text_size_x = sizex * tab_att[i].length();
+				double text_size_x = sizex * tab_att[i].length();
 				if ((posx +text_size_x > 0) && (posy + sizey>0) && (posx < dc.GetSize().GetWidth()) && (posy < dc.GetSize().GetHeight()))
 					dc.DrawText( tab_att[i] , posx,  posy);
 			}
@@ -111,13 +114,13 @@ void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparen
 				const simpleArcType &local_tab = m_arcs[i];
 				for (unsigned int j=0;j<local_tab.size()-1;++j)
 				{
-					float posx1 = (0.5+local_tab[j].first+translationX)/zoomFactor;
+					double posx1 = (delta+local_tab[j].first+translationX)/zoomFactor;
 					limite(posx1);
-					float posy1 = (0.5+m_flagPRJ*local_tab[j].second+translationY)/zoomFactor ;
+					double posy1 = (delta+m_flagPRJ*local_tab[j].second+translationY)/zoomFactor ;
 					limite(posy1);
-					float posx2 = (0.5+local_tab[j+1].first+translationX)/zoomFactor;
+					double posx2 = (delta+local_tab[j+1].first+translationX)/zoomFactor;
 					limite(posx2);
-					float posy2 = (0.5+m_flagPRJ*local_tab[j+1].second+translationY)/zoomFactor;
+					double posy2 = (delta+m_flagPRJ*local_tab[j+1].second+translationY)/zoomFactor;
 					limite(posy2);
 					dc.DrawLine( posx1, posy1, posx2, posy2);
 				}

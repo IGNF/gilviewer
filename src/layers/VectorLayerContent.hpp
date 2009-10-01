@@ -69,7 +69,7 @@ public:
 	VectorLayerContent();
     virtual ~VectorLayerContent() {};
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY) = 0;
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution) = 0;
 
     inline SHPHandle GetHandle() { return m_SHPHandle; }
     void SetHandle( const SHPHandle &handle ) { m_SHPHandle = handle; }

@@ -784,9 +784,9 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 
 		const Orientation2D &oriLayer = layer->Orientation();
 
-		float newZoomFactor = m_ori.Step() / oriLayer.Step();
-		float translationInitX = static_cast<float> ((oriLayer.OriginX() - m_ori.OriginX()) / oriLayer.Step());//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
-		float translationInitY = -static_cast<float> ((oriLayer.OriginY() - m_ori.OriginY()) / oriLayer.Step());//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
+		double newZoomFactor = m_ori.Step() / oriLayer.Step();
+		double translationInitX = (oriLayer.OriginX() - m_ori.OriginX()) / oriLayer.Step();//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
+		double translationInitY = (oriLayer.OriginY() - m_ori.OriginY()) / oriLayer.Step();//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
 
 		layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
 		layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);//* layer->ZoomFactor());
@@ -798,16 +798,22 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	{
 		::wxLogMessage(_("Initialisation de la position du calque vecteur en accord avec l'ori globale !"));
 
-		float translationInitX = static_cast<float> (-m_ori.OriginX());// * m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationX();
-		float translationInitY = -static_cast<float> (-m_ori.OriginY()); //* m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationY();
+		double translationInitX =-m_ori.OriginX();// * m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationX();
+		double translationInitY = m_ori.OriginY(); //* m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationY();
 
-		float newZoomFactor = m_ori.Step();
+		double newZoomFactor = m_ori.Step();
 		layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
 		layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);
 		layer->TranslationY(translationInitY + m_layers[0]->TranslationY() * newZoomFactor);
 	}
 	layer->SetDefaultDisplayParameters();
 	layer->notifyLayerSettingsControl_();
+
+
+	if(m_isOrientationSet)
+		layer->Resolution(m_ori.Step());
+	else
+		layer->Resolution(1.);
 
 	Refresh();
 	m_basicDrawPane->Refresh();

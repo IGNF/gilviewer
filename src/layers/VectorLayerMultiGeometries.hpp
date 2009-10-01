@@ -79,7 +79,7 @@ public:
 	VectorLayerMultiGeometries();
 	virtual ~VectorLayerMultiGeometries();
 
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY);
+	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
 	virtual void Save( const std::string &name ) {};
 
 	void AddCircle( double x , double y , double radius );

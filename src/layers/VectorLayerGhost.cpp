@@ -48,25 +48,26 @@ VectorLayerGhost::VectorLayerGhost(bool isCarto) :
 {
 }
 
-wxPoint VectorLayerGhost::Transfo(const wxPoint &pt, const float zoomFactor, const float translationX, const float translationY)
+wxPoint VectorLayerGhost::Transfo(const wxPoint &pt, const double zoomFactor, const double translationX, const double translationY, const double resolution)
 {
-	return wxPoint((0.5+pt.x + translationX ) / zoomFactor, (0.5+pt.y +translationY)/zoomFactor);
+	const double delta = 0.5;// * resolution;
+	return wxPoint((delta+pt.x + translationX ) / zoomFactor, (delta+pt.y +translationY)/zoomFactor);
 }
 
-void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY)
+void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
 {
 	if (m_drawCircle)
 	{
 		dc.SetPen(m_penCircle);
 		dc.SetBrush(m_brushCircle);
-		dc.DrawCircle(Transfo(m_circle.first, zoomFactor, translationX, translationY), m_circle.second/zoomFactor);
+		dc.DrawCircle(Transfo(m_circle.first, zoomFactor, translationX, translationY, resolution), m_circle.second/zoomFactor);
 	}
 
 	// m_pointPosition
 	if (m_drawPointPosition)
 	{
 		dc.SetPen(m_penPoint);
-		dc.DrawLine(Transfo(m_pointPosition, zoomFactor, translationX, translationY) , Transfo(m_pointPosition, zoomFactor, translationX, translationY));
+		dc.DrawLine(Transfo(m_pointPosition, zoomFactor, translationX, translationY, resolution) , Transfo(m_pointPosition, zoomFactor, translationX, translationY, resolution));
 	}
 
 	// m_rectangleSelection
@@ -76,9 +77,10 @@ void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, co
 		// p0 ------- p1
 		// |		  |
 		// p2 ------- p3
+
 		//
-		wxPoint p0(Transfo(m_rectangleSelection.first, zoomFactor, translationX, translationY) );
-		wxPoint p3(Transfo(m_rectangleSelection.second, zoomFactor, translationX, translationY) );
+		wxPoint p0(Transfo(m_rectangleSelection.first, zoomFactor, translationX -0.5, translationY -0.5, resolution) );
+		wxPoint p3(Transfo(m_rectangleSelection.second, zoomFactor, translationX +0.5, translationY +0.5, resolution) );
 		wxPoint p1(p0.x, p3.y);
 		wxPoint p2(p3.x, p0.y);
 
@@ -93,8 +95,8 @@ void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, co
 		dc.SetPen(m_penLine);
 		unsigned int  i;
 		for (i=0;i<m_linePoints.size()-1;++i)
-			dc.DrawLine(Transfo(m_linePoints[i], zoomFactor, translationX, translationY),Transfo(m_linePoints[i+1], zoomFactor, translationX, translationY));
-		dc.DrawLine(Transfo(m_linePoints[i], zoomFactor, translationX, translationY),Transfo(m_linePoints.back(), zoomFactor, translationX, translationY));
+			dc.DrawLine(Transfo(m_linePoints[i], zoomFactor, translationX, translationY, resolution),Transfo(m_linePoints[i+1], zoomFactor, translationX, translationY, resolution));
+		dc.DrawLine(Transfo(m_linePoints[i], zoomFactor, translationX, translationY, resolution),Transfo(m_linePoints.back(), zoomFactor, translationX, translationY, resolution));
 	}
 
 }

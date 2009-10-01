@@ -62,8 +62,9 @@ void GenericVectorLayerPolygon::Clear()
 	m_numberOfEntities = 0;
 }
 
-void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY)
+void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
 {
+	const double delta = 0.5 * resolution;
 	wxPen penColour( m_ringsColour , m_ringsWidth , m_penStyle );
 	penColour.SetWidth(m_ringsWidth);
 	wxBrush brushColour( m_shapesColour , m_brushStyle );
@@ -81,8 +82,8 @@ void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transp
 			{
 				for (unsigned int j=0;j<m_wxpolygons[i].size();++j)
 				{
-					m_wxpolygons[i][j].x = (0.5+m_polygons[i][j].first + translationX ) / zoomFactor;
-					m_wxpolygons[i][j].y = (0.5+m_flagPRJ*m_polygons[i][j].second + translationY ) / zoomFactor;
+					m_wxpolygons[i][j].x = (delta+m_polygons[i][j].first + translationX ) / zoomFactor;
+					m_wxpolygons[i][j].y = (delta+m_flagPRJ*m_polygons[i][j].second + translationY ) / zoomFactor;
 				}
 				dc.DrawPolygon( m_wxpolygons[i].size() , &(m_wxpolygons[i].front()) );
 				dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i] , m_wxpolygons[i][0].x , m_wxpolygons[i][0].y );
@@ -94,8 +95,8 @@ void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transp
 			{
 				for (unsigned int j=0;j<m_wxpolygons[i].size();++j)
 				{
-					m_wxpolygons[i][j].x = (0.5+m_polygons[i][j].first + translationX ) / zoomFactor;
-					m_wxpolygons[i][j].y = (0.5+m_flagPRJ*m_polygons[i][j].second + translationY ) / zoomFactor;
+					m_wxpolygons[i][j].x = (delta+m_polygons[i][j].first + translationX ) / zoomFactor;
+					m_wxpolygons[i][j].y = (delta+m_flagPRJ*m_polygons[i][j].second + translationY ) / zoomFactor;
 				}
 				dc.DrawPolygon( m_wxpolygons[i].size() , &(m_wxpolygons[i].front()) );
 			}

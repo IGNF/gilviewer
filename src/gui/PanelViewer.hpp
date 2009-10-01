@@ -205,7 +205,7 @@ protected:
 
 	void OnQuit(wxCommandEvent& event);
 
-	void Zoom(float zoomFactor, wxMouseEvent &event);
+	void Zoom(double zoomFactor, wxMouseEvent &event);
 
 	void UpdateIfTransformable();
 

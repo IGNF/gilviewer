@@ -472,7 +472,7 @@ void VectorLayer::Save(const std::string &name)
 void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 {
 	// On draw les geometries
-	m_layerContent->Draw(dc, x, y, transparent, ZoomFactor(), TranslationX(), TranslationY());
+	m_layerContent->Draw(dc, x, y, transparent, ZoomFactor(), TranslationX(), TranslationY(), Resolution());
 	// ... puis le texte si besoin ...
 	if ( m_isTextVisible )
 	{

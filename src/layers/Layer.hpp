@@ -99,6 +99,9 @@ public:
     virtual void TranslationY(const double dy) { m_translationY = dy; }
     virtual inline double TranslationY() const { return m_translationY; }
 
+    virtual void Resolution(const double r) { m_resolution = r; }
+    virtual inline double Resolution() const { return m_resolution; }
+
 	virtual void HasOri( const bool hasOri ) { m_hasOri = hasOri; }
 	virtual bool HasOri() { return m_hasOri; }
 	virtual void Orientation(const Orientation2D &orientation)  {}
@@ -179,6 +182,7 @@ public:
 	boost::function<void ()> notifyLayerControl_;
 	boost::function<void ()> notifyLayerSettingsControl_;
 
+
 protected:
 	bool m_isVisible;
 	bool m_isTransformable;
@@ -189,8 +193,9 @@ protected:
 	std::string m_filename;
 
 	//gestion de la geometrie
-	float m_zoomFactor;
-	float m_translationX, m_translationY;
+	double m_zoomFactor;
+	double m_translationX, m_translationY;
+	double m_resolution;
 
 	//orientation (possible que pour les calques images)
 	Orientation2D m_ori;

@@ -55,7 +55,7 @@ class VectorLayerGhost
 		VectorLayerGhost( bool isCarto = false );
 		virtual ~VectorLayerGhost() {}
 
-		virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY);
+		virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
 
 		wxPoint m_pointPosition;
 		std::pair< wxPoint , wxPoint > m_rectangleSelection;
@@ -77,7 +77,7 @@ class VectorLayerGhost
 		wxPen m_penPoint, m_penRectangle, m_penCircle, m_penLine;
 		wxBrush m_brushRectangle, m_brushCircle;
 
-		inline wxPoint Transfo(const wxPoint &pt, const float zoomFactor, const float translationX, const float translationY);
+		inline wxPoint Transfo(const wxPoint &pt, const double zoomFactor, const double translationX, const double translationY, const double resolution);
 };
 
 #endif /*VECTORLAYERGENERIC_H_*/

@@ -53,7 +53,7 @@ public:
 	typedef std::vector< simplePointType > simplePolygonRingType;
 	typedef std::vector< wxPoint > simplewxPolygonRingType;
 
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY);
+	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
 
 	virtual void PolygonsRingsColour( const wxColour &colour ) { m_ringsColour = colour; }
 	virtual wxColour PolygonsRingsColour() { return m_ringsColour; }

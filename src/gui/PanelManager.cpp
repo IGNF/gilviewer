@@ -43,13 +43,11 @@ Authors:
 
 PanelManagerModel::PanelManagerModel()
 {
-	// TODO Auto-generated constructor stub
 
 }
 
 PanelManagerModel::~PanelManagerModel()
 {
-	// TODO Auto-generated destructor stub
 }
 
 const PanelManagerModel::ArrayOfPanels & PanelManagerModel::GetPanelsList()

@@ -184,11 +184,64 @@ inline int iRound(const T x)
 	return static_cast<int>(floor(x + 0.5));
 }
 
+
+struct screen_image_functor
+{
+	typedef void result_type;
+	screen_image_functor( dev3n8_view_t &screen_view, channel_converter_functor cc, double z, double tx, double ty, gray8_view_t& canal_alpha) :
+		m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc), m_zoomFactor(z), m_translationX(tx), m_translationY(ty)
+	{
+	}
+
+	template <typename ViewT>
+	result_type operator()( const ViewT& src ) const
+	{
+
+		dev3n8_pixel_t blank;
+		at_c<0>(blank) = 0;
+		at_c<1>(blank) = 0;
+		at_c<2>(blank) = 0;
+
+		fill_pixels(m_screen_view, blank);
+
+
+		//TODO to be optimized ?
+
+		for (std::ptrdiff_t y=0; y < m_screen_view.height(); ++y)
+		{
+			int yb = y*m_zoomFactor - m_translationY;
+
+			if(yb < 0 || yb >= src.height())
+				continue;
+
+			dev3n8_view_t::x_iterator screen_it = m_screen_view.row_begin(y);
+			gray8_view_t::x_iterator alpha_it = m_canal_alpha.row_begin(y);
+			typename ViewT::x_iterator src_it = src.row_begin(yb);
+
+			for (std::ptrdiff_t x=0; x < m_screen_view.width(); ++x) //, ++loc.x())
+			{
+				int xb = x*m_zoomFactor - m_translationX;
+
+
+				if(xb>=0 && xb < src.width())
+				{
+					m_cc(src_it[xb], screen_it[x]);
+					alpha_it[x] = 255;
+				}
+
+
+			}
+		}
+	}
+
+	dev3n8_view_t& m_screen_view;
+	gray8_view_t& m_canal_alpha;
+	channel_converter_functor m_cc;
+	double m_zoomFactor, m_translationX, m_translationY;
+};
+
 void ImageLayer::Update(const int width, const int height)
 {
-	//TODO
-//	monImage.SetAlpha(m_visuITK->GetAlphaMask(), true);
-
 	// Lecture de la configuration des differentes options ...
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	if (pConfig == NULL)
@@ -200,133 +253,56 @@ void ImageLayer::Update(const int width, const int height)
 	pConfig->Read(_("/Options/BilinearZoom"), &bilinearZoom, false);
 
 
-	if(!loadWholeImage)
+
+	dev3n8_image_t screen_image(width, height);
+	dev3n8_view_t screen_view = view(screen_image);
+
+
+
 	{
+		m_canal_alpha.recreate(screen_view.dimensions());
+		gray8_view_t alpha_view = view(m_canal_alpha);
+		fill_pixels(alpha_view, 0);
 
-		m_startInput[0] = std::max(0, -static_cast<int>(m_translationX));
-		m_startInput[1] = std::max(0, -static_cast<int>(m_translationY));
-		m_startInput[0] = std::min(m_startInput[0], static_cast<int>(view(*m_img).width()));
-		m_startInput[1] = std::min(m_startInput[1], static_cast<int>(view(*m_img).height()));
-
-		m_sizeInput[0] = ceil(m_zoomFactor * width)+1;// - m_translationX - m_startInput[0];
-		m_sizeInput[1] = ceil(m_zoomFactor * height)+1;// - m_translationY - m_startInput[1];
-
-	//	m_sizeInput[0] = max(m_sizeInput[0], 0);
-	//	m_sizeInput[1] = max(m_sizeInput[1], 0);
-
-		m_sizeInput[0] = std::min(m_sizeInput[0], static_cast<int>(view(*m_img).width()) - m_startInput[0]);
-		m_sizeInput[1] = std::min(m_sizeInput[1], static_cast<int>(view(*m_img).height()) - m_startInput[1]);
-
-		m_sizeInput[0] = std::min(m_sizeInput[0], static_cast<int>(view(*m_img).width()));
-		m_sizeInput[1] = std::min(m_sizeInput[1], static_cast<int>(view(*m_img).height()));
-
-
-
-	//	cout << "Region : \n";
-	//	cout << "\tHG : (" << m_startInput[0] << "," << m_startInput[1] << ")\n";
-	//	cout << "\ttaille : (" << m_sizeInput[0] << "," << m_sizeInput[1] << ")" << endl;
-	//	cout << "\técran : (" << width << "," << height << ")" << endl;
-	//	cout << "\ttranslation : (" << m_translationX << "," << m_translationY << ")" << endl;
-	//	cout << "\tzoom : " << m_zoomFactor << endl;
-
-	//	read_image( m_filename, m_img, point_t(m_startInput[0], m_startInput[1]), point_t(m_sizeInput[0], m_sizeInput[1]), tiff_tag() );
-
-		usable_views_t geometric_view = subimage_view(view(*m_img), m_startInput[0], m_startInput[1], m_sizeInput[0], m_sizeInput[1]);
-
-	//	usable_views_t geometric_view = view(m_img);
-
-	//	cout << "min,max :" << IntensityMin() << ", " << IntensityMax() << endl;
-
-	//	rgb8_image_t visu_img(view(m_img).dimensions());
 		channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
-	//	rgb8_image_t visu_img(geometric_view.dimensions());
-	//	rgb8_view_t color_view =  color_converted_view<rgb8_pixel_t>(geometric_view, my_cc);
+		apply_operation( view(*m_img), screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view));
 
 
-	//	copy_and_convert_pixels(geometric_view, visu_img._view, my_cc);
-
-		dev3n8_image_t visu_zoom(geometric_view.width()/m_zoomFactor, geometric_view.height()/m_zoomFactor);
-
-		if(bilinearZoom)
-			resize_view(any_color_converted_view<dev3n8_pixel_t>(geometric_view, my_cc), view(visu_zoom),  bilinear_sampler());
-		else
-			resize_view(any_color_converted_view<dev3n8_pixel_t>(geometric_view, my_cc), view(visu_zoom),  nearest_neighbor_sampler());
-
-		wxImage monImage(visu_zoom.width(), visu_zoom.height(), interleaved_view_get_raw_data(view(visu_zoom)), true);
+		wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
 
 		///Transparence
 		if(IsTransparent() || m_alpha<255)
 		{
-			m_canal_alpha.recreate(visu_zoom.dimensions());
-
 			if (IsTransparent()) //pour l'instant on ne traite que le range de transparence, pas le canal d'alpha (à gérer avec les images n canaux)
-				transform_pixels(const_view(visu_zoom), view(m_canal_alpha), apply_transparency_functor(m_transparencyMin, m_transparencyMax, m_alpha));
+				transform_pixels(screen_view, view(m_canal_alpha), apply_transparency_functor(m_transparencyMin, m_transparencyMax, m_alpha));
+			///TODO fix this to change pixel transparency of only pixels which belong to the image
 			else if(m_alpha<255)
 				fill_pixels(view(m_canal_alpha), gray8_pixel_t(m_alpha));
 
-			monImage.SetAlpha(interleaved_view_get_raw_data(view(m_canal_alpha)), true);
+
 
 		}
+
+		monImage.SetAlpha(interleaved_view_get_raw_data(view(m_canal_alpha)), true);
 
 		m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
 
+
 	}
 
-	else
-	{
 
-		///////////////////////////////////////////NEW lent mais OK pour la superposition vector/raster
+////TODO
+//	if(!loadWholeImage)
+//	{
 
-		channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
-
-		m_startInput[0]=0;
-		m_startInput[1]=0;
-
-		if(m_zoomFactor==m_oldZoomFactor)
-			return;
-		else
-			m_oldZoomFactor = m_zoomFactor;
-
-		try
-		{
-			usable_views_t geometric_view = view(*m_img);
-
-			dev3n8_image_t visu_zoom( geometric_view.width()/m_zoomFactor, geometric_view.height()/m_zoomFactor);
-
-			resize_view(any_color_converted_view<dev3n8_pixel_t>(geometric_view, my_cc), view(visu_zoom),  nearest_neighbor_sampler());
-			wxImage monImage(visu_zoom.width(), visu_zoom.height(), interleaved_view_get_raw_data(view(visu_zoom)), true);
-			////////////////////////////////////////////////
-
-
-			///Transparence
-			if(IsTransparent() || m_alpha<255)
-			{
-				m_canal_alpha.recreate(visu_zoom.dimensions());
-
-				if (IsTransparent()) //pour l'instant on ne traite que le range de transparence, pas le canal d'alpha (à gérer avec les images n canaux)
-					transform_pixels(const_view(visu_zoom), view(m_canal_alpha), apply_transparency_functor(m_transparencyMin, m_transparencyMax, m_alpha));
-				else if(m_alpha<255)
-					fill_pixels(view(m_canal_alpha), gray8_pixel_t(m_alpha));
-
-				monImage.SetAlpha(interleaved_view_get_raw_data(view(m_canal_alpha)), true);
-
-			}
-
-			m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
-
-		}
-		catch(const exception &e)
-		{
-			throw e;
-		}
-	}
+//	}
 
 }
 
 
 void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 {
-	dc.DrawBitmap(*m_bitmap, (m_translationX+m_startInput[0])/m_zoomFactor, (m_translationY+m_startInput[1])/m_zoomFactor, transparent); //-m_translationX+x*m_zoomFactor, -m_translationX+y*m_zoomFactor
+	dc.DrawBitmap(*m_bitmap, x, y, transparent); //-m_translationX+x*m_zoomFactor, -m_translationX+y*m_zoomFactor
 }
 
 

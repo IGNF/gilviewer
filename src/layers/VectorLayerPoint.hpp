@@ -49,7 +49,7 @@ public:
 
     typedef std::pair<double,double> simplePointType;
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY);
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
 
     virtual void AddPoint( double x , double y ) {;}
     virtual void AddPoints( const std::vector<double> &x , const std::vector<double> &y ) {;}

@@ -52,7 +52,7 @@ public:
     typedef std::pair<double,double> simplePointType;
     typedef std::vector< simplePointType > simpleArcType;
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY);
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
 
     virtual bool ProcessShapefile( const SHPHandle &shapefileHandle ) { return true; };
 

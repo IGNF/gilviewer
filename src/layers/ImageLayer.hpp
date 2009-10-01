@@ -142,9 +142,9 @@ class ImageLayer : public Layer
 		gray8_image_t m_canal_alpha;
 
 		int m_startInput[2];
-		float m_startfInput[2];
+		double m_startfInput[2];
 		int m_sizeInput[2];
-		float m_dx, m_dy;
+		double m_dx, m_dy;
 
 		std::pair<float, float> m_minmaxResult;
 
@@ -165,7 +165,7 @@ class ImageLayer : public Layer
 
 		double m_gamma;
 
-		float m_oldZoomFactor;
+		double m_oldZoomFactor;
 };
 
 

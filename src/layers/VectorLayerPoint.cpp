@@ -49,8 +49,9 @@ GenericVectorLayerPoint::GenericVectorLayerPoint() : VectorLayerContent(),
 	m_width(3)
 {}
 
-void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const float zoomFactor, const float translationX, const float translationY)
+void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
 {
+	const double delta = 0.5 * resolution;
 	wxPen penColour( m_pointsColour , m_width );
 	dc.SetPen( penColour );
 	// On draw des lines pq c'est beaucoup plus rapide et qu'en plus ca permet de gerer l'epaisseur ...
@@ -64,15 +65,15 @@ void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transpar
 		{
 			for (unsigned int i=0;i<m_points.size();i++)
 			{
-				dc.DrawLine( (0.5+m_points[i].first + translationX ) / zoomFactor, (0.5+m_flagPRJ*m_points[i].second +translationY)/zoomFactor , (0.5+m_points[i].first + translationX ) / zoomFactor, (0.5+m_flagPRJ*m_points[i].second +translationY)/zoomFactor );
-				dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i] , (0.5+m_points[i].first + translationX ) / zoomFactor , (0.5+m_flagPRJ*m_points[i].second +translationY)/zoomFactor );
+				dc.DrawLine( (delta+m_points[i].first + translationX ) / zoomFactor, (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor , (delta+m_points[i].first + translationX ) / zoomFactor, (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor );
+				dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i] , (delta+m_points[i].first + translationX ) / zoomFactor , (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor );
 			}
 		}
 		else
 			for (unsigned int i=0;i<m_points.size();++i)
 			{
-				double x = (0.5+m_points[i].first + translationX ) / zoomFactor;
-				double y = (0.5+m_flagPRJ*m_points[i].second +translationY)/zoomFactor;
+				double x = (delta+m_points[i].first + translationX ) / zoomFactor;
+				double y = (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor;
 				dc.DrawLine( x,y , x,y );
 				//dc.DrawPoint( x,y );
 			}
