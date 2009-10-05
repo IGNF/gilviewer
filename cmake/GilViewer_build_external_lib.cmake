@@ -20,9 +20,6 @@ INCLUDE_DIRECTORIES( ${INCLUDE_DIRECTORIES} ${SRC_SHPLIB} )
 # Creation de la lib
 ADD_LIBRARY( shapelib ${SHAPELIB_LIBRARY_TYPE} ${ALL_SHPLIB_SRC_FILES} )
 
-#set_target_properties( shapelib PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
-#set_target_properties( shapelib PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
-
 ##################
 ###      Fin ShapeLib       ###
 ##################
@@ -49,9 +46,6 @@ SET( ALL_TINYXML_SRC_FILES ${SRC_TINYXMLLIB}/tinystr.cpp ${SRC_TINYXMLLIB}/tinys
 INCLUDE_DIRECTORIES( ${SRC_TINYXMLLIB} )
 # Creation de la lib
 ADD_LIBRARY( tinyxml ${TINYXML_LIBRARY_TYPE} ${ALL_TINYXML_SRC_FILES} )
-
-#set_target_properties( tinyxml PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
-#set_target_properties( tinyxml PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
 
 ##################
 ###      Fin TinyXML       ###

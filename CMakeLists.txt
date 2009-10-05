@@ -10,16 +10,20 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 #Nom du projet
 PROJECT(GilViewer)
-INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
 
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
+IF(UNIX)
+	INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
+ENDIF(UNIX)
 
+SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
+SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
+
+SET(CMAKE_CONFIG_DIR cmake)
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
 ####
-INCLUDE( GilViewer_build_external_lib.cmake )
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
 ####
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
@@ -27,8 +31,7 @@ INCLUDE( GilViewer_build_external_lib.cmake )
 FILE( GLOB ALL_CONVENIENT_HEADER_FILES src/convenient/*.h src/convenient/*.hpp src/convenient/*.hxx src/convenient/*.inl )
 FILE( GLOB ALL_GUI_HEADER_FILES src/gui/*.h src/gui/*.hpp src/gui/*.hxx src/gui/*.inl )
 FILE( GLOB ALL_GUI_WXFB_HEADER_FILES src/gui/wxFB/*.h src/gui/wxFB/*.hpp src/gui/wxFB/*.hxx src/gui/wxFB/*.inl )
-FILE( GLOB ALL_IO_HEADER_FILES src/convenient/*.h src/convenient/*.hpp src/convenient/*.hxx src/convenient/*.inl )
-FILE( GLOB ALL_ITK_HEADER_FILES src/itk/*.h src/itk/*.hpp src/itk/*.hxx src/itk/*.inl )
+FILE( GLOB ALL_IO_HEADER_FILES src/io/*.h src/io/*.hpp src/io/*.hxx src/io/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES src/layers/*.h src/layers/*.hpp src/layers/*.hxx src/layers/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES src/tools/*.h src/tools/*.hpp src/tools/*.hxx src/tools/*.inl )
 FILE( GLOB ALL_VECTORUTILS_HEADER_FILES src/vectorutils/*.h src/vectorutils/*.hpp src/vectorutils/*.hxx src/vectorutils/*.inl )
@@ -98,30 +101,6 @@ ELSE()
 	link_directories( ${Boost_LIBRARY_DIRS} )
 ENDIF()
 
-# Find TIFF
-#find_package( TIFF )
-#if( NOT TIFF_FOUND )
-#	message( FATAL_ERROR "libTIFF not found ! Please set tiff paths ..." )
-#else()
-#	include_directories( ${TIFF_INCLUDE_DIR} )
-#endif()
-
-# Find JPEG
-#find_package( JPEG )
-#if( NOT JPEG_FOUND )
-#	message( FATAL_ERROR "libJPEG not found ! Please set jpeg paths ..." )
-#else()
-#	include_directories( ${JPEG_INCLUDE_DIR} )
-#endif()
-
-# Find PNG
-#find_package( PNG )
-#if( NOT PNG_FOUND )
-#	message( FATAL_ERROR "libPNG not found ! Please set png paths ..." )
-#else()
-#	add_definitions( ${PNG_DEFINITIONS} )
-#	include_directories( ${PNG_INCLUDE_DIR} )
-#endif()
 #####################################
 ###                     Fin recherche des packages                         ###
 #####################################
@@ -142,12 +121,12 @@ SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/
 ####
 #### Construction de la librarie
 ####
-INCLUDE( GilViewer_build_library.cmake )
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_library.cmake )
 
 ####
 #### Construction du sample
 ####
-INCLUDE( GilViewer_build_sample.cmake )
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 
 # Ajout du repertoire d'include des lib externes (pour l'instant,  shapelib et tinyxml)
 INCLUDE_DIRECTORIES( ${INCLUDE_DIRECTORIES} "extern/" )
@@ -160,3 +139,19 @@ ADD_DEPENDENCIES( GilViewer shapelib )
 ADD_DEPENDENCIES( GilViewer tinyxml )
 # Et enfin, le viewer depend de la lib ...
 ADD_DEPENDENCIES( GilViewerApp GilViewer )
+
+####
+#### Choice for install mode.
+####     - None : no install target
+####     - Install : create a install target
+####     - Package : create a packake 
+SET(INSTALL_MODE "None" CACHE STRING "Choose install mode between : None, Install, Package")
+IF(${INSTALL_MODE} STREQUAL "Install")
+	INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_install.cmake )
+	MESSAGE( STATUS " Install file include " )
+ENDIF(${INSTALL_MODE} STREQUAL "Install")
+IF(${INSTALL_MODE} STREQUAL "Package")
+	INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_package.cmake )
+	MESSAGE( STATUS " Install file package" )
+ENDIF(${INSTALL_MODE} STREQUAL "Package")
+
