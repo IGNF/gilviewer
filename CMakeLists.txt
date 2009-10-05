@@ -25,6 +25,8 @@ SET(CMAKE_CONFIG_DIR cmake)
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
+MESSAGE(STATUS " parent ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
+
 ####
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
 ####
