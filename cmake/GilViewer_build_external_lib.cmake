@@ -19,7 +19,7 @@ SET( ALL_SHPLIB_SRC_FILES	${SRC_SHPLIB}/dbfopen.c
 							${SRC_SHPLIB}/shptree.c
 )
 
-SET( ALL_SHPLIB_INC_FILES  "${SRC_SHPLIB}/shapefile.h" )
+SET( ALL_SHPLIB_INC_FILES  "${SRC_SHPLIB}/shapefil.h" )
 MESSAGE(STATUS " create ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
 		   
 # On ajoute les repertoires d'include
