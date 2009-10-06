@@ -36,35 +36,40 @@ Authors:
  
 ***********************************************************************/
 
-#ifndef __FRAME_VIEWER_HPP__
-#define __FRAME_VIEWER_HPP__
+#ifndef PANELMANAGER_H_
+#define PANELMANAGER_H_
+#include <vector>
+
+#include "GilViewer/tools/PatternSingleton.hpp"
+#include "GilViewer/tools/PatternFactory.hpp"
+#include "GilViewer/gui/PanelViewer.hpp"
 
 
-#include "GilViewer/layers/Layer.hpp"
-#include "GilViewer/gui/BasicViewerFrame.h"
-
-#include "GilViewer.h"
-
-class PanelViewer;
-class wxStatusBar;
-
-
-class FrameViewer : public BasicViewerFrame
+class PanelManagerModel : public  PatternFactory<PanelViewer>
 {
-public:
-	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame") );
-	virtual ~FrameViewer() { /*m_mgr.UnInit(); */wxGetApp().ExitMainLoop(); };
+	public:
+		typedef std::vector<PanelViewer*> ArrayOfPanels;
 
-	void AddLayer( const Layer::ptrLayerType &layer);
-	void AddLayersFromFiles(const wxArrayString &names);
-#if wxUSE_MENUS
-	void BuildPluginsMenu();
-#endif // wxUSE_MENUS
+		friend class PatternSingleton<PanelManagerModel>;
+		virtual ~PanelManagerModel();
 
-private:
-	PanelViewer* m_drawPane;
 
-	DECLARE_EVENT_TABLE();
+		// La méthode  qui va nous permettre de récupérer
+		// la liste des panels
+		const ArrayOfPanels &GetPanelsList();
+
+		PanelViewer* createObject(const std::string& id);
+
+
+	private:
+		PanelManagerModel();
+
+		// Le tableau des plugins
+		ArrayOfPanels m_panels;
+
 };
 
-#endif // __FRAME_VIEWER_HPP__
+typedef PatternSingleton<PanelManagerModel> PanelManager;
+
+#endif /* PANELMANAGER_H_ */
+

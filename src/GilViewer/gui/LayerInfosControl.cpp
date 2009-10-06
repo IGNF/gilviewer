@@ -36,35 +36,41 @@ Authors:
  
 ***********************************************************************/
 
-#ifndef __FRAME_VIEWER_HPP__
-#define __FRAME_VIEWER_HPP__
+#include "GilViewer/gui/LayerInfosControl.hpp"
 
+#include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/stattext.h>
 
-#include "GilViewer/layers/Layer.hpp"
-#include "GilViewer/gui/BasicViewerFrame.h"
+BEGIN_EVENT_TABLE(LayerInfosControl, wxFrame)
+EVT_BUTTON(wxID_OK,LayerInfosControl::OnOKButton)
+END_EVENT_TABLE()
 
-#include "GilViewer.h"
-
-class PanelViewer;
-class wxStatusBar;
-
-
-class FrameViewer : public BasicViewerFrame
+LayerInfosControl::LayerInfosControl(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position, const wxSize& size) :
+wxFrame(parent,id,title,position,size,style)
 {
-public:
-	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame") );
-	virtual ~FrameViewer() { /*m_mgr.UnInit(); */wxGetApp().ExitMainLoop(); };
+	wxColour bgcolor( 220, 220, 220);
+	SetBackgroundColour(bgcolor);
+	ClearBackground();
 
-	void AddLayer( const Layer::ptrLayerType &layer);
-	void AddLayersFromFiles(const wxArrayString &names);
-#if wxUSE_MENUS
-	void BuildPluginsMenu();
-#endif // wxUSE_MENUS
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-private:
-	PanelViewer* m_drawPane;
+	wxStaticText *text = new wxStaticText(this,wxID_ANY,wxString(infos.c_str(),*wxConvCurrent));
+	sizer->Add( text , 0 , wxALL|wxALIGN_CENTRE , 5);
 
-	DECLARE_EVENT_TABLE();
-};
+	wxButton *okButton = new wxButton(this,wxID_OK,_("OK"));
+	sizer->Add( okButton , 0 , wxALL|wxALIGN_CENTRE , 5);
 
-#endif // __FRAME_VIEWER_HPP__
+	sizer->SetSizeHints(this);
+	SetSizer(sizer);
+}
+
+LayerInfosControl::~LayerInfosControl()
+{
+	Destroy();
+}
+
+void LayerInfosControl::OnOKButton(wxCommandEvent &event)
+{
+	Destroy();
+}
