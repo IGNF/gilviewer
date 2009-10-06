@@ -60,6 +60,23 @@ INCLUDE_DIRECTORIES( ${SRC_TINYXMLLIB} )
 # Creation de la lib
 ADD_LIBRARY( tinyxml ${TINYXML_LIBRARY_TYPE} ${ALL_TINYXML_SRC_FILES} ${ALL_TINYXML_INC_FILES})
 
+############################
+###      Fin TinyXML     ###
+############################
+
 ##################
-###      Fin TinyXML       ###
+###   Extension GIL du MATIS  ###
 ##################
+MESSAGE(STATUS " boost_INCLUDE_DIRS " ${Boost_INCLUDE_DIRS})
+FIND_PATH(GIL_MATIS float_images.hpp
+			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/matis
+)
+IF(GIL_MATIS-NOTFOUND)
+	MESSAGE(STATUS " gil matis not found ")
+ENDIF(GIL_MATIS-NOTFOUND)
+
+#add_custom_command(
+#	TARGET install
+#	PRE_BUILD
+#	COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_DIR}/trac
+#)

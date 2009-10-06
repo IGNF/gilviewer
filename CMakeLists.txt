@@ -20,10 +20,6 @@ SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
 
 SET(CMAKE_CONFIG_DIR cmake)
-####
-#### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
-####
-INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
 MESSAGE(STATUS " parent ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
 
@@ -102,6 +98,11 @@ ELSE()
 	INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 	link_directories( ${Boost_LIBRARY_DIRS} )
 ENDIF()
+
+####
+#### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
+####
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
 #####################################
 ###                     Fin recherche des packages                         ###
