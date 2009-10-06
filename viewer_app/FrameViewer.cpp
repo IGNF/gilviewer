@@ -52,13 +52,13 @@ Authors:
 #include <wx/icon.h>
 #endif
 
-#include "gui/ApplicationSettings.hpp"
-#include "gui/LayerControl.hpp"
-#include "gui/PanelViewer.hpp"
-#include "gui/define_id.hpp"
+#include "GilViewer/gui/ApplicationSettings.hpp"
+#include "GilViewer/gui/LayerControl.hpp"
+#include "GilViewer/gui/PanelViewer.hpp"
+#include "GilViewer/gui/define_id.hpp"
 
-#include "gui/resources/LOGO_MATIS_small.xpm"
-#include "gui/PanelManager.h"
+#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
+#include "GilViewer/gui/PanelManager.h"
 
 BEGIN_EVENT_TABLE(FrameViewer,BasicViewerFrame)
 	//ADD_ITKVIEWER_EVENTS_TO_TABLE(FrameViewer)

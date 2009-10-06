@@ -52,12 +52,12 @@ Authors:
 
 
 #include "FrameViewer.hpp"
-#include "layers/ImageLayer.hpp"
-#include "layers/VectorLayer.hpp"
-#include "layers/VectorLayerMultiGeometries.hpp"
+#include "GilViewer/layers/ImageLayer.hpp"
+#include "GilViewer/layers/VectorLayer.hpp"
+#include "GilViewer/layers/VectorLayerMultiGeometries.hpp"
 
-#include "tools/Orientation2D.h"
-#include "vectorutils/CreateShapes.h"
+#include "GilViewer/tools/Orientation2D.h"
+#include "GilViewer/vectorutils/CreateShapes.h"
 
 
 #include "GilViewer.h"

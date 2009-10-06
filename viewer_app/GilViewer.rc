@@ -1,3 +1,3 @@
-logo_matis_small	ICON	"../src/gui/resources/LOGO_MATIS.ico"
+logo_matis_small	ICON	"../src/GilViewer/gui/resources/LOGO_MATIS.ico"
 
 //#include "wx/msw/wx.rc"

@@ -57,6 +57,8 @@ SET( ALL_TINYXML_INC_FILES ${SRC_TINYXMLLIB}/tinystr.h
 		   
 # On ajoute les repertoires d'include
 INCLUDE_DIRECTORIES( ${SRC_TINYXMLLIB} )
+INCLUDE_DIRECTORIES( extern )
+
 # Creation de la lib
 ADD_LIBRARY( tinyxml ${TINYXML_LIBRARY_TYPE} ${ALL_TINYXML_SRC_FILES} ${ALL_TINYXML_INC_FILES})
 

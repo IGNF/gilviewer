@@ -26,14 +26,15 @@ MESSAGE(STATUS " parent ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
 ####
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
 ####
-FILE( GLOB ALL_CONVENIENT_HEADER_FILES src/convenient/*.h src/convenient/*.hpp src/convenient/*.hxx src/convenient/*.inl )
-FILE( GLOB ALL_GUI_HEADER_FILES src/gui/*.h src/gui/*.hpp src/gui/*.hxx src/gui/*.inl )
-FILE( GLOB ALL_GUI_WXFB_HEADER_FILES src/gui/wxFB/*.h src/gui/wxFB/*.hpp src/gui/wxFB/*.hxx src/gui/wxFB/*.inl )
-FILE( GLOB ALL_IO_HEADER_FILES src/io/*.h src/io/*.hpp src/io/*.hxx src/io/*.inl )
-FILE( GLOB ALL_LAYERS_HEADER_FILES src/layers/*.h src/layers/*.hpp src/layers/*.hxx src/layers/*.inl )
-FILE( GLOB ALL_TOOLS_HEADER_FILES src/tools/*.h src/tools/*.hpp src/tools/*.hxx src/tools/*.inl )
-FILE( GLOB ALL_VECTORUTILS_HEADER_FILES src/vectorutils/*.h src/vectorutils/*.hpp src/vectorutils/*.hxx src/vectorutils/*.inl )
-FILE( GLOB ALL_WRAPPERS_HEADER_FILES src/wrappers/*.h src/wrappers/*.hpp src/wrappers/*.hxx src/wrappers/*.inl )
+SET(SRC_DIR src/GilViewer)
+FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.h ${SRC_DIR}/convenient/*.hpp ${SRC_DIR}/convenient/*.hxx ${SRC_DIR}/convenient/*.inl )
+FILE( GLOB ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl )
+FILE( GLOB ALL_GUI_WXFB_HEADER_FILES ${SRC_DIR}/gui/wxFB/*.h ${SRC_DIR}/gui/wxFB/*.hpp ${SRC_DIR}/gui/wxFB/*.hxx ${SRC_DIR}/gui/wxFB/*.inl )
+FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
+FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
+FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
+FILE( GLOB ALL_VECTORUTILS_HEADER_FILES ${SRC_DIR}/vectorutils/*.h ${SRC_DIR}/vectorutils/*.hpp ${SRC_DIR}/vectorutils/*.hxx ${SRC_DIR}/vectorutils/*.inl )
+FILE( GLOB ALL_WRAPPERS_HEADER_FILES ${SRC_DIR}/wrappers/*.h ${SRC_DIR}/wrappers/*.hpp ${SRC_DIR}/wrappers/*.hxx ${SRC_DIR}/wrappers/*.inl )
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
@@ -48,15 +49,13 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
 #### ATTENTION : toutes les sources de ces dossiers seront incluses
 #### ATTENTION : si un fichier est ajoute dans un de ces dossiers mais que le CMakeLists.txt n'est pas modifie, il faut relancer le cmake 
 ####  a la main avant de compiler par make (ca, c'est pas vrai sous windows ! en fait je n'en suis pas si sur ...)
-SET(SRC_DIR src/)
-include_directories( . )
-AUX_SOURCE_DIRECTORY(${SRC_DIR}layers SRC_CALQUES)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}convenient SRC_CONVENIENT)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}gui SRC_GUI)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}tools SRC_OUTILS)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}vectorutils SRC_VECTOR_UTILS)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}io SRC_IO)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}wrappers SRC_WRAPPERS)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/convenient SRC_CONVENIENT)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui SRC_GUI)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/vectorutils SRC_VECTOR_UTILS)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/wrappers SRC_WRAPPERS)
 
 # Une variable regroupant toutes les sources ...
 SET( ALL_VIEWER_SOURCES
@@ -110,16 +109,16 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
 ### Generation du fichier de resources
 if( WIN32 )
-	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
-		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
-			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+			            DEPENDS ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc )
 else()
-	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
-		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
-			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+			            DEPENDS ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc )
 endif()
 
-SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp )
+SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp )
 
 ####
 #### Construction de la librarie
@@ -132,9 +131,9 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_library.cmake )
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 
 # Ajout du repertoire d'include des lib externes (pour l'instant,  shapelib et tinyxml)
-INCLUDE_DIRECTORIES( ${INCLUDE_DIRECTORIES} "extern/" )
+INCLUDE_DIRECTORIES( BEFORE "extern/" )
 # Ajout du repertoire d'include des sources du viewer
-INCLUDE_DIRECTORIES( ${INCLUDE_DIRECTORIES} "src/" )
+INCLUDE_DIRECTORIES( BEFORE  "src/" )
 
 # Ajout d'une dependance du viewer a la shapelib. Ca permet de compiler la shapelib AVANT le viewer ...		
 ADD_DEPENDENCIES( GilViewer shapelib )
