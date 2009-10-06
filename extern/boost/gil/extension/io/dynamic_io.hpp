@@ -21,8 +21,8 @@
 
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/size.hpp>
-#include "../../gil_config.hpp"
-#include "../dynamic_image/any_image.hpp"
+#include "boost/gil/gil_config.hpp"
+#include "boost/gil/extension/dynamic_image/any_image.hpp"
 
 namespace boost { namespace gil {
 

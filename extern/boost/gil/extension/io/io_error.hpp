@@ -19,7 +19,7 @@
 /// \date   2005-2007 \n  Last updated on May 30, 2006
 
 #include <ios>
-#include "../../gil_config.hpp"
+#include "boost/gil/gil_config.hpp"
 #include <boost/shared_ptr.hpp>
 
 namespace boost { namespace gil {

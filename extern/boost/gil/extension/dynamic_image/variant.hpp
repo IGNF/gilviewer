@@ -22,8 +22,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../gil_config.hpp"
-#include "../../utilities.hpp"
+#include "boost/gil/gil_config.hpp"
+#include "boost/gil/utilities.hpp"
 #include <cstddef>
 #include <cassert>
 #include <algorithm>

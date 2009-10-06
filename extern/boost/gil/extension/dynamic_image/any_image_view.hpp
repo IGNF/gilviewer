@@ -23,8 +23,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "variant.hpp"
-#include "../../image_view.hpp"
-#include "../../image.hpp"
+#include "boost/gil/image_view.hpp"
+#include "boost/gil/image.hpp"
 
 namespace boost { namespace gil {
 

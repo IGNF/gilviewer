@@ -22,7 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "any_image_view.hpp"
-#include "../../image.hpp"
+#include "boost/gil/image.hpp"
 
 //#ifdef _MSC_VER
 //#pragma warning(push)
