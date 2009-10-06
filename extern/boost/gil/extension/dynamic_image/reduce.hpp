@@ -23,8 +23,8 @@
 #include <boost/mpl/insert.hpp>
 #include <boost/mpl/transform.hpp>
 
-#include "../../metafunctions.hpp"
-#include "../../typedefs.hpp"
+#include "boost/gil/metafunctions.hpp"
+#include "boost/gil/typedefs.hpp"
 #include "dynamic_at_c.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////

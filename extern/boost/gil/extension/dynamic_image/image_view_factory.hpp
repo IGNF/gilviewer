@@ -23,7 +23,7 @@
 */
 
 #include "any_image_view.hpp"
-#include "../../image_view_factory.hpp"
+#include "boost/gil/image_view_factory.hpp"
 
 namespace boost { namespace gil {
 

@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <boost/static_assert.hpp>
 #include <vector>
-#include "../../gil_all.hpp"
+#include "boost/gil/gil_all.hpp"
 #include "io_error.hpp"
 
 namespace boost { namespace gil {

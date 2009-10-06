@@ -13,7 +13,7 @@
 #ifndef GIL_DYNAMIC_AT_C_HPP
 #define GIL_DYNAMIC_AT_C_HPP
 
-#include "../../gil_config.hpp"
+#include "boost/gil/gil_config.hpp"
 #include <cassert>
 #include <stdexcept>
 #include <boost/mpl/at.hpp>
