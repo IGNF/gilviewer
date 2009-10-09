@@ -232,11 +232,10 @@ struct screen_image_functor
 				{
 					m_cc(src_it[xb], screen_it[x]);
 
-//					if(m_isTransparent && m_transparencyFonctor(src_it[xb]))
-//							alpha_it[x] = m_zero;
-//					else
-//							alpha_it[x] = m_alpha;
-					alpha_it[x] = m_alpha;
+					if(m_isTransparent && m_transparencyFonctor(src_it[xb]))
+							alpha_it[x] = m_zero;
+					else
+							alpha_it[x] = m_alpha;
 				}
 
 
