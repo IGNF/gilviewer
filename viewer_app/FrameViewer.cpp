@@ -115,7 +115,7 @@ void FrameViewer::OnHelp(wxCommandEvent& event)
 	if (m_helpDialog)
 	 	delete m_helpDialog;
 
-	wxString help_file=wxT("help.html");
+	//wxString help_file=wxT("help.html");
 
 	m_helpDialog = new wxDialog(this, wxID_ANY, wxString(_("Help")));
 	m_helpDialog->Show(false);
@@ -124,10 +124,23 @@ void FrameViewer::OnHelp(wxCommandEvent& event)
 
 	wxBoxSizer *topsizer;
 	topsizer = new wxBoxSizer(wxVERTICAL);
-	helpWindow -> SetBorders(0);
+	//helpWindow -> SetBorders(0);
+
+	wxFileSystem filesytem;
+	wxString current_path=filesytem.GetPath();
+	wxFSFile* f;
+	f= filesytem.OpenFile("help.html"); // opens file 'hello.htm'
+	if( f==NULL )
+	{
+		wxLogMessage(" impossible d'ouvrir le fichier help.html \n");
+	}
+	delete f;
+	wxLogMessage(" current path is : "+current_path+"\n");
+	wxString work_dir=wxGetCwd();
+	wxLogMessage("  working directoires is : "+work_dir+"\n");
 
 	helpWindow -> LoadPage(wxT("help.html"));
-	helpWindow -> SetSize(helpWindow -> GetInternalRepresentation() -> GetWidth(), helpWindow -> GetInternalRepresentation() -> GetHeight());
+	//helpWindow -> SetSize(helpWindow -> GetInternalRepresentation() -> GetWidth(), helpWindow -> GetInternalRepresentation() -> GetHeight());
 
 	topsizer -> Add(helpWindow, 1, wxALL, 10);
 
