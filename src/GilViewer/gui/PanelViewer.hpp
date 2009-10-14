@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef PANELVIEWER_HPP_
@@ -78,7 +78,7 @@ public:
 	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 	void OnMouseWheel(wxMouseEvent& event);
 
-	//wxToolBar* GetToolBar();
+	wxToolBar* GetToolBar(wxWindow* parent);
 	wxMenuBar* GetMenuBar();
 	bool InitToolbar();
 
@@ -142,7 +142,7 @@ protected:
 	bool GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const;
 	bool GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double&j) const;
 
-	//wxToolBar* m_toolBar;
+	wxToolBar* m_toolBar;
 	wxMenuBar* m_menuBar;
 	wxMenu *m_menuMain;
 	bool m_mouseMovementStarted;

@@ -188,8 +188,13 @@ inline int iRound(const T x)
 struct screen_image_functor
 {
 	typedef void result_type;
-	screen_image_functor( dev3n8_view_t &screen_view, channel_converter_functor cc, double z, double tx, double ty, gray8_view_t& canal_alpha) :
-		m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc), m_zoomFactor(z), m_translationX(tx), m_translationY(ty)
+	screen_image_functor( dev3n8_view_t &screen_view, channel_converter_functor cc, double z, double tx, double ty, gray8_view_t& canal_alpha, const double min_alpha, const double max_alpha, const unsigned char alpha, bool isTransparent) :
+		m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc),
+		m_zoomFactor(z), m_translationX(tx), m_translationY(ty),
+		m_alpha(alpha),
+		m_zero(0),
+		m_transparencyFonctor(min_alpha, max_alpha),
+		m_isTransparent(isTransparent)
 	{
 	}
 
@@ -226,7 +231,11 @@ struct screen_image_functor
 				if(xb>=0 && xb < src.width())
 				{
 					m_cc(src_it[xb], screen_it[x]);
-					alpha_it[x] = 255;
+
+					if(m_isTransparent && m_transparencyFonctor(src_it[xb]))
+							alpha_it[x] = m_zero;
+					else
+							alpha_it[x] = m_alpha;
 				}
 
 
@@ -238,6 +247,9 @@ struct screen_image_functor
 	gray8_view_t& m_canal_alpha;
 	channel_converter_functor m_cc;
 	double m_zoomFactor, m_translationX, m_translationY;
+	const gray8_pixel_t m_alpha, m_zero;
+	transparency_functor m_transparencyFonctor;
+	bool m_isTransparent;
 };
 
 void ImageLayer::Update(const int width, const int height)
@@ -259,43 +271,24 @@ void ImageLayer::Update(const int width, const int height)
 
 
 
-	{
-		m_canal_alpha.recreate(screen_view.dimensions());
-		gray8_view_t alpha_view = view(m_canal_alpha);
-		fill_pixels(alpha_view, 0);
 
-		channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
-		apply_operation( view(*m_img), screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view));
+	m_canal_alpha.recreate(screen_view.dimensions());
+	gray8_view_t alpha_view = view(m_canal_alpha);
+	fill_pixels(alpha_view, 0);
+
+	channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
+	apply_operation( view(*m_img), screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, IsTransparent()));
 
 
-		wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
+	wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
+	monImage.SetAlpha(interleaved_view_get_raw_data(view(m_canal_alpha)), true);
 
-		///Transparence
-		if(IsTransparent() || m_alpha<255)
-		{
-			if (IsTransparent()) //pour l'instant on ne traite que le range de transparence, pas le canal d'alpha (à gérer avec les images n canaux)
-				transform_pixels(screen_view, view(m_canal_alpha), apply_transparency_functor(m_transparencyMin, m_transparencyMax, m_alpha));
-			///TODO fix this to change pixel transparency of only pixels which belong to the image
-			else if(m_alpha<255)
-				fill_pixels(view(m_canal_alpha), gray8_pixel_t(m_alpha));
+	m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
 
 
 
-		}
+////TODO loadWholeImage
 
-		monImage.SetAlpha(interleaved_view_get_raw_data(view(m_canal_alpha)), true);
-
-		m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
-
-
-	}
-
-
-////TODO
-//	if(!loadWholeImage)
-//	{
-
-//	}
 
 }
 
