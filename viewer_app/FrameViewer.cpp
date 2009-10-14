@@ -138,11 +138,3 @@ void FrameViewer::OnHelp(wxCommandEvent& event)
 
 	//delete [] buffer;
 }
-
-#if wxUSE_MENUS
-void FrameViewer::BuildPluginsMenu()
-{
-	//	this->SetMenuBar(m_drawPane->GetMenuBar());
-
-}
-#endif // wxUSE_MENUS

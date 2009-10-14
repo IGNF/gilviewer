@@ -58,8 +58,7 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}wrappers SRC_WRAPPERS)
 
 # Une variable regroupant toutes les sources ...
-SET( ALL_VIEWER_SOURCES
-     ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
+SET( ALL_VIEWER_SOURCES ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
 
 
 #####################################
@@ -132,12 +131,12 @@ if( WIN32 )
 		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
 			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
 else()
-	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp
-		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.cpp
-			            DEPENDS ${CMAKE_SOURCE_DIR}/src/gui/resources/resources.xrc )
+	add_custom_command( OUTPUT ${SRC_DIR}gui/resources/resources.cpp
+		                COMMAND wxrc ${SRC_DIR}gui/resources/resources.xrc -v -c -o ${SRC_DIR}gui/resources/resources.cpp
+			            DEPENDS ${SRC_DIR}gui/resources/resources.xrc )
 endif()
 
-SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${CMAKE_SOURCE_DIR}/${SRC_DIR}gui/resources/resources.cpp )
+SET( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${SRC_DIR}gui/resources/resources.cpp )
 
 ####
 #### Construction de la librarie

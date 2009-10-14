@@ -41,6 +41,7 @@ Authors:
 
 
 #include "layers/Layer.hpp"
+
 #include "gui/BasicViewerFrame.h"
 #include "convenient/MacrosGilViewer.hpp"
 
@@ -60,9 +61,6 @@ public:
 
 	void AddLayer( const Layer::ptrLayerType &layer);
 	void AddLayersFromFiles(const wxArrayString &names);
-#if wxUSE_MENUS
-	void BuildPluginsMenu();
-#endif // wxUSE_MENUS
 
 private:
 	PanelViewer* m_drawPane;
