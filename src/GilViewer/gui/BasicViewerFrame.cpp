@@ -135,8 +135,12 @@ void BasicViewerFrame::OnAbout(wxCommandEvent& event)
 wxAboutDialogInfo BasicViewerFrame::getAboutInfo() const
 {
 	wxAboutDialogInfo info;
+	info.AddDeveloper(_("Authors:"));
 	info.AddDeveloper(_("Olivier Tournaire"));
 	info.AddDeveloper(_("Adrien Chauve"));
+	info.AddDeveloper(_(""));
+	info.AddDeveloper(_("Contributors:"));
+	info.AddDeveloper(_("Nicolas David (CMake master)"));
 	info.SetName(_("GilViewer"));
 	info.SetVersion(_("0.1.0"));
 	info.SetWebSite(_("http://code.google.com/p/gilviewer"), _("Home page") );
