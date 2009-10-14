@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __FRAME_VIEWER_HPP__
@@ -42,18 +42,21 @@ Authors:
 
 #include "layers/Layer.hpp"
 #include "gui/BasicViewerFrame.h"
+#include "convenient/MacrosGilViewer.hpp"
 
 #include "GilViewer.h"
 
 class PanelViewer;
 class wxStatusBar;
-
+class wxDialog;
 
 class FrameViewer : public BasicViewerFrame
 {
 public:
 	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame") );
 	virtual ~FrameViewer() { /*m_mgr.UnInit(); */wxGetApp().ExitMainLoop(); };
+
+	void OnHelp(wxCommandEvent& event);
 
 	void AddLayer( const Layer::ptrLayerType &layer);
 	void AddLayersFromFiles(const wxArrayString &names);
@@ -63,7 +66,9 @@ public:
 
 private:
 	PanelViewer* m_drawPane;
+	wxDialog *m_helpDialog;
 
+	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 	DECLARE_EVENT_TABLE();
 };
 
