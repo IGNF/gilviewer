@@ -38,6 +38,10 @@
 
 #include "gui/PanelViewer.hpp"
 
+#ifdef _WINDOWS
+#	define NOMINMAX
+#endif
+
 #include <algorithm>
 #include <numeric>
 
@@ -67,6 +71,10 @@
 #include "gui/define_id.hpp"
 
 #include "gui/PanelManager.h"
+
+#ifdef _WINDOWS
+#	include <wx/msw/winundef.h>
+#endif
 
 BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
 EVT_MOTION(PanelViewer::OnMouseMove)
