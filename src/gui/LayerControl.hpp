@@ -41,130 +41,21 @@ Authors:
 
 #include <vector>
 
-#include <wx/stattext.h>
 #include <wx/frame.h>
 
+#include "gui/LayerControlUtils.hpp"
 #include "layers/Layer.hpp"
 
-class wxCheckBox;
-class wxBitmapButton;
-class wxBoxSizer;
 class wxFlexGridSizer;
 class wxToolBar;
 class wxScrolledWindow;
 
 class GlobalSettingsControl;
-class LayerSettingsControl;
 class VectorLayerGhost;
 class Orientation2D;
-class LayerControl;
 class PanelViewer;
 class VectorLayer;
 
-/**
-* @brief Cette classe permet simplement de changer la couleur de fond d'un texte (wxStaticText) lorsque l'on clique dessus.
-**/
-class SelectableStaticText : public wxStaticText
-{
-public:
-    /// Constructeur
-    /// @param parent La fenetre mere
-    /// @param layercontrol Le LayerControl auquel est attache le texte
-    /// @param id L'identifiant de la fenetre
-    /// @param label Le texte affiche par le controle
-    /// @param pos La position du controle
-    /// @param size La taille du controle
-    /// @param style Le style du controle
-    /// @param name Le nom du controle
-    SelectableStaticText(wxWindow* parent, LayerControl* layercontrol, wxWindowID id, const wxString& label, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALIGN_LEFT, const wxString& name = _("staticText")) : wxStaticText(parent,id,label,pos,size, wxBG_STYLE_CUSTOM, name), m_parent(layercontrol), m_isSelected(false)
-    {
-	    //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-        m_unselectedColour.Set( 100 , 50 , 50 );
-        m_selectedColour.Set( 255 , 50 , 50 );
-        SetForegroundColour( m_unselectedColour );
-    };
-    /// Destructeur
-    virtual ~SelectableStaticText() {};
-
-    /// Accesseur en lecture au flag de selection
-    bool IsSelected() const { return m_isSelected; }
-    /// Accesseur en ecriture au flag de selection
-    void IsSelected(const bool isSelected) { m_isSelected = isSelected; if(m_isSelected) SetForegroundColour( m_selectedColour ); else SetForegroundColour( m_unselectedColour );}
-
-    /// Cette methode permet de "selectionner" un calque. Lors d'un clic sur le nom du calque, la couleur de fond change
-    void OnClick(wxMouseEvent& event);
-
-private:
-    /// La couleur lorsque le texte n'a pas ete selectionne (220,220,220)
-    wxColour m_unselectedColour;
-    /// La couleur lorsque le texte a pas ete selectionne (120,120,220)
-    wxColour m_selectedColour;
-    /// Le LayerControl auquel appartient le texte
-    LayerControl* m_parent;
-    /// Flage indiquant si le texte est selectionne
-    bool m_isSelected;
-
-    DECLARE_EVENT_TABLE();
-};
-
-struct paramBase
-{
-	std::string path;
-	bool isVisible;
-	bool isTransformable;
-	double zoomFactor;
-	double translationX;
-	double translationY;
-};
-
-typedef struct paramImageLayer : paramBase
-{
-	unsigned char alpha;
-	double gamma;
-	double intensityMin;
-	double intensityMax;
-	bool isTransparent;
-	double transparencyMin;
-	double transparencyMax;
-	unsigned int red;
-	unsigned int green;
-	unsigned int blue;
-	bool useAlphaChannel;
-	unsigned int alphaChannel;
-} ImageLayerParameters;
-
-typedef struct paramVectorLayer : paramBase
-{
-	wxColour pointsColor;
-	unsigned int pointsWidth;
-	wxColour linesColor;
-	unsigned int linesWidth;
-	int linesStyle;
-	wxColour polygonsRingsColor;
-	wxColour polygonsInsideColor;
-	unsigned int polygonsRingsWidth;
-	unsigned int polygonsRingsStyle;
-	int polygonsInsideStyle;
-} VectorLayerParameters;
-
-class LayerControlRow
-{
-public:
-	LayerControlRow( LayerControl* parent , const std::string &name , const unsigned int index , LayerSettingsControl *layersettings  , const std::string &tooltip="");
-	~LayerControlRow(){}
-
-	SelectableStaticText	*m_nameStaticText;
-	wxCheckBox				*m_visibilityCheckBox;
-	wxCheckBox				*m_transformationCheckBox;
-	wxBitmapButton			*m_infoButton;
-	wxBitmapButton			*m_saveButton;
-	wxBitmapButton			*m_deleteButton;
-	wxBitmapButton			*m_settingsButton;
-	wxBoxSizer				*m_boxSizer;
-	LayerControl			*m_parent;
-	LayerSettingsControl	*m_layerSettingsControl;
-	unsigned int			m_index;
-};
 /**
 * @brief Classe de gestion des differents calques.
 **/

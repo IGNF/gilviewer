@@ -67,6 +67,7 @@
 #include "layers/VectorLayer.hpp"
 
 #include "gui/ApplicationSettings.hpp"
+#include "gui/LayerControlUtils.hpp"
 #include "gui/LayerControl.hpp"
 #include "gui/define_id.hpp"
 
