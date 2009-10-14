@@ -129,15 +129,15 @@ void FrameViewer::OnHelp(wxCommandEvent& event)
 	wxFileSystem filesytem;
 	wxString current_path=filesytem.GetPath();
 	wxFSFile* f;
-	f= filesytem.OpenFile("help.html"); // opens file 'hello.htm'
+	f= filesytem.OpenFile(_("help.html")); // opens file 'hello.htm'
 	if( f==NULL )
 	{
-		wxLogMessage(" impossible d'ouvrir le fichier help.html \n");
+		wxLogMessage(_(" impossible d'ouvrir le fichier help.html \n") );
 	}
 	delete f;
-	wxLogMessage(" current path is : "+current_path+"\n");
+	wxLogMessage(_(" current path is : ")+current_path+_("\n")) ;
 	wxString work_dir=wxGetCwd();
-	wxLogMessage("  working directoires is : "+work_dir+"\n");
+	wxLogMessage(_("  working directoires is : ")+work_dir+_("\n"));
 
 	helpWindow -> LoadPage(wxT("help.html"));
 	//helpWindow -> SetSize(helpWindow -> GetInternalRepresentation() -> GetWidth(), helpWindow -> GetInternalRepresentation() -> GetHeight());
