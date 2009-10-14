@@ -46,7 +46,7 @@ struct transparency_functor
 	template<class PixelT>
 	bool operator()(const PixelT& src) const
 	{
-		if(m_min_alpha<m_max_alpha)
+		if(m_min_alpha <= m_max_alpha)
 			return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha;
 		else
 			return m_min_alpha<=at_c<0>(src) || at_c<0>(src)<=m_max_alpha;
@@ -59,7 +59,7 @@ struct transparency_functor
 template<>
 bool transparency_functor::operator()<rgb8_pixel_t>(const rgb8_pixel_t& src) const
 {
-	if(m_min_alpha<m_max_alpha)
+	if(m_min_alpha <= m_max_alpha)
 		return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha
 			&& m_min_alpha<=at_c<1>(src) && at_c<1>(src)<=m_max_alpha
 			&& m_min_alpha<=at_c<2>(src) && at_c<2>(src)<=m_max_alpha;
@@ -72,7 +72,7 @@ bool transparency_functor::operator()<rgb8_pixel_t>(const rgb8_pixel_t& src) con
 template<>
 bool transparency_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src) const
 {
-	if(m_min_alpha<m_max_alpha)
+	if(m_min_alpha <= m_max_alpha)
 		return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha
 			&& m_min_alpha<=at_c<1>(src) && at_c<1>(src)<=m_max_alpha
 			&& m_min_alpha<=at_c<2>(src) && at_c<2>(src)<=m_max_alpha;
@@ -82,22 +82,4 @@ bool transparency_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src) c
 			&& (m_min_alpha<=at_c<2>(src) || at_c<2>(src)<=m_max_alpha);
 }
 
-struct apply_transparency_functor
-{
-	apply_transparency_functor(const double min_alpha, const double max_alpha, const unsigned char alpha):
-		m_alpha(alpha),
-		m_zero(0),
-		m_transparencyFonctor(min_alpha, max_alpha)
-		{}
 
-	template<class PixelTSrc>
-	gray8_pixel_t operator()(const PixelTSrc& src) const
-	{
-		if(m_transparencyFonctor(src))
-			return m_zero;
-		return m_alpha;
-	}
-
-	const gray8_pixel_t m_alpha, m_zero;
-	transparency_functor m_transparencyFonctor;
-};

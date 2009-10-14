@@ -31,7 +31,7 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
@@ -42,6 +42,7 @@ Authors:
 #include <wx/xrc/xmlres.h>
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
+#include <wx/image.h>
 
 #include "GilViewer/gui/define_id.hpp"
 
@@ -60,6 +61,8 @@ BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxStri
 	wxFrame(parent, id, title, pos, size, style, name),
 	m_isLogWindowVisible(false)
 {
+	wxInitAllImageHandlers();
+
     // Initialising resources ...
     wxXmlResource::Get()->InitAllHandlers();
     InitXmlResource();
