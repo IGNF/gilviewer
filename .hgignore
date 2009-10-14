@@ -1,0 +1,9 @@
+lib
+CMakeFiles
+.project
+.cproject
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+bin
+src/gui/resources/resources.cpp
