@@ -110,11 +110,11 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 ### Generation du fichier de resources
 if( WIN32 )
 	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
-		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
 			            DEPENDS ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc )
 else()
 	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
-		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -v -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+		                COMMAND wxrc ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
 			            DEPENDS ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc )
 endif()
 

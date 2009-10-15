@@ -112,6 +112,7 @@ void FrameViewer::AddLayersFromFiles(const wxArrayString &names) {
 
 void FrameViewer::OnHelp(wxCommandEvent& event)
 {
+	wxSetWorkingDirectory( _(".") );
 	if (m_helpDialog)
 	 	delete m_helpDialog;
 
