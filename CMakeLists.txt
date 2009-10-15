@@ -147,7 +147,7 @@ ADD_DEPENDENCIES( GilViewerApp GilViewer )
 ####     - None : no install target
 ####     - Install : create a install target
 ####     - Package : create a packake 
-SET(INSTALL_MODE "None" CACHE STRING "Choose install mode between : None, Install, Package")
+SET(INSTALL_MODE "Install" CACHE STRING "Choose install mode between : None, Install, Package")
 IF(${INSTALL_MODE} STREQUAL "Install")
 	INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_install.cmake )
 	MESSAGE( STATUS " Install file include " )

@@ -66,19 +66,14 @@ ADD_LIBRARY( tinyxml ${TINYXML_LIBRARY_TYPE} ${ALL_TINYXML_SRC_FILES} ${ALL_TINY
 ###      Fin TinyXML     ###
 ############################
 
+
 ##################
 ###   Extension GIL du MATIS  ###
 ##################
 SET( INC_BOOST extern/boost )
+INCLUDE_DIRECTORIES( BEFORE ${INC_BOOST})
 
-MESSAGE(STATUS " boost_INCLUDE_DIRS " ${Boost_INCLUDE_DIRS})
-FIND_PATH(GIL_MATIS float_images.hpp
-			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/matis
-)
-IF(GIL_MATIS EQUAL GIL_MATIS-NOTFOUND)
-	MESSAGE(STATUS " gil matis not found ")
-	INCLUDE_DIRECTORIES( BEFORE ${INC_BOOST})
-ENDIF(GIL_MATIS EQUAL GIL_MATIS-NOTFOUND)
+
 
 #add_custom_command(
 #	TARGET install

@@ -78,66 +78,100 @@ INSTALL (TARGETS ${export_lib} EXPORT GilViewer-targets DESTINATION ${GilViewer_
 INSTALL (EXPORT GilViewer-targets DESTINATION ${TARGET_CONFIG_INSTALL_PATH} )
 INSTALL (FILES GilViewerConfig.cmake DESTINATION ${TARGET_CONFIG_INSTALL_PATH})
 
+
+MESSAGE(STATUS " boost_INCLUDE_DIRS " ${Boost_INCLUDE_DIRS})
+
 MESSAGE(STATUS " test  GIL_MATIS " ${GIL_MATIS})
+
+
+FIND_PATH(GIL_MATIS float_images.hpp
+			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/matis
+)
 IF(NOT GIL_MATIS)
-	MESSAGE(STATUS " install gil matis ")
+	MESSAGE(STATUS " gil matis not found ")
 	INSTALL(CODE "
 		 MESSAGE(STATUS \"install gil matis extension\")
    		 EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory  
 		 		\"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/matis\" 
 				\"${Boost_INCLUDE_DIRS}/boost/gil/extension/matis\" )
 		" )
-	# extensions io 
-	FIND_PATH(GIL_IO dynamic_io.hpp
-			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/io
-	)
-	IF(NOT GIL_IO )
-		MESSAGE(STATUS " gil io not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/io)
-		INSTALL(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/io\" \"\${Boost_INCLUDE_DIRS}/boost/gil/extensionio\" )" )
-	ELSE(NOT GIL_IO)
-		MESSAGE(STATUS " gil io found : change file if different " ${INC_BOOST}/boost/gil/extension/io)
-		FILE( GLOB IO_FILES ${INC_BOOST}/gil/extension/io/*.hpp)
-		MESSAGE(STATUS " IO_FILES " ${IO_FILES} )
-		FOREACH(FILE ${IO_FILES} )
-			MESSAGE(STATUS " io file " ${FILE})
-			GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
-			INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE}\") ")
-		ENDFOREACH(FILE ${IO_FILES} )
-	ENDIF(NOT GIL_IO )
-	
-	# extensions dynamic_image 
-	FIND_PATH(GIL_DYNAMIC_IMAGE any_image.hpp
-			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image
-	)
-	IF(NOT GIL_DYNAMIC_IMAGE)
-		MESSAGE(STATUS " gil dynamic_image not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image)
-		INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/dynamic_image\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image\") ")
-	ELSE(NOT GIL_DYNAMIC_IMAGE)
-		MESSAGE(STATUS " gil dynamic image found : change file if different ")
-		FILE( GLOB DYN_FILES ${INC_BOOST}/gil/extension/dynamic_image/*.hpp)
-		MESSAGE(STATUS " DYN_FILES " ${DYN_FILES} )
-		FOREACH(FILE ${DYN_FILES} )
-			MESSAGE(STATUS " dynamic file " ${FILE})
-			GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
-			INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image/${NAME_FILE}\") ")
-		ENDFOREACH(FILE ${DYN_FILES} )
-	ENDIF(NOT GIL_DYNAMIC_IMAGE)
-	
-	# extensions numeric
-	FIND_PATH(GIL_NUMERIC algorithm.hpp
-			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric
-	)
-	IF(NOT GIL_NUMERIC )
-		MESSAGE(STATUS " gil numeric not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric)
-		INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/numeric\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric\")")
-	ELSE(NOT GIL_NUMERIC)
-		MESSAGE(STATUS " gil numeric found : change files if different ")
-		FILE( GLOB NUM_FILES ${INC_BOOST}/gil/extension/numeric/*.hpp)
-		MESSAGE(STATUS " NUM_FILES " ${NUM_FILES} )
-		FOREACH(FILE ${NUM_FILES} )
-			MESSAGE(STATUS " numeric file " ${FILE})
-			GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
-			INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric/${NAME_FILE}\")")
-		ENDFOREACH(FILE ${NUM_FILES} )
-	ENDIF(NOT GIL_NUMERIC)
+ELSE(NOT GIL_MATIS)
+	MESSAGE(STATUS " gil matis found : change file if different " ${INC_BOOST}/boost/gil/extension/matis)
+	FILE( GLOB MATIS_FILES ${INC_BOOST}/gil/extension/matis/*.hpp)
+	#MESSAGE(STATUS " MATIS_FILES " ${MATIS_FILES} )
+	FOREACH(FILE ${MATIS_FILES} )
+		#MESSAGE(STATUS " MATIS file " ${FILE})
+		GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+		INSTALL(CODE  "
+			MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/matis/${NAME_FILE} )
+			execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+				\"${FILE}\" 
+				\"${Boost_INCLUDE_DIRS}/boost/gil/extension/matis/${NAME_FILE}\"
+				) 
+		")
+	ENDFOREACH(FILE ${MATIS_FILES} )
 ENDIF(NOT GIL_MATIS)
+
+# extensions io 
+FIND_PATH(GIL_IO dynamic_io.hpp
+		PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/io
+)
+IF(NOT GIL_IO )
+	MESSAGE(STATUS " gil io not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/io)
+	INSTALL(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/io\" \"\${Boost_INCLUDE_DIRS}/boost/gil/extensionio\" )" )
+ELSE(NOT GIL_IO)
+	MESSAGE(STATUS " gil io found : change file if different " ${INC_BOOST}/boost/gil/extension/io)
+	FILE( GLOB IO_FILES ${INC_BOOST}/gil/extension/io/*.hpp)
+	#MESSAGE(STATUS " IO_FILES " ${IO_FILES} )
+	FOREACH(FILE ${IO_FILES} )
+		#MESSAGE(STATUS " io file " ${FILE})
+		GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+		INSTALL(CODE  "
+			MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE} )
+			execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE}\") 
+		")
+	ENDFOREACH(FILE ${IO_FILES} )
+ENDIF(NOT GIL_IO )
+
+# extensions dynamic_image 
+FIND_PATH(GIL_DYNAMIC_IMAGE any_image.hpp
+		PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image
+)
+IF(NOT GIL_DYNAMIC_IMAGE)
+	MESSAGE(STATUS " gil dynamic_image not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image)
+	INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/dynamic_image\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image\") ")
+ELSE(NOT GIL_DYNAMIC_IMAGE)
+	MESSAGE(STATUS " gil dynamic image found : change file if different ")
+	FILE( GLOB DYN_FILES ${INC_BOOST}/gil/extension/dynamic_image/*.hpp)
+	#MESSAGE(STATUS " DYN_FILES " ${DYN_FILES} )
+	FOREACH(FILE ${DYN_FILES} )
+		#MESSAGE(STATUS " dynamic file " ${FILE})
+		GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+		INSTALL(CODE  "
+			MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image/${NAME_FILE} )
+			execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image/${NAME_FILE}\") 
+		")
+	ENDFOREACH(FILE ${DYN_FILES} )
+ENDIF(NOT GIL_DYNAMIC_IMAGE)
+
+# extensions numeric
+FIND_PATH(GIL_NUMERIC algorithm.hpp
+		PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric
+)
+IF(NOT GIL_NUMERIC )
+	MESSAGE(STATUS " gil numeric not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric)
+	INSTALL(CODE  "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/numeric\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric\")")
+ELSE(NOT GIL_NUMERIC)
+	MESSAGE(STATUS " gil numeric found : change files if different ")
+	FILE( GLOB NUM_FILES ${INC_BOOST}/gil/extension/numeric/*.hpp)
+	#MESSAGE(STATUS " NUM_FILES " ${NUM_FILES} )
+	FOREACH(FILE ${NUM_FILES} )
+		#MESSAGE(STATUS " numeric file " ${FILE})
+		GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+		INSTALL(CODE  "
+			MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric/${NAME_FILE} )
+			execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/numeric/${NAME_FILE}\")
+		")
+	ENDFOREACH(FILE ${NUM_FILES} )
+ENDIF(NOT GIL_NUMERIC)
+
