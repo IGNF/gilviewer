@@ -84,20 +84,25 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 
 	m_statusBar->SetStatusText(_("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
-	wxAuiPaneInfo toolbarInfo;
-	toolbarInfo.Caption( _("Main toolbar") );
-	toolbarInfo.ToolbarPane();
-	toolbarInfo.Top();
-	toolbarInfo.CloseButton(false);
-	toolbarInfo.CaptionVisible(false);
-	m_dockManager.AddPane( m_drawPane->GetToolBar(this), toolbarInfo );
-
 	wxAuiPaneInfo paneInfoDrawPane;
-	paneInfoDrawPane.Caption( _("viewer panel") );
+	paneInfoDrawPane.Name( wxT("Viewer panel name") );
+	paneInfoDrawPane.Caption( wxT("Viewer panel") );
+	paneInfoDrawPane.TopDockable();
 	paneInfoDrawPane.Center();
 	paneInfoDrawPane.CloseButton(false);
 	paneInfoDrawPane.CaptionVisible(false);
 	m_dockManager.AddPane( m_drawPane, paneInfoDrawPane );
+	
+	wxAuiPaneInfo toolbarInfo;
+	toolbarInfo.ToolbarPane();
+	toolbarInfo.Caption( _("Main Toolbar") );
+	toolbarInfo.TopDockable();
+	toolbarInfo.Top();
+	toolbarInfo.Fixed();
+	toolbarInfo.Resizable(false);
+	toolbarInfo.CloseButton(false);
+	toolbarInfo.CaptionVisible(false);
+	m_dockManager.AddPane( m_drawPane->GetToolBar(this), toolbarInfo );
 
 	m_dockManager.Update();
 }
@@ -112,6 +117,7 @@ void FrameViewer::AddLayersFromFiles(const wxArrayString &names) {
 
 void FrameViewer::OnHelp(wxCommandEvent& event)
 {
+	wxSetWorkingDirectory( _(".") );
 	if (m_helpDialog)
 	 	delete m_helpDialog;
 
