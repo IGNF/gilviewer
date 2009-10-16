@@ -78,7 +78,8 @@ public:
 	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 	void OnMouseWheel(wxMouseEvent& event);
 
-	wxToolBar* GetToolBar(wxWindow* parent);
+	wxToolBar* GetMainToolBar(wxWindow* parent);
+	wxToolBar* GetModeAndGeometryToolBar(wxWindow* parent);
 	wxMenuBar* GetMenuBar();
 	bool InitToolbar();
 
@@ -142,7 +143,8 @@ protected:
 	bool GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const;
 	bool GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double&j) const;
 
-	wxToolBar* m_toolBar;
+	wxToolBar* m_mainToolbar;
+	wxToolBar* m_modeAndGeometryToolbar;
 	wxMenuBar* m_menuBar;
 	wxMenu *m_menuMain;
 	bool m_mouseMovementStarted;
