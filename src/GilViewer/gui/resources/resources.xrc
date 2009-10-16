@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<resource version="2.3.0.1">
+
+        <object class="wxBitmap" name="CAMERA_PHOTO_16x16">tango-icon-theme-0.8.90/16x16/devices/camera-photo.png</object>
+		
+		<object class="wxBitmap" name="ACCESSORIES_TEXT_EDITOR_16x16">tango-icon-theme-0.8.90/16x16/apps/accessories-text-editor.png</object>
+		
+		<object class="wxBitmap" name="HELP_16x16">tango-icon-theme-0.8.90/16x16/apps/help-browser.png</object>
+
+        <object class="wxBitmap" name="GO-UP_16x16">tango-icon-theme-0.8.90/16x16/actions/go-up.png</object>
+
+                <object class="wxBitmap" name="GO-DOWN_16x16">tango-icon-theme-0.8.90/16x16/actions/go-down.png</object>
+
+                <object class="wxBitmap" name="DOCUMENT-NEW_16x16">tango-icon-theme-0.8.90/16x16/actions/document-new.png</object>
+                <object class="wxBitmap" name="DOCUMENT-NEW_22x22">tango-icon-theme-0.8.90/16x16/actions/document-new.png</object>
+
+                <object class="wxBitmap" name="DOCUMENT-OPEN_16x16">tango-icon-theme-0.8.90/16x16/actions/document-open.png</object>
+                <object class="wxBitmap" name="DOCUMENT-OPEN_22x22">tango-icon-theme-0.8.90/16x16/actions/document-open.png</object>
+
+                <object class="wxBitmap" name="DOCUMENT-SAVE_16x16">tango-icon-theme-0.8.90/16x16/actions/document-save.png</object>
+                <object class="wxBitmap" name="DOCUMENT-SAVE_22x22">tango-icon-theme-0.8.90/22x22/actions/document-save.png</object>
+
+                <object class="wxBitmap" name="EDIT-CLEAR_16x16">tango-icon-theme-0.8.90/16x16/actions/edit-clear.png</object>
+                <object class="wxBitmap" name="EDIT-CLEAR_22x22">tango-icon-theme-0.8.90/22x22/actions/edit-clear.png</object>
+
+                <object class="wxBitmap" name="PROCESS-STOP_16x16">tango-icon-theme-0.8.90/16x16/actions/process-stop.png</object>
+
+                <object class="wxBitmap" name="USER-TRASH_16x16">tango-icon-theme-0.8.90/16x16/places/user-trash.png</object>
+
+                <object class="wxBitmap" name="EMBLEM-UNREADABLE_16x16">tango-icon-theme-0.8.90/16x16/emblems/emblem-unreadable.png</object>
+
+                <object class="wxBitmap" name="PREFERENCES-SYSTEM_16x16">tango-icon-theme-0.8.90/16x16/categories/preferences-system.png</object>
+
+                <object class="wxBitmap" name="APPLICATIONS-GRAPHICS_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-graphics.png</object>
+
+                <object class="wxBitmap" name="APPLICATIONS-OTHERS_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-other.png</object>
+
+                <object class="wxBitmap" name="APPLICATIONS-SYSTEM_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-system.png</object>
+
+                <object class="wxBitmap" name="IMAGE-X-GENERIC_16x16">tango-icon-theme-0.8.90/16x16/mimetypes/image-x-generic.png</object>
+
+                <object class="wxBitmap" name="X-OFFICE-ADDRESS-BOOK_16x16">tango-icon-theme-0.8.90/16x16/mimetypes/x-office-address-book.png</object>
+
+                <object class="wxBitmap" name="DIALOG-INFORMATION_16x16">tango-icon-theme-0.8.90/16x16/status/dialog-information.png</object>
+
+                <object class="wxBitmap" name="EYE_16x16">16x16/eye.png</object>
+                <object class="wxBitmap" name="MEASURE_16x16">16x16/measure.png</object>
+
+                <object class="wxBitmap" name="POINTS_16x16">GeoGebra/16x16/points.png</object>
+                <object class="wxBitmap" name="POLYLINES_16x16">GeoGebra/16x16/polylines.png</object>
+                <object class="wxBitmap" name="POLYGONS_16x16">GeoGebra/16x16/polygons.png</object>
+
+</resource>
