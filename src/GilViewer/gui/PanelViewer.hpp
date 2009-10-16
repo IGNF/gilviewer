@@ -54,14 +54,14 @@ class wxMenuBar;
 class VectorLayerGhost;
 
 #if wxUSE_DRAG_AND_DROP
-	class ITKViewerFileDropTarget;
+	class GilViewerFileDropTarget;
 #endif // wxUSE_DRAG_AND_DROP
 
 class PanelViewer : public wxPanel
 {
 public:
 #if wxUSE_DRAG_AND_DROP
-	friend class ITKViewerFileDropTarget;
+	friend class GilViewerFileDropTarget;
 #endif // wxUSE_DRAG_AND_DROP
 
 	static void Register(wxFrame* parent);
@@ -216,11 +216,11 @@ protected:
 };
 
 #if wxUSE_DRAG_AND_DROP
-class ITKViewerFileDropTarget : public wxFileDropTarget
+class GilViewerFileDropTarget : public wxFileDropTarget
 {
 public:
-	ITKViewerFileDropTarget( PanelViewer* panelviewer ) : m_panelViewer(panelviewer){}
-	virtual ~ITKViewerFileDropTarget() {}
+	GilViewerFileDropTarget( PanelViewer* panelviewer ) : m_panelViewer(panelviewer){}
+	virtual ~GilViewerFileDropTarget() {}
 	bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 private:
 	PanelViewer* m_panelViewer;
