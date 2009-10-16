@@ -182,7 +182,7 @@ ApplicationSettings* PanelViewer::GetApplicationSettings() const {
 
 PanelViewer::PanelViewer(wxFrame* parent) :
 	wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent),
-	//m_toolBar(NULL),
+			m_toolBar(NULL),
 			m_menuBar(NULL), m_menuMain(NULL), m_mouseMovementStarted(false), m_translationDrag(0, 0),
 			// Construction des differentes fenetres liees au PanelViewer :
 			//		- layer control
