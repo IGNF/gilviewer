@@ -325,22 +325,22 @@ wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent)
 
 		m_modeAndGeometryToolbar->AddSeparator();
 		m_modeAndGeometryToolbar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_CAPTURE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_EDITION, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_CAPTURE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_EDITION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Edition"));
 		m_modeAndGeometryToolbar->AddTool(ID_MODE_GEOMETRY_MOVING, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_SELECTION, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Selection"));
 
 		m_modeAndGeometryToolbar->AddSeparator();
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circle"));
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("RECTANGLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
 
 		m_modeAndGeometryToolbar->AddSeparator();
 		m_modeAndGeometryToolbar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
-		m_modeAndGeometryToolbar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
+		m_modeAndGeometryToolbar->AddTool(ID_MULTI_CROP, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
 
 		m_modeAndGeometryToolbar->Realize();
 	}
