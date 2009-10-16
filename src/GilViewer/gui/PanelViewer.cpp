@@ -36,8 +36,6 @@
 
  ***********************************************************************/
 
-#include "GilViewer/gui/PanelViewer.hpp"
-
 #ifdef _WINDOWS
 #	define NOMINMAX
 #endif
@@ -65,13 +63,15 @@
 
 #include "GilViewer/layers/VectorLayerGhost.h"
 #include "GilViewer/layers/VectorLayer.hpp"
-
 #include "GilViewer/gui/ApplicationSettings.hpp"
 #include "GilViewer/gui/LayerControlUtils.hpp"
 #include "GilViewer/gui/LayerControl.hpp"
 #include "GilViewer/gui/define_id.hpp"
-
 #include "GilViewer/gui/PanelManager.h"
+#include "PanelViewer.hpp"
+
+#include "resources/geometry_moving_16x16.xpm"
+#include "resources/icone_move16_16.xpm"
 
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
@@ -182,7 +182,8 @@ ApplicationSettings* PanelViewer::GetApplicationSettings() const {
 
 PanelViewer::PanelViewer(wxFrame* parent) :
 	wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent),
-			m_toolBar(NULL),
+			m_mainToolbar(NULL),
+			m_modeAndGeometryToolbar(NULL),
 			m_menuBar(NULL), m_menuMain(NULL), m_mouseMovementStarted(false), m_translationDrag(0, 0),
 			// Construction des differentes fenetres liees au PanelViewer :
 			//		- layer control
@@ -196,7 +197,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 		m_applicationSettings = new ApplicationSettings(this, wxID_ANY);
 
 #if wxUSE_DRAG_AND_DROP
-	SetDropTarget(new ITKViewerFileDropTarget(this));
+	SetDropTarget(new GilViewerFileDropTarget(this));
 #endif // wxUSE_DRAG_AND_DROP
 	// Avoids flickering effect under windows !!!
 	//	SetFocus();
@@ -276,20 +277,20 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 
 }
 
-wxToolBar* PanelViewer::GetToolBar(wxWindow* parent) {
+wxToolBar* PanelViewer::GetMainToolBar(wxWindow* parent) {
 
-	if (!m_toolBar)
+	if (!m_mainToolbar)
 	{
-		m_toolBar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+		m_mainToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-		m_toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap(wxT("DOCUMENT-OPEN_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
-		m_toolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(16,16)), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+		m_mainToolbar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap(wxT("DOCUMENT-OPEN_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
+		m_mainToolbar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(16,16)), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
 
-		m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap(wxT("CAMERA_PHOTO_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+		m_mainToolbar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap(wxT("CAMERA_PHOTO_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
 
-		m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS-SYSTEM_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
+		m_mainToolbar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS-SYSTEM_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
-		m_toolBar->AddTool(wxID_HELP, _("AS"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Help"));
+		m_mainToolbar->AddTool(wxID_HELP, _("AS"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Help"));
 
 	//	m_toolBar->AddSeparator();
 	//	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
@@ -310,10 +311,41 @@ wxToolBar* PanelViewer::GetToolBar(wxWindow* parent) {
 	//	m_toolBar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
 	//	m_toolBar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
 
-		m_toolBar->Realize();
+		m_mainToolbar->Realize();
 	}
 
-	return m_toolBar;
+	return m_mainToolbar;
+}
+
+wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent)
+{
+	if (!m_modeAndGeometryToolbar)
+	{
+		m_modeAndGeometryToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+
+		m_modeAndGeometryToolbar->AddSeparator();
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_CAPTURE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_EDITION, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_GEOMETRY_MOVING, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_SELECTION, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
+
+		m_modeAndGeometryToolbar->AddSeparator();
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("RECTANGLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+
+		m_modeAndGeometryToolbar->AddSeparator();
+		m_modeAndGeometryToolbar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
+		m_modeAndGeometryToolbar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
+
+		m_modeAndGeometryToolbar->Realize();
+	}
+
+	return m_modeAndGeometryToolbar;
 }
 
 wxMenuBar* PanelViewer::GetMenuBar() {
@@ -1025,7 +1057,7 @@ void PanelViewer::Register(wxFrame* parent) {
 }
 
 #if wxUSE_DRAG_AND_DROP
-bool ITKViewerFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
+bool GilViewerFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 {
 	// Je ne suis pas certain que ça fonctionne comme ça ...
 	m_panelViewer->GetLayerControl()->AddLayersFromFiles(filenames);

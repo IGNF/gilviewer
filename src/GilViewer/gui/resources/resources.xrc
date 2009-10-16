@@ -49,5 +49,6 @@
                 <object class="wxBitmap" name="POINTS_16x16">GeoGebra/16x16/points.png</object>
                 <object class="wxBitmap" name="POLYLINES_16x16">GeoGebra/16x16/polylines.png</object>
                 <object class="wxBitmap" name="POLYGONS_16x16">GeoGebra/16x16/polygons.png</object>
+                <object class="wxBitmap" name="RECTANGLE_16x16">rectangle_16x16.png</object>
 
 </resource>

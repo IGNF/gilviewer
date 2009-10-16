@@ -92,7 +92,7 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	paneInfoDrawPane.CloseButton(false);
 	paneInfoDrawPane.CaptionVisible(false);
 	m_dockManager.AddPane( m_drawPane, paneInfoDrawPane );
-	
+
 	wxAuiPaneInfo toolbarInfo;
 	toolbarInfo.ToolbarPane();
 	toolbarInfo.Caption( _("Main Toolbar") );
@@ -102,7 +102,18 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	toolbarInfo.Resizable(false);
 	toolbarInfo.CloseButton(false);
 	toolbarInfo.CaptionVisible(false);
-	m_dockManager.AddPane( m_drawPane->GetToolBar(this), toolbarInfo );
+	m_dockManager.AddPane( m_drawPane->GetMainToolBar(this), toolbarInfo );
+
+	wxAuiPaneInfo modeAndGeometryToolbarInfo;
+	modeAndGeometryToolbarInfo.ToolbarPane();
+	modeAndGeometryToolbarInfo.Caption( _("Mode and geometry Toolbar") );
+	modeAndGeometryToolbarInfo.TopDockable();
+	modeAndGeometryToolbarInfo.Top();
+	modeAndGeometryToolbarInfo.Fixed();
+	modeAndGeometryToolbarInfo.Resizable(false);
+	modeAndGeometryToolbarInfo.CloseButton(false);
+	modeAndGeometryToolbarInfo.CaptionVisible(false);
+	m_dockManager.AddPane( m_drawPane->GetModeAndGeometryToolBar(this), modeAndGeometryToolbarInfo );
 
 	m_dockManager.Update();
 }
