@@ -69,13 +69,13 @@ BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxStri
 
 	m_dockManager.SetManagedWindow(this);
 
-	m_statusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, _("statusBar"));
+	m_statusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, wxT("statusBar"));
 	SetStatusBar(m_statusBar);
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	double fontSize;
 	if ( pConfig )
-		wxConfigBase::Get()->Read(_T("/Options/FontSize"), &fontSize, 8);
+		wxConfigBase::Get()->Read(wxT("/Options/FontSize"), &fontSize, 8);
 	// On tente un setting de la font pour pouvoir afficher les infos dans la status bar qd il y a bcp d'images ...
 	wxFont fontFrameViewer((unsigned int)fontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	m_statusBar->SetFont(fontFrameViewer);
@@ -88,8 +88,8 @@ BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxStri
 
 	//ToolBar
 	m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
-	m_baseToolBar->AddTool(wxID_ABOUT, _("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
-	m_baseToolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, _("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+	m_baseToolBar->AddTool(wxID_ABOUT, wxT("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
+	m_baseToolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, wxT("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
 	m_baseToolBar->Realize();
 
 	wxAuiPaneInfo paneInfoToolbar;
@@ -136,16 +136,16 @@ wxAboutDialogInfo BasicViewerFrame::getAboutInfo() const
 {
 	wxAboutDialogInfo info;
 	info.AddDeveloper(_("Authors:"));
-	info.AddDeveloper(_("Olivier Tournaire"));
-	info.AddDeveloper(_("Adrien Chauve"));
-	info.AddDeveloper(_(""));
+	info.AddDeveloper(wxT("Olivier Tournaire"));
+	info.AddDeveloper(wxT("Adrien Chauve"));
+	info.AddDeveloper(wxT(""));
 	info.AddDeveloper(_("Contributors:"));
-	info.AddDeveloper(_("Nicolas David (CMake master)"));
-	info.SetName(_("GilViewer"));
-	info.SetVersion(_("0.1.0"));
-	info.SetWebSite(_("http://code.google.com/p/gilviewer"), _("Home page") );
+	info.AddDeveloper(wxT("Nicolas David (CMake guru)"));
+	info.SetName(wxT("GilViewer"));
+	info.SetVersion(wxT("0.1.0"));
+	info.SetWebSite(wxT("http://code.google.com/p/gilviewer"), _("Home page") );
 	info.SetDescription(_("2D raster and vector viewer"));
-	info.SetCopyright(_T("olivier.tournaire@gmail.com\nadrien.chauve@gmail.com"));
+	info.SetCopyright(wxT("olivier.tournaire@gmail.com\nadrien.chauve@gmail.com"));
 	return info;
 }
 

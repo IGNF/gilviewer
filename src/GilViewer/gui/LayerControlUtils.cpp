@@ -70,12 +70,12 @@ LayerControlRow::LayerControlRow(LayerControl* parent, const std::string &name, 
 	m_nameStaticText->SetFont(fontFrameViewer);
 	m_nameStaticText->SetToolTip(tool);
 
-	m_visibilityCheckBox = new wxCheckBox(m_parent->m_scroll, ID_VISIBILITY + m_index, _(""));
+	m_visibilityCheckBox = new wxCheckBox(m_parent->m_scroll, ID_VISIBILITY + m_index, wxT(""));
 	m_visibilityCheckBox->SetValue(true);
 	m_visibilityCheckBox->SetToolTip(_("Change layer visibility"));
 	m_visibilityCheckBox->Connect(ID_VISIBILITY + m_index, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(LayerControl::OnCheckVisibility), NULL, m_parent);
 
-	m_transformationCheckBox = new wxCheckBox(m_parent->m_scroll, ID_TRANSFORMATION + m_index, _(""));
+	m_transformationCheckBox = new wxCheckBox(m_parent->m_scroll, ID_TRANSFORMATION + m_index, wxT(""));
 	m_transformationCheckBox->SetValue(true);
 	m_transformationCheckBox->SetToolTip(_("Change layer transformability"));
 	m_transformationCheckBox->Connect(ID_TRANSFORMATION + m_index, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(LayerControl::OnCheckTransformable), NULL, m_parent);

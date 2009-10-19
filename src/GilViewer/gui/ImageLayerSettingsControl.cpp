@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <limits>
@@ -94,16 +94,16 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		m_textRedMaximumIntensity = new wxTextCtrl(this,wxID_ANY,redMax);
 		m_textRedMaximumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
 		red_sizer->Add(m_textRedMaximumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
-		m_textRedGamma = new wxTextCtrl(this,wxID_ANY,_("1"));
+		m_textRedGamma = new wxTextCtrl(this,wxID_ANY,wxT("1"));
 		m_textRedGamma->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
 		red_sizer->Add(m_textRedGamma, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		main_sizer->Add(red_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
 		//Choix de la LUT
-		wxStaticBoxSizer *fileLUT_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Choix de la Color Lookup Table"));
+		wxStaticBoxSizer *fileLUT_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Choose LUT"));
 		wxString str;
-		wxConfigBase::Get()->Read(_T("/Paths/LUT"), &str, ::wxGetCwd());
-		m_filePicker_CLUT = new wxFilePickerCtrl(this, wxID_ANY, str, _("Select a CLUT file"), _("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE);
+		wxConfigBase::Get()->Read(wxT("/Paths/LUT"), &str, ::wxGetCwd());
+		m_filePicker_CLUT = new wxFilePickerCtrl(this, wxID_ANY, str, _("Select a CLUT file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE);
 		fileLUT_sizer->Add(m_filePicker_CLUT, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		main_sizer->Add(fileLUT_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 	}
@@ -112,7 +112,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		wxStaticBoxSizer *red_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Red"));
 		m_textRedChannel = new wxTextCtrl(this,wxID_ANY);
 		m_textRedChannel->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-		m_textRedChannel->SetValue(_("0"));
+		m_textRedChannel->SetValue(wxT("0"));
 		m_textRedChannel->SetToolTip(_("Image channel index to be displayed in red (e.g. 0 for RGB image)"));
 		red_sizer->Add(m_textRedChannel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		m_textRedMinimumIntensity = new wxTextCtrl(this,wxID_ANY);
@@ -130,7 +130,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		m_textRedMaximumIntensity->SetToolTip(_("Maximum intensity"));
 		red_sizer->Add(m_textRedMaximumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		m_textRedGamma = new wxTextCtrl(this,wxID_ANY);
-		m_textRedGamma->SetValue(_("1"));
+		m_textRedGamma->SetValue(wxT("1"));
 		m_textRedGamma->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
 		m_textRedGamma->SetToolTip(_("Gamma"));
 		red_sizer->Add(m_textRedGamma, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -139,7 +139,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		wxStaticBoxSizer *green_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Green"));
 		m_textGreenChannel = new wxTextCtrl(this,wxID_ANY);
 		m_textGreenChannel->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-		m_textGreenChannel->SetValue(_("1"));
+		m_textGreenChannel->SetValue(wxT("1"));
 		m_textGreenChannel->SetToolTip(_("Image channel index to be displayed in green (e.g. 1 for RGB image)"));
 		green_sizer->Add(m_textGreenChannel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		m_textGreenMinimumIntensity = new wxTextCtrl(this,wxID_ANY);
@@ -162,7 +162,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		green_sizer->Add(m_textGreenMaximumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		m_textGreenGamma = new wxTextCtrl(this,wxID_ANY);
 		m_textGreenGamma->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-		m_textGreenGamma->SetValue(_("1"));
+		m_textGreenGamma->SetValue(wxT("1"));
 		m_textGreenGamma->SetToolTip(_("Gamma"));
 		m_textGreenGamma->Enable(false);
 		m_textGreenGamma->SetEditable(false);
@@ -172,7 +172,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		wxStaticBoxSizer *blue_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Blue"));
 		m_textBlueChannel = new wxTextCtrl(this,wxID_ANY);
 		m_textBlueChannel->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-		m_textBlueChannel->SetValue(_("2"));
+		m_textBlueChannel->SetValue(wxT("2"));
 		m_textBlueChannel->SetToolTip(_("Image channel index to be displayed in blue (e.g. 2 for RGB image)"));
 		blue_sizer->Add(m_textBlueChannel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		m_textBlueMinimumIntensity = new wxTextCtrl(this,wxID_ANY);
@@ -195,7 +195,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 		blue_sizer->Add(m_textBlueMaximumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 		m_textBlueGamma = new wxTextCtrl(this,wxID_ANY);
 		m_textBlueGamma->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-		m_textBlueGamma->SetValue(_("1."));
+		m_textBlueGamma->SetValue(wxT("1."));
 		m_textBlueGamma->SetToolTip(_("Gamma"));
 		m_textBlueGamma->Enable(false);
 		m_textBlueGamma->SetEditable(false);
@@ -290,17 +290,17 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 	double alphaRangeMin, alphaRangeMax;
 	if ( !redMinLabel.ToDouble(&redMinDouble) )
 	{
-		::wxMessageBox(_("Bad min value on red channel !"));
+		::wxMessageBox(_("Bad min value on red channel!"));
 		return;
 	}
 	if ( !redMaxLabel.ToDouble(&redMaxDouble) )
 	{
-		::wxMessageBox(_("Bad max value on red channel !"));
+		::wxMessageBox(_("Bad max value on red channel!"));
 		return;
 	}
 	if ( !redGammaLabel.ToDouble(&redGammaDouble) )
 	{
-		::wxMessageBox(_("Bad gamma value on red channel !"));
+		::wxMessageBox(_("Bad gamma value on red channel!"));
 		return;
 	}
 
@@ -313,7 +313,7 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 		long redChannel;
 		if ( !redChannelLabel.ToLong(&redChannel) )
 		{
-			::wxMessageBox(_("Bad value on red channel !"));
+			::wxMessageBox(_("Bad value on red channel!"));
 			return;
 		}
 
@@ -321,14 +321,14 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 		long greenChannel;
 		if ( !greenChannelLabel.ToLong(&greenChannel) )
 		{
-			::wxMessageBox(_("Bad value on green channel !"));
+			::wxMessageBox(_("Bad value on green channel!"));
 			return;
 		}
 		wxString blueChannelLabel = m_textBlueChannel->GetValue();
 		long blueChannel;
 		if ( !blueChannelLabel.ToLong(&blueChannel) )
 		{
-			::wxMessageBox(_("Bad value on blue channel !"));
+			::wxMessageBox(_("Bad value on blue channel!"));
 			return;
 		}
 
@@ -343,7 +343,7 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 			long alphaChannel;
 			if ( !alphaChannelLabel.ToLong(&alphaChannel) )
 			{
-				::wxMessageBox(_("Bad value on alpha channel !"));
+				::wxMessageBox(_("Bad value on alpha channel!"));
 				return;
 			}
 
@@ -357,7 +357,7 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 	{
 		if ( !alphaRangeMinLabel.ToDouble(&alphaRangeMin) && !alphaRangeMaxLabel.ToDouble(&alphaRangeMax) )
 		{
-			::wxMessageBox(_("Bad min and max range values for transparency !"));
+			::wxMessageBox(_("Bad min and max range values for transparency!"));
 			return;
 		}
 		else
@@ -433,7 +433,7 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 		}
 		else
 		{
-			::wxLogMessage(_("LUT file does not exist !"));
+			::wxLogMessage(_("LUT file does not exist!"));
 		}
 	}
 
@@ -534,7 +534,6 @@ void ImageLayerSettingsControl::OnCloseWindow(wxCloseEvent& event)
 
 void ImageLayerSettingsControl::OnGetFocus(wxFocusEvent &event)
 {
-	wxLogMessage(_("ImageLayerSettingsControl::OnGetFocus"));
 	//Pour recharger les valeurs des parametres quand la fenetre reprend le focus
 	wxString valueIntensityMin;
 	valueIntensityMin<<GetLayerControl()->Layers()[m_index]->IntensityMin();
@@ -587,7 +586,7 @@ void HistogramPlotter::OnMouseMove(wxMouseEvent &event)
 
 		wxString text;
 		if (event.m_x < static_cast<int>(HISTOGRAM_LEFT_MARGIN) || event.m_x > width-static_cast<int>(HISTOGRAM_RIGHT_MARGIN) )
-			text << _("out !");
+			text << _("out!");
 		else
 		{
 			//coordonnee entiere en nb_bins dans le tableau d'histo
@@ -597,17 +596,17 @@ void HistogramPlotter::OnMouseMove(wxMouseEvent &event)
 			float coordX = m_min + (m_max-m_min) / nb_bins * static_cast<float>( coordXInt );
 
 			if (m_histogram.size() == 1)
-				text << coordX << _(" - ") << m_histogram[0][ coordXInt ];
+				text << coordX << wxT(" - ") << m_histogram[0][ coordXInt ];
 			else
 			{
 				text << coordX << _(" - Image = (");
 				for(unsigned int channel = 0; channel < m_histogram.size(); ++channel)
 				{
-					text << channel << _(":") << m_histogram[channel][ coordXInt ];
+					text << channel << wxT(":") << m_histogram[channel][ coordXInt ];
 					if(channel != m_histogram.size()-1)
-						text << _(",");
+						text << wxT(",");
 				}
-				text << _(")");
+				text << wxT(")");
 			}
 		}
 		m_parent->SetTitle( text );
@@ -707,7 +706,7 @@ void HistogramPlotter::OnPaint(wxPaintEvent &event)
 		ThreadHistogram *thread = new ThreadHistogram(m_parent);
 
 		if ( thread->Create() != wxTHREAD_NO_ERROR )
-		wxLogError(_("Can't create thread to compute image histogram !"));
+		wxLogError(_("Can't create thread to compute image histogram!"));
 
 		thread->Run();
 	}

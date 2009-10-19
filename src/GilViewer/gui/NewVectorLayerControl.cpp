@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include "GilViewer/gui/NewVectorLayerControl.hpp"
@@ -83,23 +83,23 @@ NewVectorLayerControl::NewVectorLayerControl(wxWindow* parent,wxWindowID id, con
 	wxStaticBoxSizer *nameSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Layer name"));
 	sizer->Add(nameSizer, 0, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 	m_textName = new wxTextCtrl(this,wxID_ANY);
-	m_textName->SetValue(_(""));
+	m_textName->SetValue(wxT(""));
 	m_textName->SetToolTip(_("Layer name"));
 	nameSizer->Add(m_textName, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
 	wxStaticBoxSizer *typeSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Layer type"));
 	sizer->Add(typeSizer, 0, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 	wxArrayString layerTypes;
-	layerTypes.Add( _("Points") );
-	layerTypes.Add( _("PointsZ") );
-	layerTypes.Add( _("PointsM") );
-	layerTypes.Add( _("Multipoints") );
-	layerTypes.Add( _("Arcs") );
-	layerTypes.Add( _("ArcsZ") );
-	layerTypes.Add( _("ArcsM") );
-	layerTypes.Add( _("Polygons") );
-	layerTypes.Add( _("PolygonsZ") );
-	layerTypes.Add( _("PolygonsM") );
+	layerTypes.Add( wxT("Points") );
+	layerTypes.Add( wxT("PointsZ") );
+	layerTypes.Add( wxT("PointsM") );
+	layerTypes.Add( wxT("Multipoints") );
+	layerTypes.Add( wxT("Arcs") );
+	layerTypes.Add( wxT("ArcsZ") );
+	layerTypes.Add( wxT("ArcsM") );
+	layerTypes.Add( wxT("Polygons") );
+	layerTypes.Add( wxT("PolygonsZ") );
+	layerTypes.Add( wxT("PolygonsM") );
 
 	// Pffffffffffffffff
 	wxCArrayString temp( layerTypes );
