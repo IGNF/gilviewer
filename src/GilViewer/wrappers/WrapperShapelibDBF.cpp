@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include "WrapperShapelibDBF.hpp"
@@ -62,7 +62,7 @@ void WrapperShapelibDBF::Create(const std::string &filename)
 {
 	m_dbfHandle = DBFCreate(filename.c_str());
 	if (!m_dbfHandle)
-		throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+		throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 
 	// Pas besoin de tester le handle, on aura throwe avant ...
 	Init();
@@ -84,7 +84,7 @@ int WrapperShapelibDBF::GetFieldIndex(const std::string &fieldname)
 {
 	if (m_dbfHandle)
 		return DBFGetFieldIndex(m_dbfHandle, fieldname.c_str());
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 DBFFieldType WrapperShapelibDBF::GetFieldInfo(int fieldIndex, std::string& fieldname, int &fieldwidth, int &nbDecimals) const
@@ -98,7 +98,7 @@ DBFFieldType WrapperShapelibDBF::GetFieldInfo(int fieldIndex, std::string& field
 		fieldname = std::string(charfieldname);
 		return fieldtype;
 	}
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 std::string WrapperShapelibDBF::GetFieldName(int fieldIndex) const
 {
@@ -115,10 +115,10 @@ int WrapperShapelibDBF::AddField(std::string& fieldname, const DBFFieldType &fie
 	else
 	{
 		if (m_accessType != READ_WRITE)
-			throw WrapperShapelibDBFException("Ajout de champs impossible ! Le fichier a ete ouvert en lecture seule !", __LINE__, __FILE__, __FUNCTION__);
+			throw WrapperShapelibDBFException("Impossible to add fields! File is open in read only mode!", __LINE__, __FILE__, __FUNCTION__);
 		else
 			// (!m_dbfHandle)
-			throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+			throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 	}
 }
 
@@ -126,27 +126,27 @@ int WrapperShapelibDBF::ReadIntegerAttribute(int shape, int field) const
 {
 	if (m_dbfHandle)
 		return DBFReadIntegerAttribute(m_dbfHandle, shape, field);
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 double WrapperShapelibDBF::ReadDoubleAttribute(int shape, int field) const
 {
 	if (m_dbfHandle)
 		return DBFReadDoubleAttribute(m_dbfHandle, shape, field);
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 std::string WrapperShapelibDBF::ReadStringAttribute(int shape, int field) const
 {
 	if (m_dbfHandle)
 		return std::string(DBFReadStringAttribute(m_dbfHandle, shape, field));
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 std::string WrapperShapelibDBF::ReadAttributeAsString(int shape, int field) const
 {
 	if (!m_dbfHandle)
-		throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+		throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 	std::string fieldName;
 	int i;
 	DBFFieldType fieldType = GetFieldInfo(field, fieldName, i,i);
@@ -174,35 +174,35 @@ bool WrapperShapelibDBF::IsAttributeNULL(int shape, int field) const
 {
 	if (m_dbfHandle)
 		return (bool)DBFIsAttributeNULL(m_dbfHandle, shape, field);
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 bool WrapperShapelibDBF::WriteIntegerAttribute(int shape, int field, int fieldValue)
 {
 	if (m_dbfHandle)
 		return (bool)DBFWriteIntegerAttribute(m_dbfHandle, shape, field, fieldValue);
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 bool WrapperShapelibDBF::WriteDoubleAttribute(int shape, int field, double fieldValue)
 {
 	if (m_dbfHandle)
 		return DBFWriteDoubleAttribute(m_dbfHandle, shape, field, fieldValue);
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 bool WrapperShapelibDBF::WriteStringAttribute(int shape, int field, std::string fieldValue)
 {
 	if (m_dbfHandle)
 		return (bool)DBFWriteStringAttribute(m_dbfHandle, shape, field, fieldValue.c_str());
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 bool WrapperShapelibDBF::WriteNULLAttribute(int shape, int field)
 {
 	if (m_dbfHandle)
 		return (bool)DBFWriteNULLAttribute(m_dbfHandle, shape, field);
-	throw WrapperShapelibDBFException("DBFHandle non valide ! Avez vous bien appele la methode Create() apres le constructeur vide ?", __LINE__, __FILE__, __FUNCTION__);
+	throw WrapperShapelibDBFException("Invalid DBFHandle! Did you call Create() after the empty constructor?", __LINE__, __FILE__, __FUNCTION__);
 }
 
 WrapperShapelibDBF::~WrapperShapelibDBF()

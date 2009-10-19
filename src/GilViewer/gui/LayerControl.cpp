@@ -250,10 +250,10 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
 
         const wxSize imageSize(16,16);
 
-        toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("New file"));
-        toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
-        toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
-        toolBar->AddTool(wxID_RESET, _("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
+        toolBar->AddTool(wxID_NEW, wxT("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("New file"));
+        toolBar->AddTool(wxID_OPEN, wxT("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
+        toolBar->AddTool(wxID_SAVE, wxT("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
+        toolBar->AddTool(wxID_RESET, wxT("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
 	toolBar->Realize();
 }
@@ -280,14 +280,14 @@ void LayerControl::OnInfoButton(wxCommandEvent& event)
 	if (vl != NULL)
 	{
 		wxString title(_("Vector settings"));
-		title << _(" : ") << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
+		title << wxT(" : ") << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
 		vl->GetInfos();
 		ilsc = new LayerInfosControl(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
 	}
 	else
 	{
 		wxString title(_("Image settings"));
-		title << _(" : ") << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
+		title << wxT(" : ") << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
 		ilsc = new LayerInfosControl(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
 	}
 	ilsc->Show();
@@ -301,16 +301,17 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
 	wxString wildcard;
 	if (vl) // calque vectoriel
 	{
-		wildcard << _("Shapefile (*.shp)|*.shp");
+		wildcard << wxT("Shapefile (*.shp)|*.shp");
 	}
 	else // calque image
 	{
-		wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
-		wildcard << _("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
-		wildcard << _("PNG (*.png)|*.png|");
-		wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
+		wildcard << _("All supported files ");
+		wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
+		wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
+		wildcard << wxT("PNG (*.png)|*.png|");
+		wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
 	}
-	wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), _(""), _(""), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
+	wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxT(""), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
 	if (fileDialog->ShowModal() == wxID_OK)
 	{
 		try
@@ -438,17 +439,20 @@ void LayerControl::OnReset(wxCommandEvent& event)
 void LayerControl::OnOpenLayer(wxCommandEvent& event)
 {
 	wxString wildcard;
-	wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP|");
-	wildcard << _("Image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
-	wildcard << _("TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|");
-	wildcard << _("PNG (*.png;*.PNG)|*.png;*.PNG|");
-	wildcard << _("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
-	wildcard << _("BMP (*.bmp)|*.bmp;*.BMP|");
-	wildcard << _("Shapefile (*.shp)|*.shp;*.SHP|");
-	wildcard << _("CustomFormat (*)|*");
+	wildcard << _("All supported files ");
+	wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP|");
+	wildcard << _("Image files ");
+	wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
+	wildcard << wxT("TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|");
+	wildcard << wxT("PNG (*.png;*.PNG)|*.png;*.PNG|");
+	wildcard << wxT("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
+	wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
+	wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
+	wildcard << _("CustomFormat ");
+	wildcard << wxT("(*)|*");
 	wxString str;
 	//wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
-	wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), _(""), _(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
+	wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
 
 	if (fileDialog->ShowModal() == wxID_OK)
 	{
@@ -503,8 +507,8 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 		if (names.GetCount() >= 2)
 		{
 			wxString m;
-			m << _("Reading file ") << i << _("/") << names.GetCount() << _("\n");
-			m << names[i] << _("\n");
+			m << _("Reading file ") << i << wxT("/") << names.GetCount() << wxT("\n");
+			m << names[i] << wxT("\n");
 			progress->Update(i, m);
 		}
 
@@ -644,15 +648,15 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	{
 		m_ori = layer->Orientation();
 		m_isOrientationSet = true;
-		::wxLogMessage(_("L'orientation du viewer a ete parametree !"));
+		::wxLogMessage(_("Viewer orientation has been set!"));
 	}
 	else if (!m_isOrientationSet && m_layers.size() > 1 && layer->HasOri())
 	{
-		::wxLogMessage(_("Attention l'ori de l'image ne sera pas utilisee car pas d'ori definie pour la premiere image affichee !"));
+		::wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
 	}
 	else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->HasOri())
 	{
-		::wxLogMessage(_("Initialisation de la position du calque image en accord avec l'image de depart !"));
+		::wxLogMessage(_("Image layer position initialised with respect to first image!"));
 		layer->ZoomFactor(m_layers[0]->ZoomFactor());
 		layer->TranslationX(m_layers[0]->TranslationX());
 		layer->TranslationY(m_layers[0]->TranslationY());
@@ -663,7 +667,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	//sa position initiale et son zoom
 	if (m_isOrientationSet && layer->HasOri())
 	{
-		::wxLogMessage(_("Initialisation de la position du calque image en accord avec l'ori globale !"));
+		::wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
 
 		const Orientation2D &oriLayer = layer->Orientation();
 
@@ -679,7 +683,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	//Si il y a une orientation definie pour le viewer et et qu'on a affaire a une couche vecteur :
 	if (m_isOrientationSet && vl != NULL)
 	{
-		::wxLogMessage(_("Initialisation de la position du calque vecteur en accord avec l'ori globale !"));
+		::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
 
 		double translationInitX =-m_ori.OriginX();// * m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationX();
 		double translationInitY = m_ori.OriginY(); //* m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationY();
@@ -886,7 +890,7 @@ void LayerControl::OnGlobalSettingsButton(wxCommandEvent& event)
 void LayerControl::OnSaveDisplayConfigButton(wxCommandEvent& event)
 {
 	// Choix du fichier de sauvegarde
-	wxFileDialog* fd = new wxFileDialog(this, _("Sauvegarde de la configuration d'affichage"), _(""), _(""), _("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
+	wxFileDialog* fd = new wxFileDialog(this, _("Save display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
 	if (fd->ShowModal() == wxID_OK)
 	{
 		std::string savename(fd->GetPath().fn_str());
@@ -901,17 +905,17 @@ void LayerControl::OnSaveDisplayConfigButton(wxCommandEvent& event)
 void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
 {
 	// Choix du fichier de sauvegarde
-	wxFileDialog* fd = new wxFileDialog(this, _("Chargement d'une configuration d'affichage"), _(""), _(""), _("*.xml"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+	wxFileDialog* fd = new wxFileDialog(this, _("Load display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
 	if (fd->ShowModal() == wxID_OK)
 	{
 		wxString message;
-		message << _("Lecture d'un fichier de configration d'affichage : ") << fd->GetPath();
+		message << _("Reading a display configuration file: ") << fd->GetPath();
 		::wxLogMessage(message);
 
 		std::string loadname(fd->GetPath().fn_str());
 		if (boost::filesystem::extension(loadname) != ".xml")
 		{
-			wxLogMessage(_("Le fichier de configuration doit avoir l'extension .xml !"), _("Erreur !"));
+			wxLogMessage(_("Display configuration file must have the extension .xml !"), _("Error!"));
 			return;
 		}
 

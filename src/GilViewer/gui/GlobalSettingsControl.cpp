@@ -63,7 +63,7 @@ GlobalSettingsControl::GlobalSettingsControl(LayerControl* parent, wxWindowID id
 	main_sizer->Add(intensity_sizer, 0, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
 
 	wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
-	buttons_sizer->AddButton(new wxButton(this,wxID_OK, _("OK")));
+	buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
 	buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, _("Apply")));
 	buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, _("Cancel")));
 	buttons_sizer->Realize();

@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <boost/filesystem.hpp>
@@ -121,7 +121,7 @@ VectorLayerPolygon::VectorLayerPolygon(const SHPHandle &handle , const std::stri
 		::wxLogMessage(log);
 
 		wxString m;
-		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << _("\n");
+		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
 		m << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objects");
 
 		for (i=0;i<static_cast<unsigned int>(m_numberOfEntities);++i)
@@ -212,7 +212,7 @@ VectorLayerPolygonZ::VectorLayerPolygonZ(const SHPHandle &handle , const std::st
 		::wxLogMessage(log);
 
 		wxString m;
-		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << _("\n");
+		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
 		m << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objects");
 
 		for (i=0;i<static_cast<unsigned int>(m_numberOfEntities);++i)
@@ -263,7 +263,7 @@ VectorLayerPolygonM::VectorLayerPolygonM(const SHPHandle &handle , const std::st
 		::wxLogMessage(log);
 
 		wxString m;
-		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << _("\n");
+		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
 		m << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objects");
 
 		for (i=0;i<static_cast<unsigned int>(m_numberOfEntities);++i)
