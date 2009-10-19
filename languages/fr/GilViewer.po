@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GilViewer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-19 17:21+0100\n"
+"POT-Creation-Date: 2009-10-19 21:16+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Olivier Tournaire <olitour@gmail.com>\n"
 "Language-Team: gilviewer-dev <gilviewer-dev@googlegroups.com>\n"
@@ -12,87 +12,14 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: /home/olivier/work/dev/lib/gilviewer.hgrepo/gilviewer-internationalization/src/GilViewer/\n"
+"X-Poedit-Basepath: ../../src/GilViewer/\n"
 "X-Poedit-SearchPath-0: gui\n"
 
 #: gui/LayerInfosControl.cpp:61
-#: gui/GlobalSettingsControl.cpp:66
 #: gui/ImageLayerSettingsControl.cpp:255
+#: gui/GlobalSettingsControl.cpp:66
 #: gui/VectorLayerSettingsControl.cpp:254
 msgid "OK"
-msgstr ""
-
-#: gui/GlobalSettingsControl.cpp:55
-msgid "Intensity"
-msgstr ""
-
-#: gui/GlobalSettingsControl.cpp:67
-#: gui/ImageLayerSettingsControl.cpp:256
-#: gui/ApplicationSettings.cpp:156
-#: gui/ApplicationSettings.cpp:222
-#: gui/ApplicationSettings.cpp:348
-#: gui/VectorLayerSettingsControl.cpp:255
-msgid "Apply"
-msgstr ""
-
-#: gui/GlobalSettingsControl.cpp:68
-#: gui/ImageLayerSettingsControl.cpp:257
-#: gui/VectorLayerSettingsControl.cpp:256
-msgid "Cancel"
-msgstr ""
-
-#: gui/GlobalSettingsControl.cpp:89
-msgid "Incorrect entry!"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:86
-msgid "Log window"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:91
-#: gui/PanelViewer.cpp:258
-msgid "About"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:92
-msgid "Show / Hide Log Window"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:97
-msgid "Base Toolbar"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:138
-msgid "Authors:"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:142
-msgid "Contributors:"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:146
-msgid "Home page"
-msgstr ""
-
-#: gui/BasicViewerFrame.cpp:147
-msgid "2D raster and vector viewer"
-msgstr ""
-
-#: gui/LayerControlUtils.cpp:75
-msgid "Change layer visibility"
-msgstr ""
-
-#: gui/LayerControlUtils.cpp:80
-msgid "Change layer transformability"
-msgstr ""
-
-#: gui/NewVectorLayerControl.cpp:83
-#: gui/NewVectorLayerControl.cpp:87
-msgid "Layer name"
-msgstr ""
-
-#: gui/NewVectorLayerControl.cpp:90
-msgid "Layer type"
 msgstr ""
 
 #: gui/ImageLayerSettingsControl.cpp:86
@@ -187,6 +114,21 @@ msgstr ""
 msgid "Alpha channel number"
 msgstr ""
 
+#: gui/ImageLayerSettingsControl.cpp:256
+#: gui/GlobalSettingsControl.cpp:67
+#: gui/VectorLayerSettingsControl.cpp:255
+#: gui/ApplicationSettings.cpp:156
+#: gui/ApplicationSettings.cpp:222
+#: gui/ApplicationSettings.cpp:348
+msgid "Apply"
+msgstr ""
+
+#: gui/ImageLayerSettingsControl.cpp:257
+#: gui/GlobalSettingsControl.cpp:68
+#: gui/VectorLayerSettingsControl.cpp:256
+msgid "Cancel"
+msgstr ""
+
 #: gui/ImageLayerSettingsControl.cpp:293
 msgid "Bad min value on red channel!"
 msgstr ""
@@ -237,6 +179,195 @@ msgstr ""
 
 #: gui/ImageLayerSettingsControl.cpp:709
 msgid "Can't create thread to compute image histogram!"
+msgstr ""
+
+#: gui/GlobalSettingsControl.cpp:55
+msgid "Intensity"
+msgstr ""
+
+#: gui/GlobalSettingsControl.cpp:89
+msgid "Incorrect entry!"
+msgstr ""
+
+#: gui/NewVectorLayerControl.cpp:83
+#: gui/NewVectorLayerControl.cpp:87
+msgid "Layer name"
+msgstr ""
+
+#: gui/NewVectorLayerControl.cpp:90
+msgid "Layer type"
+msgstr ""
+
+#: gui/LayerControlUtils.cpp:75
+msgid "Change layer visibility"
+msgstr ""
+
+#: gui/LayerControlUtils.cpp:80
+msgid "Change layer transformability"
+msgstr ""
+
+#: gui/LayerControl.cpp:157
+msgid "Change selected layers visibility"
+msgstr ""
+
+#: gui/LayerControl.cpp:161
+msgid "Change selected layers transformability"
+msgstr ""
+
+#: gui/LayerControl.cpp:168
+msgid "Global settings control. Apply to all layers ..."
+msgstr ""
+
+#: gui/LayerControl.cpp:173
+#: gui/LayerControl.cpp:889
+msgid "Save display configuration"
+msgstr ""
+
+#: gui/LayerControl.cpp:178
+#: gui/LayerControl.cpp:904
+msgid "Load display configuration"
+msgstr ""
+
+#: gui/LayerControl.cpp:253
+msgid "New file"
+msgstr ""
+
+#: gui/LayerControl.cpp:254
+msgid "Open file"
+msgstr ""
+
+#: gui/LayerControl.cpp:255
+msgid "Save file"
+msgstr ""
+
+#: gui/LayerControl.cpp:256
+msgid "Reset"
+msgstr ""
+
+#: gui/LayerControl.cpp:282
+msgid "Vector settings"
+msgstr ""
+
+#: gui/LayerControl.cpp:283
+#: gui/LayerControl.cpp:290
+msgid " : "
+msgstr ""
+
+#: gui/LayerControl.cpp:289
+msgid "Image settings"
+msgstr ""
+
+#: gui/LayerControl.cpp:308
+#: gui/PanelViewer.cpp:1091
+msgid "All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|"
+msgstr ""
+
+#: gui/LayerControl.cpp:313
+#: gui/PanelViewer.cpp:1099
+msgid "Save layer"
+msgstr ""
+
+#: gui/LayerControl.cpp:441
+msgid "All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP|"
+msgstr ""
+
+#: gui/LayerControl.cpp:442
+msgid "Image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|"
+msgstr ""
+
+#: gui/LayerControl.cpp:448
+msgid "CustomFormat (*)|*"
+msgstr ""
+
+#: gui/LayerControl.cpp:451
+msgid "Open image or shapefile"
+msgstr ""
+
+#: gui/LayerControl.cpp:499
+msgid "Opening files ..."
+msgstr ""
+
+#: gui/LayerControl.cpp:499
+#: gui/LayerControl.cpp:542
+msgid "Reading ..."
+msgstr ""
+
+#: gui/LayerControl.cpp:506
+msgid "Reading file "
+msgstr ""
+
+#: gui/LayerControl.cpp:542
+msgid "Opening file"
+msgstr ""
+
+#: gui/LayerControl.cpp:594
+msgid "New vector layer"
+msgstr ""
+
+#: gui/LayerControl.cpp:647
+msgid "Viewer orientation has been set!"
+msgstr ""
+
+#: gui/LayerControl.cpp:651
+msgid "Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"
+msgstr ""
+
+#: gui/LayerControl.cpp:655
+msgid "Image layer position initialised with respect to first image!"
+msgstr ""
+
+#: gui/LayerControl.cpp:666
+msgid "Image layer position initialised with respect to global orientation!"
+msgstr ""
+
+#: gui/LayerControl.cpp:682
+msgid "Vector layer position initialised with respect to global orientation!"
+msgstr ""
+
+#: gui/LayerControl.cpp:908
+msgid "Reading a display configuration file: "
+msgstr ""
+
+#: gui/LayerControl.cpp:914
+msgid "Display configuration file must have the extension .xml !"
+msgstr ""
+
+#: gui/LayerControl.cpp:914
+#: gui/PanelViewer.cpp:379
+msgid "Error!"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:86
+msgid "Log window"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:91
+#: gui/PanelViewer.cpp:258
+msgid "About"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:92
+msgid "Show / Hide Log Window"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:97
+msgid "Base Toolbar"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:138
+msgid "Authors:"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:142
+msgid "Contributors:"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:146
+msgid "Home page"
+msgstr ""
+
+#: gui/BasicViewerFrame.cpp:147
+msgid "2D raster and vector viewer"
 msgstr ""
 
 #: gui/PanelViewer.cpp:190
@@ -382,299 +513,8 @@ msgstr ""
 msgid "Multi crop"
 msgstr ""
 
-#: gui/PanelViewer.cpp:379
-msgid "Error!"
-msgstr ""
-
 #: gui/PanelViewer.cpp:757
 msgid "All supported files (*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|"
-msgstr ""
-
-#: gui/PanelViewer.cpp:1091
-#: gui/LayerControl.cpp:308
-msgid "All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|"
-msgstr ""
-
-#: gui/PanelViewer.cpp:1099
-#: gui/LayerControl.cpp:313
-msgid "Save layer"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:136
-msgid "LUT directory"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:137
-msgid "Select LUT directory"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:143
-msgid "Working directory"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:144
-msgid "Select working directory"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:150
-msgid "Plugins directory"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:151
-msgid "Select plugins directory"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:174
-msgid "Zoom - dezoom"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:191
-msgid "Fonts"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:200
-msgid "Performances"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:201
-msgid "Load whole image (Warning : you need GDAL !!)"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:208
-msgid "Use NN or bilinear zoom"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:209
-msgid "bilinear"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:244
-#: gui/VectorLayerSettingsControl.cpp:123
-msgid "Points settings"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:246
-#: gui/ApplicationSettings.cpp:274
-#: gui/VectorLayerSettingsControl.cpp:125
-#: gui/VectorLayerSettingsControl.cpp:148
-msgid "Width"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:272
-#: gui/VectorLayerSettingsControl.cpp:146
-msgid "Lines settings"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:303
-#: gui/VectorLayerSettingsControl.cpp:167
-msgid "Polygons settings"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:305
-#: gui/VectorLayerSettingsControl.cpp:169
-msgid "Rings colour"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:306
-#: gui/VectorLayerSettingsControl.cpp:170
-msgid "Inside colour"
-msgstr ""
-
-#: gui/ApplicationSettings.cpp:315
-#: gui/VectorLayerSettingsControl.cpp:179
-msgid "Rings width"
-msgstr ""
-
-#: gui/LayerControl.cpp:157
-msgid "Change selected layers visibility"
-msgstr ""
-
-#: gui/LayerControl.cpp:161
-msgid "Change selected layers transformability"
-msgstr ""
-
-#: gui/LayerControl.cpp:168
-msgid "Global settings control. Apply to all layers ..."
-msgstr ""
-
-#: gui/LayerControl.cpp:173
-msgid "Save display configuration"
-msgstr ""
-
-#: gui/LayerControl.cpp:178
-msgid "Load display configuration"
-msgstr ""
-
-#: gui/LayerControl.cpp:253
-msgid "N"
-msgstr ""
-
-#: gui/LayerControl.cpp:253
-msgid "New file"
-msgstr ""
-
-#: gui/LayerControl.cpp:254
-msgid "O"
-msgstr ""
-
-#: gui/LayerControl.cpp:254
-msgid "Open file"
-msgstr ""
-
-#: gui/LayerControl.cpp:255
-msgid "S"
-msgstr ""
-
-#: gui/LayerControl.cpp:255
-msgid "Save file"
-msgstr ""
-
-#: gui/LayerControl.cpp:256
-msgid "R"
-msgstr ""
-
-#: gui/LayerControl.cpp:256
-msgid "Reset"
-msgstr ""
-
-#: gui/LayerControl.cpp:282
-msgid "Vector settings"
-msgstr ""
-
-#: gui/LayerControl.cpp:283
-#: gui/LayerControl.cpp:290
-msgid " : "
-msgstr ""
-
-#: gui/LayerControl.cpp:289
-msgid "Image settings"
-msgstr ""
-
-#: gui/LayerControl.cpp:304
-msgid "Shapefile (*.shp)|*.shp"
-msgstr ""
-
-#: gui/LayerControl.cpp:309
-msgid "TIFF (*.tif;*.tiff)|*.tif;*.tiff|"
-msgstr ""
-
-#: gui/LayerControl.cpp:310
-msgid "PNG (*.png)|*.png|"
-msgstr ""
-
-#: gui/LayerControl.cpp:311
-msgid "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|"
-msgstr ""
-
-#: gui/LayerControl.cpp:441
-msgid "All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP|"
-msgstr ""
-
-#: gui/LayerControl.cpp:442
-msgid "Image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|"
-msgstr ""
-
-#: gui/LayerControl.cpp:443
-msgid "TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|"
-msgstr ""
-
-#: gui/LayerControl.cpp:444
-msgid "PNG (*.png;*.PNG)|*.png;*.PNG|"
-msgstr ""
-
-#: gui/LayerControl.cpp:445
-msgid "JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|"
-msgstr ""
-
-#: gui/LayerControl.cpp:446
-msgid "BMP (*.bmp)|*.bmp;*.BMP|"
-msgstr ""
-
-#: gui/LayerControl.cpp:447
-msgid "Shapefile (*.shp)|*.shp;*.SHP|"
-msgstr ""
-
-#: gui/LayerControl.cpp:448
-msgid "CustomFormat (*)|*"
-msgstr ""
-
-#: gui/LayerControl.cpp:451
-msgid "Open image or shapefile"
-msgstr ""
-
-#: gui/LayerControl.cpp:499
-msgid "Opening files ..."
-msgstr ""
-
-#: gui/LayerControl.cpp:499
-#: gui/LayerControl.cpp:542
-msgid "Reading ..."
-msgstr ""
-
-#: gui/LayerControl.cpp:506
-msgid "Reading file "
-msgstr ""
-
-#: gui/LayerControl.cpp:506
-msgid "/"
-msgstr ""
-
-#: gui/LayerControl.cpp:506
-#: gui/LayerControl.cpp:507
-msgid "\n"
-msgstr ""
-
-#: gui/LayerControl.cpp:542
-msgid "Opening file"
-msgstr ""
-
-#: gui/LayerControl.cpp:594
-msgid "New vector layer"
-msgstr ""
-
-#: gui/LayerControl.cpp:647
-msgid "L'orientation du viewer a ete parametree !"
-msgstr ""
-
-#: gui/LayerControl.cpp:651
-msgid "Attention l'ori de l'image ne sera pas utilisee car pas d'ori definie pour la premiere image affichee !"
-msgstr ""
-
-#: gui/LayerControl.cpp:655
-msgid "Initialisation de la position du calque image en accord avec l'image de depart !"
-msgstr ""
-
-#: gui/LayerControl.cpp:666
-msgid "Initialisation de la position du calque image en accord avec l'ori globale !"
-msgstr ""
-
-#: gui/LayerControl.cpp:682
-msgid "Initialisation de la position du calque vecteur en accord avec l'ori globale !"
-msgstr ""
-
-#: gui/LayerControl.cpp:889
-msgid "Sauvegarde de la configuration d'affichage"
-msgstr ""
-
-#: gui/LayerControl.cpp:889
-#: gui/LayerControl.cpp:904
-msgid "*.xml"
-msgstr ""
-
-#: gui/LayerControl.cpp:904
-msgid "Chargement d'une configuration d'affichage"
-msgstr ""
-
-#: gui/LayerControl.cpp:908
-msgid "Lecture d'un fichier de configration d'affichage : "
-msgstr ""
-
-#: gui/LayerControl.cpp:914
-msgid "Le fichier de configuration doit avoir l'extension .xml !"
-msgstr ""
-
-#: gui/LayerControl.cpp:914
-msgid "Erreur !"
 msgstr ""
 
 #: gui/VectorLayerSettingsControl.cpp:64
@@ -740,6 +580,43 @@ msgstr ""
 msgid "Dot dash"
 msgstr ""
 
+#: gui/VectorLayerSettingsControl.cpp:123
+#: gui/ApplicationSettings.cpp:244
+msgid "Points settings"
+msgstr ""
+
+#: gui/VectorLayerSettingsControl.cpp:125
+#: gui/VectorLayerSettingsControl.cpp:148
+#: gui/ApplicationSettings.cpp:246
+#: gui/ApplicationSettings.cpp:274
+msgid "Width"
+msgstr ""
+
+#: gui/VectorLayerSettingsControl.cpp:146
+#: gui/ApplicationSettings.cpp:272
+msgid "Lines settings"
+msgstr ""
+
+#: gui/VectorLayerSettingsControl.cpp:167
+#: gui/ApplicationSettings.cpp:303
+msgid "Polygons settings"
+msgstr ""
+
+#: gui/VectorLayerSettingsControl.cpp:169
+#: gui/ApplicationSettings.cpp:305
+msgid "Rings colour"
+msgstr ""
+
+#: gui/VectorLayerSettingsControl.cpp:170
+#: gui/ApplicationSettings.cpp:306
+msgid "Inside colour"
+msgstr ""
+
+#: gui/VectorLayerSettingsControl.cpp:179
+#: gui/ApplicationSettings.cpp:315
+msgid "Rings width"
+msgstr ""
+
 #: gui/VectorLayerSettingsControl.cpp:183
 msgid "Tu veux de l'alpha ? Passe sous OSX !"
 msgstr ""
@@ -772,6 +649,54 @@ msgstr ""
 msgid "Cancel !"
 msgstr ""
 
+#: gui/ApplicationSettings.cpp:136
+msgid "LUT directory"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:137
+msgid "Select LUT directory"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:143
+msgid "Working directory"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:144
+msgid "Select working directory"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:150
+msgid "Plugins directory"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:151
+msgid "Select plugins directory"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:174
+msgid "Zoom - dezoom"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:191
+msgid "Fonts"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:200
+msgid "Performances"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:201
+msgid "Load whole image (Warning : you need GDAL !!)"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:208
+msgid "Use NN or bilinear zoom"
+msgstr ""
+
+#: gui/ApplicationSettings.cpp:209
+msgid "bilinear"
+msgstr ""
+
 #: gui/BasicViewerFrame.h:56
 msgid "frame"
 msgstr ""
@@ -780,23 +705,23 @@ msgstr ""
 msgid "Layer settings"
 msgstr ""
 
-#: gui/LayerControl.hpp:69
-msgid "wxToolBar Sample"
-msgstr ""
-
 #: gui/LayerControlUtils.hpp:77
 msgid "staticText"
 msgstr ""
 
-#: gui/GlobalSettingsControl.hpp:50
-msgid "Global settings"
+#: gui/VectorLayerSettingsControl.hpp:59
+msgid "Vector layer settings"
 msgstr ""
 
 #: gui/ImageLayerSettingsControl.hpp:58
 msgid "Image layer settings"
 msgstr ""
 
-#: gui/VectorLayerSettingsControl.hpp:59
-msgid "Vector layer settings"
+#: gui/GlobalSettingsControl.hpp:50
+msgid "Global settings"
+msgstr ""
+
+#: gui/LayerControl.hpp:69
+msgid "wxToolBar Sample"
 msgstr ""
 

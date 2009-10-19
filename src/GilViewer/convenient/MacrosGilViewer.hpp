@@ -117,57 +117,57 @@ Authors:
 	void classname::OnModeNavigation(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetModeNavigation(); \
-		wxLogMessage( _("Passage en mode Navigation !") ); \
+		wxLogMessage( _("Navigation mode!") ); \
 	} \
 	void classname::OnModeGeometryMoving(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetModeGeometryMoving(); \
-		wxLogMessage( _("Passage en mode Geometry Moving !") ); \
+		wxLogMessage( _("Geometry Moving mode!") ); \
 	} \
 	void classname::OnModeEdition(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetModeEdition(); \
-		wxLogMessage( _("Passage en mode Edition !") ); \
+		wxLogMessage( _("Editing mode!") ); \
 	} \
 	void classname::OnModeCapture(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetModeCapture(); \
-		wxLogMessage( _("Passage en mode Capture !") ); \
+		wxLogMessage( _("Capture mode!") ); \
 	} \
 	void classname::OnModeSelection(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetModeSelection(); \
-		wxLogMessage( _("Passage en mode Selection !") ); \
+		wxLogMessage( _("Selection mode!") ); \
 	} \
 	void classname::OnGeometryNull(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetGeometryNull(); \
-		wxLogMessage( _("Passage en Geometry Nulle !") ); \
+		wxLogMessage( _("NULL Geometry!") ); \
 	} \
 	void classname::OnGeometryPoint(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetGeometryPoint(); \
-		wxLogMessage( _("Passage en Geometry Point !") ); \
+		wxLogMessage( _("Geometry Point!") ); \
 	} \
 	void classname::OnGeometryCircle(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetGeometryCircle(); \
-		wxLogMessage( _("Passage en Geometry Circle !") ); \
+		wxLogMessage( _("Geometry Circle!") ); \
 	} \
 	void classname::OnGeometryRectangle(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetGeometryRectangle(); \
-		wxLogMessage( _("Passage en Geometry Rectangle !") ); \
+		wxLogMessage( _("Geometry Rectangle!") ); \
 	} \
 	void classname::OnGeometryLine(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetGeometryLine(); \
-		wxLogMessage( _("Passage en Geometry Line !") ); \
+		wxLogMessage( _("Geometry Line!") ); \
 	} \
 	void classname::OnGeometryPolygone(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->SetGeometryPolygone(); \
-		wxLogMessage( _("Passage en Geometry Polygone !") ); \
+		wxLogMessage( _("Geometry Polygon!") ); \
 	} \
 	void classname::OnSingleCrop(wxCommandEvent& event) \
 	{ \

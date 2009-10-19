@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
@@ -95,7 +95,6 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	m_colourPickerInsidePolygons = NULL;
     m_colourPickerLines = NULL;
     m_sliderWidthPoints = NULL;
-    m_sliderAlphaPolygons = NULL;
     m_sliderWidthLines = NULL;
     m_sliderWidthRings = NULL;
 	m_choicePoints = NULL;
@@ -177,12 +176,6 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 		wxBoxSizer *boxSlidersPolygons = new wxBoxSizer(wxVERTICAL);
 		wxStaticBoxSizer *boxSizerAlphaPolygons = new wxStaticBoxSizer(wxVERTICAL, this, _("Alpha"));
 		wxStaticBoxSizer *boxSizerRingsWidth = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Rings width"));
-		m_sliderAlphaPolygons = new wxSlider(this, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL | wxSL_LABELS);
-#if !defined __WXMAC_OSX__
-		m_sliderAlphaPolygons->Enable(false);
-		m_sliderAlphaPolygons->SetToolTip(_("Tu veux de l'alpha ? Passe sous OSX !"));
-#endif // __WXMAC_OSX__
-		boxSizerAlphaPolygons->Add(m_sliderAlphaPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		// Ring width
 		m_sliderWidthRings = new wxSlider(this, wxID_ANY, 1, 1, 10, wxDefaultPosition, wxSize(100, 40), wxSL_HORIZONTAL | wxSL_LABELS);
 		boxSizerRingsWidth->Add(m_sliderWidthRings, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -209,7 +202,7 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 
 			wxArrayString attributesNames;
 			// On parcourt le vecteur et on recupere les valeurs (on met une chaine vide en premier --> permet de ne rien afficher)
-			attributesNames.Add(_(""));
+			attributesNames.Add(wxT(""));
 			for (unsigned int i = 0; i < vectorLayer->LayerContent()->m_dbfAttributesNames.size(); ++i)
 				attributesNames.Add(vectorLayer->LayerContent()->m_dbfAttributesNames[i]);
 			// Pffffffffffffffff
@@ -251,7 +244,7 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///
 	////////////////////////
 	wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
-	buttons_sizer->AddButton(new wxButton(this, wxID_OK, _("OK")));
+	buttons_sizer->AddButton(new wxButton(this, wxID_OK, wxT("OK")));
 	buttons_sizer->AddButton(new wxButton(this, wxID_APPLY, _("Apply")));
 	buttons_sizer->AddButton(new wxButton(this, wxID_CANCEL, _("Cancel")));
 	buttons_sizer->Realize();
@@ -320,9 +313,9 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 	if (vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
 	{
 		wxColour ringsColour(m_colourPickerRingsPolygons->GetColour());
-		wxColour ringsColourWithAlpha(ringsColour.Red(), ringsColour.Green(), ringsColour.Blue(), m_sliderAlphaPolygons->GetValue());
+		wxColour ringsColourWithAlpha(ringsColour.Red(), ringsColour.Green(), ringsColour.Blue(), 1);
 		wxColour insideColour(m_colourPickerInsidePolygons->GetColour());
-		wxColour insideColourWithAlpha(insideColour.Red(), insideColour.Green(), insideColour.Blue(), m_sliderAlphaPolygons->GetValue());
+		wxColour insideColourWithAlpha(insideColour.Red(), insideColour.Green(), insideColour.Blue(), 1);
 		vectorLayer->PolygonsRingsColour(ringsColourWithAlpha,false);
 		vectorLayer->PolygonsInsideColour(insideColourWithAlpha,false);
 		vectorLayer->PolygonsRingsWidth(m_sliderWidthRings->GetValue(),false);

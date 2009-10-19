@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <sstream>
@@ -79,7 +79,7 @@ void VectorLayerContent::FlagPRJ(signed short flagPRJ)
 void VectorLayerContent::ReadAttributes(const std::string &DBFfilename)
 {
 	wxString mes;
-	mes << wxT("Lecture du fichier DBF ") << wxString(DBFfilename.c_str(), *wxConvCurrent);
+	mes << wxT("Reading DBF file") << wxString(DBFfilename.c_str(), *wxConvCurrent);
 	::wxLogMessage(mes);
 
 	try
@@ -89,7 +89,7 @@ void VectorLayerContent::ReadAttributes(const std::string &DBFfilename)
 		int nbFields = fileDBF.GetFieldCount();
 		int nbRecords = fileDBF.GetRecordCount();
 		mes.Clear();
-		mes << nbFields << wxT(" champs dans le fichier ...\n") << nbRecords << wxT(" enregistrements dans le fichier ...");
+		mes << nbFields << wxT(" fields in the file ...\n") << nbRecords << wxT(" records in the file ...");
 		wxLogMessage(mes);
 
 		unsigned int i, j;
