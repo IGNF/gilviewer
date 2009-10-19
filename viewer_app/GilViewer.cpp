@@ -39,6 +39,7 @@ Authors:
 //#include "vld.h"
 
 #include <stdexcept>
+#include <iostream>
 
 #include <boost/shared_ptr.hpp>
 
@@ -47,6 +48,7 @@ Authors:
 #include <wx/cmdline.h>
 #include <wx/msgdlg.h>
 #include <wx/image.h>
+#include <wx/stdpaths.h>
 
 
 
@@ -76,6 +78,8 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 
 IMPLEMENT_APP(MyApp);
 
+wxLocale* locale;
+long language;
 
 
 bool MyApp::OnInit()
@@ -83,6 +87,42 @@ bool MyApp::OnInit()
 #ifdef __LINUX__
 	setlocale(LC_ALL, "POSIX");
 #endif
+
+	language =  wxLANGUAGE_DEFAULT;
+
+
+	// load language if possible, fall back to english otherwise
+	    if(wxLocale::IsAvailable(language))
+	    {
+	        locale = new wxLocale( language, wxLOCALE_CONV_ENCODING );
+
+	        #ifdef __WXGTK__
+	        // add locale search paths
+	        locale->AddCatalogLookupPathPrefix(wxT("/usr"));
+	        locale->AddCatalogLookupPathPrefix(wxT("/usr/local"));
+	        wxStandardPaths* paths = (wxStandardPaths*) &wxStandardPaths::Get();
+	        wxString prefix = paths->GetInstallPrefix();
+	        locale->AddCatalogLookupPathPrefix( prefix );
+	        #endif
+
+	        locale->AddCatalog(wxT("libGilViewer"));
+
+	        if(! locale->IsOk() )
+	        {
+	            std::cerr << "selected language is wrong" << std::endl;
+	            delete locale;
+	            locale = new wxLocale( wxLANGUAGE_ENGLISH );
+	            language = wxLANGUAGE_ENGLISH;
+	        }
+	    }
+	    else
+	    {
+	        std::cout << "The selected language is not supported by your system."
+	                  << "Try installing support for this language." << std::endl;
+	        locale = new wxLocale( wxLANGUAGE_ENGLISH );
+	        language = wxLANGUAGE_ENGLISH;
+	    }
+
 
 
 	// Parsing de la ligne de commande : on peut passer un nom de fichier
