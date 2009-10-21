@@ -141,7 +141,7 @@ VectorLayerArc::VectorLayerArc(const SHPHandle &handle , const std::string &shap
 
 		wxString mes;
 		mes << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
-		mes << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objetcs ...");
+		mes << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objects ...");
 		wxProgressDialog* progress = new wxProgressDialog( _("Reading file ...") , mes , static_cast<unsigned int>(m_numberOfEntities) , NULL , wxPD_APP_MODAL|wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 		for (i=0; i<static_cast<unsigned int>(m_numberOfEntities); ++i)
 		{
