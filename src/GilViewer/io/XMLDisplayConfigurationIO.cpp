@@ -529,7 +529,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 					else
 						layerControl->m_isOrientationSet = true;
 					wxString mes;
-					mes << _("Noeud 'IsSet' : ") << i;
+					mes << _("Node 'IsSet': ") << i;
 					::wxLogMessage( mes );
 				}
 				else if ( std::string(childOrientation->Value()) == "ViewerOrientation" )
