@@ -545,7 +545,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 					// OriginY
 					childOrientation->ToElement()->Attribute( "originY" , &d );
 					layerControl->m_ori.OriginY(d);
-					mes << _("   Attribut 'originY' : ") << d << wxT("\n");
+					mes << _("   Attribute 'originY' : ") << d << wxT("\n");
 					// SizeX
 					childOrientation->ToElement()->Attribute( "sizeX" , &i );
 					layerControl->m_ori.SizeX(i);
