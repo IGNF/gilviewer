@@ -448,7 +448,7 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
 	wildcard << wxT("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
 	wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
 	wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
-	wildcard << _("CustomFormat ");
+	wildcard << _("Custom format ");
 	wildcard << wxT("(*)|*");
 	wxString str;
 	//wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());

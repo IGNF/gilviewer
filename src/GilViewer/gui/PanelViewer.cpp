@@ -265,7 +265,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	m_menuMain->AppendRadioItem(ID_GEOMETRY_LINE, _("Line"));
 	m_menuMain->AppendRadioItem(ID_GEOMETRY_CIRCLE, _("Circle"));
 	m_menuMain->AppendRadioItem(ID_GEOMETRY_RECTANGLE, _("Rectangle"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_POLYGONE, _("Polygone"));
+	m_menuMain->AppendRadioItem(ID_GEOMETRY_POLYGONE, _("Polygon"));
 
 	///Shortcuts
 	wxAcceleratorEntry entries[3];
@@ -336,7 +336,7 @@ wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent)
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_CIRCLE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circle"));
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_LINE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
 		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_RECTANGLE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("RECTANGLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POLYGONE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POLYGONE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygon"));
 
 		m_modeAndGeometryToolbar->AddSeparator();
 		m_modeAndGeometryToolbar->AddTool(ID_SINGLE_CROP, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
