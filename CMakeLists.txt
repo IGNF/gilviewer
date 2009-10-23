@@ -149,6 +149,11 @@ ADD_DEPENDENCIES( GilViewerApp GilViewer )
 ####     - Package : create a packake 
 SET(INSTALL_MODE "Install" CACHE STRING "Choose install mode between : None, Install, Package")
 IF(${INSTALL_MODE} STREQUAL "Install")
+	# If an install target is selected, propose to install langage files
+	set( LANGAGES_SUPPORT_FILES "" )
+	# Currently available langages are: French
+	option( INSTALL_LANGAGE_FRENCH "Install french langage support" ON )
+	set( LANGAGES_SUPPORT_FILES ${CMAKE_SOURCE_DIR}/languages/fr/libGilViewer.mo )
 	INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_install.cmake )
 	MESSAGE( STATUS " Install file include " )
 ENDIF(${INSTALL_MODE} STREQUAL "Install")
