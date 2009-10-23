@@ -36,8 +36,6 @@
 
  ***********************************************************************/
 
-#include "FrameViewer.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -49,17 +47,18 @@
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
 #include <wx/config.h>
+
 #if defined(__WXMSW__)
-#include <wx/icon.h>
+#	include <wx/icon.h>
 #endif
 
+#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
 #include "GilViewer/gui/ApplicationSettings.hpp"
 #include "GilViewer/gui/LayerControl.hpp"
 #include "GilViewer/gui/PanelViewer.hpp"
 #include "GilViewer/gui/define_id.hpp"
-
-#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
 #include "GilViewer/gui/PanelManager.h"
+#include "FrameViewer.hpp"
 
 BEGIN_EVENT_TABLE(FrameViewer,BasicViewerFrame)
 ADD_GILVIEWER_EVENTS_TO_TABLE(FrameViewer)
