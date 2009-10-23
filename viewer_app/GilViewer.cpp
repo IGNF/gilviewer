@@ -36,43 +36,24 @@ Authors:
 
 ***********************************************************************/
 
-//#include "vld.h"
-
 #include <stdexcept>
-#include <iostream>
 
-#include <boost/shared_ptr.hpp>
-
-#include <wx/cmdline.h>
 #include <wx/filename.h>
 #include <wx/cmdline.h>
-#include <wx/msgdlg.h>
-#include <wx/image.h>
 #include <wx/stdpaths.h>
-
-
-
+#include <wx/msgdlg.h>
+#include <wx/log.h>
 
 #include "FrameViewer.hpp"
-#include "GilViewer/layers/ImageLayer.hpp"
-#include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/layers/VectorLayerMultiGeometries.hpp"
-
-#include "GilViewer/tools/Orientation2D.h"
-#include "GilViewer/vectorutils/CreateShapes.h"
-
-
 #include "GilViewer.h"
-//#include "plugins/PluginManager.h"
-
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, _("input file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+{ wxCMD_LINE_PARAM, NULL, NULL, _("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 { wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
-#include <locale.h>
+#	include <locale.h>
 #endif
 
 
@@ -90,42 +71,38 @@ bool MyApp::OnInit()
 
 	language =  wxLANGUAGE_DEFAULT;
 
+	// Load language if possible, fall back to english otherwise
+    if(wxLocale::IsAvailable(language))
+    {
+        locale = new wxLocale( language, wxLOCALE_CONV_ENCODING );
 
-	// load language if possible, fall back to english otherwise
-	    if(wxLocale::IsAvailable(language))
-	    {
-	        locale = new wxLocale( language, wxLOCALE_CONV_ENCODING );
-
-	        #ifdef __WXGTK__
-	        // add locale search paths
+#		ifdef __WXGTK__
+			// add locale search paths
 	        locale->AddCatalogLookupPathPrefix(wxT("/usr"));
 	        locale->AddCatalogLookupPathPrefix(wxT("/usr/local"));
 	        wxStandardPaths* paths = (wxStandardPaths*) &wxStandardPaths::Get();
 	        wxString prefix = paths->GetInstallPrefix();
 	        locale->AddCatalogLookupPathPrefix( prefix );
-	        #endif
+#		endif // __WXGTK__
 
-	        locale->AddCatalog(wxT("libGilViewer"));
+        locale->AddCatalog(wxT("libGilViewer"));
 
-	        if(! locale->IsOk() )
-	        {
-	            std::cerr << "selected language is wrong" << std::endl;
-	            delete locale;
-	            locale = new wxLocale( wxLANGUAGE_ENGLISH );
-	            language = wxLANGUAGE_ENGLISH;
-	        }
-	    }
-	    else
-	    {
-	        std::cout << "The selected language is not supported by your system."
-	                  << "Try installing support for this language." << std::endl;
-	        locale = new wxLocale( wxLANGUAGE_ENGLISH );
-	        language = wxLANGUAGE_ENGLISH;
-	    }
+        if(! locale->IsOk() )
+        {
+        	::wxLogMessage( _("Selected language is wrong!") );
+            delete locale;
+            locale = new wxLocale( wxLANGUAGE_ENGLISH );
+            language = wxLANGUAGE_ENGLISH;
+        }
+    }
+    else
+    {
+       	::wxLogMessage( _("The selected langage is not supported by your system. Try installing support for this language.") );
+        locale = new wxLocale( wxLANGUAGE_ENGLISH );
+        language = wxLANGUAGE_ENGLISH;
+    }
 
-
-
-	// Parsing de la ligne de commande : on peut passer un nom de fichier
+	// Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
 	wxArrayString cmdFiles;
 	wxString cmdFilename;
 	wxCmdLineParser cmdLineParser(g_cmdLineDesc, argc, argv);
