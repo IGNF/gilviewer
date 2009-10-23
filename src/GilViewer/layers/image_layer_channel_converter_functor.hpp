@@ -46,10 +46,14 @@ struct channel_converter_functor
 
 			channel_converter_functor(const float min, const float max, const ColorLookupTable& lut):
 			   m_min_src(min), m_max_src(max),
-			   m_min_dst(dev3n8_pixel_t(0)),
-			   m_max_dst(dev3n8_pixel_t(255)),
 			   m_lut(&lut.getData().front())
 		   {
+			   at_c<0>(m_min_dst) = m_lut[0];
+			   at_c<1>(m_min_dst) = m_lut[256];
+			   at_c<2>(m_min_dst) = m_lut[512];
+			   at_c<0>(m_max_dst) = m_lut[255];
+			   at_c<1>(m_max_dst) = m_lut[511];
+			   at_c<2>(m_max_dst) = m_lut[767];
 //				boost::gil::at_c<3>(m_min_dst) = 255;
 		   }
 
