@@ -57,13 +57,13 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 #endif
 
 
-IMPLEMENT_APP(MyApp);
+IMPLEMENT_APP(GilViewerApp);
 
 wxLocale* locale;
 long language;
 
 
-bool MyApp::OnInit()
+bool GilViewerApp::OnInit()
 {
 #ifdef __LINUX__
 	setlocale(LC_ALL, "POSIX");
