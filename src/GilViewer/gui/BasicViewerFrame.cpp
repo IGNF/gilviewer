@@ -43,6 +43,8 @@ Authors:
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/image.h>
+#include <wx/dialog.h>
+#include <wx/html/htmlwin.h>
 
 #include "GilViewer/gui/define_id.hpp"
 
@@ -53,6 +55,7 @@ extern void InitXmlResource();
 
 BEGIN_EVENT_TABLE(BasicViewerFrame,wxFrame)
 EVT_TOOL(wxID_ABOUT, BasicViewerFrame::OnAbout)
+EVT_TOOL(wxID_HELP, BasicViewerFrame::OnHelp)
 EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, BasicViewerFrame::OnShowHideLogWindow)
 //EVT_TOOL(wxID_PREFERENCES, BasicViewerFrame::OnApplicationSettings)
 END_EVENT_TABLE()
@@ -126,6 +129,11 @@ void BasicViewerFrame::OnAbout(wxCommandEvent& event)
 	wxAboutBox(getAboutInfo());
 }
 
+void BasicViewerFrame::OnHelp(wxCommandEvent& event)
+{
+	getHelp()->Show(true);
+}
+
 //void BasicViewerFrame::OnApplicationSettings(wxCommandEvent& event)
 //{
 //	variablePanelViewer->GetApplicationSettings()->Show(true);
@@ -149,8 +157,21 @@ wxAboutDialogInfo BasicViewerFrame::getAboutInfo() const
 	return info;
 }
 
+wxDialog* BasicViewerFrame::getHelp() const
+{
+	wxDialog* helpDialog = new wxDialog(NULL, wxID_ANY, wxString(_("Help")));
+	wxHtmlWindow* helpWindow = new wxHtmlWindow(helpDialog, wxID_ANY, wxDefaultPosition, wxSize(380, 400), wxHW_SCROLLBAR_AUTO);
 
+	wxBoxSizer *topsizer;
+	topsizer = new wxBoxSizer(wxVERTICAL);
 
+	helpWindow->LoadPage(wxT("help/help.html"));
+	topsizer->Add(helpWindow, 1, wxALL, 10);
+    helpDialog->SetSizer(topsizer);
+    topsizer->Fit(helpDialog);
+
+	return helpDialog;
+}
 
 
 
