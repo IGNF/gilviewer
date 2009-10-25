@@ -94,7 +94,7 @@ BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxStri
 
 	wxAuiPaneInfo paneInfoToolbar;
 	paneInfoToolbar.ToolbarPane();
-	paneInfoToolbar.Caption( _("Base Toolbar") );
+	paneInfoToolbar.Caption( _("Toolbar Info") );
 	paneInfoToolbar.TopDockable();
 	paneInfoToolbar.Top();
 	paneInfoToolbar.Fixed();
