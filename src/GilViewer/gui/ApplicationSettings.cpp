@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <wx/icon.h>
@@ -88,9 +88,9 @@ ApplicationSettings::ApplicationSettings(wxWindow *parent, wxWindowID id, const 
 	m_panel->SetSizer(m_sizerFrame);
 	m_bookCtrl->SetImageList(m_imageList);
 
-	m_bookCtrl->AddPage(CreatePathsSettingsPanel(), _(""), false, 0);
-	m_bookCtrl->AddPage(CreateOptionsSettingsPanel(), _(""), false, 1);
-	m_bookCtrl->AddPage(CreateVetorLayerSettingsPanel(), _(""), false, 2);
+	m_bookCtrl->AddPage(CreatePathsSettingsPanel(), wxT(""), false, 0);
+	m_bookCtrl->AddPage(CreateOptionsSettingsPanel(), wxT(""), false, 1);
+	m_bookCtrl->AddPage(CreateVetorLayerSettingsPanel(), wxT(""), false, 2);
 
 	m_sizerFrame->Insert(0, m_bookCtrl, wxSizerFlags(5).Expand().Border());
 	m_sizerFrame->Show(m_bookCtrl);
@@ -107,14 +107,14 @@ ApplicationSettings::ApplicationSettings(wxWindow *parent, wxWindowID id, const 
 
 	// Paths
 	wxString str;
-	pConfig->Read(_("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
+	pConfig->Read(wxT("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
 	::wxSetWorkingDirectory(str);
 
 	// Options settings
-	pConfig->Read(_("/Options/Zoom"), &zoom_, 0.5);
-	pConfig->Read(_("/Options/Dezoom"), &deZoom_, 2.);
-	pConfig->Read(_("/Options/LoadWoleImage"), &m_loadWholeImage, true);
-	pConfig->Read(_("/Options/BilinearZoom"), &m_bilinearZoom, false);
+	pConfig->Read(wxT("/Options/Zoom"), &zoom_, 0.5);
+	pConfig->Read(wxT("/Options/Dezoom"), &deZoom_, 2.);
+	pConfig->Read(wxT("/Options/LoadWoleImage"), &m_loadWholeImage, true);
+	pConfig->Read(wxT("/Options/BilinearZoom"), &m_bilinearZoom, false);
 }
 
 
@@ -132,21 +132,21 @@ wxPanel* ApplicationSettings::CreatePathsSettingsPanel()
 	wxString str;
 
 	// LUT
-	pConfig->Read(_("/Paths/LUT"), &str, ::wxGetCwd());
+	pConfig->Read(wxT("/Paths/LUT"), &str, ::wxGetCwd());
 	wxStaticBoxSizer *boxSizerLUT = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("LUT directory"));
 	dirPickerLUT = new wxDirPickerCtrl(panel, wxID_ANY, str, _("Select LUT directory"), wxDefaultPosition, wxDefaultSize, /*wxDIRP_USE_TEXTCTRL | */wxDIRP_DIR_MUST_EXIST);
 	boxSizerLUT->Add(dirPickerLUT, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
 	mainSizer->Add(boxSizerLUT, 0, wxEXPAND | wxHORIZONTAL, 5);
 
 	// Working directory
-	pConfig->Read(_("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
+	pConfig->Read(wxT("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
 	wxStaticBoxSizer *boxSizerWD = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Working directory"));
 	dirPickerWD = new wxDirPickerCtrl(panel, wxID_ANY, str, _("Select working directory"), wxDefaultPosition, wxDefaultSize, /*wxDIRP_USE_TEXTCTRL | */wxDIRP_DIR_MUST_EXIST);
 	boxSizerWD->Add(dirPickerWD, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
 	mainSizer->Add(boxSizerWD, 0, wxEXPAND | wxHORIZONTAL, 5);
 
 	// Plugins directory
-	pConfig->Read(_("/Paths/Plugins"), &str, ::wxGetCwd());
+	pConfig->Read(wxT("/Paths/Plugins"), &str, ::wxGetCwd());
 	wxStaticBoxSizer *boxSizerPlugins = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Plugins directory"));
 	dirPickerPlugins = new wxDirPickerCtrl(panel, wxID_ANY, str, _("Select plugins directory"), wxDefaultPosition, wxDefaultSize, /*wxDIRP_USE_TEXTCTRL | */wxDIRP_DIR_MUST_EXIST);
 	boxSizerPlugins->Add(dirPickerPlugins, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
@@ -174,12 +174,12 @@ wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
 	wxStaticBoxSizer *boxSizerZoom = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Zoom - dezoom"));
 	wxBoxSizer *zoomSizer = new wxBoxSizer(wxHORIZONTAL);
 	// Zoom
-	pConfig->Read(_("/Options/Zoom"), &zoom_, 0.5);
+	pConfig->Read(wxT("/Options/Zoom"), &zoom_, 0.5);
 	str << zoom_;
 	m_textZoom = new wxTextCtrl(panel, wxID_ANY, str);
 	zoomSizer->Add(m_textZoom, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
 	// Dezoom
-	pConfig->Read(_("/Options/Dezoom"), &deZoom_, 2.);
+	pConfig->Read(wxT("/Options/Dezoom"), &deZoom_, 2.);
 	str.Clear();
 	str << deZoom_;
 	m_textDezoom = new wxTextCtrl(panel, wxID_ANY, str);
@@ -189,7 +189,7 @@ wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
 
 	///// Font de l'applications
 	wxStaticBoxSizer *boxSizerFonts = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Fonts"));
-	pConfig->Read(_("/Options/FontSize"), &fontSize_, 8);
+	pConfig->Read(wxT("/Options/FontSize"), &fontSize_, 8);
 	str.Clear();
 	str << fontSize_;
 	m_textFontSize = new wxTextCtrl(panel, wxID_ANY, str);
@@ -199,7 +199,7 @@ wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
 	///////LOAD WHOLE IMAGE
 	wxStaticBoxSizer *boxSizerPerformance = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Performances"));
 	m_checkBoxLoadWholeImage = new wxCheckBox(panel, wxID_ANY, _("Load whole image (Warning : you need GDAL !!)"));
-	pConfig->Read(_("/Options/LoadWoleImage"), &m_loadWholeImage, false);
+	pConfig->Read(wxT("/Options/LoadWoleImage"), &m_loadWholeImage, false);
 	m_checkBoxLoadWholeImage->SetValue(m_loadWholeImage);
 
 	boxSizerPerformance->Add(m_checkBoxLoadWholeImage, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
@@ -207,7 +207,7 @@ wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
 	///////Bilinear zoom
 	wxStaticBoxSizer *boxSizerBilinearZoom = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Use NN or bilinear zoom"));
 	m_checkBoxBilinearZoom = new wxCheckBox(panel, wxID_ANY, _("bilinear"));
-	pConfig->Read(_("/Options/BilinearZoom"), &m_bilinearZoom, false);
+	pConfig->Read(wxT("/Options/BilinearZoom"), &m_bilinearZoom, false);
 	m_checkBoxBilinearZoom->SetValue(m_bilinearZoom);
 
 	boxSizerBilinearZoom->Add(m_checkBoxBilinearZoom, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
@@ -256,10 +256,10 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	if ( pConfig )
 	{
 		int red, green, blue, width;
-		pConfig->Read(_("/Options/VectorLayerPoint/Color/Red"), &red, 255);
-		pConfig->Read(_("/Options/VectorLayerPoint/Color/Green"), &green, 0);
-		pConfig->Read(_("/Options/VectorLayerPoint/Color/Blue"), &blue, 0);
-		pConfig->Read(_("/Options/VectorLayerPoint/Width"), &width, 3);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Color/Red"), &red, 255);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Color/Green"), &green, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Color/Blue"), &blue, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Width"), &width, 3);
 		m_colourPickerPoints->SetColour( wxColour(red,green,blue) );
 		m_sliderWidthPoints->SetValue( width );
 	}
@@ -285,13 +285,13 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 		int redLine = 255, blueLine = 0, greenLine = 0;
 		int widthLine = 3;
 		int styleLine = wxSOLID;
-		pConfig->Read(_T("/Options/VectorLayerArc/Color/Red"), &redLine, 255);
-		pConfig->Read(_T("/Options/VectorLayerArc/Color/Green"), &greenLine, 0);
-		pConfig->Read(_T("/Options/VectorLayerArc/Color/Blue"), &blueLine, 0);
+		pConfig->Read(wxT("/Options/VectorLayerArc/Color/Red"), &redLine, 255);
+		pConfig->Read(wxT("/Options/VectorLayerArc/Color/Green"), &greenLine, 0);
+		pConfig->Read(wxT("/Options/VectorLayerArc/Color/Blue"), &blueLine, 0);
 		m_colourPickerLines->SetColour( wxColour(redLine,greenLine,blueLine) );
-		pConfig->Read(_T("/Options/VectorLayerArc/Width"), &widthLine, 3);
+		pConfig->Read(wxT("/Options/VectorLayerArc/Width"), &widthLine, 3);
 		m_sliderWidthLines->SetValue( widthLine );
-		pConfig->Read(_T("/Options/VectorLayerArc/Style"), &styleLine, wxSOLID);
+		pConfig->Read(wxT("/Options/VectorLayerArc/Style"), &styleLine, wxSOLID);
 		m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(styleLine) );
 	}
 
@@ -311,16 +311,8 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	boxColorPickersPolygons->Add(boxSizerRingsColour, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxColorPickersPolygons->Add(boxSizerInsideColour, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	wxBoxSizer *boxSlidersPolygons = new wxBoxSizer(wxVERTICAL);
-	wxStaticBoxSizer *boxSizerRingsWidth = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Rings width"));
-#if defined __WXMAC_OSX__
-	wxStaticBoxSizer *boxSizerAlphaPolygons = new wxStaticBoxSizer(wxVERTICAL, panel, _("Alpha"));
-	m_sliderAlphaPolygons = new wxSlider(panel, wxID_ANY, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL | wxSL_LABELS);
-	m_sliderAlphaPolygons->Enable(false);
-	m_sliderAlphaPolygons->SetToolTip(_("Tu veux de l'alpha ? Passe sous OSX !"));
-	boxSizerAlphaPolygons->Add(m_sliderAlphaPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-	boxSlidersPolygons->Add(boxSizerAlphaPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-#endif // __WXMAC_OSX__
 	// Ring width
+	wxStaticBoxSizer *boxSizerRingsWidth = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Rings width"));
 	m_sliderWidthRings = new wxSlider(panel, wxID_ANY, 1, 1, 10, wxDefaultPosition, wxSize(100, 40), wxSL_HORIZONTAL | wxSL_LABELS);
 	boxSizerRingsWidth->Add(m_sliderWidthRings, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSlidersPolygons->Add(boxSizerRingsWidth, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -334,18 +326,18 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	{
 		int red, green, blue, width;
 		int penStyle, brushStyle;
-		pConfig->Read(_("/Options/VectorLayerPolygon/Ring/Color/Red"), &red, 255);
-		pConfig->Read(_("/Options/VectorLayerPolygon/Ring/Color/Green"), &green, 0);
-		pConfig->Read(_("/Options/VectorLayerPolygon/Ring/Color/Blue"), &blue, 0);
-		pConfig->Read(_("/Options/VectorLayerPolygon/Ring/Width"), &width, 1);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Color/Red"), &red, 255);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Color/Green"), &green, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Color/Blue"), &blue, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Width"), &width, 1);
 		m_colourPickerRingsPolygons->SetColour( wxColour(red,green,blue) );
 		m_sliderWidthRings->SetValue( width );
-		pConfig->Read(_("/Options/VectorLayerPolygon/Shape/Color/Red"), &red, 255);
-		pConfig->Read(_("/Options/VectorLayerPolygon/Shape/Color/Green"), &green, 0);
-		pConfig->Read(_("/Options/VectorLayerPolygon/Shape/Color/Blue"), &blue, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Red"), &red, 255);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), &green, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), &blue, 0);
 		m_colourPickerInsidePolygons->SetColour( wxColour(red,green,blue) );
-		pConfig->Read(_("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
-		pConfig->Read(_("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxSOLID);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxSOLID);
 		m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(brushStyle) );
 	}
 
@@ -379,41 +371,41 @@ void ApplicationSettings::WriteConfig()
 		return;
 
 	// Paths settings
-	pConfig->Write(_("/Paths/LUT"), dirPickerLUT->GetPath());
-	pConfig->Write(_("/Paths/WorkingDirectory"), dirPickerWD->GetPath());
-	pConfig->Write(_("/Paths/Plugins"), dirPickerPlugins->GetPath());
+	pConfig->Write(wxT("/Paths/LUT"), dirPickerLUT->GetPath());
+	pConfig->Write(wxT("/Paths/WorkingDirectory"), dirPickerWD->GetPath());
+	pConfig->Write(wxT("/Paths/Plugins"), dirPickerPlugins->GetPath());
 
 	// Options settings
 	m_textZoom->GetValue().ToDouble(&zoom_);
 	m_textDezoom->GetValue().ToDouble(&deZoom_);
-	pConfig->Write(_("/Options/Zoom"), zoom_);
-	pConfig->Write(_("/Options/Dezoom"), deZoom_);
+	pConfig->Write(wxT("/Options/Zoom"), zoom_);
+	pConfig->Write(wxT("/Options/Dezoom"), deZoom_);
 	m_textFontSize->GetValue().ToDouble(&fontSize_);
-	pConfig->Write(_("/Options/FontSize"), fontSize_);
+	pConfig->Write(wxT("/Options/FontSize"), fontSize_);
 	m_loadWholeImage = m_checkBoxLoadWholeImage->GetValue();
-	pConfig->Write(_("/Options/LoadWoleImage"), m_loadWholeImage);
+	pConfig->Write(wxT("/Options/LoadWoleImage"), m_loadWholeImage);
 	m_bilinearZoom = m_checkBoxBilinearZoom->GetValue();
-	pConfig->Write(_("/Options/BilinearZoom"), m_bilinearZoom);
+	pConfig->Write(wxT("/Options/BilinearZoom"), m_bilinearZoom);
 
 	// Vector layers
-	pConfig->Write(_("/Options/VectorLayerPoint/Color/Red"), m_colourPickerPoints->GetColour().Red());
-	pConfig->Write(_("/Options/VectorLayerPoint/Color/Green"), m_colourPickerPoints->GetColour().Green());
-	pConfig->Write(_("/Options/VectorLayerPoint/Color/Blue"), m_colourPickerPoints->GetColour().Blue());
-	pConfig->Write(_("/Options/VectorLayerPoint/Width"), m_sliderWidthPoints->GetValue());
+	pConfig->Write(wxT("/Options/VectorLayerPoint/Color/Red"), m_colourPickerPoints->GetColour().Red());
+	pConfig->Write(wxT("/Options/VectorLayerPoint/Color/Green"), m_colourPickerPoints->GetColour().Green());
+	pConfig->Write(wxT("/Options/VectorLayerPoint/Color/Blue"), m_colourPickerPoints->GetColour().Blue());
+	pConfig->Write(wxT("/Options/VectorLayerPoint/Width"), m_sliderWidthPoints->GetValue());
 
-	pConfig->Write(_("/Options/VectorLayerLine/Color/Red"), m_colourPickerLines->GetColour().Red());
-	pConfig->Write(_("/Options/VectorLayerLine/Color/Green"), m_colourPickerLines->GetColour().Green());
-	pConfig->Write(_("/Options/VectorLayerLine/Color/Blue"), m_colourPickerLines->GetColour().Blue());
-	pConfig->Write(_("/Options/VectorLayerLine/Width"), m_sliderWidthLines->GetValue());
-	pConfig->Write(_("/Options/VectorLayerLine/Style"), wxhelper::FromLineSelectionIndexToWxStyle(m_choiceLines->GetSelection()) );
+	pConfig->Write(wxT("/Options/VectorLayerLine/Color/Red"), m_colourPickerLines->GetColour().Red());
+	pConfig->Write(wxT("/Options/VectorLayerLine/Color/Green"), m_colourPickerLines->GetColour().Green());
+	pConfig->Write(wxT("/Options/VectorLayerLine/Color/Blue"), m_colourPickerLines->GetColour().Blue());
+	pConfig->Write(wxT("/Options/VectorLayerLine/Width"), m_sliderWidthLines->GetValue());
+	pConfig->Write(wxT("/Options/VectorLayerLine/Style"), wxhelper::FromLineSelectionIndexToWxStyle(m_choiceLines->GetSelection()) );
 
-	pConfig->Write(_("/Options/VectorLayerPolygon/Ring/Color/Red"), m_colourPickerRingsPolygons->GetColour().Red());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Ring/Color/Green"), m_colourPickerRingsPolygons->GetColour().Green());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Ring/Color/Blue"), m_colourPickerRingsPolygons->GetColour().Blue());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Ring/Width"), m_sliderWidthRings->GetValue());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Shape/Color/Red"), m_colourPickerInsidePolygons->GetColour().Red());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Shape/Color/Green"), m_colourPickerInsidePolygons->GetColour().Green());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Shape/Color/Blue"), m_colourPickerInsidePolygons->GetColour().Blue());
-	pConfig->Write(_("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
-	pConfig->Write(_("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::FromPolygonSelectionIndexToWxStyle(m_choicePolygons->GetSelection()) );
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Ring/Color/Red"), m_colourPickerRingsPolygons->GetColour().Red());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Ring/Color/Green"), m_colourPickerRingsPolygons->GetColour().Green());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Ring/Color/Blue"), m_colourPickerRingsPolygons->GetColour().Blue());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Ring/Width"), m_sliderWidthRings->GetValue());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Red"), m_colourPickerInsidePolygons->GetColour().Red());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), m_colourPickerInsidePolygons->GetColour().Green());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), m_colourPickerInsidePolygons->GetColour().Blue());
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::FromPolygonSelectionIndexToWxStyle(m_choicePolygons->GetSelection()) );
 }

@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <fstream>
@@ -60,7 +60,7 @@ void Orientation2D::ReadOriFromImageFile(const std::string &filename)
 	if ( !boost::filesystem::exists(filename) )
 	{
 		std::ostringstream oss;
-		oss << "Le fichier image demandé n'existe pas : "<<filename<< " ! " << std::endl;
+		oss << "Image file does not exist: "<<filename<< " ! " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -87,7 +87,7 @@ void Orientation2D::ReadOriFromOriFile(const std::string &filename)
 	if ( !boost::filesystem::exists(filename) )
 	{
 		std::ostringstream oss;
-		oss << "Le fichier ori demandé n'existe pas : "<<filename<< " ! " << std::endl;
+		oss << "Image file does not exist: "<<filename<< " ! " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -116,7 +116,7 @@ void Orientation2D::ReadOriFromOriFile(const std::string &filename)
 	if (carto != "CARTO")
 	{
 		std::ostringstream oss;
-		oss << "Fichier ORI au mauvais format !" << std::endl;
+		oss << "Bad ORI format!" << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -132,7 +132,7 @@ void Orientation2D::ReadOriFromOriFile(const std::string &filename)
 	if(pasX != pasY)
 	{
 		std::ostringstream oss;
-		oss << "Erreur orientation non supportee : pas en X different de pas en Y !" << std::endl;
+		oss << "Unsupported orientaton: X and Y steps are different!" << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -150,7 +150,7 @@ void Orientation2D::ReadOriFromTFWFile(const std::string &filename)
 	if ( !boost::filesystem::exists(filename) )
 	{
 		std::ostringstream oss;
-		oss << "Le fichier TFW demandé n'existe pas : "<<filename<< " ! " << std::endl;
+		oss << "TFW file does not exist: "<<filename<< " ! " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -188,7 +188,7 @@ void Orientation2D::ReadOriFromTFWFile(const std::string &filename)
 	if(pasX != pasY)
 	{
 		std::ostringstream oss;
-		oss << "Erreur orientation non supportee : pas en X different de pas en Y !" << std::endl;
+		oss << "Unsupported orientaton: X and Y steps are different!" << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -218,9 +218,9 @@ std::string Orientation2D::Affiche() const
 {
 	std::ostringstream result;
 	result << "Orientation : \n";
-	result << "[Origine] : ("<<m_originX<<","<<m_originY<<"\n";
-	result << "[Taille] : ("<<m_sizeX<<","<<m_sizeY<<"\n";
-	result << "[Pas] : "<<m_step<<"\n";
+	result << "[Origin] : ("<<m_originX<<","<<m_originY<<"\n";
+	result << "[Size] : ("<<m_sizeX<<","<<m_sizeY<<"\n";
+	result << "[Step] : "<<m_step<<"\n";
 	result << "[Zone] : "<<m_zoneCarto<<"\n";
 	return result.str();
 }

@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include "GilViewer/gui/GlobalSettingsControl.hpp"
@@ -63,7 +63,7 @@ GlobalSettingsControl::GlobalSettingsControl(LayerControl* parent, wxWindowID id
 	main_sizer->Add(intensity_sizer, 0, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
 
 	wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
-	buttons_sizer->AddButton(new wxButton(this,wxID_OK, _("OK")));
+	buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
 	buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, _("Apply")));
 	buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, _("Cancel")));
 	buttons_sizer->Realize();
@@ -86,7 +86,7 @@ END_EVENT_TABLE()
 void GlobalSettingsControl::OnApplyButton(wxCommandEvent &event)
 {
 	if ( !Validate() )
-		::wxMessageBox(_("Saisie incorrecte !"));
+		::wxMessageBox(_("Incorrect entry!"));
 
 	// et bien on parcourt tous les calques image du layer control et on applique la transformation ...
 	// Pour l'instant, on se concentre sur le canal RED ...

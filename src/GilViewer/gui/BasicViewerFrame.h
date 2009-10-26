@@ -3,7 +3,7 @@
 This file is part of the GilViewer project source files.
 
 GilViewer is an open source 2D viewer (raster and vector) based on Boost
-GIL and wxWidgets. 
+GIL and wxWidgets.
 
 
 Homepage:
@@ -31,7 +31,7 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
@@ -43,12 +43,9 @@ Authors:
 #include <wx/frame.h>
 #include <wx/aboutdlg.h>
 
-
 class wxLogWindow;
 class wxStatusBar;
 class wxToolBar;
-
-
 
 class BasicViewerFrame : public wxFrame
 {
@@ -66,20 +63,15 @@ class BasicViewerFrame : public wxFrame
 
 		wxToolBar* m_baseToolBar;
 
-
 		virtual wxAboutDialogInfo getAboutInfo() const;
+		virtual wxDialog* getHelp() const;
 
 		void OnAbout(wxCommandEvent& event);
+		void OnHelp(wxCommandEvent& event);
 		void OnShowHideLogWindow(wxCommandEvent& event);
 		void OnApplicationSettings(wxCommandEvent& event);
 
-
-
 		DECLARE_EVENT_TABLE();
 };
-
-
-
-
 
 #endif /* BASICVIEWERFRAME_H_ */

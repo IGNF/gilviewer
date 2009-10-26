@@ -36,8 +36,6 @@
 
  ***********************************************************************/
 
-#include "FrameViewer.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -49,17 +47,18 @@
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
 #include <wx/config.h>
+
 #if defined(__WXMSW__)
-#include <wx/icon.h>
+#	include <wx/icon.h>
 #endif
 
+#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
 #include "GilViewer/gui/ApplicationSettings.hpp"
 #include "GilViewer/gui/LayerControl.hpp"
 #include "GilViewer/gui/PanelViewer.hpp"
 #include "GilViewer/gui/define_id.hpp"
-
-#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
 #include "GilViewer/gui/PanelManager.h"
+#include "FrameViewer.hpp"
 
 BEGIN_EVENT_TABLE(FrameViewer,BasicViewerFrame)
 ADD_GILVIEWER_EVENTS_TO_TABLE(FrameViewer)
@@ -124,47 +123,4 @@ void FrameViewer::AddLayer(const Layer::ptrLayerType &layer) {
 
 void FrameViewer::AddLayersFromFiles(const wxArrayString &names) {
 	m_drawPane->GetLayerControl()->AddLayersFromFiles(names);
-}
-
-void FrameViewer::OnHelp(wxCommandEvent& event)
-{
-	wxSetWorkingDirectory( _(".") );
-	if (m_helpDialog)
-	 	delete m_helpDialog;
-
-	//wxString help_file=wxT("help.html");
-
-	m_helpDialog = new wxDialog(this, wxID_ANY, wxString(_("Help")));
-	m_helpDialog->Show(false);
-
-	wxHtmlWindow* helpWindow = new wxHtmlWindow(m_helpDialog, wxID_ANY, wxDefaultPosition, wxSize(380, 400), wxHW_SCROLLBAR_AUTO);
-
-	wxBoxSizer *topsizer;
-	topsizer = new wxBoxSizer(wxVERTICAL);
-	//helpWindow -> SetBorders(0);
-
-	wxFileSystem filesytem;
-	wxString current_path=filesytem.GetPath();
-	wxFSFile* f;
-	f= filesytem.OpenFile(_("help.html")); // opens file 'hello.htm'
-	if( f==NULL )
-	{
-		wxLogMessage(_(" impossible d'ouvrir le fichier help.html \n") );
-	}
-	delete f;
-	wxLogMessage(_(" current path is : ")+current_path+_("\n")) ;
-	wxString work_dir=wxGetCwd();
-	wxLogMessage(_("  working directoires is : ")+work_dir+_("\n"));
-
-	helpWindow -> LoadPage(wxT("help.html"));
-	//helpWindow -> SetSize(helpWindow -> GetInternalRepresentation() -> GetWidth(), helpWindow -> GetInternalRepresentation() -> GetHeight());
-
-	topsizer -> Add(helpWindow, 1, wxALL, 10);
-
-    m_helpDialog->SetSizer(topsizer);
-    topsizer -> Fit(m_helpDialog);
-
-	m_helpDialog->Show(true);
-
-	//delete [] buffer;
 }
