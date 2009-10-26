@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <boost/filesystem.hpp>
@@ -140,8 +140,8 @@ VectorLayerArc::VectorLayerArc(const SHPHandle &handle , const std::string &shap
 		unsigned int i, j, k;
 
 		wxString mes;
-		mes << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << _("\n");
-		mes << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objetcs ...");
+		mes << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
+		mes << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objects ...");
 		wxProgressDialog* progress = new wxProgressDialog( _("Reading file ...") , mes , static_cast<unsigned int>(m_numberOfEntities) , NULL , wxPD_APP_MODAL|wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 		for (i=0; i<static_cast<unsigned int>(m_numberOfEntities); ++i)
 		{
@@ -208,7 +208,7 @@ void VectorLayerArc::AddPolyline( const std::vector<double> &x , const std::vect
 	if ( x.size() != y.size() )
 	{
 		wxString mes;
-		mes << _("x and y are not of the same size !\n");
+		mes << _("x and y are not of the same size!\n");
 		::wxLogMessage( mes );
 		return;
 	}
@@ -233,7 +233,7 @@ VectorLayerArcM::VectorLayerArcM(const SHPHandle &handle , const std::string &sh
 		SHPGetInfo(m_SHPHandle, &m_numberOfEntities, &m_shapeType, m_minBound, m_maxBound);
 
 		wxString mes;
-		mes << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << _("\n");
+		mes << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
 		mes << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objetcs ...");
 		wxProgressDialog* progress = new wxProgressDialog( _("Reading file ...") , mes , static_cast<unsigned int>(m_numberOfEntities) , NULL , wxPD_APP_MODAL|wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 		unsigned int i, j, k;
@@ -274,7 +274,7 @@ VectorLayerArcZ::VectorLayerArcZ(const SHPHandle &handle, const std::string &sha
 		wxProgressDialog *progress = new wxProgressDialog(_("Reading shapefile ..."),_("Reading ..."),m_numberOfEntities,NULL,wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME);
 
 		wxString m;
-		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << _("\n");
+		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
 		m << _("Reading ") << static_cast<unsigned int>(m_numberOfEntities) << _(" objects");
 
 		for (i=0; i<static_cast<unsigned int>(m_numberOfEntities); ++i)

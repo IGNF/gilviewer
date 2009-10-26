@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <boost/filesystem.hpp>
@@ -71,10 +71,10 @@ void VectorLayer::SetDefaultDisplayParameters()
 	int widthPoint = 3;
 	if ( pConfig )
 	{
-		pConfig->Read(_T("/Options/VectorLayerPoint/Color/Red"), &redPoint, 255);
-		pConfig->Read(_T("/Options/VectorLayerPoint/Color/Green"), &greenPoint, 0);
-		pConfig->Read(_T("/Options/VectorLayerPoint/Color/Blue"), &bluePoint, 0);
-		pConfig->Read(_T("/Options/VectorLayerPoint/Width"), &widthPoint, 3);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Color/Red"), &redPoint, 255);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Color/Green"), &greenPoint, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Color/Blue"), &bluePoint, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPoint/Width"), &widthPoint, 3);
 	}
 	SetPointsStyle( wxColour(redPoint,greenPoint,bluePoint) , widthPoint );
 	/// Points
@@ -85,10 +85,10 @@ void VectorLayer::SetDefaultDisplayParameters()
 	int styleLine = wxSOLID;
 	if ( pConfig )
 	{
-		pConfig->Read(_T("/Options/VectorLayerLine/Color/Red"), &redLine, 255);
-		pConfig->Read(_T("/Options/VectorLayerLine/Color/Green"), &greenLine, 0);
-		pConfig->Read(_T("/Options/VectorLayerLine/Color/Blue"), &blueLine, 0);
-		pConfig->Read(_T("/Options/VectorLayerLine/Width"), &widthLine, 3);
+		pConfig->Read(wxT("/Options/VectorLayerLine/Color/Red"), &redLine, 255);
+		pConfig->Read(wxT("/Options/VectorLayerLine/Color/Green"), &greenLine, 0);
+		pConfig->Read(wxT("/Options/VectorLayerLine/Color/Blue"), &blueLine, 0);
+		pConfig->Read(wxT("/Options/VectorLayerLine/Width"), &widthLine, 3);
 		pConfig->Read(_T("/Options/VectorLayerLine/Style"), &styleLine, wxSOLID);
 	}
 	SetLinesStyle( wxColour(redLine,greenLine,blueLine) , widthLine , styleLine );
@@ -102,17 +102,17 @@ void VectorLayer::SetDefaultDisplayParameters()
 	int brushStyle = wxSOLID;
 	if ( pConfig )
 	{
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Ring/Color/Red"), &redRing, 255);
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Ring/Color/Green"), &greenRing, 0);
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Ring/Color/Blue"), &blueRing, 0);
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Ring/Width"), &ringWidth, 1);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Color/Red"), &redRing, 255);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Color/Green"), &greenRing, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Color/Blue"), &blueRing, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Ring/Width"), &ringWidth, 1);
 
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Shape/Color/Red"), &redShape, 255);
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Shape/Color/Green"), &greenShape, 0);
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Shape/Color/Blue"), &blueShape, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Red"), &redShape, 255);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), &greenShape, 0);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), &blueShape, 0);
 
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
-		pConfig->Read(_T("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxSOLID);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxSOLID);
 	}
 
 	PolygonsRingsColour( wxColour(redRing,greenRing,blueRing) );
@@ -149,7 +149,7 @@ VectorLayer::VectorLayer( const std::string &layerName , int layerType , signed 
 	else if ( m_layerType == SHPT_MULTIPOINT )
 	{
 		std::ostringstream oss;
-		oss << "Les multipoints ne sont pas geres.\nDesole ... " << std::endl;
+		oss << "Multipoints are not handled ... " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -158,7 +158,7 @@ VectorLayer::VectorLayer( const std::string &layerName , int layerType , signed 
 	else if ( m_layerType == SHPT_MULTIPOINTZ )
 	{
 		std::ostringstream oss;
-		oss << "Les multipointsZ ne sont pas geres.\nDesole ... " << std::endl;
+		oss << "MultipointsZ are not handled ... " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -167,7 +167,7 @@ VectorLayer::VectorLayer( const std::string &layerName , int layerType , signed 
 	else if ( m_layerType == SHPT_MULTIPOINTM )
 	{
 		std::ostringstream oss;
-		oss << "Les multipointsM ne sont pas geres.\nDesole ... " << std::endl;
+		oss << "MultipointsM are not handled ... " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -200,7 +200,7 @@ VectorLayer::VectorLayer( const std::string &layerName , int layerType , signed 
 	else if ( m_layerType == SHPT_MULTIPATCH )
 	{
 		std::ostringstream oss;
-		oss << "Les multipatch ne sont pas geres.\nDesole ... " << std::endl;
+		oss << "Multipatch are not handled ... " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -209,7 +209,7 @@ VectorLayer::VectorLayer( const std::string &layerName , int layerType , signed 
 	else
 	{
 		std::ostringstream oss;
-		oss << "Le type de geometrie est incorrect ..." << std::endl;
+		oss << "Invalid geometry type ..." << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -237,7 +237,7 @@ VectorLayer::VectorLayer(const std::string &layerName , const std::string &fileN
 	catch(const std::exception &e)
 	{
 		std::ostringstream oss;
-		oss << std::endl << "Exception propagee depuis :" << std::endl;
+		oss << std::endl << "Exception propagated from:" << std::endl;
 		oss << e.what();
 		throw std::logic_error(oss.str());
 	}
@@ -274,7 +274,7 @@ Layer::ptrLayerType VectorLayer::CreateVectorLayer(const std::string &layerName 
 	if ( !boost::filesystem::exists(fileName) )
 	{
 		std::ostringstream oss;
-		oss << "Le fichier demande n'existe pas : "<<fileName<< " ! " << std::endl;
+		oss << "File does not exist: "<<fileName<< " ! " << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -294,7 +294,7 @@ Layer::ptrLayerType VectorLayer::CreateVectorLayer(const std::string &layerName 
 	catch(const std::exception &e)
 	{
 		std::ostringstream oss;
-		oss << std::endl << "Exception propagee depuis :" << std::endl;
+		oss << std::endl << "Exception propagated from:" << std::endl;
 		oss << e.what();
 		throw std::logic_error(oss.str());
 	}
@@ -330,7 +330,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
     		throw std::logic_error( oss.str() );
 		}
 		std::ostringstream oss;
-		oss << "Handle NULL sur le fichier " << shapefileFileName.c_str() << " !" << std::endl;
+		oss << "File has a NULL handle" << shapefileFileName.c_str() << " !" << std::endl;
 		oss << "File : " <<__FILE__ << std::endl;
 		oss << "Line : " << __LINE__ << std::endl;
 		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -351,7 +351,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
 		if ( !boost::filesystem::exists(path+"/"+basename+".prj") )
 		{
 			wxString message;
-			message << _("There is no PRJ file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << _(" !");
+			message << _("There is no PRJ file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << wxT("!");
 			::wxLogMessage( message , _("Info") );
 			flagPRJ = IMAGE_COORDINATES;
 		}
@@ -362,7 +362,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
 		if ( !boost::filesystem::exists(path+"/"+basename+".dbf") )
 		{
 			wxString message;
-			message << _("There is no DBF file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << _(" !");
+			message << _("There is no DBF file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << wxT("!");
 			::wxLogMessage( message , _("Info") );
 		}
 		else
@@ -383,7 +383,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
         else if ( m_layerType == SHPT_MULTIPOINT )
 		{
     		std::ostringstream oss;
-    		oss << "Les multipoints ne sont pas geres.\nDesole ... " << std::endl;
+    		oss << "Multipoints are not handled ... " << std::endl;
     		oss << "File : " <<__FILE__ << std::endl;
     		oss << "Line : " << __LINE__ << std::endl;
     		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -392,7 +392,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
         else if ( m_layerType == SHPT_MULTIPOINTZ )
 		{
     		std::ostringstream oss;
-    		oss << "Les multipointsZ ne sont pas geres.\nDesole ... " << std::endl;
+    		oss << "MultipointsZ are not handled ... " << std::endl;
     		oss << "File : " <<__FILE__ << std::endl;
     		oss << "Line : " << __LINE__ << std::endl;
     		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -401,7 +401,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
         else if ( m_layerType == SHPT_MULTIPOINTM )
 		{
     		std::ostringstream oss;
-    		oss << "Les multipointsM ne sont pas geres.\nDesole ... " << std::endl;
+    		oss << "MultipointsM are not handled ... " << std::endl;
     		oss << "File : " <<__FILE__ << std::endl;
     		oss << "Line : " << __LINE__ << std::endl;
     		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -434,7 +434,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
     	else if ( m_layerType == SHPT_MULTIPATCH )
     	{
     		std::ostringstream oss;
-    		oss << "Les multipatch ne sont pas geres.\nDesole ... " << std::endl;
+    		oss << "Multipatch are not handled ... " << std::endl;
     		oss << "File : " <<__FILE__ << std::endl;
     		oss << "Line : " << __LINE__ << std::endl;
     		oss << "Function : " << __FUNCTION__ << std::endl;
@@ -443,7 +443,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
         else
         {
     		std::ostringstream oss;
-    		oss << "Probleme lors de la lecture du type de geometrie.\nFichier invalide ..." << std::endl;
+    		oss << "Invalid geometry type ..." << std::endl;
     		oss << "File : " <<__FILE__ << std::endl;
     		oss << "Line : " << __LINE__ << std::endl;
     		oss << "Function : " << __FUNCTION__ << std::endl;

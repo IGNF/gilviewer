@@ -70,12 +70,12 @@ LayerControlRow::LayerControlRow(LayerControl* parent, const std::string &name, 
 	m_nameStaticText->SetFont(fontFrameViewer);
 	m_nameStaticText->SetToolTip(tool);
 
-	m_visibilityCheckBox = new wxCheckBox(m_parent->m_scroll, ID_VISIBILITY + m_index, _(""));
+	m_visibilityCheckBox = new wxCheckBox(m_parent->m_scroll, ID_VISIBILITY + m_index, wxT(""));
 	m_visibilityCheckBox->SetValue(true);
 	m_visibilityCheckBox->SetToolTip(_("Change layer visibility"));
 	m_visibilityCheckBox->Connect(ID_VISIBILITY + m_index, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(LayerControl::OnCheckVisibility), NULL, m_parent);
 
-	m_transformationCheckBox = new wxCheckBox(m_parent->m_scroll, ID_TRANSFORMATION + m_index, _(""));
+	m_transformationCheckBox = new wxCheckBox(m_parent->m_scroll, ID_TRANSFORMATION + m_index, wxT(""));
 	m_transformationCheckBox->SetValue(true);
 	m_transformationCheckBox->SetToolTip(_("Change layer transformability"));
 	m_transformationCheckBox->Connect(ID_TRANSFORMATION + m_index, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(LayerControl::OnCheckTransformable), NULL, m_parent);
@@ -89,22 +89,22 @@ LayerControlRow::LayerControlRow(LayerControl* parent, const std::string &name, 
                 m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-OTHERS_16x16") ));
 	else
                 m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-GRAPHICS_16x16") ) );
-	m_infoButton->SetToolTip(wxT("Display layer informations"));
+	m_infoButton->SetToolTip(_("Display layer informations"));
 	m_boxSizer->Add(m_infoButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_infoButton->Connect(ID_INFO + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnInfoButton), NULL, m_parent);
 
         m_saveButton = new wxBitmapButton(m_parent->m_scroll, ID_SAVE + m_index, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ));
-	m_saveButton->SetToolTip(wxT("Save layer"));
+	m_saveButton->SetToolTip(_("Save layer"));
 	m_boxSizer->Add(m_saveButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_saveButton->Connect(ID_SAVE + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnSaveButton), NULL, m_parent);
 
         m_deleteButton = new wxBitmapButton(m_parent->m_scroll, ID_DELETE + m_index, wxXmlResource::Get()->LoadBitmap( wxT("USER-TRASH_16x16") ) );
-	m_deleteButton->SetToolTip(wxT("Delete layer"));
+	m_deleteButton->SetToolTip(_("Delete layer"));
 	m_boxSizer->Add(m_deleteButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_deleteButton->Connect(ID_DELETE + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnDeleteButton), NULL, m_parent);
 
         m_settingsButton = new wxBitmapButton(m_parent->m_scroll, ID_SETTINGS + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) );
-	m_settingsButton->SetToolTip(wxT("Layer settings"));
+	m_settingsButton->SetToolTip(_("Layer settings"));
 	m_boxSizer->Add(m_settingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_settingsButton->Connect(ID_SETTINGS + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnSettingsButton), NULL, m_parent);
 

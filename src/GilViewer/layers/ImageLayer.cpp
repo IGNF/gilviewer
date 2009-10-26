@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <iostream>
@@ -102,9 +102,9 @@ ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const st
 	m_infos = "";
 
 	ostringstream oss;
-	oss << "Dimensions : " << m_img->width()  << " x " << m_img->height() << "\n";
-	oss << "Nb canaux : " << GetNbComponents() << "\n";
-	oss << "Type pixels : " << GetTypeChannel() << "\n";
+	oss << "Dimensions: " << m_img->width()  << " x " << m_img->height() << "\n";
+	oss << "Nb channels: " << GetNbComponents() << "\n";
+	oss << "Pixels type: " << GetTypeChannel() << "\n";
 
 	m_infos += oss.str();
 
@@ -124,7 +124,7 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
 	if ( !boost::filesystem::exists(filename) )
 	{
 		ostringstream oss;
-		oss << "Le fichier image demande n'existe pas : "<<filename<< " ! " << endl;
+		oss << "File does not exist: "<<filename<< " ! " << endl;
 		oss << "File : " <<__FILE__ << endl;
 		oss << "Line : " << __LINE__ << endl;
 		oss << "Function : " << __FUNCTION__ << endl;
@@ -167,7 +167,7 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
 	catch(exception &e) // Putain, ca ca fait chier, ca me fout plein de warnings ('e' n'est pas utilise)!
 	{
         ostringstream message;
-        message << "Pas d'orientation pour l'image " << filename;
+        message << "No orientation for image " << filename;
         message << "\n" << e.what();
 		wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
 		maLayer->m_hasOri = false;
@@ -261,8 +261,8 @@ void ImageLayer::Update(const int width, const int height)
 
 	bool loadWholeImage=false, bilinearZoom=false;
 
-	pConfig->Read(_("/Options/LoadWoleImage"), &loadWholeImage, true); //TODO
-	pConfig->Read(_("/Options/BilinearZoom"), &bilinearZoom, false);
+	pConfig->Read(wxT("/Options/LoadWoleImage"), &loadWholeImage, true); //TODO
+	pConfig->Read(wxT("/Options/BilinearZoom"), &bilinearZoom, false);
 
 
 
@@ -352,7 +352,7 @@ string ImageLayer::GetPixelValue(const int i, const int j) const
 ImageLayer::ptrLayerType ImageLayer::crop( int x0 , int y0 , int width , int height , string filename )
 {
 	usable_views_t crop_view = subimage_view(view(*m_img), x0 , y0 , width , height );
-	
+
 	if ( filename != "" )
 	{
 		string ext = boost::filesystem::extension(filename);
@@ -363,7 +363,7 @@ ImageLayer::ptrLayerType ImageLayer::crop( int x0 , int y0 , int width , int hei
 		else if ( ext == ".png" || ext == ".PNG" )
 			png_write_view( filename.c_str() , crop_view );
 	}
-	
+
 	// TODO : only works for gray8 images ...
 	boost::shared_ptr<usable_images_t> any_img = apply_operation( crop_view , get_any_image_functor() );
 

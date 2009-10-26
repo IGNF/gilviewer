@@ -55,16 +55,13 @@ class FrameViewer : public BasicViewerFrame
 {
 public:
 	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame") );
-	virtual ~FrameViewer() { /*m_mgr.UnInit(); */wxGetApp().ExitMainLoop(); };
-
-	void OnHelp(wxCommandEvent& event);
+	virtual ~FrameViewer() { wxGetApp().ExitMainLoop(); };
 
 	void AddLayer( const Layer::ptrLayerType &layer);
 	void AddLayersFromFiles(const wxArrayString &names);
 
 private:
 	PanelViewer* m_drawPane;
-	wxDialog *m_helpDialog;
 
 	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 	DECLARE_EVENT_TABLE();

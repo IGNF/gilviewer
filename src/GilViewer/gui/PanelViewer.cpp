@@ -214,7 +214,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	wxMenu* menuOptions = new wxMenu;
 	menuOptions->Append(wxID_PREFERENCES, _("Application settings ..."));
 	wxMenu* menuAbout = new wxMenu;
-	menuAbout->Append(wxID_ABOUT, _("?"));
+	menuAbout->Append(wxID_ABOUT, wxT("?"));
 	m_menuBar->Insert(0, menuFile, _("File"));
 	m_menuBar->Insert(1, menuOptions, _("Options"));
 	m_menuBar->Insert(2, menuAbout, _("About ..."));
@@ -265,7 +265,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	m_menuMain->AppendRadioItem(ID_GEOMETRY_LINE, _("Line"));
 	m_menuMain->AppendRadioItem(ID_GEOMETRY_CIRCLE, _("Circle"));
 	m_menuMain->AppendRadioItem(ID_GEOMETRY_RECTANGLE, _("Rectangle"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_POLYGONE, _("Polygone"));
+	m_menuMain->AppendRadioItem(ID_GEOMETRY_POLYGONE, _("Polygon"));
 
 	///Shortcuts
 	wxAcceleratorEntry entries[3];
@@ -283,33 +283,33 @@ wxToolBar* PanelViewer::GetMainToolBar(wxWindow* parent) {
 	{
 		m_mainToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-		m_mainToolbar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap(wxT("DOCUMENT-OPEN_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
-		m_mainToolbar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHLC"), wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(16,16)), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+		m_mainToolbar->AddTool(wxID_OPEN, wxT("O"), wxXmlResource::Get()->LoadBitmap(wxT("DOCUMENT-OPEN_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Open layer"));
+		m_mainToolbar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, wxT("SHLC"), wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(16,16)), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
 
-		m_mainToolbar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap(wxT("CAMERA_PHOTO_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+		m_mainToolbar->AddTool(ID_BASIC_SNAPSHOT, wxT("S"), wxXmlResource::Get()->LoadBitmap(wxT("CAMERA_PHOTO_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
 
-		m_mainToolbar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS-SYSTEM_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
+		m_mainToolbar->AddTool(wxID_PREFERENCES, wxT("AS"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS-SYSTEM_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
-		m_mainToolbar->AddTool(wxID_HELP, _("AS"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Help"));
-
-	//	m_toolBar->AddSeparator();
-	//	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
-	//	m_toolBar->AddTool(ID_MODE_CAPTURE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
-	//	m_toolBar->AddTool(ID_MODE_EDITION, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
-	//	m_toolBar->AddTool(ID_MODE_GEOMETRY_MOVING, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
-	//	m_toolBar->AddTool(ID_MODE_SELECTION, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
+		m_mainToolbar->AddTool(wxID_HELP, wxT("AS"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("Help"));
 
 	//	m_toolBar->AddSeparator();
-	//	m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
-	//	m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
-	//	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-	//	m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
-	//	m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-	//	m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+	//	m_toolBar->AddTool(ID_MODE_NAVIGATION, wxT("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
+	//	m_toolBar->AddTool(ID_MODE_CAPTURE, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
+	//	m_toolBar->AddTool(ID_MODE_EDITION, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
+	//	m_toolBar->AddTool(ID_MODE_GEOMETRY_MOVING, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
+	//	m_toolBar->AddTool(ID_MODE_SELECTION, wxT("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
 
 	//	m_toolBar->AddSeparator();
-	//	m_toolBar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
-	//	m_toolBar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
+	//	m_toolBar->AddTool(ID_GEOMETRY_NULL, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
+	//	m_toolBar->AddTool(ID_GEOMETRY_POINT, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
+	//	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
+	//	m_toolBar->AddTool(ID_GEOMETRY_LINE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
+	//	m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, wxT("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
+	//	m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+
+	//	m_toolBar->AddSeparator();
+	//	m_toolBar->AddTool(ID_SINGLE_CROP, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
+	//	m_toolBar->AddTool(ID_MULTI_CROP, wxT("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
 
 		m_mainToolbar->Realize();
 	}
@@ -324,23 +324,23 @@ wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent)
 		m_modeAndGeometryToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
 		m_modeAndGeometryToolbar->AddSeparator();
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_CAPTURE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_EDITION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Edition"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_GEOMETRY_MOVING, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
-		m_modeAndGeometryToolbar->AddTool(ID_MODE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Selection"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_NAVIGATION, wxT("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_CAPTURE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_EDITION, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Edition"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_GEOMETRY_MOVING, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
+		m_modeAndGeometryToolbar->AddTool(ID_MODE_SELECTION, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Selection"));
 
 		m_modeAndGeometryToolbar->AddSeparator();
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("RECTANGLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_NULL, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POINT, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_CIRCLE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circle"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_LINE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_RECTANGLE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("RECTANGLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
+		m_modeAndGeometryToolbar->AddTool(ID_GEOMETRY_POLYGONE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygon"));
 
 		m_modeAndGeometryToolbar->AddSeparator();
-		m_modeAndGeometryToolbar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
-		m_modeAndGeometryToolbar->AddTool(ID_MULTI_CROP, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
+		m_modeAndGeometryToolbar->AddTool(ID_SINGLE_CROP, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
+		m_modeAndGeometryToolbar->AddTool(ID_MULTI_CROP, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
 
 		m_modeAndGeometryToolbar->Realize();
 	}
@@ -474,7 +474,7 @@ void PanelViewer::OnLeftDClick(wxMouseEvent &event) {
 	if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
 		wxConfigBase *pConfig = wxConfigBase::Get();
 		double zoom;
-		pConfig->Read(_T("/Options/Zoom"), &zoom, 0.5);
+		pConfig->Read(wxT("/Options/Zoom"), &zoom, 0.5);
 		Zoom(zoom, event);
 	}
 	UpdateStatusBar(event.m_x, event.m_y);
@@ -485,7 +485,7 @@ void PanelViewer::OnRightDClick(wxMouseEvent &event) {
 	if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
 		wxConfigBase *pConfig = wxConfigBase::Get();
 		double dezoom;
-		pConfig->Read(_T("/Options/Dezoom"), &dezoom, 2.);
+		pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
 		Zoom(dezoom, event);
 	}
 	UpdateStatusBar(event.m_x, event.m_y);
@@ -507,8 +507,8 @@ void PanelViewer::OnMouseWheel(wxMouseEvent& event) {
 	////Zoom
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	double zoom, dezoom;
-	pConfig->Read(_T("/Options/Zoom"), &zoom, 0.5);
-	pConfig->Read(_T("/Options/Dezoom"), &dezoom, 2.);
+	pConfig->Read(wxT("/Options/Zoom"), &zoom, 0.5);
+	pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
 	int deltaMouseWheel = event.GetWheelRotation();
 	double zoomFactor;
 	if (deltaMouseWheel < 0)
@@ -754,11 +754,12 @@ void PanelViewer::OnQuit(wxCommandEvent& event) {
 
 void PanelViewer::OnSnapshot(wxCommandEvent& event) {
 	wxString wildcard;
-	wildcard << _("All supported files (*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|");
-	wildcard << _("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
-	wildcard << _("PNG (*.png)|*.png|");
-	wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
-	wildcard << _("BMP (*.bmp)|*.bmp|");
+	wildcard << _("All supported files ");
+	wildcard << wxT("(*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|");
+	wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
+	wildcard << wxT("PNG (*.png)|*.png|");
+	wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
+	wildcard << wxT("BMP (*.bmp)|*.bmp|");
 
 	//	wxFileDialog *fileDialog = new wxFileDialog(this, _("Sauvegarde de la fenetre en  l'etat"), _(""), _(""), wildcard, wxFD_SAVE|wxFD_CHANGE_DIR);
 	//
@@ -1085,18 +1086,19 @@ void PanelViewer::SingleCrop() {
 			wxString wildcard;
 			if (vl) // calque vectoriel
 			{
-				wildcard << _("Shapefile (*.shp)|*.shp");
+				wildcard << wxT("Shapefile (*.shp)|*.shp");
 			} else // calque image
 			{
-				wildcard << _("All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
-				wildcard << _("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
-				wildcard << _("PNG (*.png)|*.png|");
-				wildcard << _("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
+				wildcard << _("All supported files ");
+				wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
+				wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
+				wildcard << wxT("PNG (*.png)|*.png|");
+				wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
 			}
 			wxString default_crop_filename;
-			default_crop_filename << _("crop_");
+			default_crop_filename << wxT("crop_");
 			default_crop_filename = default_crop_filename + wxString(layer_base_filename.c_str(), *wxConvCurrent);
-			wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), _(""), default_crop_filename, wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
+			wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), default_crop_filename, wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
 			if (fileDialog->ShowModal() == wxID_OK) {
 				try {
 					// TODO : (minx,miny) - (width,height)
