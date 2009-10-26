@@ -146,7 +146,7 @@ protected:
 	wxToolBar* m_mainToolbar;
 	wxToolBar* m_modeAndGeometryToolbar;
 	wxMenuBar* m_menuBar;
-	wxMenu *m_menuMain;
+//	wxMenu *m_menuMain;
 	bool m_mouseMovementStarted;
 	float m_mouseMovementInitX;
 	float m_mouseMovementInitY;
@@ -202,7 +202,7 @@ protected:
 
 	void OnKeydown(wxKeyEvent& event);
 
-	void ShowPopUpMenu(const wxPoint& pos);
+//	void ShowPopUpMenu(const wxPoint& pos);
 	void OnPopUpMenu(wxCommandEvent& event);
 
 	void OnQuit(wxCommandEvent& event);
