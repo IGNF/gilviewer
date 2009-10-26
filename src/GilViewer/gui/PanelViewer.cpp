@@ -104,31 +104,31 @@ void PanelViewer::OnSize(wxSizeEvent &e) {
 void PanelViewer::SetModeNavigation() {
 	m_mode = MODE_NAVIGATION;
 	//m_toolBar->ToggleTool(ID_MODE_NAVIGATION, true);
-	m_menuMain->Check(ID_MODE_NAVIGATION, true);
+//	m_menuMain->Check(ID_MODE_NAVIGATION, true);
 }
 
 void PanelViewer::SetModeCapture() {
 	m_mode = MODE_CAPTURE;
 	//m_toolBar->ToggleTool(ID_MODE_CAPTURE, true);
-	m_menuMain->Check(ID_MODE_CAPTURE, true);
+//	m_menuMain->Check(ID_MODE_CAPTURE, true);
 }
 
 void PanelViewer::SetModeGeometryMoving() {
 	m_mode = MODE_GEOMETRY_MOVING;
 	//m_toolBar->ToggleTool(ID_MODE_GEOMETRY_MOVING, true);
-	m_menuMain->Check(ID_MODE_GEOMETRY_MOVING, true);
+//	m_menuMain->Check(ID_MODE_GEOMETRY_MOVING, true);
 }
 
 void PanelViewer::SetModeEdition() {
 	m_mode = MODE_EDITION;
 	//m_toolBar->ToggleTool(ID_MODE_EDITION, true);
-	m_menuMain->Check(ID_MODE_EDITION, true);
+//	m_menuMain->Check(ID_MODE_EDITION, true);
 }
 
 void PanelViewer::SetModeSelection() {
 	m_mode = MODE_SELECTION;
 	//m_toolBar->ToggleTool(ID_MODE_SELECTION, true);
-	m_menuMain->Check(ID_MODE_SELECTION, true);
+//	m_menuMain->Check(ID_MODE_SELECTION, true);
 }
 
 void PanelViewer::SetGeometryNull() {
@@ -138,38 +138,38 @@ void PanelViewer::SetGeometryNull() {
 
 	m_geometry = GEOMETRY_NULL;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_NULL, true);
-	m_menuMain->Check(ID_GEOMETRY_NULL, true);
+//	m_menuMain->Check(ID_GEOMETRY_NULL, true);
 	Refresh();
 }
 
 void PanelViewer::SetGeometryPoint() {
 	m_geometry = GEOMETRY_POINT;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_POINT, true);
-	m_menuMain->Check(ID_GEOMETRY_POINT, true);
+//	m_menuMain->Check(ID_GEOMETRY_POINT, true);
 }
 
 void PanelViewer::SetGeometryCircle() {
 	m_geometry = GEOMETRY_CIRCLE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_CIRCLE, true);
-	m_menuMain->Check(ID_GEOMETRY_CIRCLE, true);
+//	m_menuMain->Check(ID_GEOMETRY_CIRCLE, true);
 }
 
 void PanelViewer::SetGeometryRectangle() {
 	m_geometry = GEOMETRY_RECTANGLE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_RECTANGLE, true);
-	m_menuMain->Check(ID_GEOMETRY_RECTANGLE, true);
+//	m_menuMain->Check(ID_GEOMETRY_RECTANGLE, true);
 }
 
 void PanelViewer::SetGeometryLine() {
 	m_geometry = GEOMETRY_LINE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_LINE, true);
-	m_menuMain->Check(ID_GEOMETRY_LINE, true);
+//	m_menuMain->Check(ID_GEOMETRY_LINE, true);
 }
 
 void PanelViewer::SetGeometryPolygone() {
 	m_geometry = GEOMETRY_POLYGONE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_POLYGONE, true);
-	m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
+//	m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
 }
 
 LayerControl* PanelViewer::GetLayerControl() const {
@@ -184,7 +184,9 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent),
 			m_mainToolbar(NULL),
 			m_modeAndGeometryToolbar(NULL),
-			m_menuBar(NULL), m_menuMain(NULL), m_mouseMovementStarted(false), m_translationDrag(0, 0),
+			m_menuBar(NULL),
+			//m_menuMain(NULL),
+			m_mouseMovementStarted(false), m_translationDrag(0, 0),
 			// Construction des differentes fenetres liees au PanelViewer :
 			//		- layer control
 			m_layerControl(new LayerControl(this, parent, wxID_ANY, _("Layers control"))),
@@ -219,53 +221,53 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	m_menuBar->Insert(1, menuOptions, _("Options"));
 	m_menuBar->Insert(2, menuAbout, _("About ..."));
 
-	/////Popup menu
-	m_menuMain = new wxMenu;
-	//	wxMenu* menuRemove = new wxMenu;
-	//	wxMenu* menuVisibility = new wxMenu;
-	//	wxMenu* menuTransformability = new wxMenu;
-	//
-	//	for (unsigned int i = 0; i < m_layerControl->GetNumberOfLayers(); ++i)
-	//	{
-	//		unsigned int index_row = m_layerControl->GetRows()[i]->m_index;
-	//		menuRemove->Append(ID_POPMENU_REMOVE + index_row, wxString(m_layerControl->Layers()[i]->Name().c_str(), *wxConvCurrent));
-	//		menuVisibility->AppendCheckItem(ID_POPMENU_VISIBILITY + index_row, wxString(m_layerControl->Layers()[i]->Name().c_str(), *wxConvCurrent));
-	//		menuTransformability->AppendCheckItem(ID_POPMENU_TRANSFORMABILITY + index_row, wxString(m_layerControl->Layers()[i]->Name().c_str(), *wxConvCurrent));
-	//		menuVisibility->Check(ID_POPMENU_VISIBILITY + index_row, m_layerControl->Layers()[i]->IsVisible());
-	//		menuTransformability->Check(ID_POPMENU_TRANSFORMABILITY + index_row, m_layerControl->Layers()[i]->IsTransformable());
-	//	}
-
-	m_menuMain->Append(wxID_NEW, _("New"));
-	m_menuMain->Append(wxID_OPEN, _("Open"));
-	m_menuMain->AppendSeparator();
-	//	m_menuMain->AppendSubMenu(menuRemove, _("Remove layer ...") );
-	//	m_menuMain->AppendSubMenu(menuVisibility, _("Change layer visibility ...") );
-	//	m_menuMain->AppendSubMenu(menuTransformability, _("Change layer transformability ...") );
-	//	m_menuMain->AppendSeparator();
-	m_menuMain->Append(ID_BASIC_SNAPSHOT, _("Screenshot\tCtrl-C"));
-
-	//	wxMenu* menuMode = new wxMenu;
-	m_menuMain->AppendSeparator();
-	//	m_menuMain->AppendSubMenu(menuMode, _("Mode"));
-	m_menuMain->AppendRadioItem(ID_MODE_NAVIGATION, _("Navigation"));
-	m_menuMain->AppendRadioItem(ID_MODE_CAPTURE, _("Saisie"));
-	m_menuMain->AppendRadioItem(ID_MODE_GEOMETRY_MOVING, _("Move"));
-	m_menuMain->AppendRadioItem(ID_MODE_EDITION, _("Edition"));
-	m_menuMain->AppendRadioItem(ID_MODE_SELECTION, _("Selection"));
-	m_menuMain->AppendRadioItem(ID_SINGLE_CROP, _("Crop"));
-
-	m_menuMain->AppendSeparator();
-	m_menuMain->Append(wxID_ABOUT, _("About"));
-
-	//	wxMenu* menuGeometry = new wxMenu;
-	//	m_menuMain->AppendSubMenu(menuGeometry, _("Geometry"));
-	m_menuMain->AppendSeparator();
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_NULL, _("Nothing"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_POINT, _("Point"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_LINE, _("Line"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_CIRCLE, _("Circle"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_RECTANGLE, _("Rectangle"));
-	m_menuMain->AppendRadioItem(ID_GEOMETRY_POLYGONE, _("Polygon"));
+//	/////Popup menu
+//	m_menuMain = new wxMenu;
+//	//	wxMenu* menuRemove = new wxMenu;
+//	//	wxMenu* menuVisibility = new wxMenu;
+//	//	wxMenu* menuTransformability = new wxMenu;
+//	//
+//	//	for (unsigned int i = 0; i < m_layerControl->GetNumberOfLayers(); ++i)
+//	//	{
+//	//		unsigned int index_row = m_layerControl->GetRows()[i]->m_index;
+//	//		menuRemove->Append(ID_POPMENU_REMOVE + index_row, wxString(m_layerControl->Layers()[i]->Name().c_str(), *wxConvCurrent));
+//	//		menuVisibility->AppendCheckItem(ID_POPMENU_VISIBILITY + index_row, wxString(m_layerControl->Layers()[i]->Name().c_str(), *wxConvCurrent));
+//	//		menuTransformability->AppendCheckItem(ID_POPMENU_TRANSFORMABILITY + index_row, wxString(m_layerControl->Layers()[i]->Name().c_str(), *wxConvCurrent));
+//	//		menuVisibility->Check(ID_POPMENU_VISIBILITY + index_row, m_layerControl->Layers()[i]->IsVisible());
+//	//		menuTransformability->Check(ID_POPMENU_TRANSFORMABILITY + index_row, m_layerControl->Layers()[i]->IsTransformable());
+//	//	}
+//
+//	m_menuMain->Append(wxID_NEW, _("New"));
+//	m_menuMain->Append(wxID_OPEN, _("Open"));
+//	m_menuMain->AppendSeparator();
+//	//	m_menuMain->AppendSubMenu(menuRemove, _("Remove layer ...") );
+//	//	m_menuMain->AppendSubMenu(menuVisibility, _("Change layer visibility ...") );
+//	//	m_menuMain->AppendSubMenu(menuTransformability, _("Change layer transformability ...") );
+//	//	m_menuMain->AppendSeparator();
+//	m_menuMain->Append(ID_BASIC_SNAPSHOT, _("Screenshot\tCtrl-C"));
+//
+//	//	wxMenu* menuMode = new wxMenu;
+//	m_menuMain->AppendSeparator();
+//	//	m_menuMain->AppendSubMenu(menuMode, _("Mode"));
+//	m_menuMain->AppendRadioItem(ID_MODE_NAVIGATION, _("Navigation"));
+//	m_menuMain->AppendRadioItem(ID_MODE_CAPTURE, _("Saisie"));
+//	m_menuMain->AppendRadioItem(ID_MODE_GEOMETRY_MOVING, _("Move"));
+//	m_menuMain->AppendRadioItem(ID_MODE_EDITION, _("Edition"));
+//	m_menuMain->AppendRadioItem(ID_MODE_SELECTION, _("Selection"));
+//	m_menuMain->AppendRadioItem(ID_SINGLE_CROP, _("Crop"));
+//
+//	m_menuMain->AppendSeparator();
+//	m_menuMain->Append(wxID_ABOUT, _("About"));
+//
+//	//	wxMenu* menuGeometry = new wxMenu;
+//	//	m_menuMain->AppendSubMenu(menuGeometry, _("Geometry"));
+//	m_menuMain->AppendSeparator();
+//	m_menuMain->AppendRadioItem(ID_GEOMETRY_NULL, _("Nothing"));
+//	m_menuMain->AppendRadioItem(ID_GEOMETRY_POINT, _("Point"));
+//	m_menuMain->AppendRadioItem(ID_GEOMETRY_LINE, _("Line"));
+//	m_menuMain->AppendRadioItem(ID_GEOMETRY_CIRCLE, _("Circle"));
+//	m_menuMain->AppendRadioItem(ID_GEOMETRY_RECTANGLE, _("Rectangle"));
+//	m_menuMain->AppendRadioItem(ID_GEOMETRY_POLYGONE, _("Polygon"));
 
 	///Shortcuts
 	wxAcceleratorEntry entries[3];
@@ -440,18 +442,20 @@ void PanelViewer::OnLeftUp(wxMouseEvent &event) {
 }
 
 void PanelViewer::OnRightDown(wxMouseEvent &event) {
-	/////Clique droit popup menu
-	if (event.m_shiftDown) //pour ne pas interférer avec le double-click !
-	{
-		wxPoint point = event.GetPosition();
-		// If from keyboard
-		if (point.x == -1 && point.y == -1) {
-			wxSize size = GetSize();
-			point.x = size.x / 2;
-			point.y = size.y / 2;
-		}
-		ShowPopUpMenu(point);
-	} else if (m_mode == MODE_CAPTURE) {
+//	/////Clique droit popup menu
+//	if (event.m_shiftDown) //pour ne pas interférer avec le double-click !
+//	{
+//		wxPoint point = event.GetPosition();
+//		// If from keyboard
+//		if (point.x == -1 && point.y == -1) {
+//			wxSize size = GetSize();
+//			point.x = size.x / 2;
+//			point.y = size.y / 2;
+//		}
+//		ShowPopUpMenu(point);
+//	} else
+
+	if (m_mode == MODE_CAPTURE) {
 		switch (m_geometry) {
 		case GEOMETRY_NULL:
 		case GEOMETRY_POINT:
@@ -743,10 +747,10 @@ void PanelViewer::ShowLayerControl(bool show) const {
 	m_layerControl->Show(show);
 }
 
-void PanelViewer::ShowPopUpMenu(const wxPoint& pos) {
-
-	PopupMenu(m_menuMain, pos.x, pos.y);
-}
+//void PanelViewer::ShowPopUpMenu(const wxPoint& pos) {
+//
+//	PopupMenu(m_menuMain, pos.x, pos.y);
+//}
 
 void PanelViewer::OnQuit(wxCommandEvent& event) {
 	Close();
