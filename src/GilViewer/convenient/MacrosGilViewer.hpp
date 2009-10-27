@@ -65,8 +65,7 @@ Authors:
 	EVT_TOOL(ID_GEOMETRY_RECTANGLE, classname::OnGeometryRectangle) \
 	EVT_TOOL(ID_GEOMETRY_LINE, classname::OnGeometryLine) \
 	EVT_TOOL(ID_GEOMETRY_POLYGONE, classname::OnGeometryPolygone) \
-	EVT_TOOL(ID_SINGLE_CROP, classname::OnSingleCrop) \
-	EVT_TOOL(ID_MULTI_CROP, classname::OnMultiCrop)
+	EVT_TOOL(ID_CROP, classname::OnCrop)
 
 
 
@@ -90,8 +89,7 @@ Authors:
 	void OnGeometryRectangle(wxCommandEvent& event); \
 	void OnGeometryLine(wxCommandEvent& event); \
 	void OnGeometryPolygone(wxCommandEvent& event); \
-	void OnSingleCrop(wxCommandEvent& event); \
-	void OnMultiCrop(wxCommandEvent& event);
+	void OnCrop(wxCommandEvent& event);
 
 /**
  * Comme son nom l'indique, cette macro permet d'implementer les evenements "classiques" de la table d'evenements.
@@ -169,13 +167,9 @@ Authors:
 		variablePanelViewer->SetGeometryPolygone(); \
 		wxLogMessage( _("Geometry Polygon!") ); \
 	} \
-	void classname::OnSingleCrop(wxCommandEvent& event) \
+	void classname::OnCrop(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SingleCrop(); \
-	} \
-	void classname::OnMultiCrop(wxCommandEvent& event) \
-	{ \
-		variablePanelViewer->MultiCrop(); \
+		variablePanelViewer->Crop(); \
 	}
 
 
