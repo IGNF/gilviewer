@@ -144,8 +144,16 @@ protected:
 
 	wxToolBar* m_mainToolbar;
 	wxToolBar* m_modeAndGeometryToolbar;
+	/// The main menu bar
 	wxMenuBar* m_menuBar;
-//	wxMenu *m_menuMain;
+	/// The menu 'File'
+	wxMenu *m_menuFile;
+	/// The menu 'Options'
+	wxMenu *m_menuOptions;
+	wxMenu *m_submenuLangage;
+	/// The menu 'About'
+	wxMenu *m_menuAbout;
+
 	bool m_mouseMovementStarted;
 	float m_mouseMovementInitX;
 	float m_mouseMovementInitY;

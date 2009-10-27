@@ -115,6 +115,8 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	m_dockManager.AddPane( m_drawPane->GetModeAndGeometryToolBar(this), modeAndGeometryToolbarInfo );
 
 	m_dockManager.Update();
+
+	SetMenuBar( m_drawPane->GetMenuBar() );
 }
 
 void FrameViewer::AddLayer(const Layer::ptrLayerType &layer) {
