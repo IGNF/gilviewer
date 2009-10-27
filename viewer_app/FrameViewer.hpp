@@ -54,7 +54,7 @@ class wxDialog;
 class FrameViewer : public BasicViewerFrame
 {
 public:
-	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame") );
+	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
 	virtual ~FrameViewer() { wxGetApp().ExitMainLoop(); };
 
 	void AddLayer( const Layer::ptrLayerType &layer);

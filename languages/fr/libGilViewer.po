@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libGilViewer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 21:32+0100\n"
+"POT-Creation-Date: 2009-10-27 15:01+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Olivier Tournaire <olitour@gmail.com>\n"
 "Language-Team: gilviewer-dev <gilviewer-dev@googlegroups.com>\n"
@@ -211,7 +211,7 @@ msgstr "Afficher les informations de la couche"
 
 #: gui/LayerControlUtils.cpp:97
 #: gui/LayerControl.cpp:314
-#: gui/PanelViewer.cpp:1101
+#: gui/PanelViewer.cpp:1098
 msgid "Save layer"
 msgstr "Sauver la couche"
 
@@ -271,8 +271,8 @@ msgstr "Préférences de l'image"
 
 #: gui/LayerControl.cpp:308
 #: gui/LayerControl.cpp:442
-#: gui/PanelViewer.cpp:757
-#: gui/PanelViewer.cpp:1092
+#: gui/PanelViewer.cpp:754
+#: gui/PanelViewer.cpp:1089
 msgid "All supported files "
 msgstr "Tous les fichiers supportés"
 
@@ -338,182 +338,137 @@ msgid "Display configuration file must have the extension .xml !"
 msgstr "Les fichiers de configuration d'affichage doivent avoir l'extension .xml !"
 
 #: gui/LayerControl.cpp:918
-#: gui/PanelViewer.cpp:379
+#: gui/PanelViewer.cpp:374
 #: io/XMLDisplayConfigurationIO.cpp:600
 msgid "Error!"
 msgstr "Erreur!"
 
-#: gui/BasicViewerFrame.cpp:86
+#: gui/BasicViewerFrame.cpp:89
 msgid "Log window"
 msgstr "Fenêtre de log"
 
-#: gui/BasicViewerFrame.cpp:91
-#: gui/PanelViewer.cpp:258
+#: gui/BasicViewerFrame.cpp:94
 msgid "About"
 msgstr "A propos"
 
-#: gui/BasicViewerFrame.cpp:92
+#: gui/BasicViewerFrame.cpp:95
 msgid "Show / Hide Log Window"
 msgstr "Afficher / Cacher la fenêtre de log"
 
-#: gui/BasicViewerFrame.cpp:97
-msgid "Base Toolbar"
-msgstr "Base Toolbar"
+#: gui/BasicViewerFrame.cpp:100
+msgid "Toolbar Info"
+msgstr "Barre d'outils Info"
 
-#: gui/BasicViewerFrame.cpp:138
+#: gui/BasicViewerFrame.cpp:146
 msgid "Authors:"
 msgstr "Auteurs:"
 
-#: gui/BasicViewerFrame.cpp:142
+#: gui/BasicViewerFrame.cpp:150
 msgid "Contributors:"
 msgstr "Contributeurs:"
 
-#: gui/BasicViewerFrame.cpp:146
+#: gui/BasicViewerFrame.cpp:154
 msgid "Home page"
 msgstr "Home page"
 
-#: gui/BasicViewerFrame.cpp:147
+#: gui/BasicViewerFrame.cpp:155
 msgid "2D raster and vector viewer"
 msgstr "Viewer 2D image et vecteur"
 
-#: gui/PanelViewer.cpp:190
+#: gui/BasicViewerFrame.cpp:162
+#: gui/PanelViewer.cpp:291
+msgid "Help"
+msgstr "Aide"
+
+#: gui/PanelViewer.cpp:189
 msgid "Layers control"
 msgstr "Contrôle des couches"
 
-#: gui/PanelViewer.cpp:211
+#: gui/PanelViewer.cpp:210
 msgid "New\tCtrl-N"
 msgstr "Nouveau\tCtrl-N"
 
-#: gui/PanelViewer.cpp:212
+#: gui/PanelViewer.cpp:211
 msgid "Open\tCtrl-O"
 msgstr "Ouvrir\tCtrl-O"
 
-#: gui/PanelViewer.cpp:213
+#: gui/PanelViewer.cpp:212
 msgid "Quit\tCtrl-Q"
 msgstr "Quitter\tCtrl-Q"
 
-#: gui/PanelViewer.cpp:215
+#: gui/PanelViewer.cpp:214
 msgid "Application settings ..."
 msgstr "Préférences de l'application"
 
-#: gui/PanelViewer.cpp:218
+#: gui/PanelViewer.cpp:217
 msgid "File"
 msgstr "Fichier"
 
-#: gui/PanelViewer.cpp:219
+#: gui/PanelViewer.cpp:218
 msgid "Options"
 msgstr "Options"
 
-#: gui/PanelViewer.cpp:220
+#: gui/PanelViewer.cpp:219
 msgid "About ..."
 msgstr "A propos ..."
 
-#: gui/PanelViewer.cpp:238
-msgid "New"
-msgstr "Nouveau"
+#: gui/PanelViewer.cpp:284
+msgid "Open layer"
+msgstr "Ouvrir une couche"
 
-#: gui/PanelViewer.cpp:239
-msgid "Open"
-msgstr "Ouvrir"
+#: gui/PanelViewer.cpp:285
+msgid "Show / Hide layer control"
+msgstr "Afficher / Cacher le contre des couches"
 
-#: gui/PanelViewer.cpp:245
-msgid "Screenshot\tCtrl-C"
-msgstr "Copie d'écran\tCtrl-C"
+#: gui/PanelViewer.cpp:287
+msgid "Snapshot"
+msgstr "Copie d'écran"
 
-#: gui/PanelViewer.cpp:250
-#: gui/PanelViewer.cpp:327
+#: gui/PanelViewer.cpp:289
+msgid "Application settings"
+msgstr "Préférences des l'application"
+
+#: gui/PanelViewer.cpp:323
 msgid "Navigation"
 msgstr "Navigation"
 
-#: gui/PanelViewer.cpp:251
-#: gui/PanelViewer.cpp:328
+#: gui/PanelViewer.cpp:324
 msgid "Saisie"
 msgstr "Saisie"
 
-#: gui/PanelViewer.cpp:252
-msgid "Move"
-msgstr "Déplacement"
+#: gui/PanelViewer.cpp:326
+msgid "Geometry moving"
+msgstr "Déplacement de géometrie"
 
-#: gui/PanelViewer.cpp:253
-#: gui/PanelViewer.cpp:329
-msgid "Edition"
-msgstr "Edition"
+#: gui/PanelViewer.cpp:330
+msgid "None"
+msgstr "Aucun"
 
-#: gui/PanelViewer.cpp:254
 #: gui/PanelViewer.cpp:331
-msgid "Selection"
-msgstr "Sélection"
-
-#: gui/PanelViewer.cpp:255
-msgid "Crop"
-msgstr "Crop"
-
-#: gui/PanelViewer.cpp:263
-msgid "Nothing"
-msgstr "Rien"
-
-#: gui/PanelViewer.cpp:264
-#: gui/PanelViewer.cpp:335
 #: gui/VectorLayerSettingsControl.cpp:64
 msgid "Point"
 msgstr "Point"
 
-#: gui/PanelViewer.cpp:265
-#: gui/PanelViewer.cpp:337
-msgid "Line"
-msgstr "Ligne"
-
-#: gui/PanelViewer.cpp:266
-#: gui/PanelViewer.cpp:336
+#: gui/PanelViewer.cpp:332
 #: gui/VectorLayerSettingsControl.cpp:64
 msgid "Circle"
 msgstr "Cercle"
 
-#: gui/PanelViewer.cpp:267
-#: gui/PanelViewer.cpp:338
+#: gui/PanelViewer.cpp:333
+msgid "Line"
+msgstr "Ligne"
+
+#: gui/PanelViewer.cpp:334
 msgid "Rectangle"
 msgstr "Rectangle"
 
-#: gui/PanelViewer.cpp:268
-#: gui/PanelViewer.cpp:339
+#: gui/PanelViewer.cpp:335
 msgid "Polygon"
 msgstr "Polygone"
 
-#: gui/PanelViewer.cpp:286
-msgid "Open layer"
-msgstr "Ouvrir une couche"
-
-#: gui/PanelViewer.cpp:287
-msgid "Show / Hide layer control"
-msgstr "Afficher / Cacher le contre des couches"
-
-#: gui/PanelViewer.cpp:289
-msgid "Snapshot"
-msgstr "Copie d'écran"
-
-#: gui/PanelViewer.cpp:291
-msgid "Application settings"
-msgstr "Préférences des l'application"
-
-#: gui/PanelViewer.cpp:293
-msgid "Help"
-msgstr "Aide"
-
-#: gui/PanelViewer.cpp:330
-msgid "Geometry moving"
-msgstr "Déplacement de géometrie"
-
-#: gui/PanelViewer.cpp:334
-msgid "None"
-msgstr "Aucun"
-
-#: gui/PanelViewer.cpp:342
-msgid "Single crop"
-msgstr "Crop (une image)"
-
-#: gui/PanelViewer.cpp:343
-msgid "Multi crop"
-msgstr "Crop (multi-images)"
+#: gui/PanelViewer.cpp:338
+msgid "Crop raster"
+msgstr "Crop raster"
 
 #: gui/VectorLayerSettingsControl.cpp:64
 #: gui/VectorLayerSettingsControl.cpp:67
@@ -946,7 +901,7 @@ msgstr "objects"
 msgid " elements"
 msgstr "éléments"
 
-#: gui/BasicViewerFrame.h:56
+#: gui/BasicViewerFrame.h:53
 msgid "frame"
 msgstr "frame"
 
@@ -966,49 +921,72 @@ msgstr "Préférences globales"
 msgid "wxToolBar Sample"
 msgstr "wxToolBar Sample"
 
-#: convenient/MacrosGilViewer.hpp:120
+#: convenient/MacrosGilViewer.hpp:118
 msgid "Navigation mode!"
 msgstr "Mode navigation !"
 
-#: convenient/MacrosGilViewer.hpp:125
+#: convenient/MacrosGilViewer.hpp:123
 msgid "Geometry Moving mode!"
 msgstr "Mode déplacement de géométrie !"
 
-#: convenient/MacrosGilViewer.hpp:130
+#: convenient/MacrosGilViewer.hpp:128
 msgid "Editing mode!"
 msgstr "Mode édition !"
 
-#: convenient/MacrosGilViewer.hpp:135
+#: convenient/MacrosGilViewer.hpp:133
 msgid "Capture mode!"
 msgstr "Mode capture !"
 
-#: convenient/MacrosGilViewer.hpp:140
+#: convenient/MacrosGilViewer.hpp:138
 msgid "Selection mode!"
 msgstr "Mode sélection !"
 
-#: convenient/MacrosGilViewer.hpp:145
+#: convenient/MacrosGilViewer.hpp:143
 msgid "NULL Geometry!"
 msgstr "Geometry nulle!"
 
-#: convenient/MacrosGilViewer.hpp:150
+#: convenient/MacrosGilViewer.hpp:148
 msgid "Geometry Point!"
 msgstr "Géometrie Point !"
 
-#: convenient/MacrosGilViewer.hpp:155
+#: convenient/MacrosGilViewer.hpp:153
 msgid "Geometry Circle!"
 msgstr "Géometrie Cercle !"
 
-#: convenient/MacrosGilViewer.hpp:160
+#: convenient/MacrosGilViewer.hpp:158
 msgid "Geometry Rectangle!"
 msgstr "Géometrie Rectangle !"
 
-#: convenient/MacrosGilViewer.hpp:165
+#: convenient/MacrosGilViewer.hpp:163
 msgid "Geometry Line!"
 msgstr "Géometrie Ligne !"
 
-#: convenient/MacrosGilViewer.hpp:170
+#: convenient/MacrosGilViewer.hpp:168
 msgid "Geometry Polygon!"
 msgstr "Géometrie Polygone !"
+
+#~ msgid "Base Toolbar"
+#~ msgstr "Base Toolbar"
+#~ msgid "New"
+#~ msgstr "Nouveau"
+#~ msgid "Open"
+#~ msgstr "Ouvrir"
+#~ msgid "Screenshot\tCtrl-C"
+#~ msgstr "Copie d'écran\tCtrl-C"
+#~ msgid "Move"
+#~ msgstr "Déplacement"
+#~ msgid "Edition"
+#~ msgstr "Edition"
+#~ msgid "Selection"
+#~ msgstr "Sélection"
+#~ msgid "Crop"
+#~ msgstr "Crop"
+#~ msgid "Nothing"
+#~ msgstr "Rien"
+#~ msgid "Single crop"
+#~ msgstr "Crop (une image)"
+#~ msgid "Multi crop"
+#~ msgstr "Crop (multi-images)"
 
 #, fuzzy
 #~ msgid "input file"

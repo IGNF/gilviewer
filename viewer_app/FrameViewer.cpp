@@ -81,7 +81,7 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	PanelViewer::Register(this);
 	m_drawPane = PanelManager::Instance()->createObject("PanelViewer");
 
-	m_statusBar->SetStatusText(_("GilViewer - Adrien Chauve & Olivier Tournaire"));
+	m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
 	wxAuiPaneInfo paneInfoDrawPane;
 	paneInfoDrawPane.Name( wxT("Viewer panel name") );
