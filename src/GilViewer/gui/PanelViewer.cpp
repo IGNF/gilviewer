@@ -204,19 +204,22 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 
 	this->InitToolbar();
 
-	////Main menu
-	m_menuBar = new wxMenuBar(); //wxMB_DOCKABLE
-	wxMenu* menuFile = new wxMenu;
-	menuFile->Append(wxID_NEW, _("New\tCtrl-N"));
-	menuFile->Append(wxID_OPEN, _("Open\tCtrl-O"));
-	menuFile->Append(wxID_CLOSE, _("Quit\tCtrl-Q"));
-	wxMenu* menuOptions = new wxMenu;
-	menuOptions->Append(wxID_PREFERENCES, _("Application settings ..."));
-	wxMenu* menuAbout = new wxMenu;
-	menuAbout->Append(wxID_ABOUT, wxT("?"));
-	m_menuBar->Insert(0, menuFile, _("File"));
-	m_menuBar->Insert(1, menuOptions, _("Options"));
-	m_menuBar->Insert(2, menuAbout, _("About ..."));
+	/// Menubar
+	m_menuFile = new wxMenu;
+	m_menuFile->Append(wxID_OPEN, _("Open\tCtrl-O"));
+
+	m_menuOptions = new wxMenu;
+	m_submenuLangage = new wxMenu;
+	m_submenuLangage->Append(wxID_ABOUT, _("English"));
+	m_menuOptions->AppendSubMenu(m_submenuLangage, _("Langages"), _("Choose application langage"));
+
+	m_menuAbout = new wxMenu;
+	m_menuAbout->Append(wxID_ABOUT, wxT("?"));
+
+	m_menuBar = new wxMenuBar;
+	m_menuBar->Insert(0, m_menuFile, _("File"));
+	m_menuBar->Insert(1, m_menuOptions, _("Options"));
+	m_menuBar->Insert(2, m_menuAbout, _("About ..."));
 
 	//	/////Popup menu
 	//	m_menuMain = new wxMenu;
@@ -319,7 +322,6 @@ wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent) {
 	if (!m_modeAndGeometryToolbar) {
 		m_modeAndGeometryToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-		m_modeAndGeometryToolbar->AddSeparator();
 		m_modeAndGeometryToolbar->AddTool(ID_MODE_NAVIGATION, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HAND_22x22")), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
 		m_modeAndGeometryToolbar->AddTool(ID_MODE_CAPTURE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PEN_22x22")), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
 		//m_modeAndGeometryToolbar->AddTool(ID_MODE_EDITION, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS_OFFICE_22x22")), wxNullBitmap, wxITEM_RADIO, _("Edition"));

@@ -50,7 +50,6 @@ Authors:
 /// Layer control
 ///
 #define MAX_LAYERS							100
-#define MAX_PLUGINS							500
 
 ///
 /// HistogramPlotter
@@ -66,15 +65,13 @@ enum
 	ID_SAVE									=	ID_INFO + MAX_LAYERS,
 	ID_DELETE								=	ID_SAVE + MAX_LAYERS,
 	ID_SETTINGS								=	ID_DELETE + MAX_LAYERS,
-	ID_DATABASE								=	ID_SETTINGS + MAX_LAYERS,
-	ID_VISIBILITY							=	ID_DATABASE + MAX_LAYERS,
+	ID_VISIBILITY							=	ID_SETTINGS + MAX_LAYERS,
 	ID_TRANSFORMATION						=	ID_VISIBILITY + MAX_LAYERS,
 	ID_VISIBILITY_BUTTON					=	ID_TRANSFORMATION + MAX_LAYERS + 1,
 	ID_TRANSFORMATION_BUTTON,
 	ID_GLOBAL_SETTINGS_BUTTON,
 
 	// Menu contextuel
-	ID_POPMENU_SCREENSHOT,
 	ID_POPMENU_REMOVE,
 	ID_POPMENU_VISIBILITY					=	ID_POPMENU_REMOVE + MAX_LAYERS,
 	ID_POPMENU_TRANSFORMABILITY				=	ID_POPMENU_VISIBILITY + MAX_LAYERS,
@@ -86,10 +83,6 @@ enum
 	ID_SHOW_HIDE_LAYER_CONTROL,
 	ID_SHOW_HIDE_LOG_WINDOW,
 	ID_BASIC_SNAPSHOT,
-	ID_ADVANCED_SNAPSHOT,
-
-	ID_APPLICATION_SETTINGS_PATHS_APPLY_BUTTON,
-	ID_APPLICATION_SETTINGS_OPTIONS_APPLY_BUTTON,
 
 	// Dans la toolbar de l'appli, les boutons pour changer de mode
 	ID_MODE_NAVIGATION, //déplacement dans la scène 2D (translation/zoom des images)
@@ -97,7 +90,6 @@ enum
 	ID_MODE_EDITION, //modification de primitives existantes
 	ID_MODE_CAPTURE, //saisie de nouvelles primitives
 	ID_MODE_SELECTION, //sélection raster
-	ID_MODE_CROP, //crop raster
 
 	//Boutons pour changer de géométrie courante
 	ID_GEOMETRY_NULL,
@@ -108,13 +100,7 @@ enum
 	ID_GEOMETRY_POLYGONE,
 
 	// Bouton de crop
-	ID_CROP,
-
-	ID_CHOICE_PANELS,
-	ID_CHOICE_LAYERS		=	ID_CHOICE_PANELS + MAX_PLUGINS,
-
-	// Celui-ci doit TOUJOURS etre le dernier !!!
-	ID_FIRST_PLUGIN		=	ID_CHOICE_LAYERS + MAX_PLUGINS,
+	ID_CROP
 };
 
 
