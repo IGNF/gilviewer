@@ -81,7 +81,7 @@ INSTALL (FILES GilViewerConfig.cmake DESTINATION ${TARGET_CONFIG_INSTALL_PATH})
 #install translation files
 if( UNIX )
 	message( STATUS " Installing langages support files" )
-    install( FILES ${LANGAGES_SUPPORT_FILES} DESTINATION /usr/share/locale/fr/LC_MESSAGES/ )
+    install( FILES ${LANGAGES_FR_SUPPORT_FILES} DESTINATION /usr/share/locale/fr/LC_MESSAGES/ )
 else( WIN32 )
     # To install in the application directory
 endif()

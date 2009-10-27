@@ -49,7 +49,7 @@ Authors:
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, _("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 { wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
@@ -86,6 +86,7 @@ bool GilViewerApp::OnInit()
 #		endif // __WXGTK__
 
         locale->AddCatalog(wxT("libGilViewer"));
+        locale->AddCatalog(wxT("GilViewerApp"));
 
         if(! locale->IsOk() )
         {
