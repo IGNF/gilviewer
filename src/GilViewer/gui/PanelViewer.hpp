@@ -105,8 +105,7 @@ public:
 
 	void OnSnapshot(wxCommandEvent& event);
 
-	void SingleCrop();
-	void MultiCrop();
+	void Crop();
 
 	// TODO : tout passer en minuscule (ou en majuscule)
 	enum eMode //mode de gestion des événements

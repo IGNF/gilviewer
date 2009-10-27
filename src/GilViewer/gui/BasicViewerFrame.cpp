@@ -91,8 +91,8 @@ BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxStri
 
 	//ToolBar
 	m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
-	m_baseToolBar->AddTool(wxID_ABOUT, wxT("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
-	m_baseToolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, wxT("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+	m_baseToolBar->AddTool(wxID_ABOUT, wxT("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_22x22") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
+	m_baseToolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, wxT("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
 	m_baseToolBar->Realize();
 
 	wxAuiPaneInfo paneInfoToolbar;
