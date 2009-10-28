@@ -47,7 +47,10 @@ class GilViewerApp: public wxApp
 {
 	bool OnInit();
 
-	FrameViewer *frame;
+	// Langage
+	void set_langage(unsigned int language_id);
+
+	FrameViewer *m_frame;
 
 };
 

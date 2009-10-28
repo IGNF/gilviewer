@@ -39,8 +39,8 @@ Authors:
 #include <stdexcept>
 
 #include <wx/filename.h>
-#include <wx/cmdline.h>
 #include <wx/stdpaths.h>
+#include <wx/cmdline.h>
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 
@@ -56,12 +56,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 #	include <locale.h>
 #endif
 
-
 IMPLEMENT_APP(GilViewerApp);
-
-wxLocale* locale;
-long language;
-
 
 bool GilViewerApp::OnInit()
 {
@@ -69,7 +64,54 @@ bool GilViewerApp::OnInit()
 	setlocale(LC_ALL, "POSIX");
 #endif
 
-	language =  wxLANGUAGE_DEFAULT;
+	// Langage
+	set_langage(wxLANGUAGE_FRENCH);
+
+	// Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
+	wxArrayString cmdFiles;
+	wxString cmdFilename;
+	wxCmdLineParser cmdLineParser(g_cmdLineDesc, argc, argv);
+
+	cmdLineParser.Parse(false);
+
+	if (cmdLineParser.GetParamCount() > 0)
+	{
+		for (unsigned int i=0;i<cmdLineParser.GetParamCount();++i)
+		{
+			cmdFilename = cmdLineParser.GetParam(i);
+			wxFileName fileName(cmdFilename);
+			fileName.Normalize(wxPATH_NORM_LONG | wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE);
+			cmdFilename = fileName.GetFullPath();
+			cmdFiles.Add( cmdFilename );
+		}
+	}
+
+	try{
+
+	m_frame = new FrameViewer((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
+	m_frame->AddLayersFromFiles( cmdFiles );
+	m_frame->Show();
+}
+catch( std::exception &e )
+{
+	wxString message;
+	message << wxString(e.what(), *wxConvCurrent);
+	::wxMessageBox( message );
+}
+catch( ... )
+{
+	::wxMessageBox( _("Unhandled exception ...") );
+}
+
+return true;
+}
+
+void GilViewerApp::set_langage(unsigned int language_id)
+{
+	wxLocale* locale;
+	long language;
+
+	language =  language_id;
 
 	// Load language if possible, fall back to english otherwise
     if(wxLocale::IsAvailable(language))
@@ -102,45 +144,5 @@ bool GilViewerApp::OnInit()
         locale = new wxLocale( wxLANGUAGE_ENGLISH );
         language = wxLANGUAGE_ENGLISH;
     }
-
-	// Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
-	wxArrayString cmdFiles;
-	wxString cmdFilename;
-	wxCmdLineParser cmdLineParser(g_cmdLineDesc, argc, argv);
-
-	cmdLineParser.Parse(false);
-
-	if (cmdLineParser.GetParamCount() > 0)
-	{
-		for (unsigned int i=0;i<cmdLineParser.GetParamCount();++i)
-		{
-			cmdFilename = cmdLineParser.GetParam(i);
-			wxFileName fileName(cmdFilename);
-			fileName.Normalize(wxPATH_NORM_LONG | wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE);
-			cmdFilename = fileName.GetFullPath();
-			cmdFiles.Add( cmdFilename );
-		}
-	}
-
-	try{
-
-	frame = new FrameViewer((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
-	frame->AddLayersFromFiles( cmdFiles );
-
-	frame->Show();
 }
-catch( std::exception &e )
-{
-	wxString message;
-	message << wxString(e.what(), *wxConvCurrent);
-	::wxMessageBox( message );
-}
-catch( ... )
-{
-	::wxMessageBox( _("Unhandled exception ...") );
-}
-
-return true;
-}
-
 

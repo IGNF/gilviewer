@@ -116,6 +116,7 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 
 	m_dockManager.Update();
 
+	// Menu bar
 	SetMenuBar( m_drawPane->GetMenuBar() );
 }
 

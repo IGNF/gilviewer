@@ -148,9 +148,6 @@ protected:
 	wxMenuBar* m_menuBar;
 	/// The menu 'File'
 	wxMenu *m_menuFile;
-	/// The menu 'Options'
-	wxMenu *m_menuOptions;
-	wxMenu *m_submenuLangage;
 	/// The menu 'About'
 	wxMenu *m_menuAbout;
 
