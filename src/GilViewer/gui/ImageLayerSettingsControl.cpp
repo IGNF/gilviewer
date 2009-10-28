@@ -253,8 +253,8 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 
 	wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
 	buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
-	buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, _("Apply")));
-	buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, _("Cancel")));
+	buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, wxT("Apply")));
+	buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, wxT("Cancel")));
 	buttons_sizer->Realize();
 	main_sizer->Add(buttons_sizer, 0, wxALIGN_RIGHT|wxALL, 5);
 
