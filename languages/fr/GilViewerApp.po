@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GilViewerApp\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-27 17:40+0100\n"
+"POT-Creation-Date: 2009-10-28 09:13+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Olivier Tournaire <olitour@gmail.com>\n"
 "Language-Team: gilviewer-dev <gilviewer-dev@googlegroups.com>\n"
@@ -15,22 +15,6 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-SearchPath-0: viewer_app\n"
 
-#: viewer_app/GilViewer.cpp:92
-msgid "Selected language is wrong!"
-msgstr "Le langage choisit n'est pas disponible !"
-
-#: viewer_app/GilViewer.cpp:100
-msgid "The selected langage is not supported by your system. Try installing support for this language."
-msgstr "Le langage sélectionné n'est pas disponible pour ce programme"
-
-#: viewer_app/GilViewer.cpp:126
-msgid "GilViewer"
-msgstr "GilViewer"
-
-#: viewer_app/GilViewer.cpp:139
-msgid "Unhandled exception ..."
-msgstr "Exception non gérée ..."
-
 #: viewer_app/FrameViewer.cpp:97
 msgid "Main Toolbar"
 msgstr "Barre d'outils Principale"
@@ -39,10 +23,24 @@ msgstr "Barre d'outils Principale"
 msgid "Mode and geometry Toolbar"
 msgstr "Barre d'outils Mode et Géométrie"
 
-#: viewer_app/FrameViewer.hpp:57
-msgid "frame"
-msgstr "frame"
+#: viewer_app/GilViewer.cpp:91
+msgid "GilViewer"
+msgstr "GilViewer"
 
+#: viewer_app/GilViewer.cpp:103
+msgid "Unhandled exception ..."
+msgstr "Exception non gérée ..."
+
+#: viewer_app/GilViewer.cpp:135
+msgid "Selected language is wrong!"
+msgstr "Le langage choisit n'est pas disponible !"
+
+#: viewer_app/GilViewer.cpp:143
+msgid "The selected langage is not supported by your system. Try installing support for this language."
+msgstr "Le langage sélectionné n'est pas disponible pour ce programme"
+
+#~ msgid "frame"
+#~ msgstr "frame"
 #~ msgid "Input files"
 #~ msgstr "Input files"
 #~ msgid "GilViewer - Adrien Chauve & Olivier Tournaire"
