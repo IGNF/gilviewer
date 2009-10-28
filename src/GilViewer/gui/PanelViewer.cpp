@@ -1073,7 +1073,6 @@ void PanelViewer::Crop() {
 			std::string layer_filename = (*it)->Filename();
 			std::string ext = boost::filesystem::extension(layer_filename);
 			std::string layer_base_filename = boost::filesystem::basename(layer_filename) + ext;
-			std::cout << "layer_base_filename = " << layer_base_filename << std::endl;
 
 			boost::shared_ptr<VectorLayer> vl = boost::dynamic_pointer_cast<VectorLayer>(*it);
 			wxString wildcard;
