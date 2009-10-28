@@ -153,7 +153,7 @@ wxPanel* ApplicationSettings::CreatePathsSettingsPanel()
 	mainSizer->Add(boxSizerPlugins, 0, wxEXPAND | wxHORIZONTAL, 5);
 
 
-	mainSizer->Add(new wxButton(panel, wxID_APPLY, _("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
+	mainSizer->Add(new wxButton(panel, wxID_APPLY, wxT("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
 	mainSizer->SetSizeHints(panel);
 	panel->SetSizer(mainSizer);
@@ -219,7 +219,7 @@ wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
 	mainSizer->Add(boxSizerPerformance, 0, wxEXPAND | wxHORIZONTAL, 5);
 	mainSizer->Add(boxSizerBilinearZoom, 0, wxEXPAND | wxHORIZONTAL, 5);
 
-	mainSizer->Add(new wxButton(panel, wxID_APPLY, _("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
+	mainSizer->Add(new wxButton(panel, wxID_APPLY, wxT("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
 	mainSizer->SetSizeHints(panel);
 	panel->SetSizer(mainSizer);
@@ -345,7 +345,7 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	mainSizer->Add(boxSizerLines, 0, wxEXPAND | wxHORIZONTAL, 5);
 	mainSizer->Add(boxSizerPolygons, 0, wxEXPAND | wxHORIZONTAL, 5);
 
-	mainSizer->Add(new wxButton(panel, wxID_APPLY, _("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
+	mainSizer->Add(new wxButton(panel, wxID_APPLY, wxT("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
 	mainSizer->SetSizeHints(panel);
 	panel->SetSizer(mainSizer);
