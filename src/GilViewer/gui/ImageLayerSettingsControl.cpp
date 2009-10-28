@@ -519,7 +519,7 @@ void ImageLayerSettingsControl::OnOKButton(wxCommandEvent &event)
 
 void ImageLayerSettingsControl::OnCancelButton(wxCommandEvent &event)
 {
-	// On sauvegarde les valeurs des paramètres courants
+	Hide();
 }
 
 void ImageLayerSettingsControl::OnSize(wxSizeEvent &event)

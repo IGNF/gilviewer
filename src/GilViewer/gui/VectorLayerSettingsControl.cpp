@@ -293,7 +293,7 @@ void VectorLayerSettingsControl::OnOKButton(wxCommandEvent &event)
 
 void VectorLayerSettingsControl::OnCancelButton(wxCommandEvent &event)
 {
-	::wxMessageBox(_("Cancel !"));
+	Hide();
 }
 
 void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)

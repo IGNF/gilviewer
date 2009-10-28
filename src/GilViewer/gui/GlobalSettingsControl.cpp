@@ -117,7 +117,7 @@ void GlobalSettingsControl::OnOKButton(wxCommandEvent &event)
 
 void GlobalSettingsControl::OnCancelButton(wxCommandEvent &event)
 {
-	// On sauvegarde les valeurs des param�tres courants
+	Hide();
 }
 
 void GlobalSettingsControl::OnCloseWindow(wxCloseEvent& event)
