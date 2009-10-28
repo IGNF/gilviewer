@@ -111,7 +111,8 @@ void GlobalSettingsControl::OnApplyButton(wxCommandEvent &event)
 
 void GlobalSettingsControl::OnOKButton(wxCommandEvent &event)
 {
-	Show(false);
+	OnApplyButton(event);
+	Hide();
 }
 
 void GlobalSettingsControl::OnCancelButton(wxCommandEvent &event)
