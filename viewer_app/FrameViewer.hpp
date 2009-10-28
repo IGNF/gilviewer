@@ -62,6 +62,8 @@ public:
 
 private:
 	PanelViewer* m_drawPane;
+	wxMenu* m_menuOptions;
+	wxMenu* m_submenuLangage;
 
 	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 	DECLARE_EVENT_TABLE();

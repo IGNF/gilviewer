@@ -208,18 +208,12 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 	m_menuFile = new wxMenu;
 	m_menuFile->Append(wxID_OPEN, _("Open\tCtrl-O"));
 
-	m_menuOptions = new wxMenu;
-	m_submenuLangage = new wxMenu;
-	m_submenuLangage->Append(wxID_ABOUT, _("English"));
-	m_menuOptions->AppendSubMenu(m_submenuLangage, _("Langages"), _("Choose application langage"));
-
 	m_menuAbout = new wxMenu;
 	m_menuAbout->Append(wxID_ABOUT, wxT("?"));
 
 	m_menuBar = new wxMenuBar;
 	m_menuBar->Insert(0, m_menuFile, _("File"));
-	m_menuBar->Insert(1, m_menuOptions, _("Options"));
-	m_menuBar->Insert(2, m_menuAbout, _("About ..."));
+	m_menuBar->Insert(1, m_menuAbout, _("About ..."));
 
 	//	/////Popup menu
 	//	m_menuMain = new wxMenu;
