@@ -35,6 +35,7 @@
 
 	<object class="wxBitmap" name="APPLICATIONS-OTHERS_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-other.png</object>
 
+	<object class="wxBitmap" name="APPLICATIONS-SYSTEM_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-system.png</object>
 	<object class="wxBitmap" name="APPLICATIONS-SYSTEM_22x22">tango-icon-theme-0.8.90/22x22/categories/applications-system.png</object>
 
 	<object class="wxBitmap" name="IMAGE-X-GENERIC_16x16">tango-icon-theme-0.8.90/16x16/mimetypes/image-x-generic.png</object>
