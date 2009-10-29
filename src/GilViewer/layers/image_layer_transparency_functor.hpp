@@ -82,4 +82,17 @@ bool transparency_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src) c
 			&& (m_min_alpha<=at_c<2>(src) || at_c<2>(src)<=m_max_alpha);
 }
 
+template<>
+bool transparency_functor::operator()<rgba8_pixel_t>(const rgba8_pixel_t& src) const
+{
+	if(m_min_alpha <= m_max_alpha)
+		return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha
+			&& m_min_alpha<=at_c<1>(src) && at_c<1>(src)<=m_max_alpha
+			&& m_min_alpha<=at_c<2>(src) && at_c<2>(src)<=m_max_alpha;
+	else
+		return (m_min_alpha<=at_c<0>(src) || at_c<0>(src)<=m_max_alpha)
+			&& (m_min_alpha<=at_c<1>(src) || at_c<1>(src)<=m_max_alpha)
+			&& (m_min_alpha<=at_c<2>(src) || at_c<2>(src)<=m_max_alpha);
+}
+
 

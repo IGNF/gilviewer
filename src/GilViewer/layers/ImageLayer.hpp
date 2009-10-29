@@ -56,7 +56,7 @@ class ImageLayer : public Layer
 {
 	public:
 	//GIL   :  gray8_image_t, gray8s_image_t, gray16_image_t, gray16s_image_t, gray32_image_t, gray32s_image_t,
-        typedef any_image< boost::mpl::vector< gray8_image_t , gray16_image_t , gray32_image_t, gray32F_image_t , gray64F_image_t , rgb8_image_t , rgb16_image_t , rgb32_image_t > > usable_images_t;
+        typedef any_image< boost::mpl::vector< gray8_image_t , gray16_image_t , gray32_image_t, gray32F_image_t , gray64F_image_t , rgb8_image_t , rgb16_image_t , rgb32_image_t , rgba8_image_t > > usable_images_t;
 	typedef usable_images_t::view_t usable_views_t;
 
 

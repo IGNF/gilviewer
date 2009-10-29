@@ -57,6 +57,13 @@ void to_string_functor::operator()(const rgb16c_view_t& src, const int i, const 
 	oss << (int) at_c<0>(src(i,j)) << "," << (int) at_c<1>(src(i,j)) << "," << (int) at_c<2>(src(i,j));
 }
 
+
+template <>
+void to_string_functor::operator()(const rgba8c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
+{
+	oss << (int) at_c<0>(src(i,j)) << "," << (int) at_c<1>(src(i,j)) << "," << (int) at_c<2>(src(i,j)) << "," << (int) at_c<3>(src(i,j));
+}
+
 template <>
 void to_string_functor::operator()(const rgb32c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
 {
