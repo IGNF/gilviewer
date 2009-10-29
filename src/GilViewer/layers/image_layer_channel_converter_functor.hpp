@@ -108,6 +108,16 @@ void channel_converter_functor::operator()<rgb8_pixel_t>(const rgb8_pixel_t& src
 }
 
 template <>
+void channel_converter_functor::operator()<rgba8_pixel_t>(const rgba8_pixel_t& src, dev3n8_pixel_t& dst) const
+{
+	rgb8_pixel_t tmp;
+	at_c<0>(tmp) = at_c<0>(src); 
+	at_c<1>(tmp) = at_c<1>(src); 
+	at_c<2>(tmp) = at_c<2>(src); 
+	operator()<rgb8_pixel_t>(tmp,dst);
+}
+
+template <>
 void channel_converter_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src, dev3n8_pixel_t& dst) const
 {
 	if (at_c<0>(src) < m_min_src)

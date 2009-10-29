@@ -83,6 +83,18 @@ void min_max_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src)
 	m_max = max(static_cast<float>(at_c<2>(src)), m_max);
 }
 
+template<>
+void min_max_functor::operator()<rgba8_pixel_t>(const rgba8_pixel_t& src)
+{
+	using namespace std;
+	m_min = min(static_cast<float>(at_c<0>(src)), m_min);
+	m_max = max(static_cast<float>(at_c<0>(src)), m_max);
+	m_min = min(static_cast<float>(at_c<1>(src)), m_min);
+	m_max = max(static_cast<float>(at_c<1>(src)), m_max);
+	m_min = min(static_cast<float>(at_c<2>(src)), m_min);
+	m_max = max(static_cast<float>(at_c<2>(src)), m_max);
+}
+
 struct any_view_min_max {
     typedef std::pair<float, float> result_type;
     template <typename View> result_type operator()(View& vue) const

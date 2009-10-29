@@ -78,3 +78,15 @@ histogram_functor::result_type histogram_functor::operator()<rgb16c_view_t>( con
 		++m_histo[2][ at_c<2>(*it)*m_scale+m_offset];
 	}
 }
+
+
+template <>
+histogram_functor::result_type histogram_functor::operator()<rgba8_view_t>( const rgba8_view_t& src ) const
+{
+    for (rgba8_view_t::iterator it=src.begin(); it!=src.end(); ++it)
+    {
+		++m_histo[0][ at_c<0>(*it)*m_scale+m_offset];
+		++m_histo[1][ at_c<1>(*it)*m_scale+m_offset];
+		++m_histo[2][ at_c<2>(*it)*m_scale+m_offset];
+	}
+}
