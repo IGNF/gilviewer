@@ -58,8 +58,26 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/wrappers SRC_WRAPPERS)
 
 # Une variable regroupant toutes les sources ...
-SET( ALL_VIEWER_SOURCES
-     ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
+SET( ALL_VIEWER_SOURCES ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
+
+if(WIN32)
+    if(MSVC)
+        #message( STATUS "MSVC_VERSION: " ${MSVC_VERSION} )
+        #Visual C++, 32-bit, version 6.0         1200
+        #Visual C++, 32-bit, version .net 2002   1300
+        #Visual C++, 32-bit, version .net 2003   1310
+        #Visual C++, 32-bit, version 2005        1400 (vc80)
+        #Visual C++, 32-bit, version 2005 SP1    14?? (vc80_sp1)
+        #Visual C++, 32-bit, version 2008        1500 (vc90)
+
+        if(MSVC_VERSION EQUAL 1310 OR MSVC_VERSION EQUAL 1400 OR MSVC_VERSION EQUAL 1500 OR ${MSVC71} )
+        else()
+			aux_source_directory(${SRC_DIR}/gui/msvc SRC_MSVC)
+			set( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${SRC_MSVC} )
+        endif()
+        
+    endif(MSVC)
+endif(WIN32)
 
 
 #####################################
@@ -90,7 +108,9 @@ endif()
 		
 # Find BOOST
 set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" )
-FIND_PACKAGE( Boost 1.34.1 COMPONENTS filesystem system thread )
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREAD ON)
+FIND_PACKAGE( Boost 1.37 COMPONENTS filesystem system thread )
 IF( NOT Boost_FOUND )
 	MESSAGE(FATAL_ERROR "Boost not found ! Please set Boost path ...")
 ELSE()
