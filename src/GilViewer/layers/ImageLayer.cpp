@@ -66,6 +66,7 @@ Authors:
 #include "image_layer_infos_functor.hpp"
 
 using namespace std;
+using namespace boost::gil;
 
 ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const string &name):
 	m_img(image)
@@ -75,7 +76,7 @@ ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const st
 
 
 
-	m_minmaxResult = apply_operation(view(*m_img), any_view_min_max());
+	m_minmaxResult = apply_operation(view(*m_img), any_view_min_max_optimized());
 
 	Name(name);
 
