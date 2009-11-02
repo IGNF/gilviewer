@@ -76,7 +76,7 @@ ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const st
 
 
 
-	m_minmaxResult = apply_operation(view(*m_img), any_view_min_max_optimized());
+	m_minmaxResult = apply_operation(view(*m_img), any_view_min_max());
 
 	Name(name);
 
