@@ -66,6 +66,7 @@ Authors:
 #include "image_layer_infos_functor.hpp"
 
 using namespace std;
+using namespace boost::gil;
 
 ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const string &name):
 	m_img(image)
