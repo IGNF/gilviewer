@@ -36,10 +36,10 @@ Authors:
 
 ***********************************************************************/
 
-#ifdef WIN32
+#ifdef _WINDOWS
 #	undef min
 #	undef max
-#endif // WIN32
+#endif // _WINDOWS
 
 #include <boost/algorithm/minmax.hpp>
 #include <boost/algorithm/minmax_element.hpp>
