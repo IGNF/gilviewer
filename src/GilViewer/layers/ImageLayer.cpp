@@ -41,8 +41,6 @@ Authors:
 #include <limits>
 #include <utility>
 
-#include "ImageLayer.hpp"
-
 #include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
@@ -57,13 +55,14 @@ Authors:
 
 #include "GilViewer/tools/ColorLookupTable.h"
 
-#include "image_layer_channel_converter_functor.hpp"
+#include "image_layer_screen_image_functor.hpp"
 #include "image_layer_min_max_functor.hpp"
 #include "image_layer_get_any_image_functor.hpp"
 #include "image_layer_histogram_functor.hpp"
-#include "image_layer_transparency_functor.hpp"
 #include "image_layer_to_string_functor.hpp"
 #include "image_layer_infos_functor.hpp"
+
+#include "ImageLayer.hpp"
 
 using namespace std;
 using namespace boost::gil;
@@ -185,74 +184,6 @@ inline int iRound(const T x)
 	return static_cast<int>(floor(x + 0.5));
 }
 
-
-struct screen_image_functor
-{
-	typedef void result_type;
-	screen_image_functor( dev3n8_view_t &screen_view, channel_converter_functor cc, double z, double tx, double ty, gray8_view_t& canal_alpha, const double min_alpha, const double max_alpha, const unsigned char alpha, bool isTransparent) :
-		m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc),
-		m_zoomFactor(z), m_translationX(tx), m_translationY(ty),
-		m_alpha(alpha),
-		m_zero(0),
-		m_transparencyFonctor(min_alpha, max_alpha),
-		m_isTransparent(isTransparent)
-	{
-	}
-
-	template <typename ViewT>
-	result_type operator()( const ViewT& src ) const
-	{
-
-		dev3n8_pixel_t blank;
-		at_c<0>(blank) = 0;
-		at_c<1>(blank) = 0;
-		at_c<2>(blank) = 0;
-
-		fill_pixels(m_screen_view, blank);
-
-
-		//TODO to be optimized ?
-
-		for (std::ptrdiff_t y=0; y < m_screen_view.height(); ++y)
-		{
-			int yb = y*m_zoomFactor - m_translationY;
-
-			if(yb < 0 || yb >= src.height())
-				continue;
-
-			dev3n8_view_t::x_iterator screen_it = m_screen_view.row_begin(y);
-			gray8_view_t::x_iterator alpha_it = m_canal_alpha.row_begin(y);
-			typename ViewT::x_iterator src_it = src.row_begin(yb);
-
-			for (std::ptrdiff_t x=0; x < m_screen_view.width(); ++x) //, ++loc.x())
-			{
-				int xb = x*m_zoomFactor - m_translationX;
-
-
-				if(xb>=0 && xb < src.width())
-				{
-					m_cc(src_it[xb], screen_it[x]);
-
-					if(m_isTransparent && m_transparencyFonctor(src_it[xb]))
-							alpha_it[x] = m_zero;
-					else
-							alpha_it[x] = m_alpha;
-				}
-
-
-			}
-		}
-	}
-
-	dev3n8_view_t& m_screen_view;
-	gray8_view_t& m_canal_alpha;
-	channel_converter_functor m_cc;
-	double m_zoomFactor, m_translationX, m_translationY;
-	const gray8_pixel_t m_alpha, m_zero;
-	transparency_functor m_transparencyFonctor;
-	bool m_isTransparent;
-};
-
 void ImageLayer::Update(const int width, const int height)
 {
 	// Lecture de la configuration des differentes options ...
@@ -313,12 +244,12 @@ void ImageLayer::Save(const string &name)
 
 unsigned int ImageLayer::GetNbComponents() const
 {
-	return apply_operation(const_view(*m_img), nb_components_functor());
+	return apply_operation(view(*m_img), nb_components_functor());
 }
 
 string ImageLayer::GetTypeChannel() const
 {
-	return apply_operation(const_view(*m_img), type_channel_functor());
+	return apply_operation(view(*m_img), type_channel_functor());
 }
 
 void ImageLayer::Histogram(vector< vector<double> > &histo, double &min, double &max) const
@@ -329,23 +260,15 @@ void ImageLayer::Histogram(vector< vector<double> > &histo, double &min, double 
 	histo.resize( GetNbComponents() );
 	for (unsigned int i=0;i<GetNbComponents();++i)
 		histo[i].resize(256);
-	apply_operation( const_view(*m_img), histogram_functor(histo,min,max) );
+	apply_operation( view(*m_img), histogram_functor(histo,min,max) );
 }
-
-template<typename ViewT, typename CoordT>
-inline bool isInside(const ViewT& src, const CoordT i, const CoordT j)
-{
-	return i>=0 && j>=0 && i<src.width() && j<src.height();
-}
-
-
 
 string ImageLayer::GetPixelValue(const int i, const int j) const
 {
 	ostringstream oss;
 	oss.precision(6);
 	oss<<"(";
-	apply_operation(const_view(*m_img), any_view_to_string(static_cast<int>(-m_translationX+i*m_zoomFactor), static_cast<int>(-m_translationY+j*m_zoomFactor), oss));
+	apply_operation(view(*m_img), any_view_image_position_to_string_functor(static_cast<int>(-m_translationX+i*m_zoomFactor), static_cast<int>(-m_translationY+j*m_zoomFactor), oss));
 	oss<<")";
 	return oss.str();
 }
