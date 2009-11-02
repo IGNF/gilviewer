@@ -163,5 +163,4 @@ class ImageLayer : public Layer
 		double m_oldZoomFactor;
 };
 
-
 #endif // __IMAGE_LAYER_HPP__

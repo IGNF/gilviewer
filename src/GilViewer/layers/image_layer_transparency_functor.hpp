@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,68 +31,47 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
+#include <boost/preprocessor/seq/for_each.hpp>
+
+#include "GilViewer/layers/image_types.hpp"
 
 struct transparency_functor
 {
+    typedef bool result_type;
 	transparency_functor(const double min_alpha, const double max_alpha):
 		m_min_alpha(min_alpha),
 		m_max_alpha(max_alpha)
 		{}
 
 	template<class PixelT>
-	bool operator()(const PixelT& src) const
+	result_type operator()(const PixelT& src) const
 	{
 		if(m_min_alpha <= m_max_alpha)
-			return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha;
+			return m_min_alpha <= boost::gil::at_c<0>(src) && boost::gil::at_c<0>(src) <= m_max_alpha;
 		else
-			return m_min_alpha<=at_c<0>(src) || at_c<0>(src)<=m_max_alpha;
+			return m_min_alpha <= boost::gil::at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha;
 	}
 
 	const double m_min_alpha, m_max_alpha;
 };
 
-
-template<>
-bool transparency_functor::operator()<rgb8_pixel_t>(const rgb8_pixel_t& src) const
-{
-	if(m_min_alpha <= m_max_alpha)
-		return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha
-			&& m_min_alpha<=at_c<1>(src) && at_c<1>(src)<=m_max_alpha
-			&& m_min_alpha<=at_c<2>(src) && at_c<2>(src)<=m_max_alpha;
-	else
-		return (m_min_alpha<=at_c<0>(src) || at_c<0>(src)<=m_max_alpha)
-			&& (m_min_alpha<=at_c<1>(src) || at_c<1>(src)<=m_max_alpha)
-			&& (m_min_alpha<=at_c<2>(src) || at_c<2>(src)<=m_max_alpha);
+#define OVERLOAD_TRANSPARENCY_PARENTHESIS_OPERATOR( r , n , data ) template <> \
+transparency_functor::result_type transparency_functor::operator()<data::value_type>(const data::value_type& src) const \
+{ \
+    using namespace boost::gil; \
+	if(m_min_alpha <= m_max_alpha) \
+		return m_min_alpha <= boost::gil::at_c<0>(src) && boost::gil::at_c<0>(src) <= m_max_alpha \
+			&& m_min_alpha <= boost::gil::at_c<1>(src) && boost::gil::at_c<1>(src) <= m_max_alpha \
+			&& m_min_alpha <= boost::gil::at_c<2>(src) && boost::gil::at_c<2>(src) <= m_max_alpha; \
+	else \
+		return (m_min_alpha <= boost::gil::at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha) \
+			&& (m_min_alpha <= boost::gil::at_c<1>(src) || boost::gil::at_c<1>(src) <= m_max_alpha) \
+			&& (m_min_alpha <= boost::gil::at_c<2>(src) || boost::gil::at_c<2>(src) <= m_max_alpha); \
 }
 
-template<>
-bool transparency_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src) const
-{
-	if(m_min_alpha <= m_max_alpha)
-		return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha
-			&& m_min_alpha<=at_c<1>(src) && at_c<1>(src)<=m_max_alpha
-			&& m_min_alpha<=at_c<2>(src) && at_c<2>(src)<=m_max_alpha;
-	else
-		return (m_min_alpha<=at_c<0>(src) || at_c<0>(src)<=m_max_alpha)
-			&& (m_min_alpha<=at_c<1>(src) || at_c<1>(src)<=m_max_alpha)
-			&& (m_min_alpha<=at_c<2>(src) || at_c<2>(src)<=m_max_alpha);
-}
-
-template<>
-bool transparency_functor::operator()<rgba8_pixel_t>(const rgba8_pixel_t& src) const
-{
-	if(m_min_alpha <= m_max_alpha)
-		return m_min_alpha<=at_c<0>(src) && at_c<0>(src)<=m_max_alpha
-			&& m_min_alpha<=at_c<1>(src) && at_c<1>(src)<=m_max_alpha
-			&& m_min_alpha<=at_c<2>(src) && at_c<2>(src)<=m_max_alpha;
-	else
-		return (m_min_alpha<=at_c<0>(src) || at_c<0>(src)<=m_max_alpha)
-			&& (m_min_alpha<=at_c<1>(src) || at_c<1>(src)<=m_max_alpha)
-			&& (m_min_alpha<=at_c<2>(src) || at_c<2>(src)<=m_max_alpha);
-}
-
-
+BOOST_PP_SEQ_FOR_EACH( OVERLOAD_TRANSPARENCY_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
+BOOST_PP_SEQ_FOR_EACH( OVERLOAD_TRANSPARENCY_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )

@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,67 +31,31 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
+#include <boost/preprocessor/seq/for_each.hpp>
 
-struct to_string_functor
-{
-	   template <typename ViewT>
-	   void operator()(const ViewT& src, const int i, const int j, std::ostringstream& oss)  const
-	   {
-		   oss << src(i,j);
-	   }
-};
+#include "GilViewer/layers/image_types.hpp"
 
-template <>
-void to_string_functor::operator()(const rgb8c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
+template<typename ViewType, typename CoordType>
+inline bool isInside(const ViewType& v, const CoordType i, const CoordType j)
 {
-	oss << (int) at_c<0>(src(i,j)) << "," << (int) at_c<1>(src(i,j)) << "," << (int) at_c<2>(src(i,j));
+	return i>=0 && j>=0 && i<v.width() && j<v.height();
 }
 
-template <>
-void to_string_functor::operator()(const rgb16c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
+struct any_view_image_position_to_string_functor
 {
-	oss << (int) at_c<0>(src(i,j)) << "," << (int) at_c<1>(src(i,j)) << "," << (int) at_c<2>(src(i,j));
-}
-
-
-template <>
-void to_string_functor::operator()(const rgba8c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
-{
-	oss << (int) at_c<0>(src(i,j)) << "," << (int) at_c<1>(src(i,j)) << "," << (int) at_c<2>(src(i,j)) << "," << (int) at_c<3>(src(i,j));
-}
-
-template <>
-void to_string_functor::operator()(const rgb32c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
-{
-        oss << (int) at_c<0>(src(i,j)) << "," << (int) at_c<1>(src(i,j)) << "," << (int) at_c<2>(src(i,j));
-}
-
-template <>
-void to_string_functor::operator()(const gray8c_view_t& src, const int i, const int j, std::ostringstream& oss)  const
-{
-	oss << (int) (src(i,j));
-}
-
-template <>
-void to_string_functor::operator()(const gray8sc_view_t& src, const int i, const int j, std::ostringstream& oss)  const
-{
-	oss << (int) (src(i,j));
-}
-
-struct any_view_to_string {
     typedef void result_type;
 
-    any_view_to_string(const int i, const int j, std::ostringstream& oss):
-    	i_(i), j_(j), oss_(oss){}
+    any_view_image_position_to_string_functor(const int i, const int j, std::ostringstream& oss):i_(i), j_(j), oss_(oss){}
 
-    template <typename View> result_type operator()(View& vue)
+    template <typename View>
+    result_type operator()(const View& v)
     {
-    	if(isInside(vue, i_,j_))
-    		to_string_functor()(vue, i_, j_, oss_);
+    	if(isInside(v, i_,j_))
+		   oss_ << (int) boost::gil::at_c<0>( v(i_,j_) );
     	else
     		oss_ << "outside";
     }
@@ -99,3 +63,15 @@ struct any_view_to_string {
     const int i_, j_;
     std::ostringstream& oss_;
 };
+
+#define OVERLOAD_IMAGE_POSITION_TO_STRING_PARENTHESIS_OPERATOR( r , n , data ) template <> \
+any_view_image_position_to_string_functor::result_type any_view_image_position_to_string_functor::operator()<data::view_t>(const data::view_t& v) \
+{ \
+    if(isInside(v, i_,j_)) \
+	oss_ << (int) boost::gil::at_c<0>(v(i_,j_)) << "," << (int) boost::gil::at_c<1>(v(i_,j_)) << "," << (int) boost::gil::at_c<2>(v(i_,j_)); \
+    else \
+        oss_ << "outside"; \
+}
+
+BOOST_PP_SEQ_FOR_EACH( OVERLOAD_IMAGE_POSITION_TO_STRING_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
+BOOST_PP_SEQ_FOR_EACH( OVERLOAD_IMAGE_POSITION_TO_STRING_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )
