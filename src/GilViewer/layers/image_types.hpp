@@ -33,4 +33,11 @@ typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
                           boost::mpl::back_inserter< rgba_image_types >
                         >::type all_image_types;
 
+// Metafunction to get a view_type from and image_type
+template <typename ImageType>
+struct add_view_type
+{
+    typedef typename ImageType::view_t type;
+};
+
 #endif // __IMAGE_TYPES_HPP__

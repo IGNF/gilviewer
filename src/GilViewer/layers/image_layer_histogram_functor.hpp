@@ -35,8 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include <boost/preprocessor/seq/for_each.hpp>
-
 #include "GilViewer/layers/image_types.hpp"
 
 struct histogram_functor
@@ -48,32 +46,36 @@ struct histogram_functor
 		m_offset = -mini * m_scale;
 	}
 
-	template <typename ViewT>
-	result_type operator()( const ViewT& src ) const
+	template <typename ViewType>
+    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
+                                                     ViewType>,
+                               result_type>::type operator()(const ViewType& v) const
 	{
-        typename ViewT::iterator it_begin = src.begin(), it_end = src.end();
+        typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
 	    for (; it_begin!=it_end; ++it_begin)
 			++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset ];
+	}
+
+	template<class ViewType>
+    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
+                                                                                             add_view_type<boost::mpl::_1 > >::type,
+                                                                      ViewType>,
+                                                boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+                                                                                             add_view_type<boost::mpl::_1 > >::type,
+                                                                      ViewType>
+                                              >,
+                               result_type>::type operator()(const ViewType& v) const
+	{
+        typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
+        for (; it_begin!=it_end; ++it_begin)
+        {
+            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset];
+            ++m_histo[1][ boost::gil::at_c<1>(*it_begin)*m_scale+m_offset];
+            ++m_histo[2][ boost::gil::at_c<2>(*it_begin)*m_scale+m_offset];
+        }
 	}
 
 	std::vector< std::vector<double> >& m_histo;
 	double m_scale;
 	double m_offset;
 };
-
-#include <iostream>
-
-#define OVERLOAD_HISTOGRAM_PARENTHESIS_OPERATOR( r , n , data ) template <> \
-histogram_functor::result_type histogram_functor::operator()<data::view_t>(const data::view_t& v) const \
-{ \
-    data::view_t::iterator it_begin = v.begin(), it_end = v.end(); \
-    for (; it_begin!=it_end; ++it_begin) \
-    { \
-		++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset]; \
-		++m_histo[1][ boost::gil::at_c<1>(*it_begin)*m_scale+m_offset]; \
-		++m_histo[2][ boost::gil::at_c<2>(*it_begin)*m_scale+m_offset]; \
-	} \
-}
-
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_HISTOGRAM_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_HISTOGRAM_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )
