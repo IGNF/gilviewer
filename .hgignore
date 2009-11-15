@@ -10,3 +10,8 @@ src/gui/resources/resources.cpp
 GilViewerConfig.cmake
 install_manifest.txt 
 src/GilViewer/gui/resources/resources.cpp
+
+syntax: glob
+
+*~
+*.kdev*
