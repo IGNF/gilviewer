@@ -39,33 +39,33 @@ Authors:
 
 struct histogram_functor
 {
-	typedef void result_type;
-	histogram_functor( std::vector< std::vector<double> > &histo , const double mini , const double maxi ) : m_histo(histo)
-	{
-		m_scale = 255. / (maxi-mini);
-		m_offset = -mini * m_scale;
-	}
+    typedef void result_type;
+    histogram_functor( std::vector< std::vector<double> > &histo , const double mini , const double maxi ) : m_histo(histo)
+    {
+        m_scale = 255. / (maxi-mini);
+        m_offset = -mini * m_scale;
+    }
 
-	template <typename ViewType>
+    template <typename ViewType>
     typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
-                                                     ViewType>,
-                               result_type>::type operator()(const ViewType& v) const
-	{
+    ViewType>,
+    result_type>::type operator()(const ViewType& v) const
+    {
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
-	    for (; it_begin!=it_end; ++it_begin)
-			++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset ];
-	}
+        for (; it_begin!=it_end; ++it_begin)
+            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset ];
+    }
 
-	template<class ViewType>
+    template<class ViewType>
     typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-                                                                                             add_view_type<boost::mpl::_1 > >::type,
-                                                                      ViewType>,
-                                                boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-                                                                                             add_view_type<boost::mpl::_1 > >::type,
-                                                                      ViewType>
-                                              >,
-                               result_type>::type operator()(const ViewType& v) const
-	{
+    add_view_type<boost::mpl::_1 > >::type,
+    ViewType>,
+    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+    add_view_type<boost::mpl::_1 > >::type,
+    ViewType>
+    >,
+    result_type>::type operator()(const ViewType& v) const
+    {
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
         for (; it_begin!=it_end; ++it_begin)
         {
@@ -73,9 +73,9 @@ struct histogram_functor
             ++m_histo[1][ boost::gil::at_c<1>(*it_begin)*m_scale+m_offset];
             ++m_histo[2][ boost::gil::at_c<2>(*it_begin)*m_scale+m_offset];
         }
-	}
+    }
 
-	std::vector< std::vector<double> >& m_histo;
-	double m_scale;
-	double m_offset;
+    std::vector< std::vector<double> >& m_histo;
+    double m_scale;
+    double m_offset;
 };
