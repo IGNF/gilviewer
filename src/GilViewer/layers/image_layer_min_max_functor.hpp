@@ -41,8 +41,11 @@ Authors:
 #	undef max
 #endif // _WINDOWS
 
+#include <boost/gil/extension/dynamic_image/reduce.hpp>
+
 #include <boost/algorithm/minmax.hpp>
 #include <boost/algorithm/minmax_element.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 #include <boost/preprocessor/seq/for_each.hpp>
 
@@ -50,53 +53,62 @@ Authors:
 
 struct pixel_compare_less
 {
-	template <typename PixelType>
-	bool operator()( const PixelType& p1 , const PixelType& p2 ) const
-	{
-		return boost::gil::at_c<0>(p1) < boost::gil::at_c<0>(p2);
-	}
+    template <typename PixelType>
+    bool operator()( const PixelType& p1 , const PixelType& p2 ) const
+    {
+        return boost::gil::at_c<0>(p1) < boost::gil::at_c<0>(p2);
+    }
 };
 
 struct any_view_min_max
 {
     typedef std::pair<float, float> result_type;
 
-    template <typename View>
-    result_type operator()(const View& v) const
+    template <typename ViewType>
+    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform< gray_image_types,
+    add_view_type<boost::mpl::_1>
+    >::type,
+    ViewType>,
+    result_type>::type operator()(const ViewType& v) const
     {
-        typedef typename View::iterator iterator;
+        typedef typename ViewType::iterator iterator;
         std::pair< iterator, iterator > result = boost::minmax_element( v.begin() , v.end() , pixel_compare_less() );
-    	return std::make_pair( *(result.first) , *(result.second) );
+        return std::make_pair( *(result.first) , *(result.second) );
+    }
+
+    template<class ViewType>
+    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
+    add_view_type<boost::mpl::_1>
+    >::type,
+    ViewType>,
+    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+    add_view_type<boost::mpl::_1>
+    >::type,
+    ViewType>
+    >,
+    result_type>::type operator()(const ViewType& v) const
+    {
+        using namespace std;
+
+        vector<float> min_max_over_channels;
+        min_max_over_channels.reserve(6);
+
+        typedef typename boost::gil::kth_channel_view_type<0,ViewType>::type::iterator iterator_r;
+        pair< iterator_r , iterator_r > result_r = boost::minmax_element( boost::gil::kth_channel_view<0>(v).begin() , boost::gil::kth_channel_view<0>(v).end() , pixel_compare_less() );
+        min_max_over_channels.push_back( *(result_r.first) );
+        min_max_over_channels.push_back( *(result_r.second) );
+
+        typedef typename boost::gil::kth_channel_view_type<1,ViewType>::type::iterator iterator_g;
+        pair< iterator_r , iterator_g > result_g = boost::minmax_element( boost::gil::kth_channel_view<1>(v).begin() , boost::gil::kth_channel_view<1>(v).end() , pixel_compare_less() );
+        min_max_over_channels.push_back( *(result_g.first) );
+        min_max_over_channels.push_back( *(result_g.second) );
+
+        typedef typename boost::gil::kth_channel_view_type<2,ViewType>::type::iterator iterator_b;
+        pair< iterator_b , iterator_b > result_b = boost::minmax_element( boost::gil::kth_channel_view<2>(v).begin() , boost::gil::kth_channel_view<2>(v).end() , pixel_compare_less() );
+        min_max_over_channels.push_back( *(result_b.first) );
+        min_max_over_channels.push_back( *(result_b.second) );
+
+        pair< vector<float>::iterator , vector<float>::iterator> min_and_max = boost::minmax_element( min_max_over_channels.begin() , min_max_over_channels.end() );
+        return std::make_pair( *(min_and_max.first) , *(min_and_max.second) );
     }
 };
-
-#define OVERLOAD_MIN_MAX_PARENTHESIS_OPERATOR( r , n , data ) template <> \
-any_view_min_max::result_type any_view_min_max::operator()<data::view_t>(const data::view_t& v) const \
-{ \
-    using namespace std; \
-    \
-    vector<float> min_max_over_channels; \
-    min_max_over_channels.reserve(6); \
-    \
-    typedef boost::gil::kth_channel_view_type<0,data::view_t>::type::iterator iterator_r; \
-    pair< iterator_r , iterator_r > result_r = boost::minmax_element( boost::gil::kth_channel_view<0>(v).begin() , boost::gil::kth_channel_view<0>(v).end() , pixel_compare_less() ); \
-    min_max_over_channels.push_back( *(result_r.first) ); \
-    min_max_over_channels.push_back( *(result_r.second) ); \
-    \
-    typedef boost::gil::kth_channel_view_type<1,data::view_t>::type::iterator iterator_g; \
-    pair< iterator_r , iterator_g > result_g = boost::minmax_element( boost::gil::kth_channel_view<1>(v).begin() , boost::gil::kth_channel_view<1>(v).end() , pixel_compare_less() ); \
-    min_max_over_channels.push_back( *(result_g.first) ); \
-    min_max_over_channels.push_back( *(result_g.second) ); \
-    \
-    typedef boost::gil::kth_channel_view_type<2,data::view_t>::type::iterator iterator_b; \
-    pair< iterator_b , iterator_b > result_b = boost::minmax_element( boost::gil::kth_channel_view<2>(v).begin() , boost::gil::kth_channel_view<2>(v).end() , pixel_compare_less() ); \
-    min_max_over_channels.push_back( *(result_b.first) ); \
-    min_max_over_channels.push_back( *(result_b.second) ); \
-    \
-    pair< vector<float>::iterator , vector<float>::iterator> min_and_max = boost::minmax_element( min_max_over_channels.begin() , min_max_over_channels.end() ); \
-    \
-    return std::make_pair( *(min_and_max.first) , *(min_and_max.second) ); \
-}
-
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_MIN_MAX_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_MIN_MAX_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )

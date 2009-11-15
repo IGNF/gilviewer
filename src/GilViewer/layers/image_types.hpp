@@ -40,4 +40,11 @@ struct add_view_type
     typedef typename ImageType::view_t type;
 };
 
+// Metafunction to get a view_type::value_type from and image_type
+template <typename ImageType>
+struct add_view_and_value_type
+{
+    typedef typename ImageType::view_t::value_type type;
+};
+
 #endif // __IMAGE_TYPES_HPP__

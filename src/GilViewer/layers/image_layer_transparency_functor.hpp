@@ -42,36 +42,45 @@ Authors:
 struct transparency_functor
 {
     typedef bool result_type;
-	transparency_functor(const double min_alpha, const double max_alpha):
-		m_min_alpha(min_alpha),
-		m_max_alpha(max_alpha)
-		{}
 
-	template<class PixelT>
-	result_type operator()(const PixelT& src) const
-	{
-		if(m_min_alpha <= m_max_alpha)
-			return m_min_alpha <= boost::gil::at_c<0>(src) && boost::gil::at_c<0>(src) <= m_max_alpha;
-		else
-			return m_min_alpha <= boost::gil::at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha;
-	}
+    transparency_functor(const double min_alpha, const double max_alpha):
+            m_min_alpha(min_alpha),
+            m_max_alpha(max_alpha)
+    {}
 
-	const double m_min_alpha, m_max_alpha;
+    template <typename ViewType>
+    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_and_value_type<boost::mpl::_1> >::type,
+    ViewType>,
+    result_type>::type operator()(const ViewType & src) const
+    {
+        if (m_min_alpha <= m_max_alpha)
+            return m_min_alpha <= src && src <= m_max_alpha;
+        else
+            return m_min_alpha <= src || src <= m_max_alpha;
+    }
+
+    template<class ViewType>
+    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
+    add_view_and_value_type<boost::mpl::_1 > >::type,
+    ViewType>,
+    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+    add_view_and_value_type<boost::mpl::_1 > >::type,
+    ViewType>
+    >,
+    result_type>::type
+    operator()(const ViewType &src) const
+    {
+        using namespace boost::gil;
+
+        if (m_min_alpha <= m_max_alpha)
+            return m_min_alpha <= at_c<0>(src) && at_c<0>(src) <= m_max_alpha
+                   && m_min_alpha <= at_c<1>(src) && at_c<1>(src) <= m_max_alpha
+                   && m_min_alpha <= at_c<2>(src) && at_c<2>(src) <= m_max_alpha;
+        else
+            return (m_min_alpha <= at_c<0>(src) || at_c<0>(src) <= m_max_alpha)
+                   && (m_min_alpha <= at_c<1>(src) || at_c<1>(src) <= m_max_alpha)
+                   && (m_min_alpha <= at_c<2>(src) || at_c<2>(src) <= m_max_alpha);
+    }
+
+    const double m_min_alpha, m_max_alpha;
 };
-
-#define OVERLOAD_TRANSPARENCY_PARENTHESIS_OPERATOR( r , n , data ) template <> \
-transparency_functor::result_type transparency_functor::operator()<data::value_type>(const data::value_type& src) const \
-{ \
-    using namespace boost::gil; \
-	if(m_min_alpha <= m_max_alpha) \
-		return m_min_alpha <= boost::gil::at_c<0>(src) && boost::gil::at_c<0>(src) <= m_max_alpha \
-			&& m_min_alpha <= boost::gil::at_c<1>(src) && boost::gil::at_c<1>(src) <= m_max_alpha \
-			&& m_min_alpha <= boost::gil::at_c<2>(src) && boost::gil::at_c<2>(src) <= m_max_alpha; \
-	else \
-		return (m_min_alpha <= boost::gil::at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha) \
-			&& (m_min_alpha <= boost::gil::at_c<1>(src) || boost::gil::at_c<1>(src) <= m_max_alpha) \
-			&& (m_min_alpha <= boost::gil::at_c<2>(src) || boost::gil::at_c<2>(src) <= m_max_alpha); \
-}
-
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_TRANSPARENCY_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_TRANSPARENCY_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )

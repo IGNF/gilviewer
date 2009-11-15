@@ -1093,7 +1093,7 @@ void PanelViewer::Crop() {
 			wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), default_crop_filename, wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
 			if (fileDialog->ShowModal() == wxID_OK) {
 				try {
-					Layer::ptrLayerType l = (*it)->crop(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::abs(p2.x - p1.x), std::abs(p2.y - p1.y), string(fileDialog->GetFilename().To8BitData()));
+					(*it)->crop(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::abs(p2.x - p1.x), std::abs(p2.y - p1.y), string(fileDialog->GetFilename().To8BitData()));
 				} catch (std::exception &err) {
 					std::ostringstream oss;
 					oss << "File : " << __FILE__ << "\n";

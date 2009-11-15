@@ -41,81 +41,87 @@ Authors:
 
 struct channel_converter_functor
 {
-		float m_min_src, m_max_src, m_255_over_delta;
-		boost::gil::dev3n8_pixel_t m_min_dst, m_max_dst;
-		unsigned char m_atc0min, m_atc1min, m_atc2min;
-		unsigned char m_atc0max, m_atc1max, m_atc2max;
-		const unsigned char* m_lut;
+    typedef void result_type;
 
-        channel_converter_functor(const float min, const float max, const ColorLookupTable& lut):
+    float m_min_src, m_max_src, m_255_over_delta;
+    boost::gil::dev3n8_pixel_t m_min_dst, m_max_dst;
+    unsigned char m_atc0min, m_atc1min, m_atc2min;
+    unsigned char m_atc0max, m_atc1max, m_atc2max;
+    const unsigned char* m_lut;
+
+    channel_converter_functor(const float min, const float max, const ColorLookupTable& lut):
             m_min_src(min),
             m_max_src(max),
             m_255_over_delta( 255 / (m_max_src - m_min_src) ),
-			m_lut(&lut.getData().front())
+            m_lut(&lut.getData().front())
+    {
+        boost::gil::at_c<0>(m_min_dst) = m_lut[0];
+        boost::gil::at_c<1>(m_min_dst) = m_lut[256];
+        boost::gil::at_c<2>(m_min_dst) = m_lut[512];
+        boost::gil::at_c<0>(m_max_dst) = m_lut[255];
+        boost::gil::at_c<1>(m_max_dst) = m_lut[511];
+        boost::gil::at_c<2>(m_max_dst) = m_lut[767];
+
+        m_atc0min = boost::gil::at_c<0>(m_min_dst);
+        m_atc1min = boost::gil::at_c<1>(m_min_dst);
+        m_atc2min = boost::gil::at_c<2>(m_min_dst);
+        m_atc0max = boost::gil::at_c<0>(m_max_dst);
+        m_atc1max = boost::gil::at_c<1>(m_max_dst);
+        m_atc2max = boost::gil::at_c<2>(m_max_dst);
+    }
+
+    template <typename ViewType>
+    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_and_value_type<boost::mpl::_1> >::type,
+    ViewType>,
+    result_type>::type operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    {
+        if (src < m_min_src)
         {
-            boost::gil::at_c<0>(m_min_dst) = m_lut[0];
-			boost::gil::at_c<1>(m_min_dst) = m_lut[256];
-			boost::gil::at_c<2>(m_min_dst) = m_lut[512];
-			boost::gil::at_c<0>(m_max_dst) = m_lut[255];
-			boost::gil::at_c<1>(m_max_dst) = m_lut[511];
-            boost::gil::at_c<2>(m_max_dst) = m_lut[767];
-
-            m_atc0min = boost::gil::at_c<0>(m_min_dst);
-            m_atc1min = boost::gil::at_c<1>(m_min_dst);
-            m_atc2min = boost::gil::at_c<2>(m_min_dst);
-            m_atc0max = boost::gil::at_c<0>(m_max_dst);
-            m_atc1max = boost::gil::at_c<1>(m_max_dst);
-            m_atc2max = boost::gil::at_c<2>(m_max_dst);
+            dst = m_min_dst;
+            return;
         }
+        if (src > m_max_src)
+        {
+            dst = m_max_dst;
+            return;
+        }
+        unsigned char index = m_255_over_delta*(src - m_min_src);
+        boost::gil::at_c<0>(dst) = m_lut[index];
+        boost::gil::at_c<1>(dst) = m_lut[256+index];
+        boost::gil::at_c<2>(dst) = m_lut[512+index];
+    }
 
-		/// SHOULD NOT EXIST (to replace by boost::...
-	   template <typename Ch1, typename Ch2>
-	   void operator()(const Ch1& src, Ch2& dst)  const;
+    template<class ViewType>
+    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
+    add_view_and_value_type<boost::mpl::_1 > >::type,
+    ViewType>,
+    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+    add_view_and_value_type<boost::mpl::_1 > >::type,
+    ViewType>
+    >,
+    result_type>::type operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    {
+        using namespace boost::gil;
 
-	   template <typename Ch1>
-	   void operator()(const Ch1& src, boost::gil::dev3n8_pixel_t& dst)  const
-	   {
-		   if (src < m_min_src)
-		   {
-			   dst = m_min_dst;
-                return;
-			}
-            if (src > m_max_src)
-			{
-			   dst = m_max_dst;
-			   return;
-			}
-			unsigned char index = m_255_over_delta*(src - m_min_src);
-			boost::gil::at_c<0>(dst) = m_lut[index];
-			boost::gil::at_c<1>(dst) = m_lut[256+index];
-			boost::gil::at_c<2>(dst) = m_lut[512+index];
-	   }
+        if (at_c<0>(src) < m_min_src)
+            at_c<0>(dst)  = m_atc0min;
+        else if (at_c<0>(src) > m_max_src)
+            at_c<0>(dst)  = m_atc0max;
+        else
+            at_c<0>(dst) = m_255_over_delta*(at_c<0>(src) - m_min_src);
+
+        if (at_c<1>(src) < m_min_src)
+            at_c<1>(dst)  = m_atc1min;
+        else if (at_c<1>(src) > m_max_src)
+            at_c<1>(dst)  = m_atc1max;
+        else
+            at_c<1>(dst) = m_255_over_delta*(at_c<1>(src) - m_min_src);
+
+        if (at_c<2>(src) < m_min_src)
+            at_c<2>(dst)  = m_atc2min;
+        else if (at_c<2>(src) > m_max_src)
+            at_c<2>(dst)  = m_atc2max;
+        else
+            at_c<2>(dst) = m_255_over_delta*(at_c<2>(src) - m_min_src);
+    }
 };
-
-#define OVERLOAD_CHANNEL_CONVERTER_PARENTHESIS_OPERATOR( r , n , data ) template <> \
-void channel_converter_functor::operator()<data::value_type>(const data::value_type& v , boost::gil::dev3n8_pixel_t& dst) const \
-{ \
-	if (boost::gil::at_c<0>(v) < m_min_src) \
-		boost::gil::at_c<0>(dst)  = m_atc0min; \
-	else if (boost::gil::at_c<0>(v) > m_max_src) \
-		boost::gil::at_c<0>(dst)  = m_atc0max; \
-	else \
-		boost::gil::at_c<0>(dst) = m_255_over_delta*(boost::gil::at_c<0>(v) - m_min_src); \
-    \
-	if (boost::gil::at_c<1>(v) < m_min_src) \
-		boost::gil::at_c<1>(dst)  = m_atc1min; \
-    else if (boost::gil::at_c<1>(v) > m_max_src) \
-		boost::gil::at_c<1>(dst)  = m_atc1max; \
-	else \
-		boost::gil::at_c<1>(dst) = m_255_over_delta*(boost::gil::at_c<1>(v) - m_min_src); \
-    \
-	if (boost::gil::at_c<2>(v) < m_min_src) \
-		boost::gil::at_c<2>(dst)  = m_atc2min; \
-    else if (boost::gil::at_c<2>(v) > m_max_src) \
-		boost::gil::at_c<2>(dst)  = m_atc2max; \
-	else \
-		boost::gil::at_c<2>(dst) = m_255_over_delta*(boost::gil::at_c<2>(v) - m_min_src); \
-}
-
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_CHANNEL_CONVERTER_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_CHANNEL_CONVERTER_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )

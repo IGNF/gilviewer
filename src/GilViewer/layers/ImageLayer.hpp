@@ -128,7 +128,7 @@ class ImageLayer : public Layer
 
 
 		virtual void Save(const std::string &name);
-		virtual ptrLayerType crop( int x0 , int y0 , int width , int height , std::string filename = "" );
+		virtual void crop( int x0 , int y0 , int width , int height , std::string filename = "" );
 
 	private:
 		ImageLayer(const boost::shared_ptr<usable_images_t> &image, const std::string &name ="Image Layer");

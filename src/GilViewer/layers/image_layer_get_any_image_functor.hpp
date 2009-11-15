@@ -44,26 +44,30 @@ Authors:
 
 struct get_any_image_functor
 {
-	typedef boost::shared_ptr< ImageLayer::usable_images_t > result_type;
-	template <typename ViewT>
-	result_type operator()(const ViewT& src) const
-	{
+    typedef boost::shared_ptr< ImageLayer::usable_images_t > result_type;
+    
+    template <typename ViewT>
+    result_type operator()(const ViewT& src) const
+    {
         std::ostringstream oss;
-		oss << "File : " << __FILE__ << "\n";
-		oss << "Function : " << __FUNCTION__ << "\n";
-		oss << "Line : " << __LINE__ << "\n";
-	    throw std::exception(oss.str());
-	}
+	oss << "Not implemented ...\n";
+        oss << "File : " << __FILE__ << "\n";
+        oss << "Function : " << __FUNCTION__ << "\n";
+        oss << "Line : " << __LINE__ << "\n";
+        throw std::logic_error(oss.str());
+    }    
 };
 
+/*
 #define OVERLOAD_GET_PARENTHESIS_OPERATOR( r , n , data ) template <> \
 get_any_image_functor::result_type get_any_image_functor::operator()<data::view_t>(const data::view_t& v) const \
 { \
     data im( v.dimensions() ); \
-	boost::gil::copy_pixels( v , view(im) ); \
-	return result_type(new ImageLayer::usable_images_t(im)); \
+    boost::gil::copy_pixels( v , view(im) ); \
+    return result_type(new ImageLayer::usable_images_t(im)); \
 }
+*/
 
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , GRAY_IMAGE_TYPES )
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
-BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )
+//BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , GRAY_IMAGE_TYPES )
+//BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
+//BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )
