@@ -484,7 +484,9 @@ void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 		for (;itbc!=itec;++itbc,++itbv,++itbcolor)
 		{
 			wxDCTextColourChanger dcfortextcolor(dc,*itbcolor);
-			dc.DrawText( wxString( itbv->c_str() , *wxConvCurrent ) , (itbc->first+TranslationX())/ZoomFactor() , (m_layerContent->FlagPRJ()*itbc->second+TranslationY())/ZoomFactor() );
+			wxCoord x = wxCoord((itbc->first+TranslationX())/ZoomFactor());
+			wxCoord y = wxCoord((m_layerContent->FlagPRJ()*itbc->second+TranslationY())/ZoomFactor());
+			dc.DrawText( wxString(itbv->c_str(), *wxConvCurrent), x, y);
 		}
 	}
 }
@@ -596,6 +598,9 @@ void VectorLayer::PolygonsRingsColour( const wxColour &colour , bool update )
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		layerPolygon->PolygonsRingsColour( colour );
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		dfl->PolygonsRingsColour( colour );
 	if ( update )
 		notifyLayerSettingsControl_();
 }
@@ -605,6 +610,9 @@ wxColour VectorLayer::PolygonsRingsColour()
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		return layerPolygon->PolygonsRingsColour();
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		return dfl->PolygonsRingsColour();
 	return wxColour(0,0,0);
 }
 
@@ -613,6 +621,9 @@ void VectorLayer::PolygonsInsideColour( const wxColour &colour , bool update )
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		layerPolygon->PolygonsInsideColour( colour );
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		dfl->PolygonsInsideColour( colour );
 	if ( update )
 		notifyLayerSettingsControl_();
 }
@@ -622,6 +633,9 @@ wxColour VectorLayer::PolygonsInsideColour()
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		return layerPolygon->PolygonsInsideColour();
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		return dfl->PolygonsInsideColour();
 	return wxColour(0,0,0);
 }
 
@@ -630,6 +644,9 @@ void VectorLayer::PolygonsRingsStyle( const unsigned int style , bool update )
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		layerPolygon->PolygonsRingsStyle( style );
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		dfl->PolygonsRingsStyle( style );
 	if ( update )
 		notifyLayerSettingsControl_();
 }
@@ -639,6 +656,9 @@ unsigned int VectorLayer::PolygonsRingsStyle()
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		return layerPolygon->PolygonsRingsStyle();
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		return dfl->PolygonsRingsStyle();
 	return 0;
 }
 
@@ -647,6 +667,10 @@ void VectorLayer::PolygonsInsideStyle( const unsigned int style , bool update )
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		layerPolygon->PolygonsInsideStyle( style );
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		dfl->PolygonsInsideStyle( style );
+	
 	if ( update )
 		notifyLayerSettingsControl_();
 }
@@ -656,6 +680,9 @@ unsigned int VectorLayer::PolygonsInsideStyle()
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		return layerPolygon->PolygonsInsideStyle();
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		return dfl->PolygonsInsideStyle();
 	return 0;
 }
 
@@ -665,6 +692,9 @@ void VectorLayer::PolygonsRingsWidth( const unsigned int width , bool update )
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		layerPolygon->PolygonsRingsWidth( width );
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		dfl->PolygonsRingsWidth( width );
 	if ( update )
 		notifyLayerSettingsControl_();
 }
@@ -674,6 +704,9 @@ unsigned int VectorLayer::PolygonsRingsWidth()
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		return layerPolygon->PolygonsRingsWidth();
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+		return dfl->PolygonsRingsWidth();
 	return 0;
 }
 
@@ -735,6 +768,9 @@ void VectorLayer::AddPolygon( const std::vector<double> &x , const std::vector<d
 	boost::shared_ptr<VectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<VectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
 		layerPolygon->AddPolygon(x,y);
+    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if ( dfl )
+        dfl->AddPolygon(x,y);
 }
 
 void VectorLayer::AddCircle( double x , double y , double radius )

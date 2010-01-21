@@ -57,31 +57,35 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 	const double delta = 0.5 * resolution;
 	dc.SetPen(*m_pen);
 	dc.SetBrush(*m_brush);
-	for (unsigned int i = 0; i < m_circles.size(); i++)
-		dc.DrawCircle((delta + m_circles[i].x + translationX) / zoomFactor, (delta + m_flagPRJ * m_circles[i].y + translationY) / zoomFactor, m_circles[i].radius / zoomFactor);
+	for (unsigned int i = 0; i < m_circles.size(); i++) {
+		double x = (delta +             m_circles[i].x + translationX) / zoomFactor;
+		double y = (delta + m_flagPRJ * m_circles[i].y + translationY) / zoomFactor;
+		double r = m_circles[i].radius / zoomFactor;
+		dc.DrawCircle(x, y, r);
+	}
 	for (unsigned int i = 0; i < m_arcs.size(); i++)
 	{
 		const simpleArcType &local_tab = m_arcs[i];
 		for (unsigned int j = 0; j < local_tab.size() - 1; ++j)
 		{
-			float posx1 = (delta + local_tab[j].first + translationX) / zoomFactor;
-			double posy1 = (delta + m_flagPRJ * local_tab[j].second + translationY) / zoomFactor;
-			double posx2 = (delta + local_tab[j + 1].first + translationX) / zoomFactor;
-			double posy2 = (delta + m_flagPRJ * local_tab[j + 1].second + translationY) / zoomFactor;
+			float posx1 = (delta +              local_tab[j  ].first + translationX) / zoomFactor;
+			double posy1 = (delta + m_flagPRJ * local_tab[j  ].second + translationY) / zoomFactor;
+			double posx2 = (delta +             local_tab[j+1].first + translationX) / zoomFactor;
+			double posy2 = (delta + m_flagPRJ * local_tab[j+1].second + translationY) / zoomFactor;
 			dc.DrawLine(posx1, posy1, posx2, posy2);
 		}
 	}
 	for (unsigned int i = 0; i < m_points.size(); i++)
 	{
-		double x = (delta+m_points[i].first + translationX ) / zoomFactor;
-		double y = (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor;
+		double x = (delta+          m_points[i].first  +translationX )/zoomFactor;
+		double y = (delta+m_flagPRJ*m_points[i].second +translationY )/zoomFactor;
 		//dc.DrawLine( x,y , x,y );
 		dc.DrawPoint( x,y );
 	}
 	// Splines
 	for (unsigned int i=0;i<m_splines.size();++i)
 	{
-		std::vector< simplePointType > spline = m_splines[i];
+		std::vector< simplePointType >& spline = m_splines[i];
 		int n = spline.size();
 		std::vector<wxPoint> points;
 		for (int j=0;j<n;++j)
@@ -103,8 +107,20 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 		std::vector<wxPoint> points;
 		points.reserve( m_rotatedellipses[i].controlPoints.size() );
 		for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
-			points.push_back( wxPoint( (delta+m_rotatedellipses[i].controlPoints[j].x+translationX)/zoomFactor , (delta+m_flagPRJ*m_rotatedellipses[i].controlPoints[j].y+translationY)/zoomFactor ) );
+			points.push_back( wxPoint(
+				(delta+m_rotatedellipses[i].controlPoints[j].x+translationX)/zoomFactor ,
+				(delta+m_flagPRJ*m_rotatedellipses[i].controlPoints[j].y+translationY)/zoomFactor ) );
 		dc.DrawSpline(points.size(),&points.front());
+	}
+	for (unsigned int i=0;i<m_polygons.size();++i)
+	{
+		std::vector<wxPoint> points;
+		points.reserve( m_polygons[i].size() );
+		for (unsigned int j=0;j<m_polygons[i].size();++j)
+			points.push_back( wxPoint(
+				(delta+m_polygons[i][j].first+translationX)/zoomFactor ,
+				(delta+m_flagPRJ*m_polygons[i][j].second+translationY)/zoomFactor ) );
+		dc.DrawPolygon( points.size() , &(points.front()) );
 	}
 }
 
@@ -135,6 +151,15 @@ void VectorLayerMultiGeometries::AddSpline( std::vector<simplePointType> points 
 {
 	m_splines.push_back( points );
 }
+void VectorLayerMultiGeometries::AddPolygon( const std::vector<double> &x , const std::vector<double> &y )
+{
+	if (x.size() != y.size())
+		return;
+	m_polygons.resize(m_polygons.size()+1);
+	for (unsigned int j=0;j<x.size();++j)
+		m_polygons.back().push_back( std::make_pair(x[j] , y[j]) );
+}
+
 
 void VectorLayerMultiGeometries::AddEllipse(double x_center, double y_center, double a, double b)
 {
@@ -146,18 +171,22 @@ void VectorLayerMultiGeometries::AddEllipse(double x_center, double y_center, do
 	m_ellipses.push_back(et);
 }
 
-void VectorLayerMultiGeometries::AddEllipse(double x_center, double y_center, double a, double b, double theta)
+void VectorLayerMultiGeometries::AddEllipse(double dx_center, double dy_center, double da, double db, double theta)
 {
 	RotatedEllipseType et;
-	et.x = x_center;
-	et.y = y_center;
-	et.a = a;
-	et.b = b;
+	et.x = dx_center;
+	et.y = dy_center;
+	et.a = da;
+	et.b = db;
 	et.theta = theta;
 	// Construction de la liste des points
 	static const double EToBConst =	0.2761423749154;
-	wxSize offset((int)(2*a*EToBConst), (int)(2*b*EToBConst));
+	wxSize offset((int)(2*da*EToBConst), (int)(2*db*EToBConst));
 
+	wxCoord x_center = (wxCoord) dx_center;
+	wxCoord y_center = (wxCoord) dy_center;
+	wxCoord a        = (wxCoord) da;
+	wxCoord b        = (wxCoord) db;
 	et.controlPoints.push_back(wxPoint(x_center-a,y_center));
 	et.controlPoints.push_back(wxPoint(x_center-a,y_center-offset.GetY()));
 	et.controlPoints.push_back(wxPoint(x_center-offset.GetX(),y_center-b));
@@ -203,6 +232,10 @@ void VectorLayerMultiGeometries::Clear()
 {
 	m_bitmap.clear();
 	m_circles.clear();
+	m_ellipses.clear();
+	m_rotatedellipses.clear();
 	m_arcs.clear();
 	m_points.clear();
+	m_splines.clear();
+	m_polygons.clear();
 }

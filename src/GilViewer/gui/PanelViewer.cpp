@@ -515,7 +515,7 @@ void PanelViewer::OnMouseWheel(wxMouseEvent& event) {
 void PanelViewer::OnMouseMove(wxMouseEvent &event) {
 	//déplacement (de l'image ou de la géométrie) si on a bouton gauche enfoncé (m_mouseMovementStarted)
 	if (m_mouseMovementStarted) {
-		wxPoint translation(event.m_x - m_mouseMovementInitX, event.m_y - m_mouseMovementInitY);
+		wxPoint translation((int) (event.m_x - m_mouseMovementInitX), (int) (event.m_y - m_mouseMovementInitY));
 
 		m_mouseMovementInitX = event.m_x;
 		m_mouseMovementInitY = event.m_y;
@@ -944,8 +944,8 @@ void PanelViewer::GeometryMoveAbsolute(const wxPoint& pt) {
 		break;
 	case GEOMETRY_LINE: {
 		wxPoint bary(std::accumulate(m_ghostLayer.m_linePoints.begin(), m_ghostLayer.m_linePoints.end(), wxPoint(0, 0)));
-		bary.x = bary.x / float(m_ghostLayer.m_linePoints.size());
-		bary.y = bary.y / float(m_ghostLayer.m_linePoints.size());
+		bary.x = (int) (bary.x / float(m_ghostLayer.m_linePoints.size()));
+		bary.y = (int) (bary.y / float(m_ghostLayer.m_linePoints.size()));
 		std::for_each(m_ghostLayer.m_linePoints.begin(), m_ghostLayer.m_linePoints.end(), boost::lambda::_1 += -bary + wxPoint(xi, yi));
 	}
 		break;
@@ -957,7 +957,7 @@ void PanelViewer::GeometryMoveAbsolute(const wxPoint& pt) {
 		break;
 	case GEOMETRY_RECTANGLE:
 		wxPoint rectangleDiagonale = m_ghostLayer.m_rectangleSelection.second - m_ghostLayer.m_rectangleSelection.first;
-		m_ghostLayer.m_rectangleSelection.first = wxPoint(xi - float(rectangleDiagonale.x) / 2, yi - float(rectangleDiagonale.y) / 2);
+		m_ghostLayer.m_rectangleSelection.first = wxPoint((int) (xi - float(rectangleDiagonale.x) / 2), (int) (yi - float(rectangleDiagonale.y) / 2));
 		m_ghostLayer.m_rectangleSelection.second = m_ghostLayer.m_rectangleSelection.first + rectangleDiagonale;
 
 		break;

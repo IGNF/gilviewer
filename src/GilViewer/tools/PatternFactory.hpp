@@ -65,6 +65,8 @@ class PatternFactory
 {
 
 	public:
+		virtual ~PatternFactory() {}
+
 		bool Register(const TIdentifierType& id, TProductCreator creator)
 		{
 			return associations_.insert( typename AssocMapType::value_type(id, creator) ).second;

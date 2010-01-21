@@ -144,6 +144,11 @@ public:
     virtual void AddLine( double x1 , double y1 , double x2 , double y2 ) {}
     virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y ) {}
     virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y ) {}
+    virtual void AddCircle( double x , double y , double radius ) {}
+    virtual void AddSpline( std::vector<std::pair<double, double> > points ) {}
+    virtual void AddEllipse(double x_center, double y_center, double a, double b) {}
+    virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta) {}
+
 
 	virtual void PointsColour( const wxColour &colour , bool update = true ) {}
 	virtual wxColour PointsColour() { return wxColour(0,0,0); }

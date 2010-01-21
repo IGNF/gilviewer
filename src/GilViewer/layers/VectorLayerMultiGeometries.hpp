@@ -88,6 +88,7 @@ public:
 	void AddSpline( std::vector<simplePointType> points );
 	void AddEllipse(double x_center, double y_center, double a, double b);
 	void AddEllipse(double x_center, double y_center, double a, double b, double theta);
+	void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
 
     void SetBrushVectorLayerMultiGeometries( const wxBrush &brush );
     void SetBrushVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int style = wxSOLID , unsigned char alpha=wxALPHA_OPAQUE );
@@ -95,6 +96,18 @@ public:
     void SetPenVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int style = wxSOLID , int width = 1 , unsigned char alpha=wxALPHA_OPAQUE );
 
 	virtual void Clear();
+
+	virtual void PolygonsRingsColour( const wxColour &colour ) { m_pen->SetColour(colour); }
+	virtual wxColour PolygonsRingsColour() { return m_pen->GetColour(); }
+	virtual void PolygonsInsideColour( const wxColour &colour ) { m_brush->SetColour(colour); }
+	virtual wxColour PolygonsInsideColour() { return m_brush->GetColour(); }
+	virtual void PolygonsRingsStyle( const unsigned int style ) { m_pen->SetStyle(style); }
+
+	virtual unsigned int PolygonsRingsStyle() { return m_pen->GetStyle(); }
+	virtual void PolygonsInsideStyle( const unsigned int style ) { m_brush->SetStyle(style); }
+	virtual unsigned int PolygonsInsideStyle() { return m_brush->GetStyle(); }
+	virtual void PolygonsRingsWidth( const unsigned int width ) {m_pen->SetWidth(width); }
+	virtual unsigned int PolygonsRingsWidth() { return m_pen->GetWidth(); }
 
 private:
 	wxPen *m_pen;
@@ -106,6 +119,7 @@ private:
     std::vector< simpleArcType > m_arcs;
     std::vector< simplePointType > m_points;
     std::vector<std::vector< simplePointType > > m_splines;
+	std::vector< std::vector< simplePointType > > m_polygons;
 };
 
 #endif /* VECTORLAYERMULTIGEOMETRIES_HPP_ */
