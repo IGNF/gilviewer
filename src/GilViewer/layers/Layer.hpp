@@ -62,11 +62,6 @@ class Layer
 public:
 	typedef boost::shared_ptr< Layer > ptrLayerType;
 
-	static void foo() {}
-	static void bar() {}
-	Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar) : notifyLayerControl_(notifyLayerControl), notifyLayerSettingsControl_(notifyLayerSettingsControl), m_isVisible(true), m_hasToBeUpdated(true), m_name("Default layer name"), m_filename(""), m_hasOri(false) {}
-	virtual ~Layer() {}
-
 	virtual void Update(const int width, const int height)=0;
 	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)=0;
 
@@ -87,7 +82,7 @@ public:
 	virtual std::string GetInfos() const {return m_infos;}
 	virtual void Save(const std::string &name) {}
 
-	virtual ptrLayerType crop( int x0 , int y0 , int width , int height , std::string filename = "" ) = 0;
+	virtual void crop( int x0 , int y0 , int width , int height , std::string filename = "" ) = 0;
 
 	void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
 	void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }
@@ -128,11 +123,12 @@ public:
 	virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) {}
 	virtual boost::shared_ptr<ColorLookupTable> GetColorLookupTable() { return boost::shared_ptr<ColorLookupTable>(); }
 
-
 	virtual unsigned int GetNbComponents() const { return 0; }
     virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
     virtual std::string GetPixelValue(const int i, const int j) const { return std::string(); }
 	// Fin methodes specifiques ImageLayer
+	
+	virtual void SetDefaultDisplayParameters() {}
 
 	static void foo() {}
 	static void bar() {}

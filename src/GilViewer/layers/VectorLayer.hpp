@@ -105,6 +105,8 @@ public:
 
     void GetInfos();
     virtual void Save(const std::string &name);
+    
+    virtual void crop( int x0 , int y0 , int width , int height , std::string filename = "" ) {}
 
     virtual void PointsColour( const wxColour &colour , bool update = true );
 	virtual wxColour PointsColour();
