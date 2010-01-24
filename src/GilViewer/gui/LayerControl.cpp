@@ -36,8 +36,6 @@ Authors:
 
 ***********************************************************************/
 
-#include "GilViewer/gui/LayerControl.hpp"
-
 #include <list>
 #include <sstream>
 #include <stdexcept>
@@ -80,6 +78,8 @@ Authors:
 #include "GilViewer/gui/resources/polygon_icon.xpm"
 #include "GilViewer/gui/resources/image_icon.xpm"
 
+#include "GilViewer/gui/LayerControl.hpp"
+
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
 #endif
@@ -101,6 +101,7 @@ EVT_BUTTON(ID_TRANSFORMATION_BUTTON,LayerControl::OnTransformationButton)
 EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,LayerControl::OnGlobalSettingsButton)
 EVT_BUTTON(wxID_SAVE,LayerControl::OnSaveDisplayConfigButton)
 EVT_BUTTON(wxID_OPEN,LayerControl::OnLoadDisplayConfigButton)
+EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
 EVT_CHAR(LayerControl::OnChar)
 END_EVENT_TABLE()
 
@@ -165,6 +166,11 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost)
         wxBitmapButton* loadDisplayConfig = new wxBitmapButton(m_scroll, wxID_OPEN, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_16x16") ) );
 	loadDisplayConfig->SetToolTip(_("Load display configuration"));
 	globalSettingsSizer->Add(loadDisplayConfig, 0, wxALL | wxALIGN_CENTRE, 5);
+
+	// Bouton pour la suppression de tous les layers
+    wxBitmapButton* delete_all_rows = new wxBitmapButton(m_scroll, ID_DELETE_ALL_ROWS, wxXmlResource::Get()->LoadBitmap( wxT("USER-TRASH_16x16") ) );
+	delete_all_rows->SetToolTip(_("Delete all rows"));
+	globalSettingsSizer->Add(delete_all_rows, 0, wxALL | wxALIGN_CENTRE, 5);
 
 	m_sizer->Add(globalSettingsSizer, 0, wxALL | wxALIGN_CENTRE, 5);
 
@@ -912,6 +918,16 @@ void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
 	}
 
 	delete fd;
+}
+
+void LayerControl::OnDeleteAllRowsButton(wxCommandEvent& event)
+{
+	while( m_numberOfLayers > 0 )
+	{
+		wxCommandEvent event;
+		event.SetInt(m_numberOfLayers);
+		OnDeleteButton(event);
+	}
 }
 
 void LayerControl::OnChar(wxKeyEvent& event)

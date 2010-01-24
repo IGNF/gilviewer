@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,18 +31,19 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 struct nb_components_functor
 {
 	typedef std::size_t result_type;
 	template <typename ViewT>
-	result_type operator()(ViewT&) const
+	result_type operator()(const ViewT&) const
 	{
-	   return num_channels<ViewT>::value;
+        using namespace boost::gil;
+	    return num_channels<ViewT>::value;
 	}
 };
 
@@ -51,7 +52,7 @@ struct custom_typename
 	typedef std::string result_type;
 
 	template <typename T>
-	result_type operator()(const T&) { return "";}
+	result_type operator()(const T&) { return "unknow";}
 };
 #include <boost/preprocessor/stringize.hpp>
 
@@ -72,8 +73,9 @@ struct type_channel_functor
 {
 	typedef std::string result_type;
 	template <typename ViewT>
-	result_type operator()(ViewT&) const
+	result_type operator()(const ViewT&) const
 	{
+        using namespace boost::gil;
 		return custom_typename()( typename channel_type<ViewT>::type ());
 	}
 };

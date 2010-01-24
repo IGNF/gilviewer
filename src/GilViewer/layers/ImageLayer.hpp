@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __IMAGE_LAYER_HPP__
@@ -43,20 +43,15 @@ Authors:
 
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/mpl/vector.hpp>
 
-#include "boost/gil/extension/matis/float_images.hpp"
-#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
-
+#include "GilViewer/layers/image_types.hpp"
 #include "GilViewer/layers/Layer.hpp"
-
-using namespace boost::gil;
 
 class ImageLayer : public Layer
 {
 	public:
-	//GIL   :  gray8_image_t, gray8s_image_t, gray16_image_t, gray16s_image_t, gray32_image_t, gray32s_image_t,
-        typedef any_image< boost::mpl::vector< gray8_image_t , gray16_image_t , gray32_image_t, gray32F_image_t , gray64F_image_t , rgb8_image_t , rgb16_image_t , rgb32_image_t , rgba8_image_t > > usable_images_t;
+    //typedef any_image< boost::mpl::vector< gray8_image_t , gray16_image_t , gray32_image_t, gray32F_image_t , gray64F_image_t , rgb8_image_t , rgb16_image_t , rgb32_image_t , rgba8_image_t > > usable_images_t;
+    typedef boost::gil::any_image< all_image_types > usable_images_t;
 	typedef usable_images_t::view_t usable_views_t;
 
 
@@ -133,13 +128,13 @@ class ImageLayer : public Layer
 
 
 		virtual void Save(const std::string &name);
-		virtual ptrLayerType crop( int x0 , int y0 , int width , int height , std::string filename = "" );
+		virtual void crop( int x0 , int y0 , int width , int height , std::string filename = "" );
 
 	private:
 		ImageLayer(const boost::shared_ptr<usable_images_t> &image, const std::string &name ="Image Layer");
 
 		boost::shared_ptr<usable_images_t> m_img;
-		gray8_image_t m_canal_alpha;
+		boost::gil::gray8_image_t m_canal_alpha;
 
 		int m_startInput[2];
 		double m_startfInput[2];
@@ -167,6 +162,5 @@ class ImageLayer : public Layer
 
 		double m_oldZoomFactor;
 };
-
 
 #endif // __IMAGE_LAYER_HPP__

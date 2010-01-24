@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,88 +31,43 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
+#include <boost/preprocessor/seq/for_each.hpp>
+
+#include <stdexcept>
+
+#include "GilViewer/layers/image_types.hpp"
+#include "GilViewer/layers/ImageLayer.hpp"
 
 struct get_any_image_functor
 {
-	//typedef any_image< boost::mpl::vector<r"gb8_image_t> > result_type;
-	typedef boost::shared_ptr< ImageLayer::usable_images_t > result_type;
-	template <typename ViewT>
-	result_type operator()(ViewT& src) const
-	{
-		gray8_image_t im( src.dimensions() );
-		boost::gil::copy_pixels( src , view(im) );
-		return result_type(new ImageLayer::usable_images_t(im));
-	}
+    typedef boost::shared_ptr< ImageLayer::usable_images_t > result_type;
+    
+    template <typename ViewT>
+    result_type operator()(const ViewT& src) const
+    {
+        std::ostringstream oss;
+	oss << "Not implemented ...\n";
+        oss << "File : " << __FILE__ << "\n";
+        oss << "Function : " << __FUNCTION__ << "\n";
+        oss << "Line : " << __LINE__ << "\n";
+        throw std::logic_error(oss.str());
+    }    
 };
 
-// TODO : use boost pp to generate all that ...
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<gray8_view_t>( gray8_view_t& src ) const
-{
-	gray8_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
 /*
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<gray16_image_t>( gray16_image_t& src ) const
-{
-	gray16_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<gray32_image_t>( gray32_image_t& src ) const
-{
-	gray32_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<gray32F_image_t>( gray32F_image_t& src ) const
-{
-	gray32F_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<gray64F_image_t>( gray64F_image_t& src ) const
-{
-	gray64F_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<rgb8_image_t>( rgb8_image_t& src ) const
-{
-	rgb8_image_t im( src.dimensions() );
-	boost::gil::copy_and_convert_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<rgb16_image_t>( rgb16_image_t& src ) const
-{
-	rgb16_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
-}
-
-template <>
-get_any_image_functor::result_type get_any_image_functor::operator()<rgb32_image_t>( rgb32_image_t& src ) const
-{
-	rgb32_image_t im( src.dimensions() );
-	boost::gil::copy_pixels( src , view(im) );
-	return result_type(new ImageLayer::usable_images_t(im));
+#define OVERLOAD_GET_PARENTHESIS_OPERATOR( r , n , data ) template <> \
+get_any_image_functor::result_type get_any_image_functor::operator()<data::view_t>(const data::view_t& v) const \
+{ \
+    data im( v.dimensions() ); \
+    boost::gil::copy_pixels( v , view(im) ); \
+    return result_type(new ImageLayer::usable_images_t(im)); \
 }
 */
+
+//BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , GRAY_IMAGE_TYPES )
+//BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , RGB_IMAGE_TYPES )
+//BOOST_PP_SEQ_FOR_EACH( OVERLOAD_GET_PARENTHESIS_OPERATOR , ~ , RGBA_IMAGE_TYPES )
