@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,75 +31,84 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
-#ifdef WIN32
+#ifdef _WINDOWS
 #	undef min
 #	undef max
-#endif // WIN32
+#endif // _WINDOWS
 
-struct min_max_functor
+#include <boost/gil/extension/dynamic_image/reduce.hpp>
+
+#include <boost/algorithm/minmax.hpp>
+#include <boost/algorithm/minmax_element.hpp>
+#include <boost/type_traits/is_same.hpp>
+
+#include <boost/preprocessor/seq/for_each.hpp>
+
+#include "GilViewer/layers/image_types.hpp"
+
+struct pixel_compare_less
 {
-	min_max_functor():
-		m_min(std::numeric_limits<float>::max()),
-		m_max(std::numeric_limits<float>::min())
-		{}
-
-	template<class PixelT>
-	void operator()(const PixelT& src)
-	{
-		using namespace std;
-		m_min = min(static_cast<float>(at_c<0>(src)), m_min);
-		m_max = max(static_cast<float>(at_c<0>(src)), m_max);
-	}
-
-	float m_min, m_max;
+    template <typename PixelType>
+    bool operator()( const PixelType& p1 , const PixelType& p2 ) const
+    {
+        return boost::gil::at_c<0>(p1) < boost::gil::at_c<0>(p2);
+    }
 };
 
-template<>
-void min_max_functor::operator()<rgb8_pixel_t>(const rgb8_pixel_t& src)
+struct any_view_min_max
 {
-	using namespace std;
-	m_min = min(static_cast<float>(at_c<0>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<0>(src)), m_max);
-	m_min = min(static_cast<float>(at_c<1>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<1>(src)), m_max);
-	m_min = min(static_cast<float>(at_c<2>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<2>(src)), m_max);
-}
-
-template<>
-void min_max_functor::operator()<rgb16_pixel_t>(const rgb16_pixel_t& src)
-{
-	using namespace std;
-	m_min = min(static_cast<float>(at_c<0>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<0>(src)), m_max);
-	m_min = min(static_cast<float>(at_c<1>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<1>(src)), m_max);
-	m_min = min(static_cast<float>(at_c<2>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<2>(src)), m_max);
-}
-
-template<>
-void min_max_functor::operator()<rgba8_pixel_t>(const rgba8_pixel_t& src)
-{
-	using namespace std;
-	m_min = min(static_cast<float>(at_c<0>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<0>(src)), m_max);
-	m_min = min(static_cast<float>(at_c<1>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<1>(src)), m_max);
-	m_min = min(static_cast<float>(at_c<2>(src)), m_min);
-	m_max = max(static_cast<float>(at_c<2>(src)), m_max);
-}
-
-struct any_view_min_max {
     typedef std::pair<float, float> result_type;
-    template <typename View> result_type operator()(View& vue) const
+
+    template <typename ViewType>
+    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform< gray_image_types,
+    add_view_type<boost::mpl::_1>
+    >::type,
+    ViewType>,
+    result_type>::type operator()(const ViewType& v) const
     {
-    	min_max_functor f = for_each_pixel(vue, min_max_functor());
-    	return std::make_pair(f.m_min, f.m_max);
+        typedef typename ViewType::iterator iterator;
+        std::pair< iterator, iterator > result = boost::minmax_element( v.begin() , v.end() , pixel_compare_less() );
+        return std::make_pair( *(result.first) , *(result.second) );
+    }
+
+    template<class ViewType>
+    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
+    add_view_type<boost::mpl::_1>
+    >::type,
+    ViewType>,
+    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+    add_view_type<boost::mpl::_1>
+    >::type,
+    ViewType>
+    >,
+    result_type>::type operator()(const ViewType& v) const
+    {
+        using namespace std;
+
+        vector<float> min_max_over_channels;
+        min_max_over_channels.reserve(6);
+
+        typedef typename boost::gil::kth_channel_view_type<0,ViewType>::type::iterator iterator_r;
+        pair< iterator_r , iterator_r > result_r = boost::minmax_element( boost::gil::kth_channel_view<0>(v).begin() , boost::gil::kth_channel_view<0>(v).end() , pixel_compare_less() );
+        min_max_over_channels.push_back( *(result_r.first) );
+        min_max_over_channels.push_back( *(result_r.second) );
+
+        typedef typename boost::gil::kth_channel_view_type<1,ViewType>::type::iterator iterator_g;
+        pair< iterator_r , iterator_g > result_g = boost::minmax_element( boost::gil::kth_channel_view<1>(v).begin() , boost::gil::kth_channel_view<1>(v).end() , pixel_compare_less() );
+        min_max_over_channels.push_back( *(result_g.first) );
+        min_max_over_channels.push_back( *(result_g.second) );
+
+        typedef typename boost::gil::kth_channel_view_type<2,ViewType>::type::iterator iterator_b;
+        pair< iterator_b , iterator_b > result_b = boost::minmax_element( boost::gil::kth_channel_view<2>(v).begin() , boost::gil::kth_channel_view<2>(v).end() , pixel_compare_less() );
+        min_max_over_channels.push_back( *(result_b.first) );
+        min_max_over_channels.push_back( *(result_b.second) );
+
+        pair< vector<float>::iterator , vector<float>::iterator> min_and_max = boost::minmax_element( min_max_over_channels.begin() , min_max_over_channels.end() );
+        return std::make_pair( *(min_and_max.first) , *(min_and_max.second) );
     }
 };

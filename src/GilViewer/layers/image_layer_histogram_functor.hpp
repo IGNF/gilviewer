@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,62 +31,51 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
+#include "GilViewer/layers/image_types.hpp"
 
 struct histogram_functor
 {
-	typedef void result_type;
-	histogram_functor( std::vector< std::vector<double> > &histo , const double mini , const double maxi ) : m_histo(histo)
-	{
-		m_scale = 255. / (maxi-mini);
-		m_offset = -mini * m_scale;
-	}
+    typedef void result_type;
+    histogram_functor( std::vector< std::vector<double> > &histo , const double mini , const double maxi ) : m_histo(histo)
+    {
+        m_scale = 255. / (maxi-mini);
+        m_offset = -mini * m_scale;
+    }
 
-	template <typename ViewT>
-	result_type operator()( const ViewT& src ) const
-	{
-	    for (typename ViewT::iterator it=src.begin(); it!=src.end(); ++it)
-			++m_histo[0][ at_c<0>(*it)*m_scale+m_offset];
-	}
+    template <typename ViewType>
+    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
+    ViewType>,
+    result_type>::type operator()(const ViewType& v) const
+    {
+        typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
+        for (; it_begin!=it_end; ++it_begin)
+            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset ];
+    }
 
-	std::vector< std::vector<double> >& m_histo;
-	double m_scale;
-	double m_offset;
+    template<class ViewType>
+    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
+    add_view_type<boost::mpl::_1 > >::type,
+    ViewType>,
+    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
+    add_view_type<boost::mpl::_1 > >::type,
+    ViewType>
+    >,
+    result_type>::type operator()(const ViewType& v) const
+    {
+        typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
+        for (; it_begin!=it_end; ++it_begin)
+        {
+            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset];
+            ++m_histo[1][ boost::gil::at_c<1>(*it_begin)*m_scale+m_offset];
+            ++m_histo[2][ boost::gil::at_c<2>(*it_begin)*m_scale+m_offset];
+        }
+    }
+
+    std::vector< std::vector<double> >& m_histo;
+    double m_scale;
+    double m_offset;
 };
-
-template <>
-histogram_functor::result_type histogram_functor::operator()<rgb8c_view_t>( const rgb8c_view_t& src ) const
-{
-    for (rgb8c_view_t::iterator it=src.begin(); it!=src.end(); ++it)
-    {
-		++m_histo[0][ at_c<0>(*it)*m_scale+m_offset];
-		++m_histo[1][ at_c<1>(*it)*m_scale+m_offset];
-		++m_histo[2][ at_c<2>(*it)*m_scale+m_offset];
-	}
-}
-
-template <>
-histogram_functor::result_type histogram_functor::operator()<rgb16c_view_t>( const rgb16c_view_t& src ) const
-{
-    for (rgb16c_view_t::iterator it=src.begin(); it!=src.end(); ++it)
-    {
-		++m_histo[0][ at_c<0>(*it)*m_scale+m_offset];
-		++m_histo[1][ at_c<1>(*it)*m_scale+m_offset];
-		++m_histo[2][ at_c<2>(*it)*m_scale+m_offset];
-	}
-}
-
-
-template <>
-histogram_functor::result_type histogram_functor::operator()<rgba8_view_t>( const rgba8_view_t& src ) const
-{
-    for (rgba8_view_t::iterator it=src.begin(); it!=src.end(); ++it)
-    {
-		++m_histo[0][ at_c<0>(*it)*m_scale+m_offset];
-		++m_histo[1][ at_c<1>(*it)*m_scale+m_offset];
-		++m_histo[2][ at_c<2>(*it)*m_scale+m_offset];
-	}
-}

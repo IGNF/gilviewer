@@ -6,20 +6,20 @@ GilViewer is an open source 2D viewer (raster and vector) based on Boost
 GIL and wxWidgets.
 
 
-Homepage: 
+Homepage:
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
-Authors: 
+Authors:
 
 	Olivier Tournaire, Adrien Chauve
 
-	
-	
+
+
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ Authors:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __LAYER_HPP__
@@ -134,7 +134,10 @@ public:
     virtual std::string GetPixelValue(const int i, const int j) const { return std::string(); }
 	// Fin methodes specifiques ImageLayer
 
-	virtual void SetDefaultDisplayParameters() {}
+	static void foo() {}
+	static void bar() {}
+	Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar) : notifyLayerControl_(notifyLayerControl), notifyLayerSettingsControl_(notifyLayerSettingsControl), m_isVisible(true), m_hasToBeUpdated(true), m_name("Default layer name"), m_filename(""), m_hasOri(false) {}
+	virtual ~Layer() {}
 
 	// Methodes specifiques VectorLayer
     virtual void AddVectorLayerContent( const std::string &shapefileFileName ) {}
@@ -189,27 +192,27 @@ public:
 
 
 protected:
-	bool m_isVisible;
-	bool m_isTransformable;
-	bool m_hasToBeUpdated;
-	// Le nom du layer
-	std::string m_name;
-	// Le nom du fichier associe si il existe
-	std::string m_filename;
+    bool m_isVisible;
+    bool m_isTransformable;
+    bool m_hasToBeUpdated;
+    // Le nom du layer
+    std::string m_name;
+    // Le nom du fichier associe si il existe
+    std::string m_filename;
 
-	//gestion de la geometrie
-	double m_zoomFactor;
-	double m_translationX, m_translationY;
-	double m_resolution;
+    //gestion de la geometrie
+    double m_zoomFactor;
+    double m_translationX, m_translationY;
+    double m_resolution;
 
-	//orientation (possible que pour les calques images)
-	Orientation2D m_ori;
-	bool m_hasOri;
+    //orientation (possible que pour les calques images)
+    Orientation2D m_ori;
+    bool m_hasOri;
 
-	//infos du layer
-	std::string m_infos;
+    //infos du layer
+    std::string m_infos;
 
-	static wxColour m_defaultPointColour;
+    static wxColour m_defaultPointColour;
 };
 
 

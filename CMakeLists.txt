@@ -29,7 +29,6 @@ MESSAGE(STATUS " parent ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
 SET(SRC_DIR src/GilViewer)
 FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.h ${SRC_DIR}/convenient/*.hpp ${SRC_DIR}/convenient/*.hxx ${SRC_DIR}/convenient/*.inl )
 FILE( GLOB ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl )
-FILE( GLOB ALL_GUI_WXFB_HEADER_FILES ${SRC_DIR}/gui/wxFB/*.h ${SRC_DIR}/gui/wxFB/*.hpp ${SRC_DIR}/gui/wxFB/*.hxx ${SRC_DIR}/gui/wxFB/*.inl )
 FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
@@ -38,7 +37,6 @@ FILE( GLOB ALL_WRAPPERS_HEADER_FILES ${SRC_DIR}/wrappers/*.h ${SRC_DIR}/wrappers
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
-                        ${ALL_GUI_WXFB_HEADER_FILES}
                         ${ALL_IO_HEADER_FILES}
                         ${ALL_LAYERS_HEADER_FILES}
                         ${ALL_TOOLS_HEADER_FILES}

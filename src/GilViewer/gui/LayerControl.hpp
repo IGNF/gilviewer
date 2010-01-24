@@ -146,6 +146,8 @@ private:
 	void OnSaveDisplayConfigButton(wxCommandEvent& event);
 	/// Cette methode permet de lire a partir d'un fichier XML les layers affiches ainsi que la configuration d'affichage courante
 	void OnLoadDisplayConfigButton(wxCommandEvent& event);
+	/// Cette methode permet de supprimer tous les layers affiches
+	void OnDeleteAllRowsButton(wxCommandEvent& event);
 
 	/// Cette methode permet de construire la barre d'outils
 	void InitToolbar(wxToolBar* toolBar);
