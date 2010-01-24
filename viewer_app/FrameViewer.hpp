@@ -50,6 +50,7 @@ Authors:
 class PanelViewer;
 class wxStatusBar;
 class wxDialog;
+class wxMenuBar;
 
 class FrameViewer : public BasicViewerFrame
 {
