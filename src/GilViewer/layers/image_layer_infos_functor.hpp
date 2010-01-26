@@ -65,6 +65,7 @@ custom_typename::result_type custom_typename::operator()<TYPE>(const TYPE&)\
 
 MACRO_CUSTOM_TYPENAME(unsigned char)
 MACRO_CUSTOM_TYPENAME(unsigned short)
+MACRO_CUSTOM_TYPENAME(signed short)
 MACRO_CUSTOM_TYPENAME(unsigned int)
 MACRO_CUSTOM_TYPENAME(float)
 MACRO_CUSTOM_TYPENAME(double)

@@ -126,10 +126,8 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
         oss << "File : " <<__FILE__ << endl;
         oss << "Line : " << __LINE__ << endl;
         oss << "Function : " << __FUNCTION__ << endl;
-        cout << oss.str() << endl;
         wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
         return boost::shared_ptr<Layer>();
-        //throw logic_error( oss.str() );
     }
 
 
@@ -139,13 +137,25 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
 
     boost::shared_ptr<usable_images_t> image(new usable_images_t);
 
-    if (ext == ".TIF" || ext == ".TIFF" || ext == ".tif" || ext == ".tiff")
-        tiff_read_image(filename, *image);
-    else if (ext == ".JPG" || ext == ".JPEG" || ext == ".jpg" || ext == ".jpeg")
-        jpeg_read_image(filename, *image);
-    else if (ext == ".PNG" || ext == ".png")
-        png_read_image(filename, *image);
-
+	try
+	{
+		if (ext == ".TIF" || ext == ".TIFF" || ext == ".tif" || ext == ".tiff")
+			tiff_read_image(filename, *image);
+		else if (ext == ".JPG" || ext == ".JPEG" || ext == ".jpg" || ext == ".jpeg")
+			jpeg_read_image(filename, *image);
+		else if (ext == ".PNG" || ext == ".png")
+			png_read_image(filename, *image);
+	}
+	catch( const exception &e )
+    {
+        ostringstream oss;
+        oss << "Read error: "<<filename<< " ! " << endl;
+        oss << "File : " <<__FILE__ << endl;
+        oss << "Line : " << __LINE__ << endl;
+        oss << "Function : " << __FUNCTION__ << endl;
+        wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
+        return boost::shared_ptr<Layer>();
+    }
 
     //Creation de la couche image
     boost::shared_ptr<ImageLayer> maLayer(new ImageLayer(image, filename));
