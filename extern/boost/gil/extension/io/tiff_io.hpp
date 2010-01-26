@@ -57,6 +57,12 @@ struct tiff_read_support_private<bits16,gray_t> {
     BOOST_STATIC_CONSTANT(int,color_type=PHOTOMETRIC_MINISBLACK);
 };
 template <>
+struct tiff_read_support_private<bits16s,gray_t> {
+    BOOST_STATIC_CONSTANT(bool,is_supported=true);
+    BOOST_STATIC_CONSTANT(int,bit_depth=16);
+    BOOST_STATIC_CONSTANT(int,color_type=PHOTOMETRIC_MINISBLACK);
+};
+template <>
 struct tiff_read_support_private<bits16,rgb_t> {
     BOOST_STATIC_CONSTANT(bool,is_supported=true);
     BOOST_STATIC_CONSTANT(int,bit_depth=16);
@@ -160,6 +166,7 @@ public:
     void apply(const View& view) {
         unsigned short bps,photometric;
         point2<std::ptrdiff_t> dims=get_dimensions();
+        
         io_error_if(TIFFGetField(_tp,TIFFTAG_BITSPERSAMPLE,&bps)!=1);
         io_error_if(TIFFGetField(_tp,TIFFTAG_PHOTOMETRIC,&photometric)!=1);
         io_error_if(dims!=view.dimensions(),

@@ -15,7 +15,7 @@ We use preprocessor sequences to build mpl::vectors.
 */
 
 // Gray image types
-#define GRAY_IMAGE_TYPES (boost::gil::gray8_image_t)(boost::gil::gray16_image_t)(boost::gil::gray32_image_t)(boost::gil::gray32F_image_t)(boost::gil::gray64F_image_t)
+#define GRAY_IMAGE_TYPES (boost::gil::gray8_image_t)(boost::gil::gray16_image_t)(boost::gil::gray16s_image_t)(boost::gil::gray32_image_t)(boost::gil::gray32F_image_t)(boost::gil::gray64F_image_t)
 typedef boost::mpl::vector< BOOST_PP_SEQ_ENUM( GRAY_IMAGE_TYPES ) > gray_image_types;
 
 // RGB image types
