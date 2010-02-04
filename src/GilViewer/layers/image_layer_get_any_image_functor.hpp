@@ -39,7 +39,6 @@ Authors:
 
 #include <stdexcept>
 
-#include "GilViewer/layers/image_types.hpp"
 #include "GilViewer/layers/ImageLayer.hpp"
 
 struct get_any_image_functor

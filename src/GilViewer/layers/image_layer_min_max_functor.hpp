@@ -41,15 +41,9 @@ Authors:
 #	undef max
 #endif // _WINDOWS
 
-#include <boost/gil/extension/dynamic_image/reduce.hpp>
-
 #include <boost/algorithm/minmax.hpp>
 #include <boost/algorithm/minmax_element.hpp>
-#include <boost/type_traits/is_same.hpp>
-
-#include <boost/preprocessor/seq/for_each.hpp>
-
-#include "GilViewer/layers/image_types.hpp"
+#include <boost/gil/pixel.hpp>
 
 struct pixel_compare_less
 {
@@ -65,28 +59,21 @@ struct any_view_min_max
     typedef std::pair<float, float> result_type;
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform< gray_image_types,
-    add_view_type<boost::mpl::_1>
-    >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType& v) const
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType& v) const
     {
         typedef typename ViewType::iterator iterator;
         std::pair< iterator, iterator > result = boost::minmax_element( v.begin() , v.end() , pixel_compare_less() );
         return std::make_pair( *(result.first) , *(result.second) );
     }
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_type<boost::mpl::_1>
-    >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_type<boost::mpl::_1>
-    >::type,
-    ViewType>
-    >,
-    result_type>::type operator()(const ViewType& v) const
+    template <typename ViewType>
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
+    operator()(const ViewType& v) const
     {
         using namespace std;
 

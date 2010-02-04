@@ -35,9 +35,8 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include <boost/preprocessor/seq/for_each.hpp>
 
-#include "GilViewer/layers/image_types.hpp"
+#include <boost/gil/pixel.hpp>
 
 struct channel_converter_functor
 {
@@ -71,9 +70,10 @@ struct channel_converter_functor
     }
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_and_value_type<boost::mpl::_1> >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         if (src < m_min_src)
         {
@@ -85,21 +85,17 @@ struct channel_converter_functor
             dst = m_max_dst;
             return;
         }
-        unsigned char index = m_255_over_delta*(src - m_min_src);
+        unsigned char index = (unsigned char) (m_255_over_delta*(src - m_min_src));
         boost::gil::at_c<0>(dst) = m_lut[index];
         boost::gil::at_c<1>(dst) = m_lut[256+index];
         boost::gil::at_c<2>(dst) = m_lut[512+index];
     }
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_and_value_type<boost::mpl::_1 > >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_and_value_type<boost::mpl::_1 > >::type,
-    ViewType>
-    >,
-    result_type>::type operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    template<class ViewType> 
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
+    operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         using namespace boost::gil;
 
@@ -108,20 +104,21 @@ struct channel_converter_functor
         else if (at_c<0>(src) > m_max_src)
             at_c<0>(dst)  = m_atc0max;
         else
-            at_c<0>(dst) = m_255_over_delta*(at_c<0>(src) - m_min_src);
+            at_c<0>(dst) = (unsigned char) (m_255_over_delta*(at_c<0>(src) - m_min_src));
 
         if (at_c<1>(src) < m_min_src)
             at_c<1>(dst)  = m_atc1min;
         else if (at_c<1>(src) > m_max_src)
             at_c<1>(dst)  = m_atc1max;
         else
-            at_c<1>(dst) = m_255_over_delta*(at_c<1>(src) - m_min_src);
+            at_c<1>(dst) = (unsigned char) (m_255_over_delta*(at_c<1>(src) - m_min_src));
 
         if (at_c<2>(src) < m_min_src)
             at_c<2>(dst)  = m_atc2min;
         else if (at_c<2>(src) > m_max_src)
             at_c<2>(dst)  = m_atc2max;
         else
-            at_c<2>(dst) = m_255_over_delta*(at_c<2>(src) - m_min_src);
+            at_c<2>(dst) = (unsigned char) (m_255_over_delta*(at_c<2>(src) - m_min_src));
     }
+
 };

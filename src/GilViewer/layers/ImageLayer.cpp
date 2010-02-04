@@ -41,6 +41,7 @@ Authors:
 #include <limits>
 #include <utility>
 
+#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
 #include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
@@ -295,7 +296,7 @@ void ImageLayer::crop( int x0 , int y0 , int width , int height , string filenam
         else if ( ext == ".png" || ext == ".PNG" )
             png_write_view( filename.c_str() , crop_view );
     }
-
+    // m_img = apply_operation( crop_view , get_any_image_functor() );
     /*
     	// TODO : only works for gray8 images ...
     	boost::shared_ptr<usable_images_t> any_img = apply_operation( crop_view , get_any_image_functor() );

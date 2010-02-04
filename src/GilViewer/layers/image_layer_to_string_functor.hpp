@@ -35,9 +35,8 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include <boost/preprocessor/seq/for_each.hpp>
 
-#include "GilViewer/layers/image_types.hpp"
+#include <boost/gil/pixel.hpp>
 
 template<typename ViewType, typename CoordType>
 inline bool isInside(const ViewType& v, const CoordType i, const CoordType j)
@@ -52,9 +51,10 @@ struct any_view_image_position_to_string_functor
     any_view_image_position_to_string_functor(const int i, const int j, std::ostringstream& oss):i_(i), j_(j), oss_(oss) {}
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType& v)
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType& v)
     {
         if (isInside(v, i_,j_))
             oss_ << (int) boost::gil::at_c<0>( v(i_,j_) );
@@ -62,15 +62,12 @@ struct any_view_image_position_to_string_functor
             oss_ << "outside";
     }
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>
-    >,
-    result_type>::type operator()(const ViewType& v)
+    
+    template <typename ViewType>
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
+    operator()(const ViewType& v)
     {
         using namespace boost::gil;
 

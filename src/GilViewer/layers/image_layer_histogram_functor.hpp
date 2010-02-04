@@ -35,7 +35,8 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include "GilViewer/layers/image_types.hpp"
+
+#include <boost/gil/pixel.hpp>
 
 struct histogram_functor
 {
@@ -47,31 +48,28 @@ struct histogram_functor
     }
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType& v) const
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType& v) const
     {
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
         for (; it_begin!=it_end; ++it_begin)
-            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset ];
+            ++m_histo[0][ (size_t) (boost::gil::at_c<0>(*it_begin)*m_scale+m_offset) ];
     }
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>
-    >,
-    result_type>::type operator()(const ViewType& v) const
+    template <typename ViewType>
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
+    operator()(const ViewType& v) const
     {
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
         for (; it_begin!=it_end; ++it_begin)
         {
-            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset];
-            ++m_histo[1][ boost::gil::at_c<1>(*it_begin)*m_scale+m_offset];
-            ++m_histo[2][ boost::gil::at_c<2>(*it_begin)*m_scale+m_offset];
+            ++m_histo[0][ (size_t) (boost::gil::at_c<0>(*it_begin)*m_scale+m_offset)];
+            ++m_histo[1][ (size_t) (boost::gil::at_c<1>(*it_begin)*m_scale+m_offset)];
+            ++m_histo[2][ (size_t) (boost::gil::at_c<2>(*it_begin)*m_scale+m_offset)];
         }
     }
 
