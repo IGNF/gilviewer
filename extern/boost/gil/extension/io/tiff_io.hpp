@@ -106,6 +106,12 @@ struct tiff_write_support_private<bits16,gray_t> {
     BOOST_STATIC_CONSTANT(int,color_type=PHOTOMETRIC_MINISBLACK);
 };
 template <>
+struct tiff_write_support_private<bits16s,gray_t> {
+    BOOST_STATIC_CONSTANT(bool,is_supported=true);
+    BOOST_STATIC_CONSTANT(int,bit_depth=16);
+    BOOST_STATIC_CONSTANT(int,color_type=PHOTOMETRIC_MINISBLACK);
+};
+template <>
 struct tiff_write_support_private<bits16,rgb_t> {
     BOOST_STATIC_CONSTANT(bool,is_supported=true);
     BOOST_STATIC_CONSTANT(int,bit_depth=16);
