@@ -62,7 +62,7 @@ void GenericVectorLayerPolygon::Clear()
 	m_numberOfEntities = 0;
 }
 
-void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
+void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
 	const double delta = 0.5 * resolution;
 	wxPen penColour( m_ringsColour , m_ringsWidth , m_penStyle );

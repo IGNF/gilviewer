@@ -39,42 +39,37 @@ Authors:
 #ifndef __IMAGE_LAYER_HPP__
 #define __IMAGE_LAYER_HPP__
 
-#include <sstream>
-
-#include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include <boost/gil/extension/dynamic_image/any_image.hpp>
-
-#include "GilViewer/layers/image_types.hpp"
 #include "GilViewer/layers/Layer.hpp"
+
+// forward declaration of image types
+class any_image_types;
+class alpha_image_type;
+namespace boost { namespace gil { template<typename T> class any_image; }; };
 
 class ImageLayer : public Layer
 {
 	public:
-	typedef boost::gil::any_image< all_image_types > usable_images_t;
-	typedef usable_images_t::view_t usable_views_t;
+	typedef boost::gil::any_image< any_image_types > image_t;
+	typedef alpha_image_type alpha_image_t;
 
 	virtual ~ImageLayer() {}
 
 	static ptrLayerType CreateImageLayer(const std::string &fileName);
-	static ptrLayerType CreateImageLayer(const boost::shared_ptr<usable_images_t> &image, const std::string &name ="Image Layer");
+	static ptrLayerType CreateImageLayer(const boost::shared_ptr<image_t> &image, const std::string &name ="Image Layer");
 
 	///ATTENTION ici l'image est recopiée dans une any_image !!
 	template<class ImageType>
-	static ptrLayerType CreateImageLayer(const ImageType &image, const std::string &name ="Image Layer")
-	{
-		boost::shared_ptr<usable_images_t> any_img(new usable_images_t(image));
-		return boost::shared_ptr<ImageLayer> (new ImageLayer(any_img, name));
-	}
+	static ptrLayerType CreateImageLayer(const ImageType &image, const std::string &name ="Image Layer");
 
-	virtual void Update(const int width, const int height);
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
+	virtual void Update(int width, int height);
+	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
 
 	virtual unsigned int GetNbComponents() const ;
 	std::string GetTypeChannel() const;
 	virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const;
-	virtual std::string GetPixelValue(const int i, const int j) const;
+	virtual std::string GetPixelValue(int i, int j) const;
 
 	virtual boost::shared_ptr<ColorLookupTable> GetColorLookupTable() { return m_cLUT; }
 
@@ -87,53 +82,53 @@ class ImageLayer : public Layer
 		m_ori.SizeX( orientation.SizeX() );
 		m_ori.SizeY( orientation.SizeY() );
 	}
-	virtual void SetChannels(const unsigned int red, const unsigned int green, const unsigned int blue)
+	virtual void SetChannels(unsigned int red, unsigned int green, unsigned int blue)
 	{
-		m_red = red;
+		m_red   = red;
 		m_green = green;
-		m_blue = blue;
+		m_blue  = blue;
 	}
-	virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue)
+	virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue) const
 	{
-		red = m_red;
+		red   = m_red;
 		green = m_green;
-		blue = m_blue;
+		blue  = m_blue;
 	}
-	virtual void SetAlphaChannel(const bool useAlphaChannel, const unsigned int alphaChannel)
+	virtual void SetAlphaChannel(bool useAlphaChannel, unsigned int alphaChannel)
 	{
 		m_useAlphaChannel = useAlphaChannel;
 		m_alphaChannel = alphaChannel;
 	}
-	virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel)
+	virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) const
 	{
 		useAlphaChannel = m_useAlphaChannel;
 		alphaChannel = m_alphaChannel;
 	}
 
-	virtual void Alpha(const unsigned char alpha) { m_alpha=alpha; }
+	virtual void Alpha(unsigned char alpha) { m_alpha=alpha; }
 	virtual inline unsigned char Alpha() const { return m_alpha; }
-	virtual void IntensityMin(const double intensity) { m_intensityMin=intensity; }
+	virtual void IntensityMin(double intensity) { m_intensityMin=intensity; }
 	virtual double IntensityMin() const { return m_intensityMin; }
-	virtual void IntensityMax(const double intensity) { m_intensityMax=intensity; }
+	virtual void IntensityMax(double intensity) { m_intensityMax=intensity; }
 	virtual double IntensityMax() const { return m_intensityMax; }
-	virtual void Gamma(const double gamma) { m_gamma=gamma; }
+	virtual void Gamma(double gamma) { m_gamma=gamma; }
 	virtual double Gamma() const { return m_gamma; }
-	virtual void TransparencyMin(const double t) { m_transparencyMin=t; }
+	virtual void TransparencyMin(double t) { m_transparencyMin=t; }
 	virtual double TransparencyMin() const { return m_transparencyMin; }
-	virtual void TransparencyMax(const double t) { m_transparencyMax=t; }
+	virtual void TransparencyMax(double t) { m_transparencyMax=t; }
 	virtual double TransparencyMax() const { return m_transparencyMax; }
-	virtual void IsTransparent(const bool t) { m_isTransparent=t; }
+	virtual void IsTransparent(bool t) { m_isTransparent=t; }
 	virtual bool IsTransparent() const { return m_isTransparent; }
 
 
 	virtual void Save(const std::string &name);
-	virtual void crop( int x0 , int y0 , int width , int height , std::string filename = "" );
+	virtual ptrLayerType crop(int x0, int y0, int x1, int y1) const;
 
 	private:
-	ImageLayer(const boost::shared_ptr<usable_images_t> &image, const std::string &name ="Image Layer");
+	ImageLayer(const boost::shared_ptr<image_t> &image, const std::string &name ="Image Layer");
 
-	boost::shared_ptr<usable_images_t> m_img;
-	boost::gil::gray8_image_t m_canal_alpha;
+	boost::shared_ptr<image_t> m_img;
+	boost::shared_ptr<alpha_image_t> m_alpha_img;
 
 	int m_startInput[2];
 	double m_startfInput[2];

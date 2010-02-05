@@ -64,7 +64,7 @@ void GenericVectorLayerArc::Clear()
 	m_numberOfEntities = 0;
 }
 
-void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
+void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
 	wxPen penColour( m_arcsColour , m_width , m_penStyle );
 	dc.SetPen( penColour );

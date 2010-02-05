@@ -132,9 +132,9 @@ void PanelViewer::SetModeSelection() {
 }
 
 void PanelViewer::SetGeometryNull() {
-	m_ghostLayer.m_drawPointPosition = false;
-	m_ghostLayer.m_drawCircle = false;
-	m_ghostLayer.m_drawRectangleSelection = false;
+	m_ghostLayer->m_drawPointPosition = false;
+	m_ghostLayer->m_drawCircle = false;
+	m_ghostLayer->m_drawRectangleSelection = false;
 
 	m_geometry = GEOMETRY_NULL;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_NULL, true);
@@ -189,7 +189,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 			m_layerControl(new LayerControl(this, parent, wxID_ANY, _("Layers control"))),
 			//		- applications settings
 			//reference au ghostLayer du LayerControl
-			m_ghostLayer(*GetLayerControl()->m_ghostLayer),
+			m_ghostLayer(GetLayerControl()->m_ghostLayer),
 			//Setting des modes d'interface :
 			m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT) {
 	if (PanelManager::Instance()->GetPanelsList().size() == 0)
@@ -355,6 +355,8 @@ void PanelViewer::OnPaint(wxPaintEvent& evt) {
 	dc.Clear();
 
 	wxSize tailleImage(this->GetSize());
+	int dx = static_cast<int> (m_translationDrag.x);
+	int dy = static_cast<int> (m_translationDrag.y);
 
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsVisible()) {
@@ -374,19 +376,13 @@ void PanelViewer::OnPaint(wxPaintEvent& evt) {
 			}
 
 			if ((*it)->IsTransformable()) {
-				(*it)->Draw(dc, static_cast<int> (m_translationDrag.x), static_cast<int> (m_translationDrag.y), true);
+				(*it)->Draw(dc,dx,dy, true);
 			} else {
 				(*it)->Draw(dc, 0, 0, true);
 			}
 		}
 	}
-
-	//si on a des layers, on ajoute le ghost
-	if (m_layerControl->GetRows().size()) {
-		//alias
-		Layer::ptrLayerType firstLayer = *m_layerControl->begin();
-		GetLayerControl()->m_ghostLayer->Draw(dc, static_cast<int> (m_translationDrag.x), static_cast<int> (m_translationDrag.y), false, firstLayer->ZoomFactor(), firstLayer->TranslationX(), firstLayer->TranslationY(), firstLayer->Resolution());
-	}
+	m_ghostLayer->Draw(dc,dx,dy,false);
 }
 
 void PanelViewer::OnLeftDown(wxMouseEvent &event) {
@@ -452,7 +448,7 @@ void PanelViewer::OnRightDown(wxMouseEvent &event) {
 		case GEOMETRY_RECTANGLE:
 			break;
 		case GEOMETRY_LINE:
-			m_ghostLayer.m_lineEndCapture = true;
+			m_ghostLayer->m_lineEndCapture = true;
 			GeometryAddPoint(wxPoint(event.m_x, event.m_y));
 			break;
 		case GEOMETRY_POLYGONE:
@@ -594,6 +590,8 @@ void PanelViewer::SceneMove(const wxPoint& translation) {
 			(*it)->TranslationY((*it)->TranslationY() + translation.y * (*it)->ZoomFactor());
 		}
 	}
+	m_ghostLayer->TranslationX(m_ghostLayer->TranslationX() + translation.x * m_ghostLayer->ZoomFactor());
+	m_ghostLayer->TranslationY(m_ghostLayer->TranslationY() + translation.y * m_ghostLayer->ZoomFactor());
 	Refresh();
 }
 
@@ -602,8 +600,9 @@ bool PanelViewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int 
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
 		if ((*it)->IsVisible() && ((*it)->GetPixelValue(i, j).length() != 0)) {
 			coordOK = true;
-			i = static_cast<int> (-(*it)->TranslationX() + mouseX * (*it)->ZoomFactor());
-			j = static_cast<int> (-(*it)->TranslationY() + mouseY * (*it)->ZoomFactor());
+			double zoom = (*it)->ZoomFactor();
+			i = static_cast<int> (zoom*mouseX-(*it)->TranslationX());
+			j = static_cast<int> (zoom*mouseY-(*it)->TranslationY());
 		}
 	}
 	return coordOK;
@@ -614,8 +613,9 @@ bool PanelViewer::GetSubPixCoordImage(const int mouseX, const int mouseY, double
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
 		if ((*it)->IsVisible()) {
 			coordOK = true;
-			i = static_cast<double> (-(*it)->TranslationX() + mouseX * (*it)->ZoomFactor()) - 0.5;
-			j = static_cast<double> (-(*it)->TranslationY() + mouseY * (*it)->ZoomFactor()) - 0.5;
+			double zoom = (*it)->ZoomFactor();
+			i = static_cast<double> (zoom*mouseX-(*it)->TranslationX()- 0.5);
+			j = static_cast<double> (zoom*mouseY-(*it)->TranslationY()- 0.5);
 		}
 	}
 	return coordOK;
@@ -712,7 +712,9 @@ void PanelViewer::Zoom(double zoomFactor, wxMouseEvent &event) {
 			(*it)->HasToBeUpdated(true);
 		}
 	}
-
+	m_ghostLayer->TranslationX(m_ghostLayer->TranslationX() + event.m_x * m_ghostLayer->ZoomFactor() * (zoomFactor - 1));
+	m_ghostLayer->TranslationY(m_ghostLayer->TranslationY() + event.m_y * m_ghostLayer->ZoomFactor() * (zoomFactor - 1));
+	m_ghostLayer->ZoomFactor(m_ghostLayer->ZoomFactor() * zoomFactor);
 	Refresh();
 }
 
@@ -828,74 +830,72 @@ inline double DistancePoints(const wxPoint& pt1, const wxPoint &pt2) {
 	return std::sqrt((double) (diff.x * diff.x + diff.y * diff.y));
 }
 
-void PanelViewer::GeometryAddPoint(const wxPoint & pt)
+void PanelViewer::GeometryAddPoint(const wxPoint & p)
 //coord filées par l'event (pas encore image)
 {
 	//	double xi,yi;
 	//	GetSubPixCoordImage( x, y, xi, yi );
-	int xi, yi;
-	GetCoordImage(pt.x, pt.y, xi, yi);
+	wxPoint pt = m_ghostLayer->ToLocal(p);
 
-	m_ghostLayer.m_drawPointPosition = false;
-	m_ghostLayer.m_drawCircle = false;
-	m_ghostLayer.m_drawLine = false;
-	m_ghostLayer.m_drawRectangleSelection = false;
+	m_ghostLayer->m_drawPointPosition = false;
+	m_ghostLayer->m_drawCircle = false;
+	m_ghostLayer->m_drawLine = false;
+	m_ghostLayer->m_drawRectangleSelection = false;
 
 	switch (m_geometry) {
 	case GEOMETRY_NULL:
 
 		break;
 	case GEOMETRY_CIRCLE:
-		m_ghostLayer.m_drawCircle = true;
-		m_ghostLayer.m_penCircle = wxPen(*wxBLUE, 2);
-		m_ghostLayer.m_brushCircle = wxBrush(*wxBLUE, wxTRANSPARENT);
-		if (!m_ghostLayer.m_CircleFirstPointSet) {
-			m_ghostLayer.m_circle.first = wxPoint(xi, yi);
-			m_ghostLayer.m_circle.second = 1;
-			m_ghostLayer.m_CircleFirstPointSet = true;
+		m_ghostLayer->m_drawCircle = true;
+		m_ghostLayer->m_penCircle = wxPen(*wxBLUE, 2);
+		m_ghostLayer->m_brushCircle = wxBrush(*wxBLUE, wxTRANSPARENT);
+		if (!m_ghostLayer->m_CircleFirstPointSet) {
+			m_ghostLayer->m_circle.first = pt;
+			m_ghostLayer->m_circle.second = 1;
+			m_ghostLayer->m_CircleFirstPointSet = true;
 		} else {
-			m_ghostLayer.m_circle.second = DistancePoints(m_ghostLayer.m_circle.first, wxPoint(xi, yi));
-			m_ghostLayer.m_CircleFirstPointSet = false;
+			m_ghostLayer->m_circle.second = DistancePoints(m_ghostLayer->m_circle.first, pt);
+			m_ghostLayer->m_CircleFirstPointSet = false;
 			GeometryEnd();
 		}
 		break;
 	case GEOMETRY_LINE:
-		m_ghostLayer.m_drawLine = true;
-		m_ghostLayer.m_penLine = wxPen(*wxBLUE, 1);
+		m_ghostLayer->m_drawLine = true;
+		m_ghostLayer->m_penLine = wxPen(*wxBLUE, 1);
 
-		if (!m_ghostLayer.m_lineHasBegun) {
-			m_ghostLayer.m_linePoints.clear();
-			m_ghostLayer.m_linePoints.push_back(wxPoint(xi, yi));
+		if (!m_ghostLayer->m_lineHasBegun) {
+			m_ghostLayer->m_linePoints.clear();
+			m_ghostLayer->m_linePoints.push_back(pt);
 		}
 
-		m_ghostLayer.m_lineHasBegun = true;
-		m_ghostLayer.m_linePoints.push_back(wxPoint(xi, yi));
-		if (m_ghostLayer.m_lineEndCapture) {
-			m_ghostLayer.m_lineEndCapture = false;
-			m_ghostLayer.m_lineHasBegun = false;
+		m_ghostLayer->m_lineHasBegun = true;
+		m_ghostLayer->m_linePoints.push_back(pt);
+		if (m_ghostLayer->m_lineEndCapture) {
+			m_ghostLayer->m_lineEndCapture = false;
+			m_ghostLayer->m_lineHasBegun = false;
 			GeometryEnd();
 		}
 		break;
 	case GEOMETRY_POINT:
-		m_ghostLayer.m_penPoint = wxPen(*wxGREEN, 3);
-		m_ghostLayer.m_pointPosition = wxPoint(xi, yi);
-		m_ghostLayer.m_drawPointPosition = true;
-		//			std::cout << "point ajouté : " << xi << "," << yi << std::endl;
+		m_ghostLayer->m_penPoint = wxPen(*wxGREEN, 3);
+		m_ghostLayer->m_pointPosition = pt;
+		m_ghostLayer->m_drawPointPosition = true;
 		GeometryEnd();
 		break;
 	case GEOMETRY_POLYGONE:
 
 		break;
 	case GEOMETRY_RECTANGLE:
-		m_ghostLayer.m_penRectangle = wxPen(*wxRED, 2, wxDOT);
-		m_ghostLayer.m_drawRectangleSelection = true;
-		if (!m_ghostLayer.m_rectangleSelectionFirstPointSet) {
-			m_ghostLayer.m_rectangleSelection.first = wxPoint(xi, yi);
-			m_ghostLayer.m_rectangleSelection.second = wxPoint(xi, yi);
-			m_ghostLayer.m_rectangleSelectionFirstPointSet = true;
+		m_ghostLayer->m_penRectangle = wxPen(*wxRED, 2, wxDOT);
+		m_ghostLayer->m_drawRectangleSelection = true;
+		if (!m_ghostLayer->m_rectangleSelectionFirstPointSet) {
+			m_ghostLayer->m_rectangleSelection.first = pt;
+			m_ghostLayer->m_rectangleSelection.second = pt;
+			m_ghostLayer->m_rectangleSelectionFirstPointSet = true;
 		} else {
-			m_ghostLayer.m_rectangleSelection.second = wxPoint(xi, yi);
-			m_ghostLayer.m_rectangleSelectionFirstPointSet = false;
+			m_ghostLayer->m_rectangleSelection.second = pt;
+			m_ghostLayer->m_rectangleSelectionFirstPointSet = false;
 			GeometryEnd();
 		}
 		break;
@@ -910,20 +910,20 @@ void PanelViewer::GeometryMoveRelative(const wxPoint& translation) {
 
 		break;
 	case GEOMETRY_CIRCLE:
-		m_ghostLayer.m_circle.first += translation;
+		m_ghostLayer->m_circle.first += translation;
 		break;
 	case GEOMETRY_LINE:
-		std::for_each(m_ghostLayer.m_linePoints.begin(), m_ghostLayer.m_linePoints.end(), boost::lambda::_1 += translation);
+		std::for_each(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), boost::lambda::_1 += translation);
 		break;
 	case GEOMETRY_POINT:
-		m_ghostLayer.m_pointPosition += translation;
+		m_ghostLayer->m_pointPosition += translation;
 		break;
 	case GEOMETRY_POLYGONE:
 
 		break;
 	case GEOMETRY_RECTANGLE:
-		m_ghostLayer.m_rectangleSelection.first += translation;
-		m_ghostLayer.m_rectangleSelection.second += translation;
+		m_ghostLayer->m_rectangleSelection.first += translation;
+		m_ghostLayer->m_rectangleSelection.second += translation;
 
 		break;
 	}
@@ -931,34 +931,33 @@ void PanelViewer::GeometryMoveRelative(const wxPoint& translation) {
 	executeMode();
 }
 
-void PanelViewer::GeometryMoveAbsolute(const wxPoint& pt) {
-	int xi, yi;
-	GetCoordImage(pt.x, pt.y, xi, yi);
+void PanelViewer::GeometryMoveAbsolute(const wxPoint& p) {
+	wxPoint pt = m_ghostLayer->ToLocal(p);
 
 	switch (m_geometry) {
 	case GEOMETRY_NULL:
 
 		break;
 	case GEOMETRY_CIRCLE:
-		m_ghostLayer.m_circle.first = wxPoint(xi, yi);
+		m_ghostLayer->m_circle.first = pt;
 		break;
 	case GEOMETRY_LINE: {
-		wxPoint bary(std::accumulate(m_ghostLayer.m_linePoints.begin(), m_ghostLayer.m_linePoints.end(), wxPoint(0, 0)));
-		bary.x = (int) (bary.x / float(m_ghostLayer.m_linePoints.size()));
-		bary.y = (int) (bary.y / float(m_ghostLayer.m_linePoints.size()));
-		std::for_each(m_ghostLayer.m_linePoints.begin(), m_ghostLayer.m_linePoints.end(), boost::lambda::_1 += -bary + wxPoint(xi, yi));
+		wxPoint bary(std::accumulate(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), wxPoint(0, 0)));
+		bary.x = (int) (bary.x / float(m_ghostLayer->m_linePoints.size()));
+		bary.y = (int) (bary.y / float(m_ghostLayer->m_linePoints.size()));
+		std::for_each(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), boost::lambda::_1 += -bary + pt);
 	}
 		break;
 	case GEOMETRY_POINT:
-		m_ghostLayer.m_pointPosition = wxPoint(xi, yi);
+		m_ghostLayer->m_pointPosition = pt;
 		break;
 	case GEOMETRY_POLYGONE:
 
 		break;
 	case GEOMETRY_RECTANGLE:
-		wxPoint rectangleDiagonale = m_ghostLayer.m_rectangleSelection.second - m_ghostLayer.m_rectangleSelection.first;
-		m_ghostLayer.m_rectangleSelection.first = wxPoint((int) (xi - float(rectangleDiagonale.x) / 2), (int) (yi - float(rectangleDiagonale.y) / 2));
-		m_ghostLayer.m_rectangleSelection.second = m_ghostLayer.m_rectangleSelection.first + rectangleDiagonale;
+		wxPoint rectangleDiagonale = m_ghostLayer->m_rectangleSelection.second - m_ghostLayer->m_rectangleSelection.first;
+		m_ghostLayer->m_rectangleSelection.first = wxPoint((int) (pt.x - float(rectangleDiagonale.x) / 2), (int) (pt.y - float(rectangleDiagonale.y) / 2));
+		m_ghostLayer->m_rectangleSelection.second = m_ghostLayer->m_rectangleSelection.first + rectangleDiagonale;
 
 		break;
 	}
@@ -966,26 +965,24 @@ void PanelViewer::GeometryMoveAbsolute(const wxPoint& pt) {
 	executeMode();
 }
 
-void PanelViewer::GeometryUpdateAbsolute(const wxPoint & pt)
+void PanelViewer::GeometryUpdateAbsolute(const wxPoint & p)
 //coord filées par l'event (pas encore image)
 {
-
-	int xi, yi;
-	GetCoordImage(pt.x, pt.y, xi, yi);
+	wxPoint pt = m_ghostLayer->ToLocal(p);
 
 	switch (m_geometry) {
 	case GEOMETRY_NULL:
 
 		break;
 	case GEOMETRY_CIRCLE:
-		if (m_ghostLayer.m_CircleFirstPointSet) {
-			m_ghostLayer.m_circle.second = DistancePoints(m_ghostLayer.m_circle.first, wxPoint(xi, yi));
+		if (m_ghostLayer->m_CircleFirstPointSet) {
+			m_ghostLayer->m_circle.second = DistancePoints(m_ghostLayer->m_circle.first, pt);
 		}
 		break;
 	case GEOMETRY_LINE:
-		if (m_ghostLayer.m_lineHasBegun) {
-			if (m_ghostLayer.m_linePoints.size() > 1)
-				m_ghostLayer.m_linePoints.back() = wxPoint(xi, yi);
+		if (m_ghostLayer->m_lineHasBegun) {
+			if (m_ghostLayer->m_linePoints.size() > 1)
+				m_ghostLayer->m_linePoints.back() = pt;
 		}
 		break;
 	case GEOMETRY_POINT:
@@ -996,8 +993,8 @@ void PanelViewer::GeometryUpdateAbsolute(const wxPoint & pt)
 		break;
 	case GEOMETRY_RECTANGLE:
 		//si le rectangle a déjà un premier point, on met à jour le deuxième
-		if (m_ghostLayer.m_rectangleSelectionFirstPointSet) {
-			m_ghostLayer.m_rectangleSelection.second = wxPoint(xi, yi);
+		if (m_ghostLayer->m_rectangleSelectionFirstPointSet) {
+			m_ghostLayer->m_rectangleSelection.second = pt;
 		}
 		break;
 	}
@@ -1009,7 +1006,6 @@ void PanelViewer::GeometryUpdateAbsolute(const wxPoint & pt)
 void PanelViewer::GeometryUpdateRelative(const wxPoint & translation)
 //coord filées par l'event (pas encore image)
 {
-
 	switch (m_geometry) {
 	case GEOMETRY_NULL:
 
@@ -1028,8 +1024,8 @@ void PanelViewer::GeometryUpdateRelative(const wxPoint & translation)
 		break;
 	case GEOMETRY_RECTANGLE:
 		//si le rectangle a déjà un premier point, on met à jour le deuxième
-		if (m_ghostLayer.m_rectangleSelectionFirstPointSet) {
-			m_ghostLayer.m_rectangleSelection.second += translation;
+		if (m_ghostLayer->m_rectangleSelectionFirstPointSet) {
+			m_ghostLayer->m_rectangleSelection.second += translation;
 		}
 		break;
 	}
@@ -1065,46 +1061,48 @@ void PanelViewer::Crop() {
 	// On recherche le calque selectionne
 	std::vector<boost::shared_ptr<LayerControlRow> >::iterator itr = m_layerControl->GetRows().begin();
 	unsigned int i = 0, size = m_layerControl->GetRows().size();
+	std::vector<Layer::ptrLayerType> selected_layers;
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < size; ++it, ++i) {
 		if (m_layerControl->GetRows()[i]->m_nameStaticText->IsSelected()) {
-			const VectorLayerGhost &ghost = PanelManager::Instance()->GetPanelsList()[0]->GetVectorLayerGhost();
-			wxPoint p1 = ghost.m_rectangleSelection.first;
-			wxPoint p2 = ghost.m_rectangleSelection.second;
-			std::string layer_filename = (*it)->Filename();
-			std::string ext = boost::filesystem::extension(layer_filename);
-			std::string layer_base_filename = boost::filesystem::basename(layer_filename) + ext;
+			selected_layers.push_back(*it);
+		}
+	}
 
-			boost::shared_ptr<VectorLayer> vl = boost::dynamic_pointer_cast<VectorLayer>(*it);
-			wxString wildcard;
-			if (vl) // calque vectoriel
-			{
-				wildcard << wxT("Shapefile (*.shp)|*.shp");
-			} else // calque image
-			{
-				wildcard << _("All supported files ");
-				wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|");
-				wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
-				wildcard << wxT("PNG (*.png)|*.png|");
-				wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
-			}
-			wxString default_crop_filename;
-			default_crop_filename << wxT("crop_");
-			default_crop_filename = default_crop_filename + wxString(layer_base_filename.c_str(), *wxConvCurrent);
-			wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), default_crop_filename, wildcard, wxFD_SAVE | wxFD_CHANGE_DIR);
-			if (fileDialog->ShowModal() == wxID_OK) {
-				try {
-					(*it)->crop(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::abs(p2.x - p1.x), std::abs(p2.y - p1.y), string(fileDialog->GetFilename().To8BitData()));
-				} catch (std::exception &err) {
-					std::ostringstream oss;
-					oss << "File : " << __FILE__ << "\n";
-					oss << "Function : " << __FUNCTION__ << "\n";
-					oss << "Line : " << __LINE__ << "\n";
-					oss << err.what();
-					wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
-				}
-			}
+	for(std::vector<Layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
+		wxPoint p1 = m_ghostLayer->FromLocal(m_ghostLayer->m_rectangleSelection.first);
+		wxPoint p2 = m_ghostLayer->FromLocal(m_ghostLayer->m_rectangleSelection.second);
 
-			break;
+		std::string filename = (*it)->Filename();
+		std::string ext  = boost::filesystem::extension(filename);
+		std::string base = boost::filesystem::basename(filename);
+		std::string prefix = "crop_";
+		std::string file   = prefix + base + ext;
+
+		double zoom = (*it)->ZoomFactor();
+		int x0 = (int) (std::min(p1.x, p2.x)*zoom - (*it)->TranslationX());
+		int y0 = (int) (std::min(p1.y, p2.y)*zoom - (*it)->TranslationY());
+		int x1 = (int) (std::max(p1.x, p2.x)*zoom - (*it)->TranslationX());
+		int y1 = (int) (std::max(p1.y, p2.y)*zoom - (*it)->TranslationY());
+		try {
+			Layer::ptrLayerType layer = (*it)->crop(x0,y0,x1,y1);
+			if(!layer) continue; // todo : warn the user ??
+			m_layerControl->AddLayer(layer);
+
+			// now that the layer is added, we can set its geometry
+			layer->TranslationX(x0+(*it)->TranslationX());
+			layer->TranslationY(y0+(*it)->TranslationY());
+			layer->ZoomFactor(zoom);
+			layer->Filename(file);
+			layer->Name("crop");
+			// todo : handle Orientation2D of *it if it exists ... ??
+
+		} catch (std::exception &err) {
+			std::ostringstream oss;
+			oss << "File : " << __FILE__ << "\n";
+			oss << "Function : " << __FUNCTION__ << "\n";
+			oss << "Line : " << __LINE__ << "\n";
+			oss << err.what();
+			wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
 		}
 	}
 }

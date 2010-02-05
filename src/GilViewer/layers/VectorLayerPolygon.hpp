@@ -53,25 +53,25 @@ public:
 	typedef std::vector< simplePointType > simplePolygonRingType;
 	typedef std::vector< wxPoint > simplewxPolygonRingType;
 
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
+	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const;
 
 	virtual void PolygonsRingsColour( const wxColour &colour ) { m_ringsColour = colour; }
-	virtual wxColour PolygonsRingsColour() { return m_ringsColour; }
+	virtual wxColour PolygonsRingsColour() const { return m_ringsColour; }
 	virtual void PolygonsInsideColour( const wxColour &colour ) { m_shapesColour = colour; }
-	virtual wxColour PolygonsInsideColour() { return m_shapesColour; }
-	virtual void PolygonsRingsStyle( const unsigned int style ) { m_penStyle = style; }
-	virtual unsigned int PolygonsRingsStyle() { return m_penStyle; }
-	virtual void PolygonsInsideStyle( const unsigned int style ) { m_brushStyle = style; }
-	virtual unsigned int PolygonsInsideStyle() { return m_brushStyle; }
-	virtual void PolygonsRingsWidth( const unsigned int width ) { m_ringsWidth = width; }
-	virtual unsigned int PolygonsRingsWidth() { return m_ringsWidth; }
+	virtual wxColour PolygonsInsideColour() const { return m_shapesColour; }
+	virtual void PolygonsRingsStyle( unsigned int style ) { m_penStyle = style; }
+	virtual unsigned int PolygonsRingsStyle() const { return m_penStyle; }
+	virtual void PolygonsInsideStyle( unsigned int style ) { m_brushStyle = style; }
+	virtual unsigned int PolygonsInsideStyle() const { return m_brushStyle; }
+	virtual void PolygonsRingsWidth( unsigned int width ) { m_ringsWidth = width; }
+	virtual unsigned int PolygonsRingsWidth() const { return m_ringsWidth; }
 
 	virtual void Clear();
 	virtual void Save( const std::string &name ) {}
 
 protected:
 	std::vector< simplePolygonRingType > m_polygons;
-	std::vector< simplewxPolygonRingType > m_wxpolygons;
+	mutable std::vector< simplewxPolygonRingType > m_wxpolygons;
 
 	wxColour m_ringsColour;
 	wxColour m_shapesColour;

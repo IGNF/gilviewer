@@ -52,16 +52,16 @@ public:
     typedef std::pair<double,double> simplePointType;
     typedef std::vector< simplePointType > simpleArcType;
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const;
 
-    virtual bool ProcessShapefile( const SHPHandle &shapefileHandle ) { return true; };
+    virtual bool ProcessShapefile( const SHPHandle &shapefileHandle ) const { return true; };
 
     virtual void LinesColour( const wxColour &colour ) { m_arcsColour = colour; }
-	virtual wxColour LinesColour() { return m_arcsColour; }
+	virtual wxColour LinesColour() const { return m_arcsColour; }
     virtual void LinesWidth( const unsigned int width ) { m_width = width; }
-	virtual unsigned int LinesWidth() { return m_width; }
+	virtual unsigned int LinesWidth() const { return m_width; }
     virtual void LinesPenStyle( const int style ) { m_penStyle = style; }
-	virtual int LinesPenStyle() { return m_penStyle; }
+	virtual int LinesPenStyle() const { return m_penStyle; }
 
 	virtual void Clear();
 	virtual void Save( const std::string &name ) {}

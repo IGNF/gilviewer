@@ -41,12 +41,16 @@ Authors:
 #include <limits>
 #include <utility>
 
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>   
+
+#include <boost/gil/algorithm.hpp>
+#include <boost/gil/extension/dynamic_image/any_image.hpp>
 #include <boost/gil/extension/io/tiff_dynamic_io.hpp>
 #include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
 #include "boost/gil/extension/numeric/resample.hpp"
-#include <boost/gil/algorithm.hpp>
 
 #include <wx/dc.h>
 #include <wx/bitmap.h>
@@ -55,7 +59,9 @@ Authors:
 #include <wx/config.h>
 
 #include "GilViewer/tools/ColorLookupTable.h"
+#include "GilViewer/layers/image_types.hpp"
 
+#include "ImageLayer.hpp"
 #include "image_layer_screen_image_functor.hpp"
 #include "image_layer_min_max_functor.hpp"
 #include "image_layer_get_any_image_functor.hpp"
@@ -63,12 +69,13 @@ Authors:
 #include "image_layer_to_string_functor.hpp"
 #include "image_layer_infos_functor.hpp"
 
-#include "ImageLayer.hpp"
+class any_image_types  : public all_image_types {};
+class alpha_image_type : public boost::gil::gray8_image_t {};
 
 using namespace std;
 using namespace boost::gil;
 
-ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const string &name):
+ImageLayer::ImageLayer(const boost::shared_ptr<image_t> &image, const string &name):
         m_img(image)
 {
     m_startInput[0] = m_startInput[1] = 0;
@@ -112,9 +119,10 @@ ImageLayer::ImageLayer(const boost::shared_ptr<usable_images_t> &image, const st
 }
 
 
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const boost::shared_ptr<usable_images_t> &image, const string &name)
+
+Layer::ptrLayerType ImageLayer::CreateImageLayer(const boost::shared_ptr<image_t> &image, const string &name)
 {
-    return boost::shared_ptr<ImageLayer> (new ImageLayer(image, name));
+    return ptrLayerType(new ImageLayer(image, name));
 }
 
 
@@ -128,23 +136,24 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
         oss << "Line : " << __LINE__ << endl;
         oss << "Function : " << __FUNCTION__ << endl;
         wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
-        return boost::shared_ptr<Layer>();
+        return ptrLayerType();
     }
 
 
-    const string ext(boost::filesystem::extension(filename));
+    std::string ext(boost::filesystem::extension(filename));
+    boost::to_lower(ext);
 
 //	image_read_info< tiff_tag > info = read_image_info(filename, tiff_tag());
 
-    boost::shared_ptr<usable_images_t> image(new usable_images_t);
+    boost::shared_ptr<image_t> image(new image_t);
 
 	try
 	{
-		if (ext == ".TIF" || ext == ".TIFF" || ext == ".tif" || ext == ".tiff")
+		if (ext == ".tif" || ext == ".tiff")
 			tiff_read_image(filename, *image);
-		else if (ext == ".JPG" || ext == ".JPEG" || ext == ".jpg" || ext == ".jpeg")
+		else if (ext == ".jpg" || ext == ".jpeg")
 			jpeg_read_image(filename, *image);
-		else if (ext == ".PNG" || ext == ".png")
+		else if (ext == ".png")
 			png_read_image(filename, *image);
 	}
 	catch( const exception &e )
@@ -155,11 +164,11 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
         oss << "Line : " << __LINE__ << endl;
         oss << "Function : " << __FUNCTION__ << endl;
         wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
-        return boost::shared_ptr<Layer>();
+        return ptrLayerType();
     }
 
     //Creation de la couche image
-    boost::shared_ptr<ImageLayer> maLayer(new ImageLayer(image, filename));
+    ptrLayerType maLayer(new ImageLayer(image, filename));
 
 
     // Le m_name est sette dans la fonction appelle a la ligne precedente ...
@@ -170,21 +179,29 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
     //Lecture de l'ori et test d'existence
     try
     {
-        maLayer->m_ori.ReadOriFromImageFile(filename);
-        maLayer->m_hasOri = true;
+	Orientation2D ori;
+	ori.ReadOriFromImageFile(filename);
+        maLayer->Orientation(ori);
+        maLayer->HasOri(true);
     }
-    catch (exception &e) // Putain, ca ca fait chier, ca me fout plein de warnings ('e' n'est pas utilise)!
+    catch (exception &e)
     {
         ostringstream message;
         message << "No orientation for image " << filename;
         message << "\n" << e.what();
         wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
-        maLayer->m_hasOri = false;
+        maLayer->HasOri(false);
     }
 
     return maLayer;
 }
 
+template<class ImageType>
+Layer::ptrLayerType ImageLayer::CreateImageLayer(const ImageType &image, const std::string &name)
+{
+    boost::shared_ptr<image_t> any_img(new image_t(image));
+    return ptrLayerType(new ImageLayer(any_img, name));
+}
 
 template<typename T>
 inline int iRound(const T x)
@@ -193,7 +210,7 @@ inline int iRound(const T x)
     return static_cast<int>(floor(x + 0.5));
 }
 
-void ImageLayer::Update(const int width, const int height)
+void ImageLayer::Update(int width, int height)
 {
     // Lecture de la configuration des differentes options ...
     wxConfigBase *pConfig = wxConfigBase::Get();
@@ -210,19 +227,16 @@ void ImageLayer::Update(const int width, const int height)
     dev3n8_image_t screen_image(width, height);
     dev3n8_view_t screen_view = view(screen_image);
 
-
-
-
-    m_canal_alpha.recreate(screen_view.dimensions());
-    gray8_view_t alpha_view = view(m_canal_alpha);
+    if(!m_alpha_img) m_alpha_img.reset(new alpha_image_t);
+    m_alpha_img->recreate(screen_view.dimensions());
+    alpha_image_t::view_t alpha_view = view(*m_alpha_img);
     fill_pixels(alpha_view, 0);
 
     channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
     apply_operation( view(*m_img), screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, IsTransparent()));
 
-
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
-    monImage.SetAlpha(interleaved_view_get_raw_data(view(m_canal_alpha)), true);
+    monImage.SetAlpha(interleaved_view_get_raw_data(view(*m_alpha_img)), true);
 
     m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
 
@@ -234,7 +248,7 @@ void ImageLayer::Update(const int width, const int height)
 }
 
 
-void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
+void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
     dc.DrawBitmap(*m_bitmap, x, y, transparent); //-m_translationX+x*m_zoomFactor, -m_translationX+y*m_zoomFactor
 }
@@ -243,11 +257,12 @@ void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 void ImageLayer::Save(const string &name)
 {
     string ext = boost::filesystem::extension(name);
-    if ( ext == ".tiff" || ext == ".tif" || ext == ".TIF" || ext == ".TIFF" )
+    boost::to_lower(ext);
+    if ( ext == ".tiff" || ext == ".tif" )
         tiff_write_view( name.c_str() , view(*m_img) );
-    else if ( ext == ".jpeg" || ext == ".jpg" || ext == ".JPEG" || ext == ".JPG" )
+    else if ( ext == ".jpeg" || ext == ".jpg" )
         jpeg_write_view( name.c_str() , view(*m_img) );
-    else if ( ext == ".png" || ext == ".PNG" )
+    else if ( ext == ".png" )
         png_write_view( name.c_str() , view(*m_img) );
 }
 
@@ -272,35 +287,25 @@ void ImageLayer::Histogram(vector< vector<double> > &histo, double &min, double 
     apply_operation( view(*m_img), histogram_functor(histo,min,max) );
 }
 
-string ImageLayer::GetPixelValue(const int i, const int j) const
+string ImageLayer::GetPixelValue(int i, int j) const
 {
     ostringstream oss;
     oss.precision(6);
     oss<<"(";
-    apply_operation(view(*m_img), any_view_image_position_to_string_functor(static_cast<int>(-m_translationX+i*m_zoomFactor), static_cast<int>(-m_translationY+j*m_zoomFactor), oss));
+    i = static_cast<int>(i*m_zoomFactor-m_translationX);
+    j = static_cast<int>(j*m_zoomFactor-m_translationY);
+    apply_operation(view(*m_img), any_view_image_position_to_string_functor(i,j, oss));
     oss<<")";
     return oss.str();
 }
 
-void ImageLayer::crop( int x0 , int y0 , int width , int height , string filename )
+Layer::ptrLayerType ImageLayer::crop(int x0, int y0, int x1, int y1) const
 {
-    usable_views_t crop_view = subimage_view(view(*m_img), x0 , y0 , width , height );
-
-    if ( filename != "" )
-    {
-        string ext = boost::filesystem::extension(filename);
-        if ( ext == ".tiff" || ext == ".tif" || ext == ".TIF" || ext == ".TIFF" )
-            tiff_write_view( filename.c_str() , crop_view );
-        else if ( ext == ".jpeg" || ext == ".jpg" || ext == ".JPEG" || ext == ".JPG" )
-            jpeg_write_view( filename.c_str() , crop_view );
-        else if ( ext == ".png" || ext == ".PNG" )
-            png_write_view( filename.c_str() , crop_view );
-    }
-    // m_img = apply_operation( crop_view , get_any_image_functor() );
-    /*
-    	// TODO : only works for gray8 images ...
-    	boost::shared_ptr<usable_images_t> any_img = apply_operation( crop_view , get_any_image_functor() );
-
-    	return boost::shared_ptr<ImageLayer> ( new ImageLayer(any_img) );
-    	*/
+    if(x0<0) x0=0;
+    if(y0<0) y0=0;
+    if(x1>m_img->width ()) x1=m_img->width ();
+    if(y1>m_img->height()) y1=m_img->height();
+    if(x0>=x1 || y0>=y1) return ptrLayerType();
+    image_t::view_t crop_view = subimage_view(view(*m_img), x0, y0, x1-x0, y1-y0 );
+    return ptrLayerType(new ImageLayer(apply_operation(crop_view, get_any_image_functor())) );
 }

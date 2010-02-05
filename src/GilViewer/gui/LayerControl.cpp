@@ -212,10 +212,12 @@ void LayerControl::AddRow(const std::string &name, LayerSettingsControl *layerse
 	// on ajoute la ligne dans le conteneur
 	m_rows.push_back(boost::shared_ptr<LayerControlRow>(new LayerControlRow(this, ln, m_numberOfLayers, layersettings, tooltip)));
 	// On ajoute a proprement parler les controles de la ligne dans le LayerControl
+	m_rows[m_numberOfLayers]->m_nameStaticText->IsSelected(true);
 	m_sizer->Add(m_rows[m_numberOfLayers]->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
 	m_sizer->Add(m_rows[m_numberOfLayers]->m_visibilityCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_rows[m_numberOfLayers]->m_visibilityCheckBox->SetValue(m_layers[m_numberOfLayers]->IsVisible());
+
 
 	m_sizer->Add(m_rows[m_numberOfLayers]->m_transformationCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_rows[m_numberOfLayers]->m_transformationCheckBox->SetValue(m_layers[m_numberOfLayers]->IsTransformable());
@@ -472,33 +474,20 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 	wxProgressDialog *progressLargeFile = NULL;
 
 	//Liste des formats gérés par le viewer
-	std::list<std::string> listeFormatsGeres;
-	listeFormatsGeres.push_back(".tif");
-	listeFormatsGeres.push_back(".tiff");
-	listeFormatsGeres.push_back(".jpg");
-	listeFormatsGeres.push_back(".jpeg");
-	listeFormatsGeres.push_back(".png");
-	listeFormatsGeres.push_back(".bmp");
-	// On rajoute les mêmes, mais avec des majuscules ...
-	listeFormatsGeres.push_back(".TIF");
-	listeFormatsGeres.push_back(".TIFF");
-	listeFormatsGeres.push_back(".JPG");
-	listeFormatsGeres.push_back(".JPEG");
-	listeFormatsGeres.push_back(".PNG");
-	listeFormatsGeres.push_back(".BMP");
-
-//	boost::algorithm::to_upper_copy
-//	std::transform(listeFormatsGeres.begin(),
-//			listeFormatsGeres.end(),
-//			std::back_inserter(listeFormatsGeres),
-//			 );
+	std::list<std::string> image_formats;
+	image_formats.push_back(".tif");
+	image_formats.push_back(".tiff");
+	image_formats.push_back(".jpg");
+	image_formats.push_back(".jpeg");
+	image_formats.push_back(".png");
+	image_formats.push_back(".bmp");
 
 	if (names.GetCount() >= 2)
 		progress = new wxProgressDialog(_("Opening files ..."), _("Reading ..."), names.GetCount(), NULL, wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
 
 	for (i = 0; i < names.GetCount(); ++i)
 	{
-		if (names.GetCount() >= 2)
+		if (progress)
 		{
 			wxString m;
 			m << _("Reading file ") << i << wxT("/") << names.GetCount() << wxT("\n");
@@ -506,8 +495,9 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 			progress->Update(i, m);
 		}
 
-		//On teste l'extension : soit c'est du shp, soit c'est du format image, soit c'est autre chose et on renvoit vers le panel
-		const std::string extension(boost::filesystem::extension(std::string(names[i].fn_str())));
+		//On teste l'extension : soit c'est du shp, soit c'est du format image, soit c'est autre chose et on renvoie vers le panel
+		std::string extension(boost::filesystem::extension(std::string(names[i].fn_str())));
+		boost::to_lower(extension);
 		if (extension == ".shp")
 		{
 			try
@@ -518,7 +508,7 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 			}
 			catch (std::exception &err)
 			{
-				if (names.GetCount() >= 2)
+				if (progress)
 					progress->Destroy();
 				std::ostringstream oss;
 				oss << "File : " << __FILE__ << "\n";
@@ -528,7 +518,7 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 				wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
 			}
 		}
-		else if (std::find(listeFormatsGeres.begin(), listeFormatsGeres.end(), extension) != listeFormatsGeres.end())
+		else if (std::find(image_formats.begin(), image_formats.end(), extension) != image_formats.end())
 		{
 			try
 			{
@@ -542,34 +532,21 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 					progressLargeFile->Update(0);
 				}
 				Layer::ptrLayerType ptr = ImageLayer::CreateImageLayer(filename);
-				if (ptr)
-				{
-					AddLayer(ptr);
-				}
-				if (progressLargeFile != NULL)
-				{
-					progressLargeFile->Destroy();
-				}
+				AddLayer(ptr);
 			}
-//			catch (itk::ExceptionObject & err)
-//			{
-//				std::ostringstream oss;
-//				oss << "File : " << __FILE__ << "\n";
-//				oss << "Function : " << __FUNCTION__ << "\n";
-//				oss << "Line : " << __LINE__ << "\n";
-//				oss << err;
-//				wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
-//			}
 			catch (std::exception &err)
 			{
-				if (progressLargeFile)
-					progressLargeFile->Destroy();
 				std::ostringstream oss;
 				oss << "File : " << __FILE__ << "\n";
 				oss << "Function : " << __FUNCTION__ << "\n";
 				oss << "Line : " << __LINE__ << "\n";
 				oss << err.what();
 				wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+			}
+			if (progressLargeFile)
+			{
+				progressLargeFile->Destroy();
+				progressLargeFile = NULL;
 			}
 		}
 		else
@@ -580,8 +557,7 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 	}
 
 	m_basicDrawPane->Refresh();
-	if (names.GetCount() >= 2)
-		progress->Destroy();
+	if (progress) progress->Destroy();
 	m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 }
 
@@ -618,8 +594,8 @@ void LayerControl::OnNewLayer(wxCommandEvent& event)
 
 void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 {
-	if (!layer)
-		return;
+	if (!layer) return;
+
 	// On ajoute le calque dans le conteneur
 	layer->SetNotifyLayerControl( boost::bind( &LayerControl::update, this ) );
 	m_layers.push_back(layer);
@@ -651,9 +627,9 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->HasOri())
 	{
 		::wxLogMessage(_("Image layer position initialised with respect to first image!"));
-		layer->ZoomFactor(m_layers[0]->ZoomFactor());
-		layer->TranslationX(m_layers[0]->TranslationX());
-		layer->TranslationY(m_layers[0]->TranslationY());
+		layer->ZoomFactor(m_ghostLayer->ZoomFactor());
+		layer->TranslationX(m_ghostLayer->TranslationX());
+		layer->TranslationY(m_ghostLayer->TranslationY());
 
 	}
 
@@ -949,10 +925,8 @@ void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters 
 		std::string filename(parameters.path.c_str());
 
 		Layer::ptrLayerType ptr = ImageLayer::CreateImageLayer(filename);
-		if (ptr)
-			AddLayer(ptr);
-		else
-			return;
+		if (!ptr) return;
+		AddLayer(ptr);
 
 		// Et on sette l'ensemble des parametres qu'on a pu lire ...
 		this->m_layers.back()->IsVisible(parameters.isVisible);
@@ -988,11 +962,12 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
 {
 	try
 	{
-		// On cree cette fameuse image ...
 		std::string filename(parameters.path.c_str());
-		AddLayer(VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename));
-		// Et on sette l'ensemble des parametres qu'on a pu lire ...
+		Layer::ptrLayerType ptr = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
+		if (!ptr) return;
+		AddLayer(ptr);
 
+		// Et on sette l'ensemble des parametres qu'on a pu lire ...
 		this->m_layers.back()->IsVisible(parameters.isVisible);
 		this->m_layers.back()->IsTransformable(parameters.isTransformable);
 		this->m_layers.back()->SetPointsStyle(parameters.pointsColor, parameters.pointsWidth);
