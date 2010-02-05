@@ -53,9 +53,17 @@ class VectorLayerGhost
 {
 	public:
 		VectorLayerGhost( bool isCarto = false );
-		virtual ~VectorLayerGhost() {}
 
-		virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
+		void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
+    		inline double ZoomFactor() const { return m_zoomFactor; }
+    		void TranslationX(double dx) { m_translationX = dx; }
+    		inline double TranslationX() const { return m_translationX; }
+    		void TranslationY(double dy) { m_translationY = dy; }
+    		inline double TranslationY() const { return m_translationY; }
+		wxPoint ToLocal  (const wxPoint &pt) const;
+		wxPoint FromLocal(const wxPoint &pt) const;
+
+		void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
 
 		wxPoint m_pointPosition;
 		std::pair< wxPoint , wxPoint > m_rectangleSelection;
@@ -77,7 +85,12 @@ class VectorLayerGhost
 		wxPen m_penPoint, m_penRectangle, m_penCircle, m_penLine;
 		wxBrush m_brushRectangle, m_brushCircle;
 
-		inline wxPoint Transfo(const wxPoint &pt, const double zoomFactor, const double translationX, const double translationY, const double resolution);
+private:
+    //gestion de la geometrie
+    double m_zoomFactor;
+    double m_translationX, m_translationY;
+    double m_resolution;
+
 };
 
 #endif /*VECTORLAYERGENERIC_H_*/

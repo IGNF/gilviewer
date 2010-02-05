@@ -464,12 +464,12 @@ void VectorLayer::GetInfos()
 	m_infos = m_layerContent->GetInfos();
 }
 
-void VectorLayer::Save(const std::string &name)
+void VectorLayer::Save(const std::string &name) const
 {
 	m_layerContent->Save(name);
 }
 
-void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
+void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
 	// On draw les geometries
 	m_layerContent->Draw(dc, x, y, transparent, ZoomFactor(), TranslationX(), TranslationY(), Resolution());
@@ -500,7 +500,7 @@ void VectorLayer::PointsColour( const wxColour &colour , bool update )
 		notifyLayerSettingsControl_();
 }
 
-wxColour VectorLayer::PointsColour()
+wxColour VectorLayer::PointsColour() const
 {
 	boost::shared_ptr<GenericVectorLayerPoint> layerPoint = boost::dynamic_pointer_cast<GenericVectorLayerPoint>( m_layerContent );
 	if ( layerPoint )
@@ -508,7 +508,7 @@ wxColour VectorLayer::PointsColour()
 	return wxColour(0,0,0);
 }
 
-void VectorLayer::PointsWidth( const unsigned int width , bool update )
+void VectorLayer::PointsWidth( unsigned int width , bool update )
 {
 	boost::shared_ptr<GenericVectorLayerPoint> layerPoint = boost::dynamic_pointer_cast<GenericVectorLayerPoint>( m_layerContent );
 	if ( layerPoint )
@@ -517,7 +517,7 @@ void VectorLayer::PointsWidth( const unsigned int width , bool update )
 		notifyLayerSettingsControl_();
 }
 
-unsigned int VectorLayer::PointsWidth()
+unsigned int VectorLayer::PointsWidth() const
 {
 	boost::shared_ptr<GenericVectorLayerPoint> layerPoint = boost::dynamic_pointer_cast<GenericVectorLayerPoint>( m_layerContent );
 	if ( layerPoint )
@@ -542,7 +542,7 @@ void VectorLayer::LinesColour( const wxColour &colour , bool update )
 		notifyLayerSettingsControl_();
 }
 
-wxColour VectorLayer::LinesColour()
+wxColour VectorLayer::LinesColour() const
 {
 	boost::shared_ptr<GenericVectorLayerArc> layerArc = boost::dynamic_pointer_cast<GenericVectorLayerArc>( m_layerContent );
 	if ( layerArc )
@@ -550,7 +550,7 @@ wxColour VectorLayer::LinesColour()
 	return wxColour(0,0,0);
 }
 
-void VectorLayer::LinesWidth( const unsigned int width , bool update )
+void VectorLayer::LinesWidth( unsigned int width , bool update )
 {
 	boost::shared_ptr<GenericVectorLayerArc> layerArc = boost::dynamic_pointer_cast<GenericVectorLayerArc>( m_layerContent );
 	if ( layerArc )
@@ -559,7 +559,7 @@ void VectorLayer::LinesWidth( const unsigned int width , bool update )
 		notifyLayerSettingsControl_();
 }
 
-unsigned int VectorLayer::LinesWidth()
+unsigned int VectorLayer::LinesWidth() const
 {
 	boost::shared_ptr<GenericVectorLayerArc> layerArc = boost::dynamic_pointer_cast<GenericVectorLayerArc>( m_layerContent );
 	if ( layerArc )
@@ -567,7 +567,7 @@ unsigned int VectorLayer::LinesWidth()
 	return 0;
 }
 
-void VectorLayer::LinesPenStyle( const int style , bool update )
+void VectorLayer::LinesPenStyle( int style , bool update )
 {
 	boost::shared_ptr<GenericVectorLayerArc> layerArc = boost::dynamic_pointer_cast<GenericVectorLayerArc>( m_layerContent );
 	if ( layerArc )
@@ -576,7 +576,7 @@ void VectorLayer::LinesPenStyle( const int style , bool update )
 		notifyLayerSettingsControl_();
 }
 
-int VectorLayer::LinesPenStyle()
+int VectorLayer::LinesPenStyle() const
 {
 	boost::shared_ptr<GenericVectorLayerArc> layerArc = boost::dynamic_pointer_cast<GenericVectorLayerArc>( m_layerContent );
 	if ( layerArc )
@@ -605,7 +605,7 @@ void VectorLayer::PolygonsRingsColour( const wxColour &colour , bool update )
 		notifyLayerSettingsControl_();
 }
 
-wxColour VectorLayer::PolygonsRingsColour()
+wxColour VectorLayer::PolygonsRingsColour() const
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -628,7 +628,7 @@ void VectorLayer::PolygonsInsideColour( const wxColour &colour , bool update )
 		notifyLayerSettingsControl_();
 }
 
-wxColour VectorLayer::PolygonsInsideColour()
+wxColour VectorLayer::PolygonsInsideColour() const
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -639,7 +639,7 @@ wxColour VectorLayer::PolygonsInsideColour()
 	return wxColour(0,0,0);
 }
 
-void VectorLayer::PolygonsRingsStyle( const unsigned int style , bool update )
+void VectorLayer::PolygonsRingsStyle( unsigned int style , bool update )
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -651,7 +651,7 @@ void VectorLayer::PolygonsRingsStyle( const unsigned int style , bool update )
 		notifyLayerSettingsControl_();
 }
 
-unsigned int VectorLayer::PolygonsRingsStyle()
+unsigned int VectorLayer::PolygonsRingsStyle() const
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -662,7 +662,7 @@ unsigned int VectorLayer::PolygonsRingsStyle()
 	return 0;
 }
 
-void VectorLayer::PolygonsInsideStyle( const unsigned int style , bool update )
+void VectorLayer::PolygonsInsideStyle( unsigned int style , bool update )
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -675,7 +675,7 @@ void VectorLayer::PolygonsInsideStyle( const unsigned int style , bool update )
 		notifyLayerSettingsControl_();
 }
 
-unsigned int VectorLayer::PolygonsInsideStyle()
+unsigned int VectorLayer::PolygonsInsideStyle() const
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -687,7 +687,7 @@ unsigned int VectorLayer::PolygonsInsideStyle()
 }
 
 
-void VectorLayer::PolygonsRingsWidth( const unsigned int width , bool update )
+void VectorLayer::PolygonsRingsWidth( unsigned int width , bool update )
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -699,7 +699,7 @@ void VectorLayer::PolygonsRingsWidth( const unsigned int width , bool update )
 		notifyLayerSettingsControl_();
 }
 
-unsigned int VectorLayer::PolygonsRingsWidth()
+unsigned int VectorLayer::PolygonsRingsWidth() const
 {
 	boost::shared_ptr<GenericVectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<GenericVectorLayerPolygon>( m_layerContent );
 	if ( layerPolygon )
@@ -843,6 +843,7 @@ void VectorLayer::Clear()
 
 std::string VectorLayer::Filename() const
 {
+	if(!m_layerContent) return m_filename;
 	boost::filesystem::path full = boost::filesystem::system_complete(m_layerContent->ShapefileFileName());
 	return full.string();
 }

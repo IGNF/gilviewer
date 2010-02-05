@@ -49,15 +49,15 @@ public:
 
     typedef std::pair<double,double> simplePointType;
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution) const;
 
     virtual void AddPoint( double x , double y ) {;}
     virtual void AddPoints( const std::vector<double> &x , const std::vector<double> &y ) {;}
 
     virtual void PointsColour( const wxColour &colour ) { m_pointsColour = colour; }
-	virtual wxColour PointsColour() { return m_pointsColour; }
+	virtual wxColour PointsColour() const { return m_pointsColour; }
     virtual void PointsWidth( const unsigned int width ) { m_width = width; }
-	virtual unsigned int PointsWidth() { return m_width; }
+	virtual unsigned int PointsWidth() const { return m_width; }
 
 	virtual void Clear() { m_points.clear(); m_numberOfEntities = 0; }
 	virtual void Save( const std::string &name ) {}

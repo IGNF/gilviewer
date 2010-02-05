@@ -69,13 +69,13 @@ public:
 	VectorLayerContent();
     virtual ~VectorLayerContent() {};
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution) = 0;
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution) const = 0;
 
-    inline SHPHandle GetHandle() { return m_SHPHandle; }
+    inline SHPHandle GetHandle() const { return m_SHPHandle; }
     void SetHandle( const SHPHandle &handle ) { m_SHPHandle = handle; }
 
     void ShapefileFileName( const std::string &name ) { m_shapefileFileName = name; }
-    std::string ShapefileFileName() { return m_shapefileFileName; }
+    const std::string& ShapefileFileName() const { return m_shapefileFileName; }
 
 	signed short FlagPRJ() const { return m_flagPRJ; }
 	void FlagPRJ( signed short flagPRJ );
@@ -86,9 +86,9 @@ public:
 	void DrawAttribute( const int toDraw ) { m_drawAttribute = toDraw; }
 	int DrawAttribute() const { return m_drawAttribute; }
 
-	int NumberOfEntities() { return m_numberOfEntities; }
-	int ShapeType() { return m_shapeType; }
-	std::string ShapeTypeAsString();
+	int NumberOfEntities() const { return m_numberOfEntities; }
+	int ShapeType() const { return m_shapeType; }
+	std::string ShapeTypeAsString() const;
 
 	/// Cette methode permet de lire le fichier DBF associe au fichier SHP
 	void ReadAttributes( const std::string &DBFfilename );
@@ -98,7 +98,7 @@ public:
 		// TODO : Separer vector layer de SHP et crees a la main !
 	}
 
-	std::string GetInfos();
+	std::string GetInfos() const;
 
 	virtual void Save( const std::string &name ) = 0;
 

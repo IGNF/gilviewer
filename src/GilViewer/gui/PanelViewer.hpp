@@ -129,7 +129,7 @@ public:
 
 	inline eMode GetCurrentMode() { return m_mode; }
 	inline eGEOMETRY GetCurrentGeometry() { return m_geometry; }
-	inline const VectorLayerGhost & GetVectorLayerGhost() { return m_ghostLayer; }
+	inline boost::shared_ptr<VectorLayerGhost> GetVectorLayerGhost() { return m_ghostLayer; }
 
 	DECLARE_EVENT_TABLE();
 
@@ -162,7 +162,7 @@ protected:
 	ApplicationSettings* m_applicationSettings;
 
 	//ref sur le ghostLayer du LayerControl
-	VectorLayerGhost &m_ghostLayer;
+	boost::shared_ptr<VectorLayerGhost> m_ghostLayer;
 
 	void executeMode();
 	virtual void executeModeNavigation();

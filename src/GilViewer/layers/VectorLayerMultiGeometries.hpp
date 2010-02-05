@@ -79,7 +79,7 @@ public:
 	VectorLayerMultiGeometries();
 	virtual ~VectorLayerMultiGeometries();
 
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution);
+	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution) const;
 	virtual void Save( const std::string &name ) {};
 
 	void AddCircle( double x , double y , double radius );
@@ -98,16 +98,16 @@ public:
 	virtual void Clear();
 
 	virtual void PolygonsRingsColour( const wxColour &colour ) { m_pen->SetColour(colour); }
-	virtual wxColour PolygonsRingsColour() { return m_pen->GetColour(); }
+	virtual wxColour PolygonsRingsColour() const { return m_pen->GetColour(); }
 	virtual void PolygonsInsideColour( const wxColour &colour ) { m_brush->SetColour(colour); }
-	virtual wxColour PolygonsInsideColour() { return m_brush->GetColour(); }
+	virtual wxColour PolygonsInsideColour() const { return m_brush->GetColour(); }
 	virtual void PolygonsRingsStyle( const unsigned int style ) { m_pen->SetStyle(style); }
 
-	virtual unsigned int PolygonsRingsStyle() { return m_pen->GetStyle(); }
+	virtual unsigned int PolygonsRingsStyle() const { return m_pen->GetStyle(); }
 	virtual void PolygonsInsideStyle( const unsigned int style ) { m_brush->SetStyle(style); }
-	virtual unsigned int PolygonsInsideStyle() { return m_brush->GetStyle(); }
+	virtual unsigned int PolygonsInsideStyle() const { return m_brush->GetStyle(); }
 	virtual void PolygonsRingsWidth( const unsigned int width ) {m_pen->SetWidth(width); }
-	virtual unsigned int PolygonsRingsWidth() { return m_pen->GetWidth(); }
+	virtual unsigned int PolygonsRingsWidth() const { return m_pen->GetWidth(); }
 
 private:
 	wxPen *m_pen;

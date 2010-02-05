@@ -49,7 +49,7 @@ GenericVectorLayerPoint::GenericVectorLayerPoint() : VectorLayerContent(),
 	m_width(3)
 {}
 
-void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
+void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
 	const double delta = 0.5 * resolution;
 	wxPen penColour( m_pointsColour , m_width );

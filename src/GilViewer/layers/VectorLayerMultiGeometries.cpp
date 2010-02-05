@@ -52,7 +52,7 @@ VectorLayerMultiGeometries::~VectorLayerMultiGeometries()
 {
 }
 
-void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution)
+void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
 	const double delta = 0.5 * resolution;
 	dc.SetPen(*m_pen);
@@ -85,7 +85,7 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 	// Splines
 	for (unsigned int i=0;i<m_splines.size();++i)
 	{
-		std::vector< simplePointType >& spline = m_splines[i];
+		const std::vector< simplePointType >& spline = m_splines[i];
 		int n = spline.size();
 		std::vector<wxPoint> points;
 		for (int j=0;j<n;++j)

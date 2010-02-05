@@ -79,7 +79,7 @@ public:
     /// Cette methode recupere les donnees d'affichage par defaut dans les parametres et les affecte au nouveau calque
     virtual void SetDefaultDisplayParameters();
 
-    const int & Type() { return m_layerType; }
+    int Type() const { return m_layerType; }
 
     virtual void AddPoint( double x , double y );
     virtual void AddPoints( const std::vector<double> &x , const std::vector<double> &y );
@@ -100,48 +100,46 @@ public:
     virtual void SetPenVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int width = 1 , int style = wxSOLID , unsigned char alpha=wxALPHA_OPAQUE );
     // Fin FunnyVectorLayer
 
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
-	virtual void Update(const int width, const int height) {};
+	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
+	virtual void Update(int width, int height) {};
 
     void GetInfos();
-    virtual void Save(const std::string &name);
-    
-    virtual void crop( int x0 , int y0 , int width , int height , std::string filename = "" ) {}
+    virtual void Save(const std::string &name) const;
 
     virtual void PointsColour( const wxColour &colour , bool update = true );
-	virtual wxColour PointsColour();
-    virtual void PointsWidth( const unsigned int width , bool update = true );
-	virtual unsigned int PointsWidth();
-    virtual void SetPointsStyle( const wxColour &colour , const unsigned int width , bool update = true );
+    virtual wxColour PointsColour() const;
+    virtual void PointsWidth( unsigned int width , bool update = true );
+    virtual unsigned int PointsWidth() const;
+    virtual void SetPointsStyle( const wxColour &colour , unsigned int width , bool update = true );
 
     virtual void LinesColour( const wxColour &colour , bool update = true );
-	virtual wxColour LinesColour();
-    virtual void LinesWidth( const unsigned int width , bool update = true );
-	virtual unsigned int LinesWidth();
-    virtual void LinesPenStyle( const int style , bool update = true );
-	virtual int LinesPenStyle();
-    virtual void SetLinesStyle( const wxColour &colour , const unsigned int width , int style , bool update = true );
+	virtual wxColour LinesColour() const;
+    virtual void LinesWidth( unsigned int width , bool update = true );
+	virtual unsigned int LinesWidth() const;
+    virtual void LinesPenStyle( int style , bool update = true );
+	virtual int LinesPenStyle() const;
+    virtual void SetLinesStyle( const wxColour &colour , unsigned int width , int style , bool update = true );
 
 	virtual void PolygonsRingsColour( const wxColour &colour , bool update = true );
-	virtual wxColour PolygonsRingsColour();
+	virtual wxColour PolygonsRingsColour() const;
 	virtual void PolygonsInsideColour( const wxColour &colour , bool update = true );
-	virtual wxColour PolygonsInsideColour();
-	virtual void PolygonsRingsStyle( const unsigned int style , bool update = true );
-	virtual unsigned int PolygonsRingsStyle();
-	virtual void PolygonsInsideStyle( const unsigned int style , bool update = true );
-	virtual unsigned int PolygonsInsideStyle();
-	virtual void PolygonsRingsWidth( const unsigned int width , bool update = true );
-	virtual unsigned int PolygonsRingsWidth();
+	virtual wxColour PolygonsInsideColour() const;
+	virtual void PolygonsRingsStyle( unsigned int style , bool update = true );
+	virtual unsigned int PolygonsRingsStyle() const;
+	virtual void PolygonsInsideStyle( unsigned int style , bool update = true );
+	virtual unsigned int PolygonsInsideStyle() const;
+	virtual void PolygonsRingsWidth( unsigned int width , bool update = true );
+	virtual unsigned int PolygonsRingsWidth() const;
 
 	// TODO
 	//virtual void TextsColour( const wxColour &colour );
 	virtual void TextsFont( const wxFont &font , bool update = true ) { m_textFont = font; if (update) notifyLayerSettingsControl_(); }
-	virtual wxFont TextsFont() { return m_textFont; }
+	virtual const wxFont& TextsFont() const { return m_textFont; }
 	virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
-	virtual bool TextsVisibility() { return m_isTextVisible; }
+	virtual bool TextsVisibility() const { return m_isTextVisible; }
 
 	boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
-	inline bool IsEditable() { return m_isEditable; }
+	inline bool IsEditable() const { return m_isEditable; }
 	inline void IsEditable( bool editable ) { m_isEditable = editable; }
 
 	virtual void Clear();
