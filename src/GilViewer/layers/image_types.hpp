@@ -34,4 +34,18 @@ typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
                  boost::mpl::back_inserter< rgba_image_types > >::type
 	all_image_types;
 
+#include <boost/gil/extension/dynamic_image/any_image.hpp>
+typedef boost::gil::any_image<all_image_types> any_image_type;
+struct image_type {
+  typedef any_image_type type;
+  type value;
+  image_type(const type& v) : value(v) {}
+  image_type() {}
+};
+struct view_type {
+  typedef any_image_type::view_t type;
+  type value;
+  view_type(const type& v) : value(v) {}
+};
+
 #endif // __IMAGE_TYPES_HPP__

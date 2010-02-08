@@ -44,20 +44,24 @@ Authors:
 #include "GilViewer/layers/Layer.hpp"
 
 // forward declaration of image types
-class any_image_types;
+class image_type;
+class view_type;
 class alpha_image_type;
-namespace boost { namespace gil { template<typename T> class any_image; }; };
 
 class ImageLayer : public Layer
 {
 	public:
-	typedef boost::gil::any_image< any_image_types > image_t;
+	typedef image_type       image_t;
+	typedef view_type        view_t;
 	typedef alpha_image_type alpha_image_t;
+	typedef boost::shared_ptr<image_t      > image_ptr;
+	typedef boost::shared_ptr<view_t       > view_ptr;
+	typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
 	virtual ~ImageLayer() {}
 
 	static ptrLayerType CreateImageLayer(const std::string &fileName);
-	static ptrLayerType CreateImageLayer(const boost::shared_ptr<image_t> &image, const std::string &name ="Image Layer");
+	static ptrLayerType CreateImageLayer(const image_ptr &image, const std::string &name ="Image Layer");
 
 	///ATTENTION ici l'image est recopiée dans une any_image !!
 	template<class ImageType>
@@ -122,13 +126,14 @@ class ImageLayer : public Layer
 
 
 	virtual void Save(const std::string &name);
-	virtual ptrLayerType crop(int x0, int y0, int x1, int y1) const;
+	virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
 
 	private:
-	ImageLayer(const boost::shared_ptr<image_t> &image, const std::string &name ="Image Layer");
+	ImageLayer(const image_ptr &image, const std::string &name ="Image Layer", const view_ptr& view=view_ptr() );
 
-	boost::shared_ptr<image_t> m_img;
-	boost::shared_ptr<alpha_image_t> m_alpha_img;
+	image_ptr       m_img;
+	view_ptr        m_view;
+	alpha_image_ptr m_alpha_img;
 
 	int m_startInput[2];
 	double m_startfInput[2];

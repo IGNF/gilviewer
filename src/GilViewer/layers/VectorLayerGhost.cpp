@@ -40,17 +40,15 @@ Authors:
 
 #include "GilViewer/layers/VectorLayerGhost.h"
 
-wxPoint VectorLayerGhost::FromLocal(const wxPoint &pt) const
+wxPoint VectorLayerGhost::FromLocal(const wxPoint &pt, double delta) const
 {
-	const double delta = 0.5;// * m_resolution;
 	return wxPoint(
 		wxCoord((pt.x +m_translationX+delta)/m_zoomFactor),
 		wxCoord((pt.y +m_translationY+delta)/m_zoomFactor));
 }
 
-wxPoint VectorLayerGhost::ToLocal(const wxPoint &pt) const
+wxPoint VectorLayerGhost::ToLocal(const wxPoint &pt, double delta) const
 {
-	const double delta = 0.5;// * m_resolution;
 	return wxPoint(
 		wxCoord(m_zoomFactor*pt.x -m_translationX-delta),
 		wxCoord(m_zoomFactor*pt.y -m_translationY-delta));
@@ -90,8 +88,8 @@ void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 		// p2 ------- p3
 
 		//
-		wxPoint p0(FromLocal(m_rectangleSelection.first ) );
-		wxPoint p3(FromLocal(m_rectangleSelection.second) );
+		wxPoint p0(FromLocal(m_rectangleSelection.first ,0) );
+		wxPoint p3(FromLocal(m_rectangleSelection.second,0) );
 		wxPoint p1(p0.x, p3.y);
 		wxPoint p2(p3.x, p0.y);
 
