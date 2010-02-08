@@ -308,7 +308,7 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
 		wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
 	}
         std::string file = m_layers[id]->Filename();
-	wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxT(file), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+        wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
 	if (fileDialog->ShowModal() == wxID_OK)
 	{
 		try
