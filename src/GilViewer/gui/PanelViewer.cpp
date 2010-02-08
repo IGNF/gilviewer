@@ -1072,11 +1072,10 @@ void PanelViewer::Crop() {
 		wxPoint p1 = m_ghostLayer->FromLocal(m_ghostLayer->m_rectangleSelection.first);
 		wxPoint p2 = m_ghostLayer->FromLocal(m_ghostLayer->m_rectangleSelection.second);
 
-		std::string filename = (*it)->Filename();
-		std::string ext  = boost::filesystem::extension(filename);
-		std::string base = boost::filesystem::basename(filename);
-		std::string prefix = "crop_";
-		std::string file   = prefix + base + ext;
+		boost::filesystem::path p = (*it)->Filename();
+		std::string file = p.stem() + "_crop" + p.extension();
+		boost::filesystem::path q = (*it)->Name();
+		std::string name = q.stem() + "_crop" + q.extension();
 
 		double zoom = (*it)->ZoomFactor();
 		int x0 = (int) (std::min(p1.x, p2.x)*zoom - (*it)->TranslationX());
@@ -1086,14 +1085,13 @@ void PanelViewer::Crop() {
 		try {
 			Layer::ptrLayerType layer = (*it)->crop(x0,y0,x1,y1);
 			if(!layer) continue; // todo : warn the user ??
+			layer->Filename(file);
+			layer->Name(name);
 			m_layerControl->AddLayer(layer);
-
 			// now that the layer is added, we can set its geometry
 			layer->TranslationX(x0+(*it)->TranslationX());
 			layer->TranslationY(y0+(*it)->TranslationY());
 			layer->ZoomFactor(zoom);
-			layer->Filename(file);
-			layer->Name("crop");
 			// todo : handle Orientation2D of *it if it exists ... ??
 
 		} catch (std::exception &err) {
