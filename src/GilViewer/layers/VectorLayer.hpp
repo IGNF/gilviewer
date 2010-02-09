@@ -55,12 +55,6 @@ class VectorLayerContent;
 class VectorLayer : public Layer
 {
 public:
-	/// Creation d'un calque "a la main"
-	/// @param layerName Le nom du layer dans le LayerControl
-	/// @param layerType Le type du layer parmi (cf. http://shapelib.maptools.org/shp_api.html, section "Shape Types")
-	/// @param flagPRJ Indique si l'on est dans un système projeté : -1 si oui, +1 sinon (par défaut)
-	/// @param flagDBF Indique si on souhaite gerer des attributs : true si oui, false sinon (par défaut) [NON GERE !!!]
-    VectorLayer(const std::string &layerName , int layerType , signed short flagPRJ = 1 , bool flagDBF = false );
     /// Constructeur a partir d'un nom de calque et d'un fichier shapefile
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
@@ -70,7 +64,6 @@ public:
 
 	~VectorLayer() {};
 
-    static ptrLayerType CreateVectorLayer(const std::string &layerName , int layerType , signed short flagPRJ = 1 , bool flagDBF = false );
     static ptrLayerType CreateVectorLayer(const std::string &layerName , const std::string &fileName);
     static ptrLayerType CreateVectorLayer(const std::string &layerName , signed short flagPRJ = 1 , bool flagDBF = false );
 
@@ -103,7 +96,8 @@ public:
 	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
 	virtual void Update(int width, int height) {};
 
-    void GetInfos();
+        void build_infos();
+        virtual std::string get_layer_type_as_string() const {return "Vector";}
     virtual void Save(const std::string &name) const;
 
     virtual void PointsColour( const wxColour &colour , bool update = true );
@@ -138,20 +132,22 @@ public:
 	virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
 	virtual bool TextsVisibility() const { return m_isTextVisible; }
 
-	boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
-	inline bool IsEditable() const { return m_isEditable; }
-	inline void IsEditable( bool editable ) { m_isEditable = editable; }
+        boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
 
 	virtual void Clear();
 
 	virtual std::string Filename() const;
+
+        virtual std::vector<std::string> get_available_formats_extensions() const;
+        virtual std::string get_available_formats_wildcard() const;
+
+        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
 
 private:
 	void Init();
 
     boost::shared_ptr<VectorLayerContent> m_layerContent;
 
-    bool m_isEditable;
     bool m_isFromFile;
 
     // Pour l'affichage de texte
