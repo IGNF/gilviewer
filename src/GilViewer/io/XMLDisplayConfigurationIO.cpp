@@ -633,7 +633,7 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 		// Type
 		TiXmlElement *elemType = new TiXmlElement( "Type" );
 		elementLayer->LinkEndChild( elemType );
-		if ( boost::dynamic_pointer_cast<VectorLayer>( (*it) ) != NULL )
+                if ( (*it)->get_layer_type_as_string() == "Vector" )
 			elemType->SetAttribute("value","Vector");
 		else
 		{

@@ -50,7 +50,6 @@ Authors:
  * Voir FrameViewer.cpp pour un exemple d'utilisation
  */
 #define ADD_GILVIEWER_EVENTS_TO_TABLE(classname) \
-	EVT_TOOL(wxID_NEW, classname::OnNewLayer) \
 	EVT_TOOL(wxID_OPEN, classname::OnOpenLayer) \
 	EVT_TOOL(ID_BASIC_SNAPSHOT, classname::OnSnapShot) \
 	EVT_TOOL(ID_SHOW_HIDE_LAYER_CONTROL, classname::OnShowHideLayerControl) \
@@ -74,8 +73,7 @@ Authors:
  * Voir FrameViewer.hpp pour un exemple d'utilisation
  */
 #define DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE() \
-	void OnOpenLayer(wxCommandEvent& event); \
-	void OnNewLayer(wxCommandEvent& event); \
+        void OnOpenLayer(wxCommandEvent& event); \
 	void OnSnapShot(wxCommandEvent& event); \
 	void OnShowHideLayerControl(wxCommandEvent& event); \
 	void OnModeNavigation(wxCommandEvent& event); \
@@ -99,11 +97,7 @@ Authors:
 	void classname::OnOpenLayer(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->GetLayerControl()->OnOpenLayer(event); \
-	} \
-	void classname::OnNewLayer(wxCommandEvent& event) \
-	{ \
-		variablePanelViewer->GetLayerControl()->OnNewLayer(event); \
-	} \
+        } \
 	void classname::OnSnapShot(wxCommandEvent& event) \
 	{ \
 		variablePanelViewer->OnSnapshot(event); \
