@@ -59,6 +59,7 @@ Authors:
 
 #include "GilViewer/tools/ColorLookupTable.h"
 #include "GilViewer/layers/image_types.hpp"
+#include "GilViewer/gui/ImageLayerSettingsControl.hpp"
 
 #include "ImageLayer.hpp"
 #include "image_layer_screen_image_functor.hpp"
@@ -104,7 +105,6 @@ ImageLayer::ImageLayer(const image_ptr &image, const string &name, const view_pt
 
     m_cLUT = boost::shared_ptr<ColorLookupTable>(new ColorLookupTable);
 
-//	m_infos = m_visuITK->GetInfos();
     m_infos = "";
 
     ostringstream oss;
@@ -307,4 +307,24 @@ Layer::ptrLayerType ImageLayer::crop(int& x0, int& y0, int& x1, int& y1) const
     view_t::type crop = subimage_view(m_view->value, x0, y0, x1-x0, y1-y0 );
     view_ptr crop_ptr(new view_t(crop));
     return ptrLayerType(new ImageLayer(m_img, "crop", crop_ptr) );
+}
+
+vector<string> ImageLayer::get_available_formats_extensions() const
+{
+    return vector<string>();
+}
+
+string ImageLayer::get_available_formats_wildcard() const
+{
+    ostringstream wildcard;
+    wildcard << "All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|";
+    wildcard << "TIFF (*.tif;*.tiff)|*.tif;*.tiff|";
+    wildcard << "PNG (*.png)|*.png|";
+    wildcard << "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|";
+    return wildcard.str();
+}
+
+LayerSettingsControl* ImageLayer::build_layer_settings_control(unsigned int index, LayerControl* parent)
+{
+    return new ImageLayerSettingsControl(index, parent);
 }

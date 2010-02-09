@@ -56,6 +56,8 @@ class wxDC;
 #	include <wx/msw/winundef.h>
 #endif
 
+class LayerSettingsControl;
+class LayerControl;
 
 class Layer
 {
@@ -72,18 +74,22 @@ public:
 	virtual void IsVisible(bool visible) { m_isVisible=visible; notifyLayerControl_(); }
 
 	virtual bool IsTransformable() const {return m_isTransformable;}
-	virtual void IsTransformable(bool transf) { m_isTransformable=transf; notifyLayerControl_(); }
+        virtual void IsTransformable(bool transf) { m_isTransformable=transf; notifyLayerControl_(); }
+
+        virtual bool is_saveable() const {return false;}
 
 	virtual std::string Name() const {return m_name;}
 	virtual void Name(const std::string &name) {m_name=name;}
 	virtual std::string Filename() const {return m_filename;}
 	virtual void Filename(const std::string &filename) {m_filename=filename;}
 
-	virtual std::string GetInfos() const {return m_infos;}
+        std::string GetInfos() const {return m_infos;}
+        virtual std::string get_layer_type_as_string() const {return "unknow type";}
 	virtual void Save(const std::string &name) {}
 
 	virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
 
+        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent) {return NULL;}
 	void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
 	void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }
 
@@ -127,6 +133,9 @@ public:
 	virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
 	virtual std::string GetPixelValue(int i, int j) const { return std::string(); }
 	// Fin methodes specifiques ImageLayer
+
+        virtual std::vector<std::string> get_available_formats_extensions() const { return std::vector<std::string>(); }
+        virtual std::string get_available_formats_wildcard() const { return std::string(); }
 	
 	virtual void SetDefaultDisplayParameters() {}
 

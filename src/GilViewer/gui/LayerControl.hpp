@@ -103,9 +103,7 @@ public:
 	inline std::vector< boost::shared_ptr<LayerControlRow> > GetRows() const { return m_rows; }
 
 	/// Cette methode permet d'ajouter un calque existant (image ou shapefile ...)
-	void OnOpenLayer(wxCommandEvent& event);
-	/// Cette methode permet de creer un nouveau calque
-	void OnNewLayer(wxCommandEvent& event);
+        void OnOpenLayer(wxCommandEvent& event);
 	/// Cette methode permet de swapper 2 lignes
 	void SwapRows(const unsigned int firstRow , const unsigned int secondRow);
 
