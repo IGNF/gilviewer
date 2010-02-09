@@ -889,12 +889,11 @@ void PanelViewer::GeometryAddPoint(const wxPoint & p)
 	case GEOMETRY_RECTANGLE:
 		m_ghostLayer->m_penRectangle = wxPen(*wxRED, 2, wxDOT);
 		m_ghostLayer->m_drawRectangleSelection = true;
+		m_ghostLayer->m_rectangleSelection.second = pt;
 		if (!m_ghostLayer->m_rectangleSelectionFirstPointSet) {
-			m_ghostLayer->m_rectangleSelection.first = pt;
-			m_ghostLayer->m_rectangleSelection.second = pt;
+			m_ghostLayer->m_rectangleSelection.first  = pt;
 			m_ghostLayer->m_rectangleSelectionFirstPointSet = true;
 		} else {
-			m_ghostLayer->m_rectangleSelection.second = pt;
 			m_ghostLayer->m_rectangleSelectionFirstPointSet = false;
 			GeometryEnd();
 		}
@@ -1069,29 +1068,27 @@ void PanelViewer::Crop() {
 	}
 
 	for(std::vector<Layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
-		wxPoint p1 = m_ghostLayer->FromLocal(m_ghostLayer->m_rectangleSelection.first);
-		wxPoint p2 = m_ghostLayer->FromLocal(m_ghostLayer->m_rectangleSelection.second);
-
 		boost::filesystem::path p = (*it)->Filename();
 		std::string file = p.stem() + "_crop" + p.extension();
 		boost::filesystem::path q = (*it)->Name();
 		std::string name = q.stem() + "_crop" + q.extension();
 
-		double zoom = (*it)->ZoomFactor();
-		int x0 = (int) (std::min(p1.x, p2.x)*zoom - (*it)->TranslationX());
-		int y0 = (int) (std::min(p1.y, p2.y)*zoom - (*it)->TranslationY());
-		int x1 = (int) (std::max(p1.x, p2.x)*zoom - (*it)->TranslationX());
-		int y1 = (int) (std::max(p1.y, p2.y)*zoom - (*it)->TranslationY());
+		wxPoint p0(m_ghostLayer->m_rectangleSelection.first );
+		wxPoint p1(m_ghostLayer->m_rectangleSelection.second);
+		if(p0.x>p1.x) std::swap(p0.x,p1.x);
+		if(p0.y>p1.y) std::swap(p0.y,p1.y);
+		p0 = (*it)->ToLocal(m_ghostLayer->FromLocal(p0,0));
+		p1 = (*it)->ToLocal(m_ghostLayer->FromLocal(p1,1));
 		try {
-			Layer::ptrLayerType layer = (*it)->crop(x0,y0,x1,y1);
+			Layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
 			if(!layer) continue; // todo : warn the user ??
 			layer->Filename(file);
 			layer->Name(name);
 			m_layerControl->AddLayer(layer);
 			// now that the layer is added, we can set its geometry
-			layer->TranslationX(x0+(*it)->TranslationX());
-			layer->TranslationY(y0+(*it)->TranslationY());
-			layer->ZoomFactor(zoom);
+			layer->TranslationX(p0.x+(*it)->TranslationX());
+			layer->TranslationY(p0.y+(*it)->TranslationY());
+			layer->ZoomFactor  (     (*it)->ZoomFactor  ());
 			// todo : handle Orientation2D of *it if it exists ... ??
 
 		} catch (std::exception &err) {

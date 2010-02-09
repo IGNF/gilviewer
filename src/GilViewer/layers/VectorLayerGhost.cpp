@@ -40,18 +40,18 @@ Authors:
 
 #include "GilViewer/layers/VectorLayerGhost.h"
 
-wxPoint VectorLayerGhost::FromLocal(const wxPoint &pt, double delta) const
+wxPoint VectorLayerGhost::FromLocal(const wxPoint &p, double delta) const
 {
 	return wxPoint(
-		wxCoord((pt.x +m_translationX+delta)/m_zoomFactor),
-		wxCoord((pt.y +m_translationY+delta)/m_zoomFactor));
+		wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
+		wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
 }
 
-wxPoint VectorLayerGhost::ToLocal(const wxPoint &pt, double delta) const
+wxPoint VectorLayerGhost::ToLocal(const wxPoint &p, double delta) const
 {
 	return wxPoint(
-		wxCoord(m_zoomFactor*pt.x -m_translationX-delta),
-		wxCoord(m_zoomFactor*pt.y -m_translationY-delta));
+		wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
+		wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
 }
 
 VectorLayerGhost::VectorLayerGhost(bool isCarto) :
@@ -82,14 +82,17 @@ void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 	// m_rectangleSelection
 	if (m_drawRectangleSelection)
 	{
+		wxPoint p(m_rectangleSelection.first );
+		wxPoint q(m_rectangleSelection.second);
+		if(p.x>q.x) std::swap(p.x,q.x);
+		if(p.y>q.y) std::swap(p.y,q.y);
+
 		dc.SetPen(m_penRectangle);
 		// p0 ------- p1
-		// |		  |
+		// |          |
 		// p2 ------- p3
-
-		//
-		wxPoint p0(FromLocal(m_rectangleSelection.first ,0) );
-		wxPoint p3(FromLocal(m_rectangleSelection.second,0) );
+		wxPoint p0(FromLocal(p,0) );
+		wxPoint p3(FromLocal(q,1) );
 		wxPoint p1(p0.x, p3.y);
 		wxPoint p2(p3.x, p0.y);
 

@@ -94,6 +94,22 @@ public:
     virtual void TranslationY(double dy) { m_translationY = dy; }
     virtual inline double TranslationY() const { return m_translationY; }
 
+    // local<->global transforms. Default: pixel-centered
+    wxPoint FromLocal(const wxPoint &p, double delta=0.5) const
+    {
+	return wxPoint(
+		wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
+		wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
+    }
+
+    wxPoint ToLocal(const wxPoint &p, double delta=0.5) const
+    {
+	return wxPoint(
+		wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
+		wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
+    }
+
+
     virtual void Resolution(double r) { m_resolution = r; }
     virtual inline double Resolution() const { return m_resolution; }
 

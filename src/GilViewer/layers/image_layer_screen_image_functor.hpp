@@ -64,7 +64,7 @@ struct screen_image_functor
         //TODO to be optimized ?
         for (std::ptrdiff_t y=0; y < m_screen_view.height(); ++y)
         {
-            int yb = (int) (y*m_zoomFactor - m_translationY);
+            int yb = (int) floor(y*m_zoomFactor - m_translationY);
 
             if (yb < 0 || yb >= src.height())
                 continue;
@@ -75,7 +75,7 @@ struct screen_image_functor
 
             for (std::ptrdiff_t x=0; x < m_screen_view.width(); ++x) //, ++loc.x())
             {
-                int xb = (int) (x*m_zoomFactor - m_translationX);
+                int xb = (int) floor(x*m_zoomFactor - m_translationX);
 
                 if (xb>=0 && xb < src.width())
                 {

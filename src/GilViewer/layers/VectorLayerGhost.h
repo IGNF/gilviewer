@@ -62,8 +62,8 @@ class VectorLayerGhost
     		inline double TranslationY() const { return m_translationY; }
 
 		// local<->global transforms. Default: pixel-centered
-		wxPoint ToLocal  (const wxPoint &pt, double delta =0.5) const;
-		wxPoint FromLocal(const wxPoint &pt, double delta =0.5) const;
+		wxPoint ToLocal  (const wxPoint &p, double delta =0.5) const;
+		wxPoint FromLocal(const wxPoint &p, double delta =0.5) const;
 
 		void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
 

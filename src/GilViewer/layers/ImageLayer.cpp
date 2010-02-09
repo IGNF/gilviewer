@@ -290,8 +290,8 @@ string ImageLayer::GetPixelValue(int i, int j) const
     ostringstream oss;
     oss.precision(6);
     oss<<"(";
-    i = static_cast<int>(i*m_zoomFactor-m_translationX);
-    j = static_cast<int>(j*m_zoomFactor-m_translationY);
+    i = static_cast<int>(floor(i*m_zoomFactor-m_translationX));
+    j = static_cast<int>(floor(j*m_zoomFactor-m_translationY));
     apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
     oss<<")";
     return oss.str();
