@@ -66,7 +66,6 @@ Authors:
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
 #include "GilViewer/gui/ImageLayerSettingsControl.hpp"
 #include "GilViewer/gui/GlobalSettingsControl.hpp"
-#include "GilViewer/gui/NewVectorLayerControl.hpp"
 #include "GilViewer/gui/LayerInfosControl.hpp"
 #include "GilViewer/gui/LayerControlUtils.hpp"
 #include "GilViewer/gui/PanelViewer.hpp"
