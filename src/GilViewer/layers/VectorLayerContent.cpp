@@ -172,6 +172,7 @@ void VectorLayerContent::CreatePRJ()
 	std::ofstream prj(boost::filesystem::change_extension(m_shapefileFileName, ".prj").string().c_str());
 	prj.close();
 }
+
 std::string VectorLayerContent::GetInfos() const
 {
 	std::ostringstream oss;
