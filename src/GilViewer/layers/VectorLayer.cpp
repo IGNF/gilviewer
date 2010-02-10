@@ -131,7 +131,7 @@ VectorLayer::VectorLayer(const string &layerName , const string &fileName) :
 {
     Name(layerName);
     boost::filesystem::path full = boost::filesystem::system_complete(fileName);
-    //Filename( full.string() );
+    Filename( full.string() );
 
     try
     {
@@ -165,7 +165,6 @@ VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool 
 
 Layer::ptrLayerType VectorLayer::CreateVectorLayer(const string &layerName , const string &fileName)
 {
-    boost::filesystem::path full = boost::filesystem::system_complete(fileName);
     if ( !boost::filesystem::exists(fileName) )
     {
         ostringstream oss;
@@ -179,9 +178,6 @@ Layer::ptrLayerType VectorLayer::CreateVectorLayer(const string &layerName , con
     try
     {
         Layer::ptrLayerType ptrLayer(new VectorLayer(layerName,fileName));
-        ptrLayer->Name(fileName);
-        boost::filesystem::path full = boost::filesystem::system_complete(fileName);
-        ptrLayer->Filename( full.string() );
         ptrLayer->notifyLayerSettingsControl_();
         ptrLayer->SetDefaultDisplayParameters();
         return ptrLayer;

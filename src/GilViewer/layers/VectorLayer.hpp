@@ -137,6 +137,7 @@ public:
 	virtual void Clear();
 
 	virtual std::string Filename() const;
+	virtual void Filename(const std::string &filename) {m_filename=filename;}
 
         virtual std::vector<std::string> get_available_formats_extensions() const;
         virtual std::string get_available_formats_wildcard() const;
