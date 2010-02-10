@@ -47,6 +47,8 @@ Authors:
 #include "FrameViewer.hpp"
 #include "GilViewer.h"
 
+#include <gdal/ogrsf_frmts.h>
+
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
 { wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
@@ -63,6 +65,9 @@ bool GilViewerApp::OnInit()
 #ifdef __LINUX__
 	setlocale(LC_ALL, "POSIX");
 #endif
+
+        // Register all OGR format drivers
+        OGRRegisterAll();
 
 	// Langage
 	set_langage(wxLANGUAGE_FRENCH);
