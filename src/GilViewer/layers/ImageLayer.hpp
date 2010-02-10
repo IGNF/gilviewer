@@ -126,7 +126,10 @@ class ImageLayer : public Layer
 
 
 	virtual void Save(const std::string &name);
-        virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
+	virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
+
+	virtual image_ptr Image() const { return m_img; };
+	virtual view_ptr  View() const { return m_view; };
 
         virtual std::vector<std::string> get_available_formats_extensions() const;
         virtual std::string get_available_formats_wildcard() const;

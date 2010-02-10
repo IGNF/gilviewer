@@ -63,6 +63,14 @@ VectorLayerGhost::VectorLayerGhost(bool isCarto) :
 {
 }
 
+wxRect VectorLayerGhost::GetRectangle() const {
+	wxPoint p(m_rectangleSelection.first );
+	wxPoint q(m_rectangleSelection.second);
+	if(p.x>q.x) std::swap(p.x,q.x);
+	if(p.y>q.y) std::swap(p.y,q.y);
+	return wxRect(FromLocal(p,0),FromLocal(q,1));
+}
+
 void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 {
 	if (m_drawCircle)
@@ -76,30 +84,16 @@ void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 	if (m_drawPointPosition)
 	{
 		dc.SetPen(m_penPoint);
+		dc.SetBrush(m_brushCircle);
 		dc.DrawLine(FromLocal(m_pointPosition) , FromLocal(m_pointPosition));
 	}
 
 	// m_rectangleSelection
 	if (m_drawRectangleSelection)
 	{
-		wxPoint p(m_rectangleSelection.first );
-		wxPoint q(m_rectangleSelection.second);
-		if(p.x>q.x) std::swap(p.x,q.x);
-		if(p.y>q.y) std::swap(p.y,q.y);
-
 		dc.SetPen(m_penRectangle);
-		// p0 ------- p1
-		// |          |
-		// p2 ------- p3
-		wxPoint p0(FromLocal(p,0) );
-		wxPoint p3(FromLocal(q,1) );
-		wxPoint p1(p0.x, p3.y);
-		wxPoint p2(p3.x, p0.y);
-
-		dc.DrawLine(p0, p1);
-		dc.DrawLine(p1, p3);
-		dc.DrawLine(p3, p2);
-		dc.DrawLine(p2, p0);
+		dc.SetBrush(m_brushRectangle);
+		dc.DrawRectangle(GetRectangle());
 	}
 
 	if ( m_drawLine )

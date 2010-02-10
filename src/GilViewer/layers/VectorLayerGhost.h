@@ -65,14 +65,17 @@ class VectorLayerGhost
 		wxPoint ToLocal  (const wxPoint &p, double delta =0.5) const;
 		wxPoint FromLocal(const wxPoint &p, double delta =0.5) const;
 
+		wxRect GetRectangle() const;
+
 		void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
 
 		wxPoint m_pointPosition;
-		std::pair< wxPoint , wxPoint > m_rectangleSelection;
+		std::pair<wxPoint,wxPoint>  m_rectangleSelection;
 		std::vector<wxPoint> m_linePoints;
 
 		typedef std::pair< wxPoint , double > CircleType;
 		CircleType m_circle;
+
 
 		bool m_isCarto;
 		bool m_drawPointPosition;
