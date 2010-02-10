@@ -44,6 +44,7 @@ Authors:
 
 #include <wx/log.h>
 #include <wx/string.h>
+#include <wx/gdicmn.h> // for wxPoint
 
 #include "GilViewer/layers/VectorLayerContent.hpp"
 
@@ -185,4 +186,12 @@ std::string VectorLayerContent::GetInfos() const
 	oss << "      X = " << m_maxBound[0] << "\n";
 	oss << "      Y = " << m_maxBound[1] << "\n";
 	return oss.str();
+}
+
+
+wxPoint VectorLayerContent::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y) const {
+	return wxPoint(
+		static_cast<wxCoord>((delta+          x+translationX)/zoomFactor),
+		static_cast<wxCoord>((delta+m_flagPRJ*y+translationY)/zoomFactor)
+	);
 }

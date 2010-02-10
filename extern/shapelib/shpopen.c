@@ -158,8 +158,10 @@
  *
  */
 
+/* MB: prevent unused warning
 static char rcsid[] = 
   "$Id: shpopen.c,v 1.39 2002/08/26 06:46:56 warmerda Exp $";
+*/
 
 #include "shapefil.h"
 
@@ -917,6 +919,8 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
     int	       	nRecordOffset, i, nRecordSize;
     uchar	*pabyRec;
     int32	i32;
+
+    nRecordSize = 0; // MB: prevent uninitialization warning
 
     psSHP->bUpdated = TRUE;
 
