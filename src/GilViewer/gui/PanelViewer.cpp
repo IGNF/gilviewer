@@ -1069,19 +1069,12 @@ void PanelViewer::Crop() {
 	}
 
 	for(std::vector<Layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
-		boost::filesystem::path p = (*it)->Filename();
-		std::string file = p.stem() + "_crop" + p.extension();
-		boost::filesystem::path q = (*it)->Name();
-		std::string name = q.stem() + "_crop" + q.extension();
-
 		wxRect  r  = m_ghostLayer->GetRectangle();
 		wxPoint p0 = (*it)->ToLocal(r.GetTopLeft());
 		wxPoint p1 = (*it)->ToLocal(r.GetBottomRight());
 		try {
 			Layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
 			if(!layer) continue; // todo : warn the user ??
-			layer->Filename(file);
-			layer->Name(name);
 			m_layerControl->AddLayer(layer);
 			// now that the layer is added, we can set its geometry
 			layer->TranslationX(p0.x+(*it)->TranslationX());
