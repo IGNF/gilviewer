@@ -63,8 +63,10 @@
  *
  */
 
+/* MB: prevent unused warning
 static char rcsid[] = 
   "$Id: shptree.c,v 1.9 2003/01/28 15:53:41 warmerda Exp $";
+*/
 
 #include "shapefil.h"
 
