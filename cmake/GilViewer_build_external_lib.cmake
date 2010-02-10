@@ -38,6 +38,7 @@ ADD_LIBRARY( shapelib ${SHAPELIB_LIBRARY_TYPE} ${ALL_SHPLIB_SRC_FILES} ${ALL_SHP
 ##################
 ###   Build de TinyXML  ###
 ##################
+add_definitions(-DTIXML_USE_STL)
 if( UNIX )
 	# Option pour selectionner une compilation sous forme de .lib ou de .dll
 	OPTION(BUILD_TINYXML_SHARED "Build tinyxml library shared." ON)
