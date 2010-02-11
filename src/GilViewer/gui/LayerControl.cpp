@@ -519,9 +519,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
     */
     layer->SetNotifyLayerSettingsControl( boost::bind( &LayerSettingsControl::update, settingscontrol ) );
     // On ajoute la ligne correspondante
-    std::string name = "  ";
-    name = name + boost::filesystem::basename(layer->Name());
-    AddRow(name, settingscontrol, layer->Name());
+	AddRow(layer->Name(), settingscontrol, layer->Filename());
 
     //Si c'est un calque image avec ori et que c'est le premier on met en place l'orientation generale du viewer
     if (!m_isOrientationSet && m_layers.size() == 1 && layer->HasOri())

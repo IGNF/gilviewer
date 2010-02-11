@@ -890,6 +890,7 @@ void PanelViewer::GeometryAddPoint(const wxPoint & p)
 		m_ghostLayer->m_penRectangle = wxPen(*wxRED, 2, wxDOT);
 		m_ghostLayer->m_drawRectangleSelection = true;
 		m_ghostLayer->m_rectangleSelection.second = pt;
+		m_ghostLayer->m_brushRectangle = wxBrush(*wxRED, wxTRANSPARENT);
 		if (!m_ghostLayer->m_rectangleSelectionFirstPointSet) {
 			m_ghostLayer->m_rectangleSelection.first  = pt;
 			m_ghostLayer->m_rectangleSelectionFirstPointSet = true;
@@ -1068,22 +1069,12 @@ void PanelViewer::Crop() {
 	}
 
 	for(std::vector<Layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
-		boost::filesystem::path p = (*it)->Filename();
-		std::string file = p.stem() + "_crop" + p.extension();
-		boost::filesystem::path q = (*it)->Name();
-		std::string name = q.stem() + "_crop" + q.extension();
-
-		wxPoint p0(m_ghostLayer->m_rectangleSelection.first );
-		wxPoint p1(m_ghostLayer->m_rectangleSelection.second);
-		if(p0.x>p1.x) std::swap(p0.x,p1.x);
-		if(p0.y>p1.y) std::swap(p0.y,p1.y);
-		p0 = (*it)->ToLocal(m_ghostLayer->FromLocal(p0,0));
-		p1 = (*it)->ToLocal(m_ghostLayer->FromLocal(p1,1));
+		wxRect  r  = m_ghostLayer->GetRectangle();
+		wxPoint p0 = (*it)->ToLocal(r.GetTopLeft());
+		wxPoint p1 = (*it)->ToLocal(r.GetBottomRight());
 		try {
 			Layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
 			if(!layer) continue; // todo : warn the user ??
-			layer->Filename(file);
-			layer->Name(name);
 			m_layerControl->AddLayer(layer);
 			// now that the layer is added, we can set its geometry
 			layer->TranslationX(p0.x+(*it)->TranslationX());

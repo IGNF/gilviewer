@@ -647,14 +647,22 @@ void HistogramPlotter::OnPaint(wxPaintEvent &event)
 			wxString min_string, max_string;
 			min_string << min_value;
 			max_string << max_value;
-			dc.DrawText(min_string, static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN) , static_cast<wxCoord>(window_height)+static_cast<wxCoord>(HISTOGRAM_BOTTOM_MARGIN) );
-			dc.DrawText(max_string, static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN) , static_cast<wxCoord>(HISTOGRAM_UP_MARGIN) );
+			dc.DrawText(min_string,
+				static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN),
+				static_cast<wxCoord>(HISTOGRAM_BOTTOM_MARGIN+window_height) );
+			dc.DrawText(max_string,
+				static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN),
+				static_cast<wxCoord>(HISTOGRAM_UP_MARGIN) );
 
 			unsigned int i;
 			for (i=0; i<m_histogram[0].size()-1; i++)
-				dc.DrawLine( static_cast<unsigned int>(HISTOGRAM_LEFT_MARGIN)+i*step_width, static_cast<double>(window_height)-step_height*m_histogram[0][i]
-						+static_cast<unsigned int>(HISTOGRAM_UP_MARGIN) , static_cast<unsigned int>(HISTOGRAM_LEFT_MARGIN)+(i+1)*step_width, static_cast<double>(window_height)-step_height
-						*m_histogram[0][i+1]+static_cast<unsigned int>(HISTOGRAM_UP_MARGIN) );
+				dc.DrawLine(
+					static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+i*step_width),
+					static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
+								-step_height*m_histogram[0][i]),
+					static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width), 						static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
+								-step_height*m_histogram[0][i+1])
+				);
 		}
 		else //nombre de canaux quelconque
 		{
@@ -686,9 +694,13 @@ void HistogramPlotter::OnPaint(wxPaintEvent &event)
 
 				//affichage de l'histo
 				for (i=0; i<m_histogram[channel].size()-1; i++)
-					dc.DrawLine( static_cast<unsigned int>(HISTOGRAM_LEFT_MARGIN)+i*step_width, static_cast<double>(window_height)-step_height*m_histogram[channel][i]
-							+static_cast<unsigned int>(HISTOGRAM_UP_MARGIN) , static_cast<unsigned int>(HISTOGRAM_LEFT_MARGIN)+(i+1)*step_width, static_cast<double>(window_height)-step_height
-							*m_histogram[channel][i+1]+static_cast<unsigned int>(HISTOGRAM_UP_MARGIN) );
+					dc.DrawLine(
+						static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+i*step_width),
+						static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
+								-step_height*m_histogram[channel][i]),
+						static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width), 							static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
+								-step_height*m_histogram[channel][i+1])
+					);
 
 			}
 

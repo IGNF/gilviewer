@@ -71,7 +71,6 @@ public:
 
 protected:
 	std::vector< simplePolygonRingType > m_polygons;
-	mutable std::vector< simplewxPolygonRingType > m_wxpolygons;
 
 	wxColour m_ringsColour;
 	wxColour m_shapesColour;
