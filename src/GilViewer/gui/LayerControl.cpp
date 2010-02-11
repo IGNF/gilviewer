@@ -104,7 +104,7 @@ BEGIN_EVENT_TABLE(LayerControl, wxFrame)
         END_EVENT_TABLE()
 
         LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-        wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_numberOfLayers(0), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
+        wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 
 {
 
@@ -199,34 +199,28 @@ void LayerControl::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 void LayerControl::AddRow(const std::string &name, LayerSettingsControl *layersettings, const std::string &tooltip)
 {
     // Le nom du layer a une longueur maximale de 20 caracteres
-    std::string layer_name = name;
-    layer_name = name + " ";
-    std::ostringstream layer_index;
-    layer_index << m_numberOfLayers;
-    //layer_name = layer_name + layer_index.str();
-    wxString layerName(layer_name.substr(0, 50).c_str(), *wxConvCurrent);
+    wxString layerName(name.substr(0, 50).c_str(), *wxConvCurrent);
     std::string ln(layerName.fn_str());
 
     // on ajoute la ligne dans le conteneur
-    m_rows.push_back(boost::shared_ptr<LayerControlRow>(new LayerControlRow(this, ln, m_numberOfLayers, layersettings, tooltip)));
+    unsigned int nb = m_rows.size();
+    m_rows.push_back(boost::shared_ptr<LayerControlRow>(new LayerControlRow(this, ln, nb, layersettings, tooltip)));
     // On ajoute a proprement parler les controles de la ligne dans le LayerControl
-    m_rows[m_numberOfLayers]->m_nameStaticText->IsSelected(true);
-    m_sizer->Add(m_rows[m_numberOfLayers]->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
+    m_rows.back()->m_nameStaticText->IsSelected(true);
+    m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
-    m_sizer->Add(m_rows[m_numberOfLayers]->m_visibilityCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
-    m_rows[m_numberOfLayers]->m_visibilityCheckBox->SetValue(m_layers[m_numberOfLayers]->IsVisible());
+    m_sizer->Add(m_rows.back()->m_visibilityCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
+    m_rows.back()->m_visibilityCheckBox->SetValue(m_layers.back()->IsVisible());
 
 
-    m_sizer->Add(m_rows[m_numberOfLayers]->m_transformationCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
-    m_rows[m_numberOfLayers]->m_transformationCheckBox->SetValue(m_layers[m_numberOfLayers]->IsTransformable());
+    m_sizer->Add(m_rows.back()->m_transformationCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
+    m_rows.back()->m_transformationCheckBox->SetValue(m_layers.back()->IsTransformable());
 
-    m_rows[m_numberOfLayers]->m_saveButton->Enable( m_layers[m_numberOfLayers]->is_saveable() );
+    m_rows.back()->m_saveButton->Enable( m_layers.back()->is_saveable() );
 
-    m_sizer->Add(m_rows[m_numberOfLayers]->m_boxSizer, wxGROW);
+    m_sizer->Add(m_rows.back()->m_boxSizer, wxGROW);
     m_sizer->Fit(m_scroll);
     m_scroll->Layout();
-
-    m_numberOfLayers++;
 }
 
 void LayerControl::InitToolbar(wxToolBar* toolBar)
@@ -294,7 +288,7 @@ void LayerControl::OnDeleteButton(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_DELETE);
 
     //Swap
-    for (unsigned int i = id; i < m_numberOfLayers - 1; ++i)
+    for (unsigned int i = id; i < m_rows.size() - 1; ++i)
     {
         SwapRows(i, i + 1);
     }
@@ -314,8 +308,6 @@ void LayerControl::OnDeleteButton(wxCommandEvent& event)
 
     //Delete de la layer
     m_layers.pop_back();
-
-    --m_numberOfLayers;
 
     //Refresh de la vue
     m_basicDrawPane->Refresh();
@@ -384,7 +376,7 @@ void LayerControl::OnReset(wxCommandEvent& event)
     }
 
     // Et on remet les checkbox en place (true)
-    for (unsigned int i = 0; i < m_numberOfLayers; ++i)
+    for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
         m_rows[i]->m_visibilityCheckBox->SetValue(true);
         m_rows[i]->m_transformationCheckBox->SetValue(true);
@@ -623,12 +615,12 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
         ::wxLogMessage(mes);
         return;
     }
-    else if (firstRow >= m_numberOfLayers || secondRow >= m_numberOfLayers)
+    else if (firstRow >= m_rows.size() || secondRow >= m_rows.size())
     {
         std::ostringstream oss;
         oss << "You passed an invalid index for a row !" << std::endl;
         oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << std::endl;
-        oss << "m_numberOfLayers = " << m_numberOfLayers << std::endl;
+        oss << "m_numberOfLayers = " << m_rows.size() << std::endl;
         oss << "File : " << __FILE__ << std::endl;
         oss << "Line : " << __LINE__ << std::endl;
         oss << "Function : " << __FUNCTION__ << std::endl;
@@ -705,7 +697,7 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 
 void LayerControl::OnLayerUp(wxCommandEvent& WXUNUSED(event))
 {
-    for (unsigned int i = 0; i < m_numberOfLayers; ++i)
+    for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
         if (m_rows[i]->m_nameStaticText->IsSelected())
         {
@@ -721,7 +713,7 @@ void LayerControl::OnLayerUp(wxCommandEvent& WXUNUSED(event))
 
 void LayerControl::OnLayerDown(wxCommandEvent& WXUNUSED(event))
 {
-    for (unsigned int i = 0; i < m_numberOfLayers; ++i)
+    for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
         if (m_rows[i]->m_nameStaticText->IsSelected())
         {
@@ -737,7 +729,7 @@ void LayerControl::OnLayerDown(wxCommandEvent& WXUNUSED(event))
 void LayerControl::OnVisibilityButton(wxCommandEvent& event)
 {
     // On parcourt tous les calques et on inverse la visibilite si la selection est a true
-    for (unsigned int i = 0; i < m_numberOfLayers; ++i)
+    for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
         if (m_rows[i]->m_nameStaticText->IsSelected() == true)
         {
@@ -753,7 +745,7 @@ void LayerControl::OnVisibilityButton(wxCommandEvent& event)
 void LayerControl::OnTransformationButton(wxCommandEvent& event)
 {
     // On parcourt tous les calques et on inverse la transformabilite (!!!) si la section est a true
-    for (unsigned int i = 0; i < m_numberOfLayers; ++i)
+    for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
         if (m_rows[i]->m_nameStaticText->IsSelected() == true)
         {
@@ -812,10 +804,10 @@ void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
 
 void LayerControl::OnDeleteAllRowsButton(wxCommandEvent& event)
 {
-    while( m_numberOfLayers > 0 )
+    while( m_rows.size() > 0 )
     {
         wxCommandEvent event;
-        event.SetInt(m_numberOfLayers);
+        event.SetInt(m_rows.size());
         OnDeleteButton(event);
     }
 }
