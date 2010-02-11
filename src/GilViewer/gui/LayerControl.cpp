@@ -84,28 +84,26 @@ Authors:
 #endif
 
 BEGIN_EVENT_TABLE(LayerControl, wxFrame)
-        EVT_CLOSE(LayerControl::OnCloseWindow)
-        EVT_BUTTON(ID_INFO,LayerControl::OnInfoButton)
-        EVT_BUTTON(ID_SAVE,LayerControl::OnSaveButton)
-        EVT_BUTTON(ID_DELETE,LayerControl::OnDeleteButton)
-        // Gestion des evenements de la toolbar
-        EVT_TOOL(wxID_RESET,LayerControl::OnReset)
-        EVT_TOOL(wxID_OPEN,LayerControl::OnOpenLayer)
-        // Gestion des evenements "globaux" du LayerControl
-        EVT_BUTTON(wxID_UP,LayerControl::OnLayerUp)
-        EVT_BUTTON(wxID_DOWN,LayerControl::OnLayerDown)
-        EVT_BUTTON(ID_VISIBILITY_BUTTON,LayerControl::OnVisibilityButton)
-        EVT_BUTTON(ID_TRANSFORMATION_BUTTON,LayerControl::OnTransformationButton)
-        EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,LayerControl::OnGlobalSettingsButton)
-        EVT_BUTTON(wxID_SAVE,LayerControl::OnSaveDisplayConfigButton)
-        EVT_BUTTON(wxID_OPEN,LayerControl::OnLoadDisplayConfigButton)
-        EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
-        EVT_CHAR(LayerControl::OnChar)
-        END_EVENT_TABLE()
+    EVT_CLOSE(LayerControl::OnCloseWindow)
+    EVT_BUTTON(ID_INFO,LayerControl::OnInfoButton)
+    EVT_BUTTON(ID_SAVE,LayerControl::OnSaveButton)
+    EVT_BUTTON(ID_DELETE,LayerControl::OnDeleteButton)
+    // Gestion des evenements de la toolbar
+    EVT_TOOL(wxID_RESET,LayerControl::OnReset)
+    EVT_TOOL(wxID_OPEN,LayerControl::OnOpenLayer)
+    // Gestion des evenements "globaux" du LayerControl
+    EVT_BUTTON(wxID_UP,LayerControl::OnLayerUp)
+    EVT_BUTTON(wxID_DOWN,LayerControl::OnLayerDown)
+    EVT_BUTTON(ID_VISIBILITY_BUTTON,LayerControl::OnVisibilityButton)
+    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,LayerControl::OnTransformationButton)
+    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,LayerControl::OnGlobalSettingsButton)
+    EVT_BUTTON(wxID_SAVE,LayerControl::OnSaveDisplayConfigButton)
+    EVT_BUTTON(wxID_OPEN,LayerControl::OnLoadDisplayConfigButton)
+    EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
+END_EVENT_TABLE()
 
-        LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-        wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
-
+LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 {
 
     SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
@@ -326,19 +324,7 @@ void LayerControl::OnSettingsButton(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SETTINGS);
-    // Test if the layer is a vector one or an image one ...
-    //	if (typeid(m_layers[id]) == typeid(VectorLayer))
-    //	{
-    //		wxString title(_("Vector settings"));
-    //		title << _(" : ") << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
-    //		m_rows[id]->m_layerSettingsControl->Show(!m_rows[id]->m_layerSettingsControl->IsVisible());
-    //	}
-    //	else
-    //	{
-    //		wxString title(_("Image settings"));
-    //		title << _(" : ") << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
     m_rows[id]->m_layerSettingsControl->Show(!m_rows[id]->m_layerSettingsControl->IsVisible());
-    //	}
 }
 
 void LayerControl::OnCheckVisibility(wxCommandEvent& event)
@@ -810,17 +796,6 @@ void LayerControl::OnDeleteAllRowsButton(wxCommandEvent& event)
         event.SetInt(m_rows.size());
         OnDeleteButton(event);
     }
-}
-
-void LayerControl::OnChar(wxKeyEvent& event)
-{
-
-    if (event.GetKeyCode() == 'l')
-    {
-        this->Hide();
-    }
-
-    event.Skip();
 }
 
 void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters &parameters)
