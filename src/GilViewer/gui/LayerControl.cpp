@@ -59,6 +59,7 @@ Authors:
 
 #include "GilViewer/layers/Layer.hpp"
 #include "GilViewer/layers/ImageLayer.hpp"
+#include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/VectorLayer.hpp"
 #include "GilViewer/layers/VectorLayerGhost.h"
 #include "GilViewer/layers/VectorLayerContent.hpp"
@@ -442,7 +443,8 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
             try
             {
                 std::string filename(names[i].fn_str());
-                Layer::ptrLayerType layer = VectorLayer::CreateVectorLayer(boost::filesystem::basename(std::string(names[i].fn_str())), filename);
+                //Layer::ptrLayerType layer = VectorLayer::CreateVectorLayer(boost::filesystem::basename(std::string(names[i].fn_str())), filename);
+                Layer::ptrLayerType layer = ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(std::string(names[i].fn_str())), filename);
                 AddLayer(layer);
             }
             catch (std::exception &err)
