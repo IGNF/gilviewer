@@ -793,11 +793,11 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 	elemOrientationSet->SetAttribute("value",layerControl->m_isOrientationSet);
 	TiXmlElement *elemOrientationViewer = new TiXmlElement( "ViewerOrientation" );
 	elementOrientation->LinkEndChild( elemOrientationViewer );
-	elemOrientationViewer->SetAttribute("originX",layerControl->m_ori.OriginX());
-	elemOrientationViewer->SetAttribute("originY",layerControl->m_ori.OriginY());
+	elemOrientationViewer->SetDoubleAttribute("originX",layerControl->m_ori.OriginX());
+	elemOrientationViewer->SetDoubleAttribute("originY",layerControl->m_ori.OriginY());
 	elemOrientationViewer->SetAttribute("sizeX",layerControl->m_ori.SizeX());
 	elemOrientationViewer->SetAttribute("sizeY",layerControl->m_ori.SizeY());
-	elemOrientationViewer->SetAttribute("step",layerControl->m_ori.Step());
+	elemOrientationViewer->SetDoubleAttribute("step",layerControl->m_ori.Step());
 	elemOrientationViewer->SetAttribute("ZoneCarto",layerControl->m_ori.ZoneCarto());
 	/*
 	if ( &max_transparency == NULL )

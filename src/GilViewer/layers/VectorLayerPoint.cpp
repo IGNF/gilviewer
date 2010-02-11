@@ -54,30 +54,17 @@ void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transpar
 	const double delta = 0.5 * resolution;
 	wxPen penColour( m_pointsColour , m_width );
 	dc.SetPen( penColour );
-	// On draw des lines pq c'est beaucoup plus rapide et qu'en plus ca permet de gerer l'epaisseur ...
-	// On suppose que si le SHPHandle est NULL, ca a explose avant ... En plus, pour un calque a la main, il n'y en a pas ...
-	//if ( m_SHPHandle != NULL )
-	//{
-		// On met en place 2 methodes pour eviter de parcourir 2 fois les elements :
-		//     - la premiere avec les etiquettes
-		//     - la seconde sans les etiquettes
-		if ( FlagDBF() && m_drawAttribute > 0 )
-		{
-			for (unsigned int i=0;i<m_points.size();i++)
-			{
-				dc.DrawLine( (delta+m_points[i].first + translationX ) / zoomFactor, (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor , (delta+m_points[i].first + translationX ) / zoomFactor, (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor );
-				dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i] , (delta+m_points[i].first + translationX ) / zoomFactor , (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor );
-			}
-		}
-		else
-			for (unsigned int i=0;i<m_points.size();++i)
-			{
-				double x = (delta+m_points[i].first + translationX ) / zoomFactor;
-				double y = (delta+m_flagPRJ*m_points[i].second +translationY)/zoomFactor;
-				dc.DrawLine( x,y , x,y );
-				//dc.DrawPoint( x,y );
-			}
-	//}
+	bool draw_text = ( FlagDBF() && m_drawAttribute > 0 );
+	for (unsigned int i=0;i<m_points.size();i++)
+	{
+		wxPoint p = FromLocal(
+			zoomFactor,translationX,translationY,delta,
+			m_points[i].first,m_points[i].second);
+		// On draw des lines pq c'est beaucoup plus rapide et qu'en plus ca permet de gerer l'epaisseur ...
+		dc.DrawLine(p,p);
+		//dc.DrawPoint(p);
+		if(draw_text) dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i],p);
+	}
 }
 
 VectorLayerPoint::VectorLayerPoint(const SHPHandle &handle , const std::string &shapefileFileName)

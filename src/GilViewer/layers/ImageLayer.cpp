@@ -75,7 +75,7 @@ class alpha_image_type : public boost::gil::gray8_image_t {};
 using namespace std;
 using namespace boost::gil;
 
-ImageLayer::ImageLayer(const image_ptr &image, const string &name, const view_ptr& v):
+ImageLayer::ImageLayer(const image_ptr &image, const std::string &name, const std::string &filename, const view_ptr& v):
         m_img(image), m_view(v)
 {
     if(!v) m_view.reset(new view_t(view(m_img->value)));
@@ -85,6 +85,7 @@ ImageLayer::ImageLayer(const image_ptr &image, const string &name, const view_pt
     m_minmaxResult = apply_operation(m_view->value, any_view_min_max());
 
     Name(name);
+    Filename(filename);
 
     Alpha(255);
     //TODO
@@ -105,28 +106,23 @@ ImageLayer::ImageLayer(const image_ptr &image, const string &name, const view_pt
 
     m_cLUT = boost::shared_ptr<ColorLookupTable>(new ColorLookupTable);
 
-    m_infos = "";
-
     ostringstream oss;
     oss << "Dimensions: " << m_view->value.width()  << " x " << m_view->value.height() << "\n";
     oss << "Nb channels: " << GetNbComponents() << "\n";
     oss << "Pixels type: " << GetTypeChannel() << "\n";
 
-    m_infos += oss.str();
+    m_infos = oss.str();
 
     SetChannels(0,1,2);
     SetAlphaChannel(false,0);
 }
-
-
 
 Layer::ptrLayerType ImageLayer::CreateImageLayer(const image_ptr &image, const string &name)
 {
     return ptrLayerType(new ImageLayer(image, name));
 }
 
-
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
+Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
@@ -139,11 +135,11 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
         return ptrLayerType();
     }
 
-
-    std::string ext(boost::filesystem::extension(filename));
+    boost::filesystem::path path(boost::filesystem::system_complete(filename));
+    std::string ext(path.extension());
     boost::to_lower(ext);
 
-//	image_read_info< tiff_tag > info = read_image_info(filename, tiff_tag());
+//	image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
 
     image_ptr image(new image_t);
 
@@ -168,13 +164,7 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const string &filename)
     }
 
     //Creation de la couche image
-    ptrLayerType maLayer(new ImageLayer(image, filename));
-
-
-    // Le m_name est sette dans la fonction appelle a la ligne precedente ...
-    // Calcul du chemin complet du fichier
-    boost::filesystem::path full = boost::filesystem::system_complete(filename);
-    maLayer->Filename( full.string() );
+    ptrLayerType maLayer(new ImageLayer(image, path.stem(), path.string()));
 
     //Lecture de l'ori et test d'existence
     try
@@ -306,7 +296,12 @@ Layer::ptrLayerType ImageLayer::crop(int& x0, int& y0, int& x1, int& y1) const
     if(x0>=x1 || y0>=y1) return ptrLayerType();
     view_t::type crop = subimage_view(m_view->value, x0, y0, x1-x0, y1-y0 );
     view_ptr crop_ptr(new view_t(crop));
-    return ptrLayerType(new ImageLayer(m_img, "crop", crop_ptr) );
+    boost::filesystem::path file(boost::filesystem::system_complete(Filename()));
+    std::ostringstream oss;
+    oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
+    file.replace_extension(oss.str() + file.extension());
+    std::string name = Name() + oss.str();
+    return ptrLayerType(new ImageLayer(m_img, name, file.string(), crop_ptr) );
 }
 
 vector<string> ImageLayer::get_available_formats_extensions() const

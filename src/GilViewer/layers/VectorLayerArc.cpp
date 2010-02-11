@@ -44,7 +44,7 @@ Authors:
 
 #include "GilViewer/layers/VectorLayerArc.hpp"
 
-inline void limite(double &x)
+inline void limite(wxCoord &x)
 {
 	if (x< -500)
 		x = -500;
@@ -90,22 +90,25 @@ void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparen
 				const simpleArcType &local_tab = m_arcs[i];
 				for (unsigned int j=0;j<local_tab.size()-1;++j)
 				{
-					double posx1 = (delta +local_tab[j].first+translationX)/zoomFactor;
-					limite(posx1);
-					double posy1 = (delta+m_flagPRJ*local_tab[j].second+translationY)/zoomFactor ;
-					limite(posy1);
-					double posx2 = (delta+local_tab[j+1].first+translationX)/zoomFactor;
-					limite(posx2);
-					double posy2 = (delta+m_flagPRJ*local_tab[j+1].second+translationY)/zoomFactor;
-					limite(posy2);
-					dc.DrawLine( posx1, posy1, posx2, posy2);
+					wxPoint p = FromLocal(
+						zoomFactor,translationX,translationY,delta,
+						local_tab[j  ].first,local_tab[j  ].second);
+					wxPoint q = FromLocal(
+						zoomFactor,translationX,translationY,delta,
+						local_tab[j+1].first,local_tab[j+1].second);
+					limite(p.x);
+					limite(p.y);
+					limite(q.x);
+					limite(q.y);
+					dc.DrawLine(p,q);
 				}
-				double posx = ((delta+local_tab[0].first+translationX)/zoomFactor+(delta+local_tab[local_tab.size()-1].first+translationX)/zoomFactor)/2.;
-				double posy = ((delta+m_flagPRJ*local_tab[0].second+translationY)/zoomFactor + (delta+m_flagPRJ*local_tab[local_tab.size()-1].second+translationY)/zoomFactor)/2.;
-
+				wxPoint p = FromLocal(
+					zoomFactor,translationX,translationY,delta,
+					0.5*(local_tab.front().first +local_tab.back().first ),
+					0.5*(local_tab.front().second+local_tab.back().second));
 				double text_size_x = sizex * tab_att[i].length();
-				if ((posx +text_size_x > 0) && (posy + sizey>0) && (posx < dc.GetSize().GetWidth()) && (posy < dc.GetSize().GetHeight()))
-					dc.DrawText( tab_att[i] , posx,  posy);
+				if ((p.x+text_size_x > 0) && (p.y + sizey>0) && (p.x < dc.GetSize().GetWidth()) && (p.y < dc.GetSize().GetHeight()))
+					dc.DrawText(tab_att[i],p);
 			}
 		}
 		else
@@ -114,15 +117,17 @@ void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparen
 				const simpleArcType &local_tab = m_arcs[i];
 				for (unsigned int j=0;j<local_tab.size()-1;++j)
 				{
-					double posx1 = (delta+local_tab[j].first+translationX)/zoomFactor;
-					limite(posx1);
-					double posy1 = (delta+m_flagPRJ*local_tab[j].second+translationY)/zoomFactor ;
-					limite(posy1);
-					double posx2 = (delta+local_tab[j+1].first+translationX)/zoomFactor;
-					limite(posx2);
-					double posy2 = (delta+m_flagPRJ*local_tab[j+1].second+translationY)/zoomFactor;
-					limite(posy2);
-					dc.DrawLine( posx1, posy1, posx2, posy2);
+					wxPoint p = FromLocal(
+						zoomFactor,translationX,translationY,delta,
+						local_tab[j  ].first,local_tab[j  ].second);
+					wxPoint q = FromLocal(
+						zoomFactor,translationX,translationY,delta,
+						local_tab[j+1].first,local_tab[j+1].second);
+					limite(p.x);
+					limite(p.y);
+					limite(q.x);
+					limite(q.y);
+					dc.DrawLine(p,q);
 				}
 			}
 	}
