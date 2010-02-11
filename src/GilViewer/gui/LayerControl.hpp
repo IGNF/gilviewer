@@ -74,9 +74,7 @@ public:
 	///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
 	bool IsOriented() const {return m_isOrientationSet; }
 	///Recupere l'orientation du viewer
-	Orientation2D GetOrientation() const { return m_ori; }
-
-	inline unsigned int GetNumberOfLayers() { return m_numberOfLayers; }
+        Orientation2D GetOrientation() const { return m_ori; }
 
 	void update();
 
@@ -159,8 +157,7 @@ private:
 
 protected:
 	wxFlexGridSizer		*m_sizer;
-	wxBoxSizer			*inner_sizer;
-	unsigned int		m_numberOfLayers;
+        wxBoxSizer			*inner_sizer;
 	PanelViewer* m_basicDrawPane;
 	LayerContainerType	m_layers;
 	// La, il faudrait mettre un boost::shared_array ...
