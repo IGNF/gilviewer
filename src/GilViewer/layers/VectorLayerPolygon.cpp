@@ -58,7 +58,6 @@ GenericVectorLayerPolygon::GenericVectorLayerPolygon() : VectorLayerContent(),
 void GenericVectorLayerPolygon::Clear()
 {
 	m_polygons.clear();
-	m_wxpolygons.clear();
 	m_numberOfEntities = 0;
 }
 
@@ -71,37 +70,21 @@ void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transp
 
 	dc.SetPen( penColour );
 	dc.SetBrush( brushColour );
-	//if ( m_SHPHandle != NULL )
-	//{
-		// On met en place 2 methodes pour eviter de parcourir 2 fois les elements :
-		//     - la premiere avec les etiquettes
-		//     - la seconde sans les etiquettes
-		if ( FlagDBF() && m_drawAttribute > 0 )
+
+	bool draw_text = ( FlagDBF() && m_drawAttribute > 0 );
+	for (unsigned int i=0;i<m_polygons.size();++i)
+	{
+		simplewxPolygonRingType poly;
+		for (unsigned int j=0;j<m_polygons[i].size();++j)
 		{
-			for (unsigned int i=0;i<m_wxpolygons.size();++i)
-			{
-				for (unsigned int j=0;j<m_wxpolygons[i].size();++j)
-				{
-					m_wxpolygons[i][j].x = (delta+m_polygons[i][j].first + translationX ) / zoomFactor;
-					m_wxpolygons[i][j].y = (delta+m_flagPRJ*m_polygons[i][j].second + translationY ) / zoomFactor;
-				}
-				dc.DrawPolygon( m_wxpolygons[i].size() , &(m_wxpolygons[i].front()) );
-				dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i] , m_wxpolygons[i][0].x , m_wxpolygons[i][0].y );
-			}
+			poly[j] = FromLocal(zoomFactor,translationX,translationY,delta,
+				m_polygons[i][j].first,
+				m_polygons[i][j].second);
 		}
-		else
-		{
-			for (unsigned int i=0;i<m_wxpolygons.size();++i)
-			{
-				for (unsigned int j=0;j<m_wxpolygons[i].size();++j)
-				{
-					m_wxpolygons[i][j].x = (delta+m_polygons[i][j].first + translationX ) / zoomFactor;
-					m_wxpolygons[i][j].y = (delta+m_flagPRJ*m_polygons[i][j].second + translationY ) / zoomFactor;
-				}
-				dc.DrawPolygon( m_wxpolygons[i].size() , &(m_wxpolygons[i].front()) );
-			}
-		}
-	//}
+		dc.DrawPolygon( poly.size() , &(poly.front()) );
+		if(draw_text)
+			dc.DrawText( m_dbfAttributesValues[m_drawAttribute-1][i],poly.front());
+	}
 }
 
 VectorLayerPolygon::VectorLayerPolygon(const SHPHandle &handle , const std::string &shapefileFileName)
@@ -140,12 +123,10 @@ VectorLayerPolygon::VectorLayerPolygon(const SHPHandle &handle , const std::stri
 			// Pour chaque ring, on ajoute un ring a m_polygons
 			for (k=0;k<ringsLengths.size();++k)
 			{
-				m_wxpolygons.push_back( simplewxPolygonRingType() );
 				m_polygons.push_back( simplePolygonRingType() );
 				for (j=static_cast<unsigned int>(obj->panPartStart[k]);j<static_cast<unsigned int>(obj->panPartStart[k])+ringsLengths[k];++j)
 				{
 					(m_polygons.back()).push_back( std::make_pair<double,double>(obj->padfX[j] , obj->padfY[j]) );
-					(m_wxpolygons.back()).push_back( wxPoint( obj->padfX[j] , obj->padfY[j] ) );
 				}
 			}
 		}
@@ -186,12 +167,10 @@ void VectorLayerPolygon::AddPolygon( const std::vector<double> &x , const std::v
 {
 	if (x.size() != y.size())
 		return;
-	m_wxpolygons.push_back( simplewxPolygonRingType() );
 	m_polygons.push_back( simplePolygonRingType() );
 	for (unsigned int j=0;j<x.size();++j)
 	{
 		(m_polygons.back()).push_back( std::make_pair<double,double>(x[j] , y[j]) );
-		(m_wxpolygons.back()).push_back( wxPoint( x[j] , y[j] ) );
 	}
 	m_numberOfEntities++;
 }
@@ -234,12 +213,10 @@ VectorLayerPolygonZ::VectorLayerPolygonZ(const SHPHandle &handle , const std::st
 			// que d'enregistrements ...)
 			for (k=0;k<1/*ringsLengths.size()*/;++k)
 			{
-				m_wxpolygons.push_back( simplewxPolygonRingType() );
 				m_polygons.push_back( simplePolygonRingType() );
 				for (j=static_cast<unsigned int>(obj->panPartStart[k]);j<static_cast<unsigned int>(obj->panPartStart[k])+ringsLengths[k];++j)
 				{
 					(m_polygons.back()).push_back( std::make_pair<double,double>(obj->padfX[j] , obj->padfY[j]) );
-					(m_wxpolygons.back()).push_back( wxPoint( obj->padfX[j] , obj->padfY[j] ) );
 				}
 			}
 		}
@@ -282,12 +259,10 @@ VectorLayerPolygonM::VectorLayerPolygonM(const SHPHandle &handle , const std::st
 			// Pour chaque ring, on ajoute un ring a m_polygons
 			for (k=0;k<ringsLengths.size();++k)
 			{
-				m_wxpolygons.push_back( simplewxPolygonRingType() );
 				m_polygons.push_back( simplePolygonRingType() );
 				for (j=static_cast<unsigned int>(obj->panPartStart[k]);j<static_cast<unsigned int>(obj->panPartStart[k])+ringsLengths[k];++j)
 				{
 					(m_polygons.back()).push_back( std::make_pair<double,double>(obj->padfX[j] , obj->padfY[j]) );
-					(m_wxpolygons.back()).push_back( wxPoint( obj->padfX[j] , obj->padfY[j] ) );
 				}
 			}
 		}

@@ -58,29 +58,33 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 	dc.SetPen(*m_pen);
 	dc.SetBrush(*m_brush);
 	for (unsigned int i = 0; i < m_circles.size(); i++) {
-		double x = (delta +             m_circles[i].x + translationX) / zoomFactor;
-		double y = (delta + m_flagPRJ * m_circles[i].y + translationY) / zoomFactor;
-		double r = m_circles[i].radius / zoomFactor;
-		dc.DrawCircle(x, y, r);
+		wxPoint p = FromLocal(
+			zoomFactor,translationX,translationY,delta,
+			m_circles[i].x,m_circles[i].y);
+		wxCoord r = static_cast<wxCoord>(m_circles[i].radius / zoomFactor);
+		dc.DrawCircle(p, r);
 	}
 	for (unsigned int i = 0; i < m_arcs.size(); i++)
 	{
 		const simpleArcType &local_tab = m_arcs[i];
 		for (unsigned int j = 0; j < local_tab.size() - 1; ++j)
 		{
-			float posx1 = (delta +              local_tab[j  ].first + translationX) / zoomFactor;
-			double posy1 = (delta + m_flagPRJ * local_tab[j  ].second + translationY) / zoomFactor;
-			double posx2 = (delta +             local_tab[j+1].first + translationX) / zoomFactor;
-			double posy2 = (delta + m_flagPRJ * local_tab[j+1].second + translationY) / zoomFactor;
-			dc.DrawLine(posx1, posy1, posx2, posy2);
+			wxPoint p = FromLocal(
+				zoomFactor,translationX,translationY,delta,
+				local_tab[j  ].first,local_tab[j  ].second);
+			wxPoint q = FromLocal(
+				zoomFactor,translationX,translationY,delta,
+				local_tab[j+1].first,local_tab[j+1].second);
+			dc.DrawLine(p,q);
 		}
 	}
 	for (unsigned int i = 0; i < m_points.size(); i++)
 	{
-		double x = (delta+          m_points[i].first  +translationX )/zoomFactor;
-		double y = (delta+m_flagPRJ*m_points[i].second +translationY )/zoomFactor;
-		//dc.DrawLine( x,y , x,y );
-		dc.DrawPoint( x,y );
+		wxPoint p = FromLocal(
+			zoomFactor,translationX,translationY,delta,
+			m_points[i].first,m_points[i].second);
+		//dc.DrawLine(p);
+		dc.DrawPoint(p);
 	}
 	// Splines
 	for (unsigned int i=0;i<m_splines.size();++i)
@@ -90,16 +94,26 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 		std::vector<wxPoint> points;
 		for (int j=0;j<n;++j)
 		{
-			points.push_back( wxPoint((delta+spline[j].first + translationX ) / zoomFactor,(delta+m_flagPRJ*spline[j].second +translationY)/zoomFactor) );
+			wxPoint p = FromLocal(
+				zoomFactor,translationX,translationY,delta,
+				spline[j].first,spline[j].second);
+			points.push_back(p);
 		}
 		dc.DrawSpline(n,&points.front());
 	}
 	// Ellipses alignees
 	for (unsigned int i=0;i<m_ellipses.size();++i)
 	{
-		dc.DrawEllipse(wxPoint((delta+m_ellipses[i].x+translationX)/zoomFactor,(delta+m_flagPRJ*m_ellipses[i].y+translationY)/zoomFactor),wxSize(2*m_ellipses[i].a/zoomFactor,2*m_ellipses[i].b/zoomFactor));
-		//dc.DrawEllipticArc(wxPoint((delta+m_ellipses[i].x+translationX)/zoomFactor,(delta+m_flagPRJ*m_ellipses[i].y+translationY)/zoomFactor),wxSize(2*m_ellipses[i].a/zoomFactor,2*m_ellipses[i].b/zoomFactor),0.,90.);
-		//dc.DrawEllipticArcRot(wxPoint((delta+m_ellipses[i].x+translationX)/zoomFactor,(delta+m_flagPRJ*m_ellipses[i].y+translationY)/zoomFactor),wxSize(2*m_ellipses[i].a/zoomFactor,2*m_ellipses[i].b/zoomFactor),0.,90.);
+		wxPoint p = FromLocal(
+			zoomFactor,translationX,translationY,delta,
+			m_ellipses[i].x,m_ellipses[i].y);
+		wxSize  s(
+			static_cast<wxCoord>(2*m_ellipses[i].a/zoomFactor),
+			static_cast<wxCoord>(2*m_ellipses[i].b/zoomFactor)
+		);
+		dc.DrawEllipse(p,s);
+		//dc.DrawEllipticArc(p,s,0.,90.);
+		//dc.DrawEllipticArcRot(p,s,0.,90.);
 	}
 	// Ellipses non alignees
 	for (unsigned int i=0;i<m_rotatedellipses.size();++i)
@@ -107,9 +121,10 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 		std::vector<wxPoint> points;
 		points.reserve( m_rotatedellipses[i].controlPoints.size() );
 		for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
-			points.push_back( wxPoint(
-				(delta+m_rotatedellipses[i].controlPoints[j].x+translationX)/zoomFactor ,
-				(delta+m_flagPRJ*m_rotatedellipses[i].controlPoints[j].y+translationY)/zoomFactor ) );
+			points.push_back( FromLocal(
+				zoomFactor,translationX,translationY,delta,
+				m_rotatedellipses[i].controlPoints[j].x,
+				m_rotatedellipses[i].controlPoints[j].y ));
 		dc.DrawSpline(points.size(),&points.front());
 	}
 	for (unsigned int i=0;i<m_polygons.size();++i)
@@ -117,9 +132,9 @@ void VectorLayerMultiGeometries::Draw(wxDC &dc, wxCoord x, wxCoord y, bool trans
 		std::vector<wxPoint> points;
 		points.reserve( m_polygons[i].size() );
 		for (unsigned int j=0;j<m_polygons[i].size();++j)
-			points.push_back( wxPoint(
-				(delta+m_polygons[i][j].first+translationX)/zoomFactor ,
-				(delta+m_flagPRJ*m_polygons[i][j].second+translationY)/zoomFactor ) );
+			points.push_back(FromLocal(
+				zoomFactor,translationX,translationY,delta,
+				m_polygons[i][j].first,m_polygons[i][j].second ));
 		dc.DrawPolygon( points.size() , &(points.front()) );
 	}
 }

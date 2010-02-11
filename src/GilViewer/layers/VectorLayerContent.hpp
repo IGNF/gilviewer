@@ -48,6 +48,7 @@ Authors:
 #include <string>
 
 class wxDC;
+class wxPoint;
 
 /*
 * \class VectorLayerContent
@@ -106,6 +107,9 @@ public:
 	//std::map< wxString , std::vector< wxString > > m_attributesDBF;
 	std::vector < wxString > m_dbfAttributesNames;
 	std::vector < std::vector < wxString > > m_dbfAttributesValues;
+
+	// local->global transform.
+	wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y) const;
 
 protected:
     /// Le handle sur le fichier shapefile

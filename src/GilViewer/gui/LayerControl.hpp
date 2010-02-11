@@ -153,8 +153,6 @@ private:
 	/// Cette methode permet d'ajouter une ligne dans le LayerControl (elle est appelee lors de l'ajout d'un calque)
 	void AddRow(const std::string &name , LayerSettingsControl *layersettings , const std::string &tooltip = "" );
 
-	// Keyboard events
-	void OnChar(wxKeyEvent& event);
 	wxScrolledWindow 	*m_scroll;
 
 protected:
@@ -171,7 +169,6 @@ protected:
 	bool m_isOrientationSet;
 
 	GlobalSettingsControl* m_globalSettingsControl;
-
 
 	DECLARE_EVENT_TABLE();
 };
