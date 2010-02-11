@@ -51,18 +51,34 @@ class wxDC;
 
 #include "GilViewer/tools/Orientation2D.h"
 #include "GilViewer/tools/ColorLookupTable.h"
+#include "GilViewer/gui/LayerSettingsControl.hpp"
 
 #ifdef WIN32
 #	include <wx/msw/winundef.h>
 #endif
 
-class LayerSettingsControl;
 class LayerControl;
 
 class Layer
 {
 public:
 	typedef boost::shared_ptr< Layer > ptrLayerType;
+
+        Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar):
+                notifyLayerControl_(notifyLayerControl),
+                notifyLayerSettingsControl_(notifyLayerSettingsControl),
+                m_isVisible(true),
+                m_hasToBeUpdated(true),
+                m_name("Default layer name"),
+                m_filename(""),
+                m_hasOri(false) {}
+        static void foo() {}
+        static void bar() {}
+
+        /// Set the callback to notify the LayerControl from changes
+        void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
+        /// Set the callback to notify the LayerSettingsControl from changes
+        void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }
 
 	virtual void Update(int width, int height)=0;
 	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const =0;
@@ -89,9 +105,7 @@ public:
 
 	virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
 
-        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent) {return NULL;}
-	void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
-	void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }
+        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent) {return new LayerSettingsControl(parent);}
 
     virtual void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
     virtual inline double ZoomFactor() const { return m_zoomFactor; }
@@ -153,12 +167,7 @@ public:
         virtual std::vector<std::string> get_available_formats_extensions() const { return std::vector<std::string>(); }
         virtual std::string get_available_formats_wildcard() const { return std::string(); }
 	
-	virtual void SetDefaultDisplayParameters() {}
-
-	static void foo() {}
-	static void bar() {}
-	Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar) : notifyLayerControl_(notifyLayerControl), notifyLayerSettingsControl_(notifyLayerSettingsControl), m_isVisible(true), m_hasToBeUpdated(true), m_name("Default layer name"), m_filename(""), m_hasOri(false) {}
-	virtual ~Layer() {}
+        virtual void SetDefaultDisplayParameters() {}
 
 	// Methodes specifiques VectorLayer
     virtual void AddVectorLayerContent( const std::string &shapefileFileName ) {}
@@ -208,7 +217,9 @@ public:
 	virtual void Clear() {}
 	// Methodes specifiques VectorLayer
 
+        /// Callback to notify the LayerControl from changes
 	boost::function<void ()> notifyLayerControl_;
+        /// Callback to notify the LayerSettingsControl from changes
 	boost::function<void ()> notifyLayerSettingsControl_;
 
 
