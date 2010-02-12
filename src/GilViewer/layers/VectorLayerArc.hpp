@@ -56,22 +56,11 @@ public:
 
     virtual bool ProcessShapefile( const SHPHandle &shapefileHandle ) const { return true; };
 
-    virtual void LinesColour( const wxColour &colour ) { m_arcsColour = colour; }
-	virtual wxColour LinesColour() const { return m_arcsColour; }
-    virtual void LinesWidth( const unsigned int width ) { m_width = width; }
-	virtual unsigned int LinesWidth() const { return m_width; }
-    virtual void LinesPenStyle( const int style ) { m_penStyle = style; }
-	virtual int LinesPenStyle() const { return m_penStyle; }
-
 	virtual void Clear();
 	virtual void Save( const std::string &name ) {}
 
 protected:
     std::vector< simpleArcType > m_arcs;
-
-    wxColour m_arcsColour;
-    unsigned int m_width;
-    int m_penStyle;
 };
 
 

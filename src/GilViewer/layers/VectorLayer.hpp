@@ -43,14 +43,12 @@ Authors:
 
 #include <boost/bind.hpp>
 
-class VectorLayerContent;
-
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
+#include "GilViewer/layers/VectorLayerContent.hpp"
+#include "GilViewer/layers/Layer.hpp"
 
 //ShapeLib
 #include "shapelib/shapefil.h"
-
-#include "GilViewer/layers/Layer.hpp"
 
 class VectorLayer : public Layer
 {
@@ -100,30 +98,17 @@ public:
         virtual std::string get_layer_type_as_string() const {return "Vector";}
     virtual void Save(const std::string &name) const;
 
-    virtual void PointsColour( const wxColour &colour , bool update = true );
-    virtual wxColour PointsColour() const;
-    virtual void PointsWidth( unsigned int width , bool update = true );
-    virtual unsigned int PointsWidth() const;
-    virtual void SetPointsStyle( const wxColour &colour , unsigned int width , bool update = true );
-
-    virtual void LinesColour( const wxColour &colour , bool update = true );
-	virtual wxColour LinesColour() const;
-    virtual void LinesWidth( unsigned int width , bool update = true );
-	virtual unsigned int LinesWidth() const;
-    virtual void LinesPenStyle( int style , bool update = true );
-	virtual int LinesPenStyle() const;
-    virtual void SetLinesStyle( const wxColour &colour , unsigned int width , int style , bool update = true );
-
-	virtual void PolygonsRingsColour( const wxColour &colour , bool update = true );
-	virtual wxColour PolygonsRingsColour() const;
-	virtual void PolygonsInsideColour( const wxColour &colour , bool update = true );
-	virtual wxColour PolygonsInsideColour() const;
-	virtual void PolygonsRingsStyle( unsigned int style , bool update = true );
-	virtual unsigned int PolygonsRingsStyle() const;
-	virtual void PolygonsInsideStyle( unsigned int style , bool update = true );
-	virtual unsigned int PolygonsInsideStyle() const;
-	virtual void PolygonsRingsWidth( unsigned int width , bool update = true );
-	virtual unsigned int PolygonsRingsWidth() const;
+    void set_inner_color(const wxColour &colour, bool update = true );
+    void set_border_color(const wxColour &colour, bool update = true );
+    void set_width(unsigned int width, bool update = true );
+    void set_inner_style(unsigned int style, bool update = true);
+    void set_border_style(unsigned int style, bool update = true);
+    void set_style( const wxColour &inner_color, const wxColour &border_color, unsigned int inner_style, unsigned int border_style, unsigned int width , bool update = true );
+    inline wxColour get_inner_color() const {return m_layerContent->get_inner_color();}
+    inline wxColour get_border_color() const {return m_layerContent->get_border_color();}
+    inline unsigned int get_width() const {return m_layerContent->get_width();}
+    inline unsigned int get_inner_style() const {return m_layerContent->get_inner_style();}
+    inline unsigned int get_border_style() const {return m_layerContent->get_border_style();}
 
 	// TODO
 	//virtual void TextsColour( const wxColour &colour );
@@ -143,6 +128,7 @@ public:
         virtual std::string get_available_formats_wildcard() const;
 
         virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
+        virtual bool is_saveable() const {return true;}
 
 private:
 	void Init();

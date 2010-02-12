@@ -62,50 +62,50 @@ class LayerControl;
 class Layer
 {
 public:
-	typedef boost::shared_ptr< Layer > ptrLayerType;
+    typedef boost::shared_ptr< Layer > ptrLayerType;
 
-        Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar):
-                notifyLayerControl_(notifyLayerControl),
-                notifyLayerSettingsControl_(notifyLayerSettingsControl),
-                m_isVisible(true),
-                m_hasToBeUpdated(true),
-                m_name("Default layer name"),
-                m_filename(""),
-                m_hasOri(false) {}
-        static void foo() {}
-        static void bar() {}
+    Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar):
+            notifyLayerControl_(notifyLayerControl),
+            notifyLayerSettingsControl_(notifyLayerSettingsControl),
+            m_isVisible(true),
+            m_hasToBeUpdated(true),
+            m_name("Default layer name"),
+            m_filename(""),
+            m_hasOri(false) {}
+    static void foo() {}
+    static void bar() {}
 
-        /// Set the callback to notify the LayerControl from changes
-        void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
-        /// Set the callback to notify the LayerSettingsControl from changes
-        void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }
+    /// Set the callback to notify the LayerControl from changes
+    void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
+    /// Set the callback to notify the LayerSettingsControl from changes
+    void SetNotifyLayerSettingsControl( const boost::function<void()> &notifier ) { notifyLayerSettingsControl_ = notifier; }
 
-	virtual void Update(int width, int height)=0;
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const =0;
+    virtual void Update(int width, int height)=0;
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const =0;
 
-	virtual bool HasToBeUpdated() const {return m_hasToBeUpdated;}
-	virtual void HasToBeUpdated(bool update) {m_hasToBeUpdated=update;}
+    virtual bool HasToBeUpdated() const {return m_hasToBeUpdated;}
+    virtual void HasToBeUpdated(bool update) {m_hasToBeUpdated=update;}
 
-	virtual bool IsVisible() const { return m_isVisible;}
-	virtual void IsVisible(bool visible) { m_isVisible=visible; notifyLayerControl_(); }
+    virtual bool IsVisible() const { return m_isVisible;}
+    virtual void IsVisible(bool visible) { m_isVisible=visible; notifyLayerControl_(); }
 
-	virtual bool IsTransformable() const {return m_isTransformable;}
-        virtual void IsTransformable(bool transf) { m_isTransformable=transf; notifyLayerControl_(); }
+    virtual bool IsTransformable() const {return m_isTransformable;}
+    virtual void IsTransformable(bool transf) { m_isTransformable=transf; notifyLayerControl_(); }
 
-        virtual bool is_saveable() const {return false;}
+    virtual bool is_saveable() const {return false;}
 
-	virtual std::string Name() const {return m_name;}
-	virtual void Name(const std::string &name) {m_name=name;}
-	virtual std::string Filename() const {return m_filename;}
-	virtual void Filename(const std::string &filename) {m_filename=filename;}
+    virtual std::string Name() const {return m_name;}
+    virtual void Name(const std::string &name) {m_name=name;}
+    virtual std::string Filename() const {return m_filename;}
+    virtual void Filename(const std::string &filename) {m_filename=filename;}
 
-        std::string GetInfos() const {return m_infos;}
-        virtual std::string get_layer_type_as_string() const {return "unknow type";}
-	virtual void Save(const std::string &name) {}
+    std::string GetInfos() const {return m_infos;}
+    virtual std::string get_layer_type_as_string() const {return "unknow type";}
+    virtual void Save(const std::string &name) {}
 
-	virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
+    virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
 
-        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent) {return new LayerSettingsControl(parent);}
+    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent) {return new LayerSettingsControl(parent);}
 
     virtual void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
     virtual inline double ZoomFactor() const { return m_zoomFactor; }
@@ -133,43 +133,43 @@ public:
     virtual void Resolution(double r) { m_resolution = r; }
     virtual inline double Resolution() const { return m_resolution; }
 
-	virtual void HasOri(bool hasOri) { m_hasOri = hasOri; }
-	virtual bool HasOri() const { return m_hasOri; }
-	virtual void Orientation(const Orientation2D &orientation)  {}
-	virtual const Orientation2D &Orientation() const  { return m_ori; }
+    virtual void HasOri(bool hasOri) { m_hasOri = hasOri; }
+    virtual bool HasOri() const { return m_hasOri; }
+    virtual void Orientation(const Orientation2D &orientation)  {}
+    virtual const Orientation2D &Orientation() const  { return m_ori; }
 
-	// Methodes specifiques ImageLayer
-	virtual void Alpha(unsigned char alpha) {}
-	virtual inline unsigned char Alpha() const { return 0; }
-	virtual void IntensityMin(double intensity) {}
-	virtual double IntensityMin() const { return 0.; }
-	virtual void IntensityMax(double intensity) {}
-	virtual double IntensityMax() const { return 0.; }
-	virtual void Gamma(double gamma) {}
-	virtual double Gamma() const { return 0.; }
-	virtual void TransparencyMin(double t) {}
-	virtual double TransparencyMin() const { return 0.; }
-	virtual void TransparencyMax(double t) {}
-	virtual double TransparencyMax() const { return 0.; }
-	virtual void IsTransparent(bool t) {}
-	virtual bool IsTransparent() const { return false; }
-	virtual void SetChannels(unsigned int red, unsigned int green, unsigned int blue) {}
-	virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue) const {}
-	virtual void SetAlphaChannel(bool useAlphaChannel, unsigned int alphaChannel) {}
-	virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
-	virtual boost::shared_ptr<ColorLookupTable> GetColorLookupTable() { return boost::shared_ptr<ColorLookupTable>(); }
+    // Methodes specifiques ImageLayer
+    virtual void Alpha(unsigned char alpha) {}
+    virtual inline unsigned char Alpha() const { return 0; }
+    virtual void IntensityMin(double intensity) {}
+    virtual double IntensityMin() const { return 0.; }
+    virtual void IntensityMax(double intensity) {}
+    virtual double IntensityMax() const { return 0.; }
+    virtual void Gamma(double gamma) {}
+    virtual double Gamma() const { return 0.; }
+    virtual void TransparencyMin(double t) {}
+    virtual double TransparencyMin() const { return 0.; }
+    virtual void TransparencyMax(double t) {}
+    virtual double TransparencyMax() const { return 0.; }
+    virtual void IsTransparent(bool t) {}
+    virtual bool IsTransparent() const { return false; }
+    virtual void SetChannels(unsigned int red, unsigned int green, unsigned int blue) {}
+    virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue) const {}
+    virtual void SetAlphaChannel(bool useAlphaChannel, unsigned int alphaChannel) {}
+    virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
+    virtual boost::shared_ptr<ColorLookupTable> GetColorLookupTable() { return boost::shared_ptr<ColorLookupTable>(); }
 
-	virtual unsigned int GetNbComponents() const { return 0; }
-	virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
-	virtual std::string GetPixelValue(int i, int j) const { return std::string(); }
-	// Fin methodes specifiques ImageLayer
+    virtual unsigned int GetNbComponents() const { return 0; }
+    virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
+    virtual std::string GetPixelValue(int i, int j) const { return std::string(); }
+    // Fin methodes specifiques ImageLayer
 
-        virtual std::vector<std::string> get_available_formats_extensions() const { return std::vector<std::string>(); }
-        virtual std::string get_available_formats_wildcard() const { return std::string(); }
-	
-        virtual void SetDefaultDisplayParameters() {}
+    virtual std::vector<std::string> get_available_formats_extensions() const { return std::vector<std::string>(); }
+    virtual std::string get_available_formats_wildcard() const { return std::string(); }
 
-	// Methodes specifiques VectorLayer
+    virtual void SetDefaultDisplayParameters() {}
+
+    // Methodes specifiques VectorLayer
     virtual void AddVectorLayerContent( const std::string &shapefileFileName ) {}
 
     virtual void AddPoint( double x , double y ) {}
@@ -183,44 +183,29 @@ public:
     virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta) {}
 
 
-	virtual void PointsColour( const wxColour &colour , bool update = true ) {}
-	virtual wxColour PointsColour() const { return wxColour(0,0,0); }
-	virtual void PointsWidth( const unsigned int width , bool update = true ) {}
-	virtual unsigned int PointsWidth() const { return 0; }
-	virtual void SetPointsStyle( const wxColour &colour , unsigned int width , bool update = true ) {}
+    virtual void set_inner_color( const wxColour &colour , bool update = true ) {}
+    virtual void set_border_color( const wxColour &colour , bool update = true ) {}
+    virtual void set_width( unsigned int width , bool update = true ) {}
+    virtual void set_style( const wxColour &inner_color, const wxColour &border_color, unsigned int inner_style, unsigned int border_style, unsigned int width , bool update = true ) {}
+    virtual wxColour get_inner_color() const {return wxNullColour;}
+    virtual wxColour get_border_color() const {return wxNullColour;}
+    virtual unsigned int get_width() const {return 3;}
+    virtual unsigned int get_inner_style() const {return wxSOLID;}
+    virtual unsigned int get_border_style() const {return wxSOLID;}
 
-	virtual void LinesColour( const wxColour &colour , bool update = true ) {}
-	virtual wxColour LinesColour() const { return wxColour(0,0,0); }
-	virtual void LinesWidth( unsigned int width , bool update = true ) {}
-	virtual unsigned int LinesWidth() const { return 0; }
-	virtual void LinesPenStyle( int style , bool update = true ) {}
-	virtual int LinesPenStyle() const { return 0; }
-	virtual void SetLinesStyle( const wxColour &colour , unsigned int width , int style , bool update = true ) {}
+    virtual void TextsColour( const wxColour &colour , bool update = true ) {}
+    virtual void TextsFont( const wxFont &font , bool update = true ) {}
+    virtual const wxFont& TextsFont() const { return wxNullFont; }
+    virtual void TextsVisibility( bool value , bool update = true ) {}
+    virtual bool TextsVisibility() const { return true; } // ???!!!???
 
-	virtual void PolygonsRingsColour( const wxColour &colour , bool update = true) {}
-	virtual wxColour PolygonsRingsColour() const { return wxColour(0,0,0); }
-	virtual void PolygonsInsideColour( const wxColour &colour , bool update = true ) {}
-	virtual wxColour PolygonsInsideColour() const { return wxColour(0,0,0); }
-	virtual void PolygonsRingsStyle( unsigned int style , bool update = true ) {}
-	virtual unsigned int PolygonsRingsStyle() const { return 0; }
-	virtual void PolygonsInsideStyle( unsigned int style , bool update = true ) {}
-	virtual unsigned int PolygonsInsideStyle() const { return 0; }
-	virtual void PolygonsRingsWidth( unsigned int width , bool update = true ) {}
-	virtual unsigned int PolygonsRingsWidth() const { return 0; }
+    virtual void Clear() {}
+    // Methodes specifiques VectorLayer
 
-	virtual void TextsColour( const wxColour &colour , bool update = true ) {}
-	virtual void TextsFont( const wxFont &font , bool update = true ) {}
-	virtual const wxFont& TextsFont() const { return wxNullFont; }
-	virtual void TextsVisibility( bool value , bool update = true ) {}
-	virtual bool TextsVisibility() const { return true; } // ???!!!???
-
-	virtual void Clear() {}
-	// Methodes specifiques VectorLayer
-
-        /// Callback to notify the LayerControl from changes
-	boost::function<void ()> notifyLayerControl_;
-        /// Callback to notify the LayerSettingsControl from changes
-	boost::function<void ()> notifyLayerSettingsControl_;
+    /// Callback to notify the LayerControl from changes
+    boost::function<void ()> notifyLayerControl_;
+    /// Callback to notify the LayerSettingsControl from changes
+    boost::function<void ()> notifyLayerSettingsControl_;
 
 
 protected:
