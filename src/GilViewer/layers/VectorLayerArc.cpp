@@ -52,11 +52,7 @@ inline void limite(wxCoord &x)
 		x = 4000;
 }
 
-GenericVectorLayerArc::GenericVectorLayerArc() : VectorLayerContent(),
-	m_arcsColour( wxColour(255,0,0) ),
-	m_width(1),
-	m_penStyle(wxSOLID)
-{}
+GenericVectorLayerArc::GenericVectorLayerArc() : VectorLayerContent() {}
 
 void GenericVectorLayerArc::Clear()
 {
@@ -66,8 +62,8 @@ void GenericVectorLayerArc::Clear()
 
 void GenericVectorLayerArc::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
-	wxPen penColour( m_arcsColour , m_width , m_penStyle );
-	dc.SetPen( penColour );
+        wxPen penColour(m_border_color,m_width,m_pen_style);
+        dc.SetPen(penColour);
 	{
 		// On met en place 2 methodes pour eviter de parcourir 2 fois les elements :
 		//     - la premiere avec les etiquettes

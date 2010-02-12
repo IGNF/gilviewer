@@ -74,7 +74,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 	main_sizer->AddGrowableRow(0);
 
 	m_histogramPanel = new HistogramPlotter(this, 0, 1, 2, wxID_ANY,wxDefaultPosition,wxSize(300,150));
-	wxColour bgcolorpanel( 255, 255, 255);
+        wxColour bgcolorpanel(*wxWHITE);
 	m_histogramPanel->SetBackgroundColour(bgcolorpanel);
 	m_histogramPanel->ClearBackground();
 	main_sizer->Add(m_histogramPanel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -688,7 +688,7 @@ void HistogramPlotter::OnPaint(wxPaintEvent &event)
 				else if(channel == m_greenChannel)
 					dc.SetPen( *wxGREEN_PEN);
 				else if(channel == m_blueChannel)
-					dc.SetPen( wxPen( wxColour(0,0,255) ) );
+                                        dc.SetPen( wxPen(*wxBLUE) );
 				else
 					dc.SetPen( *wxBLACK_PEN );
 

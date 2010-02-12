@@ -54,19 +54,11 @@ public:
     virtual void AddPoint( double x , double y ) {;}
     virtual void AddPoints( const std::vector<double> &x , const std::vector<double> &y ) {;}
 
-    virtual void PointsColour( const wxColour &colour ) { m_pointsColour = colour; }
-	virtual wxColour PointsColour() const { return m_pointsColour; }
-    virtual void PointsWidth( const unsigned int width ) { m_width = width; }
-	virtual unsigned int PointsWidth() const { return m_width; }
-
 	virtual void Clear() { m_points.clear(); m_numberOfEntities = 0; }
 	virtual void Save( const std::string &name ) {}
 
 protected:
     std::vector< simplePointType > m_points;
-
-    wxColour m_pointsColour;
-    unsigned int m_width;
 };
 
 class VectorLayerPoint : public GenericVectorLayerPoint

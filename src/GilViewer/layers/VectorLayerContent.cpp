@@ -51,7 +51,18 @@ Authors:
 #include "GilViewer/wrappers/WrapperShapelibDBF.hpp"
 
 VectorLayerContent::VectorLayerContent() :
-	m_SHPHandle(NULL), m_shapefileFileName(""), m_flagPRJ(IMAGE_COORDINATES), m_flagDBF(false), m_drawAttribute(0), m_numberOfEntities(0), m_shapeType(SHPT_NULL)
+        m_SHPHandle(NULL),
+        m_shapefileFileName(""),
+        m_flagPRJ(IMAGE_COORDINATES),
+        m_flagDBF(false),
+        m_drawAttribute(0),
+        m_numberOfEntities(0),
+        m_shapeType(SHPT_NULL),
+        m_inner_color(*wxBLUE),
+        m_border_color(*wxRED),
+        m_width(3),
+        m_pen_style(wxSOLID),
+        m_brush_style(wxSOLID)
 {
 	m_minBound[0] = m_maxBound[0] = 0.;
 	m_minBound[1] = m_maxBound[1] = 0.;
