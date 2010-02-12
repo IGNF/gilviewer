@@ -44,16 +44,13 @@ Authors:
 
 #include "VectorLayerPoint.hpp"
 
-GenericVectorLayerPoint::GenericVectorLayerPoint() : VectorLayerContent(),
-	m_pointsColour( wxColour(255,0,0) ),
-	m_width(3)
-{}
+GenericVectorLayerPoint::GenericVectorLayerPoint() : VectorLayerContent() {}
 
 void GenericVectorLayerPoint::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
 	const double delta = 0.5 * resolution;
-	wxPen penColour( m_pointsColour , m_width );
-	dc.SetPen( penColour );
+        wxPen penColour(m_border_color,m_width);
+        dc.SetPen(penColour);
 	bool draw_text = ( FlagDBF() && m_drawAttribute > 0 );
 	for (unsigned int i=0;i<m_points.size();i++)
 	{

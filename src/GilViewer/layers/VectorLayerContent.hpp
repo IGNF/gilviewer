@@ -50,6 +50,8 @@ Authors:
 class wxDC;
 class wxPoint;
 
+#include <wx/colour.h>
+
 /*
 * \class VectorLayerContent
 * \brief Classe abstraite de geometrie de calque vectoriel
@@ -109,7 +111,26 @@ public:
 	std::vector < std::vector < wxString > > m_dbfAttributesValues;
 
 	// local->global transform.
-	wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y) const;
+        wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y) const;
+
+        inline void set_inner_color(const wxColour &colour) {m_inner_color=colour;}
+        inline void set_border_color(const wxColour &colour) {m_border_color=colour;}
+        inline void set_width(unsigned int width) {m_width=width;}
+        inline void set_inner_style(unsigned int style) {m_brush_style=style;}
+        inline void set_border_style(unsigned int style) {m_pen_style=style;}
+        inline void set_style(const wxColour &inner_color, const wxColour &border_color, unsigned int inner_style, unsigned int border_style, unsigned int width)
+        {
+            m_inner_color=inner_color;
+            m_border_color=border_color;
+            m_brush_style=inner_style;
+            m_pen_style=border_style;
+            m_width=width;
+        }
+        inline wxColour get_inner_color() const {return m_inner_color;}
+        inline wxColour get_border_color() const {return m_border_color;}
+        inline unsigned int get_width() const {return m_width;}
+        inline unsigned int get_inner_style() const {return m_brush_style;}
+        inline unsigned int get_border_style() const  {return m_pen_style;}
 
 protected:
     /// Le handle sur le fichier shapefile
@@ -133,6 +154,10 @@ protected:
     double m_maxBound[4];
 
     virtual void CreatePRJ();
+
+    wxColour m_inner_color, m_border_color;
+    unsigned int m_width;
+    int m_pen_style, m_brush_style;
 };
 
 #endif // __VECTOR_LAYER_CONTENT_HPP__

@@ -725,7 +725,7 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 			TiXmlElement *elemPoints = new TiXmlElement( "Points" );
 			elemAppearance->LinkEndChild( elemPoints );
 			TiXmlElement *elemPointsColour = new TiXmlElement( "Colour" );
-			colour = (*it)->PointsColour();
+                        colour = (*it)->get_border_color();
 			elemPoints->LinkEndChild( elemPointsColour );
 			elemPointsColour->SetAttribute("red",colour.Red());
 			elemPointsColour->SetAttribute("green",colour.Green());
@@ -733,13 +733,13 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 			elemPointsColour->SetAttribute("alpha",colour.Alpha());
 			TiXmlElement *elemPointsWidth = new TiXmlElement( "Width" );
 			elemPoints->LinkEndChild( elemPointsWidth );
-			elemPointsWidth->SetAttribute("value",(*it)->PointsWidth());
+                        elemPointsWidth->SetAttribute("value",(*it)->get_width());
 
 			// Lines
 			TiXmlElement *elemLines = new TiXmlElement( "Lines" );
 			elemAppearance->LinkEndChild( elemLines );
 			TiXmlElement *elemLinesColour = new TiXmlElement( "Colour" );
-			colour = (*it)->LinesColour();
+                        colour = (*it)->get_border_color();
 			elemLines->LinkEndChild( elemLinesColour );
 			elemLinesColour->SetAttribute("red",colour.Red());
 			elemLinesColour->SetAttribute("green",colour.Green());
@@ -747,10 +747,10 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 			elemLinesColour->SetAttribute("alpha",colour.Alpha());
 			TiXmlElement *elemLinesWidth = new TiXmlElement( "Width" );
 			elemLines->LinkEndChild( elemLinesWidth );
-			elemLinesWidth->SetAttribute("value",(*it)->LinesWidth());
+                        elemLinesWidth->SetAttribute("value",(*it)->get_width());
 			TiXmlElement *elemLinesPenStyle = new TiXmlElement( "Style" );
 			elemLines->LinkEndChild( elemLinesPenStyle );
-			elemLinesPenStyle->SetAttribute("value",(*it)->LinesPenStyle());
+                        elemLinesPenStyle->SetAttribute("value",(*it)->get_border_style());
 
 			// Polygons
 			TiXmlElement *elemPolygons = new TiXmlElement( "Polygons" );
@@ -759,29 +759,29 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 			elemPolygons->LinkEndChild( elemPolygonsRings );
 			TiXmlElement *elemPolygonsRingsColour = new TiXmlElement( "Colour" );
 			elemPolygonsRings->LinkEndChild( elemPolygonsRingsColour );
-			colour = (*it)->PolygonsRingsColour();
+                        colour = (*it)->get_border_color();
 			elemPolygonsRingsColour->SetAttribute("red",colour.Red());
 			elemPolygonsRingsColour->SetAttribute("green",colour.Green());
 			elemPolygonsRingsColour->SetAttribute("blue",colour.Blue());
 			elemPolygonsRingsColour->SetAttribute("alpha",colour.Alpha());
 			TiXmlElement *elemPolygonsRingsWidth = new TiXmlElement( "Width" );
 			elemPolygonsRings->LinkEndChild( elemPolygonsRingsWidth );
-			elemPolygonsRingsWidth->SetAttribute("value",(*it)->PolygonsRingsWidth());
+                        elemPolygonsRingsWidth->SetAttribute("value",(*it)->get_width());
 			TiXmlElement *elemPolygonsRingsStyle = new TiXmlElement( "Style" );
 			elemPolygonsRings->LinkEndChild( elemPolygonsRingsStyle );
-			elemPolygonsRingsStyle->SetAttribute("value",(*it)->PolygonsRingsStyle());
+                        elemPolygonsRingsStyle->SetAttribute("value",(*it)->get_border_style());
 			TiXmlElement *elemPolygonsInside = new TiXmlElement( "Inside" );
 			elemPolygons->LinkEndChild( elemPolygonsInside );
 			TiXmlElement *elemPolygonsInsideColour = new TiXmlElement( "Colour" );
 			elemPolygonsInside->LinkEndChild( elemPolygonsInsideColour );
-			colour = (*it)->PolygonsInsideColour();
+                        colour = (*it)->get_inner_color();
 			elemPolygonsInsideColour->SetAttribute("red",colour.Red());
 			elemPolygonsInsideColour->SetAttribute("green",colour.Green());
 			elemPolygonsInsideColour->SetAttribute("blue",colour.Blue());
 			elemPolygonsInsideColour->SetAttribute("alpha",colour.Alpha());
 			TiXmlElement *elemPolygonsInsideStyle = new TiXmlElement( "Style" );
 			elemPolygonsInside->LinkEndChild( elemPolygonsInsideStyle );
-			elemPolygonsInsideStyle->SetAttribute("value",(*it)->PolygonsInsideStyle());
+                        elemPolygonsInsideStyle->SetAttribute("value",(*it)->get_border_style());
 		}
 	}
 

@@ -47,13 +47,7 @@ Authors:
 
 #include "VectorLayerPolygon.hpp"
 
-GenericVectorLayerPolygon::GenericVectorLayerPolygon() : VectorLayerContent(),
-	m_ringsColour( wxColour(255,0,0) ),
-	m_shapesColour( wxColour(0,0,255) ),
-	m_ringsWidth(1),
-	m_penStyle( wxSOLID ),
-	m_brushStyle( wxSOLID )
-{}
+GenericVectorLayerPolygon::GenericVectorLayerPolygon() : VectorLayerContent() {}
 
 void GenericVectorLayerPolygon::Clear()
 {
@@ -64,22 +58,20 @@ void GenericVectorLayerPolygon::Clear()
 void GenericVectorLayerPolygon::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 {
 	const double delta = 0.5 * resolution;
-	wxPen penColour( m_ringsColour , m_ringsWidth , m_penStyle );
-	penColour.SetWidth(m_ringsWidth);
-	wxBrush brushColour( m_shapesColour , m_brushStyle );
+        wxPen penColour(m_border_color,m_width,m_pen_style);
+        penColour.SetWidth(m_width);
+        wxBrush brushColour(m_inner_color,m_brush_style);
 
-	dc.SetPen( penColour );
-	dc.SetBrush( brushColour );
+        dc.SetPen(penColour);
+        dc.SetBrush(brushColour);
 
 	bool draw_text = ( FlagDBF() && m_drawAttribute > 0 );
 	for (unsigned int i=0;i<m_polygons.size();++i)
 	{
-		simplewxPolygonRingType poly;
+                simplewxPolygonRingType poly(m_polygons[i].size());
 		for (unsigned int j=0;j<m_polygons[i].size();++j)
 		{
-			poly[j] = FromLocal(zoomFactor,translationX,translationY,delta,
-				m_polygons[i][j].first,
-				m_polygons[i][j].second);
+                        poly[j] = FromLocal(zoomFactor,translationX,translationY,delta,m_polygons[i][j].first,m_polygons[i][j].second);
 		}
 		dc.DrawPolygon( poly.size() , &(poly.front()) );
 		if(draw_text)
