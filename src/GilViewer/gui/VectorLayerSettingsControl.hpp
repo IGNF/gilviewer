@@ -39,14 +39,15 @@ Authors:
 #ifndef __VECTOR_LAYER_SETTINGS_CONTROL_HPP__
 #define __VECTOR_LAYER_SETTINGS_CONTROL_HPP__
 
+#include "GilViewer/gui/LayerSettingsControl.hpp"
+#include "GilViewer/gui/resources/polygon_icon.xpm"
+
 class wxSlider;
 class wxChoice;
 class wxCheckBox;
 class wxFlexGridSizer;
 class wxFontPickerCtrl;
 class wxColourPickerCtrl;
-
-#include "GilViewer/gui/LayerSettingsControl.hpp"
 
 class VectorLayerSettingsControl : public LayerSettingsControl
 {
@@ -74,6 +75,9 @@ public:
     static wxString choices_lines[6];
     static int style_lines[6];
     static unsigned int FromWxStyleToSelectionIndex( unsigned int style );
+
+    virtual std::string get_info_button_name() const {return "APPLICATIONS-OTHERS_16x16";}
+    virtual const char** get_icon_xpm() const {return polygon_icon_xpm;}
 
 //private:
 	LayerControl *m_parent;
