@@ -264,22 +264,22 @@ void VectorLayerSettingsControl::update()
 	// Points
 	if (vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
 	{
-		m_colourPickerPoints->SetColour(vectorLayer->PointsColour());
-		m_sliderWidthPoints->SetValue(vectorLayer->PointsWidth());
+                m_colourPickerPoints->SetColour(vectorLayer->get_border_color());
+                m_sliderWidthPoints->SetValue(vectorLayer->get_width());
 	}
 	if (vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
 	{
-		m_colourPickerLines->SetColour(vectorLayer->LinesColour());
-		m_sliderWidthLines->SetValue(vectorLayer->LinesWidth());
-		m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(vectorLayer->LinesPenStyle()) );
+                m_colourPickerLines->SetColour(vectorLayer->get_border_color());
+                m_sliderWidthLines->SetValue(vectorLayer->get_width());
+                m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(vectorLayer->get_border_style()) );
 	}
 	// Polygons
 	if (vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
 	{
-		m_colourPickerRingsPolygons->SetColour(vectorLayer->PolygonsRingsColour());
-		m_colourPickerInsidePolygons->SetColour(vectorLayer->PolygonsInsideColour());
-		m_sliderWidthRings->SetValue(vectorLayer->PolygonsRingsWidth());
-		m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(vectorLayer->PolygonsInsideStyle()) );
+                m_colourPickerRingsPolygons->SetColour(vectorLayer->get_border_color());
+                m_colourPickerInsidePolygons->SetColour(vectorLayer->get_inner_color());
+                m_sliderWidthRings->SetValue(vectorLayer->get_width());
+                m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(vectorLayer->get_inner_style()) );
 	}
 	// Text visibility
 	m_checkShowTexts->SetValue(vectorLayer->TextsVisibility());
@@ -305,8 +305,8 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 	// Points
 	if (vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
 	{
-		vectorLayer->PointsColour(m_colourPickerPoints->GetColour(),false);
-		vectorLayer->PointsWidth(m_sliderWidthPoints->GetValue(),false);
+                vectorLayer->set_border_color(m_colourPickerPoints->GetColour(),false);
+                vectorLayer->set_width(m_sliderWidthPoints->GetValue(),false);
 	}
 
 	// Polygons
@@ -316,18 +316,18 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 		wxColour ringsColourWithAlpha(ringsColour.Red(), ringsColour.Green(), ringsColour.Blue(), 1);
 		wxColour insideColour(m_colourPickerInsidePolygons->GetColour());
 		wxColour insideColourWithAlpha(insideColour.Red(), insideColour.Green(), insideColour.Blue(), 1);
-		vectorLayer->PolygonsRingsColour(ringsColourWithAlpha,false);
-		vectorLayer->PolygonsInsideColour(insideColourWithAlpha,false);
-		vectorLayer->PolygonsRingsWidth(m_sliderWidthRings->GetValue(),false);
-		vectorLayer->PolygonsInsideStyle(style_inside_polygons[m_choicePolygons->GetSelection()],false);
+                vectorLayer->set_border_color(ringsColourWithAlpha,false);
+                vectorLayer->set_inner_color(insideColourWithAlpha,false);
+                vectorLayer->set_width(m_sliderWidthRings->GetValue(),false);
+                vectorLayer->set_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
 	}
 
 	// Lines
 	if (vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
 	{
-		vectorLayer->LinesColour(m_colourPickerLines->GetColour(),false);
-		vectorLayer->LinesWidth(m_sliderWidthLines->GetValue(),false);
-		vectorLayer->LinesPenStyle(style_lines[m_choiceLines->GetSelection()],false);
+                vectorLayer->set_border_color(m_colourPickerLines->GetColour(),false);
+                vectorLayer->set_width(m_sliderWidthLines->GetValue(),false);
+                vectorLayer->set_border_style(style_lines[m_choiceLines->GetSelection()],false);
 	}
 
 	// Labels
