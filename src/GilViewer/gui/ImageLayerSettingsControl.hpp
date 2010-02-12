@@ -40,10 +40,10 @@ Authors:
 #define __IMAGE_LAYER_SETTINGS_CONTROL_HPP__
 
 #include <vector>
-//#include <wx/filepicker.h>
 #include <wx/panel.h>
 
 #include "GilViewer/gui/LayerSettingsControl.hpp"
+#include "GilViewer/gui/resources/image_icon.xpm"
 
 class HistogramPlotter;
 class LayerControl;
@@ -75,6 +75,9 @@ public:
 
 	// Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
 	virtual void update();
+
+        virtual std::string get_info_button_name() const {return "APPLICATIONS-GRAPHICS_16x16";}
+        virtual const char** get_icon_xpm() const {return image_icon_xpm;}
 
 //private:
 	//wxSlider *m_minimumSlider;

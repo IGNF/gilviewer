@@ -74,9 +74,6 @@ Authors:
 #include "GilViewer/io/XMLDisplayConfigurationIO.hpp"
 #include "GilViewer/tools/Orientation2D.h"
 
-#include "GilViewer/gui/resources/polygon_icon.xpm"
-#include "GilViewer/gui/resources/image_icon.xpm"
-
 #include "GilViewer/gui/LayerControl.hpp"
 
 #ifdef _WINDOWS
@@ -662,14 +659,8 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 
     // Finalement, si necessaire, il faut changer le bitmap associe au bouton d'infos
     {
-        if (dynamic_cast<VectorLayerSettingsControl*> (m_rows[firstRow]->m_layerSettingsControl))
-            m_rows[firstRow]->m_infoButton->SetBitmapLabel(wxBitmap(polygon_icon_xpm));
-        else if (dynamic_cast<ImageLayerSettingsControl*> (m_rows[firstRow]->m_layerSettingsControl))
-            m_rows[firstRow]->m_infoButton->SetBitmapLabel(wxBitmap(image_icon_xpm));
-        if (dynamic_cast<VectorLayerSettingsControl*> (m_rows[secondRow]->m_layerSettingsControl))
-            m_rows[secondRow]->m_infoButton->SetBitmapLabel(wxBitmap(polygon_icon_xpm));
-        else if (dynamic_cast<ImageLayerSettingsControl*> (m_rows[secondRow]->m_layerSettingsControl))
-            m_rows[secondRow]->m_infoButton->SetBitmapLabel(wxBitmap(image_icon_xpm));
+        m_rows[firstRow]->m_infoButton->SetBitmapLabel(wxBitmap(m_rows[firstRow]->m_layerSettingsControl->get_icon_xpm()));
+        m_rows[secondRow]->m_infoButton->SetBitmapLabel(wxBitmap(m_rows[secondRow]->m_layerSettingsControl->get_icon_xpm()));
     }
 
     // Ticket #9 : bouton sauvegarde ne bouge pas ...
