@@ -68,10 +68,14 @@ public:
             notifyLayerControl_(notifyLayerControl),
             notifyLayerSettingsControl_(notifyLayerSettingsControl),
             m_isVisible(true),
+            m_isTransformable(true),
             m_hasToBeUpdated(true),
             m_name("Default layer name"),
             m_filename(""),
-            m_hasOri(false) {}
+            m_zoomFactor(1.),
+            m_translationX(0.), m_translationY(0.),
+            m_hasOri(false),
+            m_infos("") {}
     static void foo() {}
     static void bar() {}
 
