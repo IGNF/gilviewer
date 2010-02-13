@@ -116,6 +116,14 @@ ELSE()
 	link_directories( ${Boost_LIBRARY_DIRS} )
 ENDIF()
 
+# Find GDAL
+find_package(GDAL)
+if(GDAL_FOUND)
+    include_directories(${GDAL_INCLUDE_DIR})
+else()
+    message(FATAL_ERROR "GDAL not found!")
+endif()
+
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
 ####

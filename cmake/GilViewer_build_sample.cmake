@@ -11,7 +11,7 @@ IF(UNIX)
 		ADD_EXECUTABLE( GilViewerApp ./viewer_app/GilViewer.cpp ./viewer_app/FrameViewer.cpp )
 	ENDIF()
 	ADD_DEFINITIONS(-Wall)
-        TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} GilViewer shapelib tinyxml gdal1.5.0 )
+        TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} GilViewer shapelib tinyxml ${GDAL_LIBRARY} )
 ENDIF(UNIX)
 # Si c'est du windows, on lui dit de faire une application windows (et pas une console)
 # On en profite aussi pour ajouter les resources
@@ -25,5 +25,5 @@ IF(WIN32)
                                           ./viewer_app/FrameViewer.hpp
                                           ./viewer_app/GilViewer.rc )
     # Comme c'est sous visual (a priori ...), il y a l'auto link de Boost, donc pas besoin d'ajouter les libs ...
-        TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer shapelib tinyxml )
+        TARGET_LINK_LIBRARIES( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer shapelib tinyxml ${GDAL_LIBRARY} )
 ENDIF(WIN32)
