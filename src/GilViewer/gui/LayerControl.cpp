@@ -57,7 +57,8 @@ Authors:
 #include <wx/progdlg.h>
 #include <wx/log.h>
 
-#include "GilViewer/layers/Layer.hpp"
+#include "GilViewer/gui/LayerControl.hpp"
+
 #include "GilViewer/layers/ImageLayer.hpp"
 #include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/VectorLayer.hpp"
@@ -74,8 +75,6 @@ Authors:
 
 #include "GilViewer/io/XMLDisplayConfigurationIO.hpp"
 #include "GilViewer/tools/Orientation2D.h"
-
-#include "GilViewer/gui/LayerControl.hpp"
 
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
