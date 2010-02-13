@@ -96,14 +96,6 @@ ImageLayer::ImageLayer(const image_ptr &image, const std::string &name, const st
     TransparencyMin(0.);
     Gamma(1.);
 
-    ZoomFactor(1.);
-    TranslationX(0.);
-    TranslationY(0.);
-
-    IsVisible(true);
-    IsTransformable(true);
-    HasToBeUpdated(true);
-
     m_cLUT = boost::shared_ptr<ColorLookupTable>(new ColorLookupTable);
 
     ostringstream oss;
