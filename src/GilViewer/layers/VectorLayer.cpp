@@ -53,15 +53,8 @@ using namespace std;
 
 void VectorLayer::Init()
 {
-    ZoomFactor(1.);
-    TranslationX(0.);
-    TranslationY(0.);
-
-    HasToBeUpdated(true);
-    IsTransformable(true);
     m_isTextVisible = true;
     m_textFont = wxNullFont;
-
     build_infos();
 }
 
