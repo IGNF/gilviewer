@@ -91,18 +91,20 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
                         printf( "%s,", poFeature->GetFieldAsString(iField) );
                 }
                 */
-                if( OGRPoint *poPoint = dynamic_cast<OGRPoint*>(poFeature->GetGeometryRef()) )
-                    m_geometries_features.push_back(std::make_pair<OGRPoint*,OGRFeature*>(poPoint,poFeature));
-                else if(OGRPolygon *poPolygon = dynamic_cast<OGRPolygon*>(poFeature->GetGeometryRef()))
-                    m_geometries_features.push_back(std::make_pair<OGRPolygon*,OGRFeature*>(poPolygon,poFeature));
+                if(OGRLinearRing *poLine = dynamic_cast<OGRLinearRing*>(poFeature->GetGeometryRef()) )
+                    m_geometries_features.push_back(std::make_pair<OGRLinearRing*,OGRFeature*>(poLine,poFeature));
                 else if(OGRLineString *poLine = dynamic_cast<OGRLineString*>(poFeature->GetGeometryRef()) )
                     m_geometries_features.push_back(std::make_pair<OGRLineString*,OGRFeature*>(poLine,poFeature));
+                else if(OGRMultiLineString* poMLine = dynamic_cast<OGRMultiLineString*>(poFeature->GetGeometryRef()))
+                    m_geometries_features.push_back(std::make_pair<OGRMultiLineString*,OGRFeature*>(poMLine,poFeature));
                 else if(OGRMultiPoint* poMPoint = dynamic_cast<OGRMultiPoint*>(poFeature->GetGeometryRef()))
                     m_geometries_features.push_back(std::make_pair<OGRMultiPoint*,OGRFeature*>(poMPoint,poFeature));
                 else if(OGRMultiPolygon* poMPolygon = dynamic_cast<OGRMultiPolygon*>(poFeature->GetGeometryRef()))
                     m_geometries_features.push_back(std::make_pair<OGRMultiPolygon*,OGRFeature*>(poMPolygon,poFeature));
-                else if(OGRMultiLineString* poMLine = dynamic_cast<OGRMultiLineString*>(poFeature->GetGeometryRef()))
-                    m_geometries_features.push_back(std::make_pair<OGRMultiLineString*,OGRFeature*>(poMLine,poFeature));
+                else if( OGRPoint *poPoint = dynamic_cast<OGRPoint*>(poFeature->GetGeometryRef()) )
+                    m_geometries_features.push_back(std::make_pair<OGRPoint*,OGRFeature*>(poPoint,poFeature));
+                else if(OGRPolygon *poPolygon = dynamic_cast<OGRPolygon*>(poFeature->GetGeometryRef()))
+                    m_geometries_features.push_back(std::make_pair<OGRPolygon*,OGRFeature*>(poPolygon,poFeature));
             }
         }
         OGRDataSource::DestroyDataSource( poDS );
@@ -183,11 +185,17 @@ private:
 };
 
 template <>
-void draw_geometry_visitor::operator()(OGRPoint* operand) const
+void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
 {
-    double x = (m_delta+operand->getX()+m_tx)/m_z;
-    double y = (m_delta+operand->getY()+m_ty)/m_z;
-    m_dc.DrawLine(x,y,x,y);
+    // Merge with ()(OGRLineString*)?
+    for(int j=0;j<operand->getNumPoints()-1;++j)
+    {
+        double x1 = (m_delta+operand->getX(j)+m_tx)/m_z;
+        double y1 = (m_delta+operand->getY(j)+m_ty)/m_z;
+        double x2 = (m_delta+operand->getX(j+1)+m_tx)/m_z;
+        double y2 = (m_delta+operand->getY(j+1)+m_ty)/m_z;
+        m_dc.DrawLine(x1,y1,x2,y2);
+    }
 }
 
 template <>
@@ -209,21 +217,67 @@ void draw_geometry_visitor::operator()(OGRMultiLineString* operand) const
     for(int i=0;i<operand->getNumGeometries();++i)
     {
         OGRLineString* l = (OGRLineString*)operand->getGeometryRef(i);
-        for(int j=0;j<l->getNumPoints()-1;++j)
-        {
-            double x1 = (m_delta+l->getX(j)+m_tx)/m_z;
-            double y1 = (m_delta+l->getY(j)+m_ty)/m_z;
-            double x2 = (m_delta+l->getX(j+1)+m_tx)/m_z;
-            double y2 = (m_delta+l->getY(j+1)+m_ty)/m_z;
-            m_dc.DrawLine(x1,y1,x2,y2);
-        }
+        (*this)(l);
     }
+}
+
+template <>
+void draw_geometry_visitor::operator()(OGRPoint* operand) const
+{
+    double x = (m_delta+operand->getX()+m_tx)/m_z;
+    double y = (m_delta+operand->getY()+m_ty)/m_z;
+    m_dc.DrawLine(x,y,x,y);
+}
+
+template <>
+void draw_geometry_visitor::operator()(OGRMultiPoint* operand) const
+{
+    for(int i=0;i<operand->getNumGeometries();++i)
+        (*this)((OGRPoint*)operand->getGeometryRef(i));
+}
+
+template <>
+void draw_geometry_visitor::operator()(OGRPolygon* operand) const
+{
+    // TODO: draw polygons
+    vector<wxPoint> points;
+    for(int j=0;j<operand->getExteriorRing()->getNumPoints();++j)
+    {
+        double x1 = (m_delta+operand->getExteriorRing()->getX(j)+m_tx)/m_z;
+        double y1 = (m_delta+operand->getExteriorRing()->getY(j)+m_ty)/m_z;
+        points.push_back(wxPoint(x1,y1));
+    }
+    m_dc.DrawPolygon(points.size(),&points.front());
+    m_dc.SetLogicalFunction(wxXOR);
+    for(int i=0;i<operand->getNumInteriorRings();++i)
+    {
+        vector<wxPoint> points;
+        for(int j=0;j<operand->getInteriorRing(i)->getNumPoints();++j)
+        {
+            double x1 = (m_delta+operand->getInteriorRing(i)->getX(j)+m_tx)/m_z;
+            double y1 = (m_delta+operand->getInteriorRing(i)->getY(j)+m_ty)/m_z;
+            points.push_back(wxPoint(x1,y1));
+        }
+        m_dc.DrawPolygon(points.size(),&points.front());
+    }
+    m_dc.SetLogicalFunction(wxCOPY);
+}
+
+template <>
+void draw_geometry_visitor::operator()(OGRMultiPolygon* operand) const
+{
+    for(int i=0;i<operand->getNumGeometries();++i)
+        (*this)((OGRMultiPolygon*)operand->getGeometryRef(i));
 }
 
 void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
-    wxPen penColour( wxColour(255,0,0) , 3);
+    wxPen penColour( *wxRED , 3);
+    wxBrush brush(*wxBLUE,wxSOLID);
     dc.SetPen( penColour );
+    dc.SetBrush(brush);
+    // TODO: image or geographic coordinates
+    // dc.SetAxisOrientation();
     draw_geometry_visitor visitor(dc,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY());
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );

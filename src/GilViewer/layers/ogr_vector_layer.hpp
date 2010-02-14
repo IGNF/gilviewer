@@ -47,13 +47,15 @@ class LayerSettingsControl;
 class OGRGeometry;
 class OGRFeature;
 class OGRMultiLineString;
+class OGRLinearRing;
 class OGRLineString;
 class OGRMultiPoint;
 class OGRMultiPolygon;
 class OGRPoint;
 class OGRPolygon;
 
-typedef boost::variant< OGRLineString*,
+typedef boost::variant< OGRLinearRing*,
+                        OGRLineString*,
                         OGRMultiLineString*,
                         OGRMultiPoint*,
                         OGRMultiPolygon*,
@@ -74,6 +76,8 @@ public:
 
     virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void Update(int, int) {}
+
+    virtual bool is_saveable() const {return true;}
 
     virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
 

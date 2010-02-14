@@ -834,22 +834,16 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
     try
     {
         std::string filename(parameters.path.c_str());
-        Layer::ptrLayerType ptr = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
-        if (!ptr) return;
-        AddLayer(ptr);
+        Layer::ptrLayerType layer = ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
+        if (!layer) return;
+        AddLayer(layer);
+        //Layer::ptrLayerType ptr = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
+        //if (!ptr) return;
+        //AddLayer(ptr);
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
         this->m_layers.back()->IsVisible(parameters.isVisible);
         this->m_layers.back()->IsTransformable(parameters.isTransformable);
-        /*
-        this->m_layers.back()->SetPointsStyle(parameters.pointsColor, parameters.pointsWidth);
-        this->m_layers.back()->SetLinesStyle(parameters.linesColor, parameters.linesWidth, parameters.linesStyle);
-        this->m_layers.back()->PolygonsRingsColour(parameters.polygonsRingsColor);
-        this->m_layers.back()->PolygonsRingsWidth(parameters.polygonsRingsWidth);
-        this->m_layers.back()->PolygonsInsideColour(parameters.polygonsInsideColor);
-        this->m_layers.back()->PolygonsRingsStyle(parameters.polygonsRingsStyle);
-        this->m_layers.back()->PolygonsInsideStyle(parameters.polygonsInsideStyle);
-        */
         this->m_layers.back()->set_style(parameters.polygonsInsideColor,parameters.polygonsRingsColor,parameters.polygonsInsideStyle,parameters.polygonsRingsStyle,parameters.polygonsRingsWidth);
         this->m_layers.back()->ZoomFactor(parameters.zoomFactor);
         this->m_layers.back()->TranslationX(parameters.translationX);
