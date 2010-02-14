@@ -37,6 +37,7 @@ Authors:
 ***********************************************************************/
 
 #include <stdexcept>
+#include <iostream>
 
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
@@ -67,7 +68,10 @@ bool GilViewerApp::OnInit()
 #endif
 
         // Register all OGR format drivers
+        OGRSFDriverRegistrar* r = OGRSFDriverRegistrar::GetRegistrar();
         OGRRegisterAll();
+        for(int i=0;i<r->GetDriverCount();++i)
+            std::cout << r->GetDriver(i)->GetName() << std::endl;
 
 	// Langage
 	set_langage(wxLANGUAGE_FRENCH);

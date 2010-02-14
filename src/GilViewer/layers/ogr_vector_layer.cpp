@@ -61,8 +61,9 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         poDS = OGRSFDriverRegistrar::Open(filename.c_str(), FALSE);
         if( poDS == NULL )
         {
-            printf( "Open failed.\n" );
-            exit( 1 );
+            string error_message("Open failed.\n");
+            error_message += CPLGetLastErrorMsg();
+            throw invalid_argument(error_message.c_str());
         }
 
         for(int i=0;i<poDS->GetLayerCount();++i)
@@ -184,6 +185,8 @@ private:
     double m_r, m_z, m_tx, m_ty, m_delta;
 };
 
+// TODO: use (implement) FromLocal
+
 template <>
 void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
 {
@@ -248,7 +251,6 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
         points.push_back(wxPoint(x1,y1));
     }
     m_dc.DrawPolygon(points.size(),&points.front());
-    m_dc.SetLogicalFunction(wxXOR);
     for(int i=0;i<operand->getNumInteriorRings();++i)
     {
         vector<wxPoint> points;
@@ -260,7 +262,6 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
         }
         m_dc.DrawPolygon(points.size(),&points.front());
     }
-    m_dc.SetLogicalFunction(wxCOPY);
 }
 
 template <>
