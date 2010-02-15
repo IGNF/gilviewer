@@ -60,7 +60,7 @@ public:
     /// Simplement pour construire un calque "foutoir" (voir l'implementation)
     VectorLayer(const std::string &layerName , signed short flagPRJ = 1 , bool flagDBF = false );
 
-	~VectorLayer() {};
+	virtual ~VectorLayer() {};
 
     static ptrLayerType CreateVectorLayer(const std::string &layerName , const std::string &fileName);
     static ptrLayerType CreateVectorLayer(const std::string &layerName , signed short flagPRJ = 1 , bool flagDBF = false );
@@ -94,8 +94,8 @@ public:
 	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
 	virtual void Update(int width, int height) {};
 
-        void build_infos();
-        virtual std::string get_layer_type_as_string() const {return "Vector";}
+    void build_infos();
+    virtual std::string get_layer_type_as_string() const {return "Vector";}
     virtual void Save(const std::string &name) const;
 
     void set_inner_color(const wxColour &colour, bool update = true );
@@ -117,18 +117,18 @@ public:
 	virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
 	virtual bool TextsVisibility() const { return m_isTextVisible; }
 
-        boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
+    boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
 
 	virtual void Clear();
 
 	virtual std::string Filename() const;
 	virtual void Filename(const std::string &filename) {m_filename=filename;}
 
-        virtual std::vector<std::string> get_available_formats_extensions() const;
-        virtual std::string get_available_formats_wildcard() const;
+    virtual std::vector<std::string> get_available_formats_extensions() const;
+    virtual std::string get_available_formats_wildcard() const;
 
-        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
-        virtual bool is_saveable() const {return true;}
+    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
+    virtual bool is_saveable() const {return true;}
 
 private:
 	void Init();
