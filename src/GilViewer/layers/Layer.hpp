@@ -64,7 +64,7 @@ class Layer
 public:
     typedef boost::shared_ptr< Layer > ptrLayerType;
 
-    Layer(const boost::function<void()> &notifyLayerControl = foo, const boost::function<void()> &notifyLayerSettingsControl = bar):
+    Layer(const boost::function<void()> &notifyLayerControl = notify_none, const boost::function<void()> &notifyLayerSettingsControl = notify_none):
             notifyLayerControl_(notifyLayerControl),
             notifyLayerSettingsControl_(notifyLayerSettingsControl),
             m_isVisible(true),
@@ -76,9 +76,10 @@ public:
             m_translationX(0.), m_translationY(0.),
             m_hasOri(false),
             m_infos("") {}
-    static void foo() {}
-    static void bar() {}
+    static void notify_none() {}
 
+    virtual ~Layer() {}
+    
     /// Set the callback to notify the LayerControl from changes
     void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
     /// Set the callback to notify the LayerSettingsControl from changes
