@@ -12,7 +12,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT(GilViewer)
 
 IF(UNIX)
-	INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
+        INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
 ENDIF(UNIX)
 
 SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )

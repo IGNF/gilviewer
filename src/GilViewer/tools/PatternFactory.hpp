@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef PATTERNFACTORY_HPP_
@@ -56,40 +56,41 @@ Authors:
 */
 
 template
-<
+        <
 	class TAbstractProduct,
 	typename TIdentifierType = std::string,
-	typename TProductCreator = boost::function<TAbstractProduct* ()>
->
-class PatternFactory
-{
+        typename TProductCreator = boost::function<TAbstractProduct* ()>,
+        typename ReturnType = TAbstractProduct*
+                                   >
+                                   class PatternFactory
+                                   {
 
-	public:
-		virtual ~PatternFactory() {}
+                                   public:
+    virtual ~PatternFactory() {}
 
-		bool Register(const TIdentifierType& id, TProductCreator creator)
-		{
-			return associations_.insert( typename AssocMapType::value_type(id, creator) ).second;
-		}
+    bool Register(const TIdentifierType& id, TProductCreator creator)
+    {
+        return associations_.insert( typename AssocMapType::value_type(id, creator) ).second;
+    }
 
-		bool Unregister(const TIdentifierType& id)
-		{
-			return associations_.erase(id) == 1;
-		}
+    bool Unregister(const TIdentifierType& id)
+    {
+        return associations_.erase(id) == 1;
+    }
 
-		virtual TAbstractProduct* createObject(const TIdentifierType& id)
-		{
-			typename AssocMapType::const_iterator i = associations_.find(id);
-			if(i != associations_.end())
-			{
-				return (i->second)();
-			}
-			throw std::logic_error("Unknown object type passed to factory !\n");
-		}
+    virtual ReturnType createObject(const TIdentifierType& id)
+    {
+        typename AssocMapType::const_iterator i = associations_.find(id);
+        if(i != associations_.end())
+        {
+            return (i->second)();
+        }
+        throw std::logic_error("Unknown object type passed to factory !\n");
+    }
 
 	private:
-		typedef std::map<TIdentifierType, TProductCreator> AssocMapType;
-		AssocMapType associations_;
+    typedef std::map<TIdentifierType, TProductCreator> AssocMapType;
+    AssocMapType associations_;
 
 };
 
