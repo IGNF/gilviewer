@@ -421,6 +421,15 @@ void VectorLayer::set_style(const wxColour &inner_color, const wxColour &border_
     m_layerContent->set_width(width);
     if(update)
         notifyLayerSettingsControl_();
+
+    boost::shared_ptr<VectorLayerMultiGeometries> multi = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
+    if (multi)
+    {
+        wxPen pen(border_color,width,border_style);
+        wxBrush brush(inner_color,inner_style);
+        multi->SetBrushVectorLayerMultiGeometries(brush);
+        multi->SetPenVectorLayerMultiGeometries(pen);
+    }
 }
 
 void VectorLayer::AddPoint( double x , double y )

@@ -40,7 +40,6 @@ Authors:
 #define __VECTOR_LAYER_SETTINGS_CONTROL_HPP__
 
 #include "GilViewer/gui/LayerSettingsControl.hpp"
-#include "GilViewer/gui/resources/polygon_icon.xpm"
 
 class wxSlider;
 class wxChoice;
@@ -77,7 +76,7 @@ public:
     static unsigned int FromWxStyleToSelectionIndex( unsigned int style );
 
     virtual std::string get_info_button_name() const {return "APPLICATIONS-OTHERS_16x16";}
-    virtual const char** get_icon_xpm() const {return polygon_icon_xpm;}
+    virtual const char** get_icon_xpm() const;
 
 //private:
 	LayerControl *m_parent;

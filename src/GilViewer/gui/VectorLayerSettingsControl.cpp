@@ -37,6 +37,7 @@ Authors:
 ***********************************************************************/
 
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
+#include "GilViewer/gui/resources/polygon_icon.xpm"
 
 #include <wx/frame.h>
 #include <wx/choice.h>
@@ -351,3 +352,5 @@ void VectorLayerSettingsControl::OnCloseWindow(wxCloseEvent& event)
 {
 	Hide();
 }
+
+const char** VectorLayerSettingsControl::get_icon_xpm() const {return polygon_icon_xpm;}

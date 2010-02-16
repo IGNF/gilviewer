@@ -43,7 +43,6 @@ Authors:
 #include <wx/panel.h>
 
 #include "GilViewer/gui/LayerSettingsControl.hpp"
-#include "GilViewer/gui/resources/image_icon.xpm"
 
 class HistogramPlotter;
 class LayerControl;
@@ -77,7 +76,7 @@ public:
 	virtual void update();
 
         virtual std::string get_info_button_name() const {return "APPLICATIONS-GRAPHICS_16x16";}
-        virtual const char** get_icon_xpm() const {return image_icon_xpm;}
+        virtual const char** get_icon_xpm() const;
 
 //private:
 	//wxSlider *m_minimumSlider;

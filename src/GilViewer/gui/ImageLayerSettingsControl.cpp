@@ -57,6 +57,7 @@ Authors:
 #include "GilViewer/gui/PanelViewer.hpp"
 #include "GilViewer/gui/LayerControl.hpp"
 #include "GilViewer/gui/define_id.hpp"
+#include "GilViewer/gui/resources/image_icon.xpm"
 
 #include "GilViewer/gui/ImageLayerSettingsControl.hpp"
 
@@ -544,6 +545,8 @@ void ImageLayerSettingsControl::OnGetFocus(wxFocusEvent &event)
 	m_textRedMaximumIntensity->SetValue(valueIntensityMax);
 
 }
+
+const char** ImageLayerSettingsControl::get_icon_xpm() const {return image_icon_xpm;}
 
 BEGIN_EVENT_TABLE(HistogramPlotter,wxPanel)
 EVT_PAINT(HistogramPlotter::OnPaint)
