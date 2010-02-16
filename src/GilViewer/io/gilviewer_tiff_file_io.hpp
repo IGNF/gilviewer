@@ -39,15 +39,14 @@ Authors:
 #define GILVIEWER_TIFF_FILE_IO_HPP
 
 #include "gilviewer_file_io.hpp"
-#include <boost/shared_ptr.hpp>
 
 class gilviewer_tiff_file_io : public gilviewer_file_io
 {
 public:
     virtual ~gilviewer_tiff_file_io() {}
 
-    virtual void load();
-    virtual void save();
+    virtual void load(boost::shared_ptr<Layer>& layer, const std::string &filename);
+    virtual void save(boost::shared_ptr<Layer>& layer, const std::string &filename);
 
     static bool Register();
     friend boost::shared_ptr<gilviewer_tiff_file_io> create_gilviewer_tiff_file_io();

@@ -38,13 +38,17 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_HPP
 #define GILVIEWER_FILE_IO_HPP
 
+#include <boost/shared_ptr.hpp>
+
+class Layer;
+
 class gilviewer_file_io
 {
 public:
     virtual ~gilviewer_file_io() {}
 
-    virtual void load()=0;
-    virtual void save()=0;
+    virtual void load(boost::shared_ptr<Layer>& layer, const std::string &filename)=0;
+    virtual void save(boost::shared_ptr<Layer>& layer, const std::string &filename)=0;
 
 protected:
     gilviewer_file_io() {}
