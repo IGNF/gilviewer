@@ -119,6 +119,8 @@ void VectorLayer::SetDefaultDisplayParameters()
     set_style(*wxBLUE,*wxRED,wxSOLID,wxSOLID,3);
 }
 
+#include <iostream>
+
 VectorLayer::VectorLayer(const string &layerName , const string &fileName) :
 	m_isFromFile(true)
 {
