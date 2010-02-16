@@ -76,8 +76,8 @@ public:
     typedef std::pair<double,double> simplePointType;
     typedef std::vector< simplePointType > simpleArcType;
 
-	VectorLayerMultiGeometries();
-	virtual ~VectorLayerMultiGeometries();
+        VectorLayerMultiGeometries():VectorLayerContent() {}
+        virtual ~VectorLayerMultiGeometries() {}
 
 	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, const double zoomFactor, const double translationX, const double translationY, const double resolution) const;
 	virtual void Save( const std::string &name ) {};
@@ -97,21 +97,19 @@ public:
 
 	virtual void Clear();
 
-	virtual void PolygonsRingsColour( const wxColour &colour ) { m_pen->SetColour(colour); }
-	virtual wxColour PolygonsRingsColour() const { return m_pen->GetColour(); }
-	virtual void PolygonsInsideColour( const wxColour &colour ) { m_brush->SetColour(colour); }
-	virtual wxColour PolygonsInsideColour() const { return m_brush->GetColour(); }
-	virtual void PolygonsRingsStyle( const unsigned int style ) { m_pen->SetStyle(style); }
+        virtual void PolygonsRingsColour( const wxColour &colour ) {m_border_color=colour;}
+        virtual wxColour PolygonsRingsColour() const { return m_border_color; }
+        virtual void PolygonsInsideColour( const wxColour &colour ) {m_inner_color=colour;}
+        virtual wxColour PolygonsInsideColour() const { return m_inner_color; }
+        virtual void PolygonsRingsStyle( const unsigned int style ) {m_pen_style=style;}
 
-	virtual unsigned int PolygonsRingsStyle() const { return m_pen->GetStyle(); }
-	virtual void PolygonsInsideStyle( const unsigned int style ) { m_brush->SetStyle(style); }
-	virtual unsigned int PolygonsInsideStyle() const { return m_brush->GetStyle(); }
-	virtual void PolygonsRingsWidth( const unsigned int width ) {m_pen->SetWidth(width); }
-	virtual unsigned int PolygonsRingsWidth() const { return m_pen->GetWidth(); }
+        virtual unsigned int PolygonsRingsStyle() const {return m_pen_style;}
+        virtual void PolygonsInsideStyle( const unsigned int style ) {m_brush_style=style;}
+        virtual unsigned int PolygonsInsideStyle() const {return m_brush_style;}
+        virtual void PolygonsRingsWidth( const unsigned int width ) {m_width=width;}
+        virtual unsigned int PolygonsRingsWidth() const {return m_width; }
 
 private:
-	wxPen *m_pen;
-	wxBrush *m_brush;
 	std::vector<wxBitmap> m_bitmap;
 	std::vector<CircleType> m_circles;
 	std::vector<EllipseType> m_ellipses;

@@ -96,7 +96,11 @@ enum
 	ID_GEOMETRY_POLYGONE,
 
 	// Bouton de crop
-	ID_CROP
+        ID_CROP,
+
+        MULTI_GEOMETRIES_TYPE,
+
+        LAST_GILVIEWER_ID
 };
 
 

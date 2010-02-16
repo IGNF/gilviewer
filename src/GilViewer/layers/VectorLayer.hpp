@@ -144,6 +144,7 @@ private:
     std::vector< std::string > m_textValue;
     std::vector< wxColour > m_textColour;
 
+protected:
     int m_layerType;
 };
 
