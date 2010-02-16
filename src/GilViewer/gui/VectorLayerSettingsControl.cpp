@@ -60,6 +60,7 @@ Authors:
 
 #include "GilViewer/layers/VectorLayerContent.hpp"
 #include "GilViewer/layers/VectorLayer.hpp"
+#include "GilViewer/gui/define_id.hpp"
 
 wxString VectorLayerSettingsControl::choices_points[] =
 { _("Point"), _("Transparent"), _("Cross"), _("Plus"), _("Triangle"), _("Circle") };
@@ -118,7 +119,7 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  Points settings
 	///
 	////////////////////////
-	if (vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
+        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
 	{
 		wxStaticBoxSizer *boxSizerPoints = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Points settings"));
 		m_colourPickerPoints = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
@@ -141,7 +142,7 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  Lines settings
 	///
 	////////////////////////
-	if (vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
+        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
 	{
 		wxStaticBoxSizer *boxSizerLines = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lines settings"));
 		m_colourPickerLines = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
@@ -162,7 +163,7 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  Polygons settings
 	///
 	////////////////////////
-	if (vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
+        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
 	{
 		wxStaticBoxSizer *boxSizerPolygons = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Polygons settings"));
 		wxBoxSizer *boxColorPickersPolygons = new wxBoxSizer(wxVERTICAL);
@@ -304,14 +305,14 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 		return;
 	wxString mes;
 	// Points
-	if (vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
+        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
 	{
                 vectorLayer->set_border_color(m_colourPickerPoints->GetColour(),false);
                 vectorLayer->set_width(m_sliderWidthPoints->GetValue(),false);
 	}
 
 	// Polygons
-	if (vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
+        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
 	{
 		wxColour ringsColour(m_colourPickerRingsPolygons->GetColour());
 		wxColour ringsColourWithAlpha(ringsColour.Red(), ringsColour.Green(), ringsColour.Blue(), 1);
@@ -324,7 +325,7 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 	}
 
 	// Lines
-	if (vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
+        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
 	{
                 vectorLayer->set_border_color(m_colourPickerLines->GetColour(),false);
                 vectorLayer->set_width(m_sliderWidthLines->GetValue(),false);

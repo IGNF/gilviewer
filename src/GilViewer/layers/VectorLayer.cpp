@@ -50,6 +50,7 @@ using namespace std;
 #include "GilViewer/layers/VectorLayerPoint.hpp"
 #include "GilViewer/layers/VectorLayerPolygon.hpp"
 #include "GilViewer/layers/VectorLayerMultiGeometries.hpp"
+#include "GilViewer/gui/define_id.hpp"
 
 void VectorLayer::Init()
 {
@@ -119,8 +120,6 @@ void VectorLayer::SetDefaultDisplayParameters()
     set_style(*wxBLUE,*wxRED,wxSOLID,wxSOLID,3);
 }
 
-#include <iostream>
-
 VectorLayer::VectorLayer(const string &layerName , const string &fileName) :
 	m_isFromFile(true)
 {
@@ -156,6 +155,7 @@ VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool 
     SetDefaultDisplayParameters();
     notifyLayerSettingsControl_();
     Init();
+    m_layerType = MULTI_GEOMETRIES_TYPE;
 }
 
 Layer::ptrLayerType VectorLayer::CreateVectorLayer(const string &layerName , const string &fileName)
@@ -345,7 +345,6 @@ void VectorLayer::AddVectorLayerContent(const string &shapefileFileName)
     }
 }
 
-#include <iostream>
 void VectorLayer::build_infos()
 {
     m_infos = m_layerContent->GetInfos();
