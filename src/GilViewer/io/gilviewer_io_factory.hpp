@@ -53,4 +53,6 @@ typedef PatternSingleton< PatternFactory< gilviewer_file_io,
                                         >
                         > gilviewer_io_factory;
 
+void register_all_file_formats();
+
 #endif // GILVIEWER_IO_FACTORY_HPP
