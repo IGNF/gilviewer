@@ -6,9 +6,9 @@
 using namespace boost;
 using namespace std;
 
-void gilviewer_file_io_jpg::load(shared_ptr<Layer>& layer, const string &filename)
+shared_ptr<Layer> gilviewer_file_io_jpg::load(const string &filename)
 {
-    layer = ImageLayer::CreateImageLayer(filename);
+    return ImageLayer::CreateImageLayer(filename);
 }
 
 void gilviewer_file_io_jpg::save(shared_ptr<Layer>& layer, const string &filename)
