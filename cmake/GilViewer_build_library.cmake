@@ -14,5 +14,5 @@ else()
 endif()
 
 ADD_LIBRARY( GilViewer ${GILVIEWER_LIBRARY_TYPE} ${ALL_VIEWER_SOURCES} ${ALL_VIEWER_HEADERS})
-TARGET_LINK_LIBRARIES( GilViewer ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} shapelib tinyxml )
+TARGET_LINK_LIBRARIES( GilViewer ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} shapelib tinyxml ${GDAL_LIBRARY})
 

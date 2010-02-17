@@ -41,7 +41,6 @@ Authors:
 #include <stdexcept>
 using namespace std;
 
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 
@@ -59,8 +58,10 @@ using namespace std;
 #include <wx/progdlg.h>
 #include <wx/log.h>
 
-#include "GilViewer/layers/Layer.hpp"
+#include "GilViewer/gui/LayerControl.hpp"
+
 #include "GilViewer/layers/ImageLayer.hpp"
+#include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/VectorLayer.hpp"
 #include "GilViewer/layers/VectorLayerGhost.h"
 #include "GilViewer/layers/VectorLayerContent.hpp"
@@ -78,33 +79,31 @@ using namespace std;
 #include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "GilViewer/tools/Orientation2D.h"
 
-#include "GilViewer/gui/LayerControl.hpp"
-
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
 #endif
 
 BEGIN_EVENT_TABLE(LayerControl, wxFrame)
-        EVT_CLOSE(LayerControl::OnCloseWindow)
-        EVT_BUTTON(ID_INFO,LayerControl::OnInfoButton)
-        EVT_BUTTON(ID_SAVE,LayerControl::OnSaveButton)
-        EVT_BUTTON(ID_DELETE,LayerControl::OnDeleteButton)
-        // Gestion des evenements de la toolbar
-        EVT_TOOL(wxID_RESET,LayerControl::OnReset)
-        EVT_TOOL(wxID_OPEN,LayerControl::OnOpenLayer)
-        // Gestion des evenements "globaux" du LayerControl
-        EVT_BUTTON(wxID_UP,LayerControl::OnLayerUp)
-        EVT_BUTTON(wxID_DOWN,LayerControl::OnLayerDown)
-        EVT_BUTTON(ID_VISIBILITY_BUTTON,LayerControl::OnVisibilityButton)
-        EVT_BUTTON(ID_TRANSFORMATION_BUTTON,LayerControl::OnTransformationButton)
-        EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,LayerControl::OnGlobalSettingsButton)
-        EVT_BUTTON(wxID_SAVE,LayerControl::OnSaveDisplayConfigButton)
-        EVT_BUTTON(wxID_OPEN,LayerControl::OnLoadDisplayConfigButton)
-        EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
-        END_EVENT_TABLE()
+    EVT_CLOSE(LayerControl::OnCloseWindow)
+    EVT_BUTTON(ID_INFO,LayerControl::OnInfoButton)
+    EVT_BUTTON(ID_SAVE,LayerControl::OnSaveButton)
+    EVT_BUTTON(ID_DELETE,LayerControl::OnDeleteButton)
+    // Gestion des evenements de la toolbar
+    EVT_TOOL(wxID_RESET,LayerControl::OnReset)
+    EVT_TOOL(wxID_OPEN,LayerControl::OnOpenLayer)
+    // Gestion des evenements "globaux" du LayerControl
+    EVT_BUTTON(wxID_UP,LayerControl::OnLayerUp)
+    EVT_BUTTON(wxID_DOWN,LayerControl::OnLayerDown)
+    EVT_BUTTON(ID_VISIBILITY_BUTTON,LayerControl::OnVisibilityButton)
+    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,LayerControl::OnTransformationButton)
+    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,LayerControl::OnGlobalSettingsButton)
+    EVT_BUTTON(wxID_SAVE,LayerControl::OnSaveDisplayConfigButton)
+    EVT_BUTTON(wxID_OPEN,LayerControl::OnLoadDisplayConfigButton)
+    EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
+END_EVENT_TABLE()
 
-        LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-        wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
+LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 {
 
     SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
@@ -195,11 +194,11 @@ void LayerControl::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
     Hide();
 }
 
-void LayerControl::AddRow(const string &name, LayerSettingsControl *layersettings, const string &tooltip)
+void LayerControl::AddRow(const std::string &name, LayerSettingsControl *layersettings, const std::string &tooltip)
 {
     // Le nom du layer a une longueur maximale de 20 caracteres
     wxString layerName(name.substr(0, 50).c_str(), *wxConvCurrent);
-    string ln(layerName.fn_str());
+    std::string ln(layerName.fn_str());
 
     // on ajoute la ligne dans le conteneur
     unsigned int nb = m_rows.size();
@@ -261,17 +260,17 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
     wxString wildcard(m_layers[id]->get_available_formats_wildcard().c_str(), *wxConvCurrent);
-    string file = m_layers[id]->Filename();
+    std::string file = m_layers[id]->Filename();
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
     if (fileDialog->ShowModal() == wxID_OK)
     {
         try
         {
-            Layers()[id]->Save( string( fileDialog->GetFilename().To8BitData() ) );
+            Layers()[id]->Save( std::string( fileDialog->GetFilename().To8BitData() ) );
         }
-        catch( exception &err )
+        catch( std::exception &err )
         {
-            ostringstream oss;
+            std::ostringstream oss;
             oss << "File : " << __FILE__ << "\n";
             oss << "Function : " << __FUNCTION__ << "\n";
             oss << "Line : " << __LINE__ << "\n";
@@ -404,12 +403,23 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
     Refresh();
 }
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 {
     unsigned int i;
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_WAIT));
     wxProgressDialog *progress = NULL;
-    //wxProgressDialog *progressLargeFile = NULL;
+    wxProgressDialog *progressLargeFile = NULL;
+
+    //Liste des formats gérés par le viewer
+    std::list<std::string> image_formats;
+    image_formats.push_back(".tif");
+    image_formats.push_back(".tiff");
+    image_formats.push_back(".jpg");
+    image_formats.push_back(".jpeg");
+    image_formats.push_back(".png");
+    image_formats.push_back(".bmp");
 
     if (names.GetCount() >= 2)
         progress = new wxProgressDialog(_("Opening files ..."), _("Reading ..."), names.GetCount(), NULL, wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
@@ -466,6 +476,13 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 
     // On construit le SettingsControl en fonction du type de calque ajoute
     LayerSettingsControl *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
+    /*
+    boost::shared_ptr<VectorLayer> vl = boost::dynamic_pointer_cast<VectorLayer>(layer);
+    if (vl != NULL)
+        settingscontrol = new VectorLayerSettingsControl(m_layers.size() - 1, this);
+    else
+        settingscontrol = new ImageLayerSettingsControl(m_layers.size() - 1, this);
+    */
     layer->SetNotifyLayerSettingsControl( boost::bind( &LayerSettingsControl::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     AddRow(layer->Name(), settingscontrol, layer->Filename());
@@ -537,27 +554,27 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 {
     if (firstRow < 0 || secondRow < 0)
     {
-        ostringstream oss;
-        oss << "You passed a negative index for a row !" << endl;
-        oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << endl;
-        oss << "File : " << __FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        string mess(oss.str());
+        std::ostringstream oss;
+        oss << "You passed a negative index for a row !" << std::endl;
+        oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << std::endl;
+        oss << "File : " << __FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        std::string mess(oss.str());
         wxString mes(mess.c_str(), *wxConvCurrent);
         ::wxLogMessage(mes);
         return;
     }
     else if (firstRow >= m_rows.size() || secondRow >= m_rows.size())
     {
-        ostringstream oss;
-        oss << "You passed an invalid index for a row !" << endl;
-        oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << endl;
-        oss << "m_numberOfLayers = " << m_rows.size() << endl;
-        oss << "File : " << __FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        string mess(oss.str());
+        std::ostringstream oss;
+        oss << "You passed an invalid index for a row !" << std::endl;
+        oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << std::endl;
+        oss << "m_numberOfLayers = " << m_rows.size() << std::endl;
+        oss << "File : " << __FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        std::string mess(oss.str());
         wxString mes(mess.c_str(), *wxConvCurrent);
         ::wxLogMessage(mes);
         return;
@@ -696,7 +713,7 @@ void LayerControl::OnSaveDisplayConfigButton(wxCommandEvent& event)
     wxFileDialog* fd = new wxFileDialog(this, _("Save display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (fd->ShowModal() == wxID_OK)
     {
-        string savename(fd->GetPath().fn_str());
+        std::string savename(fd->GetPath().fn_str());
         if (boost::filesystem::extension(savename) != ".xml")
             boost::filesystem::change_extension(savename, ".xml");
 
@@ -715,7 +732,7 @@ void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
         message << _("Reading a display configuration file: ") << fd->GetPath();
         ::wxLogMessage(message);
 
-        string loadname(fd->GetPath().fn_str());
+        std::string loadname(fd->GetPath().fn_str());
         if (boost::filesystem::extension(loadname) != ".xml")
         {
             wxLogMessage(_("Display configuration file must have the extension .xml !"), _("Error!"));
@@ -744,7 +761,7 @@ void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters 
     try
     {
         // On cree cette fameuse image ...
-        string filename(parameters.path.c_str());
+        std::string filename(parameters.path.c_str());
 
         Layer::ptrLayerType ptr = ImageLayer::CreateImageLayer(filename);
         if (!ptr) return;
@@ -769,9 +786,9 @@ void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters 
         this->m_layers.back()->notifyLayerControl_();
         this->m_layers.back()->notifyLayerSettingsControl_();
     }
-    catch (exception &err)
+    catch (std::exception &err)
     {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "File : " << __FILE__ << "\n";
         oss << "Function : " << __FUNCTION__ << "\n";
         oss << "Line : " << __LINE__ << "\n";
@@ -784,10 +801,13 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
 {
     try
     {
-        string filename(parameters.path.c_str());
-        Layer::ptrLayerType ptr = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
-        if (!ptr) return;
-        AddLayer(ptr);
+        std::string filename(parameters.path.c_str());
+        Layer::ptrLayerType layer = ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
+        if (!layer) return;
+        AddLayer(layer);
+        //Layer::ptrLayerType ptr = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
+        //if (!ptr) return;
+        //AddLayer(ptr);
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
         this->m_layers.back()->IsVisible(parameters.isVisible);
@@ -810,9 +830,9 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
         this->m_layers.back()->notifyLayerControl_();
         this->m_layers.back()->notifyLayerSettingsControl_();
     }
-    catch (exception &err)
+    catch (std::exception &err)
     {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "File : " << __FILE__ << "\n";
         oss << "Function : " << __FUNCTION__ << "\n";
         oss << "Line : " << __LINE__ << "\n";

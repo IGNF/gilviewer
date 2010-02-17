@@ -46,11 +46,7 @@ using namespace std;
 #include <wx/config.h>
 
 #include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/layers/VectorLayerArc.hpp"
-#include "GilViewer/layers/VectorLayerPoint.hpp"
-#include "GilViewer/layers/VectorLayerPolygon.hpp"
 #include "GilViewer/layers/VectorLayerMultiGeometries.hpp"
-#include "GilViewer/gui/define_id.hpp"
 
 void VectorLayer::Init()
 {
@@ -120,29 +116,6 @@ void VectorLayer::SetDefaultDisplayParameters()
     set_style(*wxBLUE,*wxRED,wxSOLID,wxSOLID,3);
 }
 
-VectorLayer::VectorLayer(const string &layerName , const string &fileName) :
-	m_isFromFile(true)
-{
-    Name(layerName);
-    boost::filesystem::path full = boost::filesystem::system_complete(fileName);
-    Filename( full.string() );
-
-    try
-    {
-        AddVectorLayerContent(fileName);
-    }
-    catch(const exception &e)
-    {
-        ostringstream oss;
-        oss << endl << "Exception propagated from:" << endl;
-        oss << e.what();
-        throw logic_error(oss.str());
-    }
-    SetDefaultDisplayParameters();
-    notifyLayerSettingsControl_();
-    Init();
-}
-
 VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool flagDBF ) :
         m_isFromFile(false)
 {
@@ -155,35 +128,6 @@ VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool 
     SetDefaultDisplayParameters();
     notifyLayerSettingsControl_();
     Init();
-    m_layerType = MULTI_GEOMETRIES_TYPE;
-}
-
-Layer::ptrLayerType VectorLayer::CreateVectorLayer(const string &layerName , const string &fileName)
-{
-    if ( !boost::filesystem::exists(fileName) )
-    {
-        ostringstream oss;
-        oss << "File does not exist: "<<fileName<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
-    }
-
-    try
-    {
-        Layer::ptrLayerType ptrLayer(new VectorLayer(layerName,fileName));
-        ptrLayer->notifyLayerSettingsControl_();
-        ptrLayer->SetDefaultDisplayParameters();
-        return ptrLayer;
-    }
-    catch(const exception &e)
-    {
-        ostringstream oss;
-        oss << endl << "Exception propagated from:" << endl;
-        oss << e.what();
-        throw logic_error(oss.str());
-    }
 }
 
 Layer::ptrLayerType VectorLayer::CreateVectorLayer( const string &layerName , signed short flagPRJ , bool flagDBF )
@@ -192,157 +136,6 @@ Layer::ptrLayerType VectorLayer::CreateVectorLayer( const string &layerName , si
     ptrLayer->notifyLayerSettingsControl_();
     ptrLayer->SetDefaultDisplayParameters();
     return ptrLayer;
-}
-
-void VectorLayer::AddVectorLayerContent(const string &shapefileFileName)
-{
-    m_layerType = SHPT_NULL;
-    // On determine le type de LayerContent a creer
-    SHPHandle handle = SHPOpen( shapefileFileName.c_str() , "rb+" );
-    if ( handle == NULL )
-    {
-        // Si le handle est NULL, c'est peut etre qu'il n'y a pas de SHX. On previent ...
-        string basename = boost::filesystem::basename(shapefileFileName);
-        string path = boost::filesystem::path(shapefileFileName).branch_path().string();
-
-        wxString message;
-        if ( !boost::filesystem::exists(path+"/"+basename+".shx") )
-        {
-            ostringstream oss;
-            oss << "There is no shx file for " << shapefileFileName.c_str() << " !" << endl;
-            oss << "File : " <<__FILE__ << endl;
-            oss << "Line : " << __LINE__ << endl;
-            oss << "Function : " << __FUNCTION__ << endl;
-            throw logic_error( oss.str() );
-        }
-        ostringstream oss;
-        oss << "File has a NULL handle" << shapefileFileName.c_str() << " !" << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
-        return;
-    }
-    else
-    {
-        int nbEntities;
-        double minBound[4], maxBound[4];
-        SHPGetInfo( handle , &nbEntities , &m_layerType , minBound , maxBound );
-
-        // On regarde si il existe un fchier PRJ (-1 : oui ; +1 : non)
-        signed short flagPRJ = CARTOGRAPHIC_COORDINATES;
-        string basename = boost::filesystem::basename(shapefileFileName);
-        string path = boost::filesystem::path(shapefileFileName).branch_path().string();
-
-        if ( !boost::filesystem::exists(path+"/"+basename+".prj") )
-        {
-            wxString message;
-            message << _("There is no PRJ file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << wxT("!");
-            ::wxLogMessage( message , _("Info") );
-            flagPRJ = IMAGE_COORDINATES;
-        }
-
-        // On regarde si il existe un fichier DBF
-        bool flagDBF = false;
-
-        if ( !boost::filesystem::exists(path+"/"+basename+".dbf") )
-        {
-            wxString message;
-            message << _("There is no DBF file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << wxT("!");
-            ::wxLogMessage( message , _("Info") );
-        }
-        else
-            flagDBF = true;
-
-        if ( m_layerType == SHPT_POINT )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerPoint(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_POINTZ )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerPointZ(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_POINTM )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerPointM(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_MULTIPOINT )
-        {
-            ostringstream oss;
-            oss << "Multipoints are not handled ... " << endl;
-            oss << "File : " <<__FILE__ << endl;
-            oss << "Line : " << __LINE__ << endl;
-            oss << "Function : " << __FUNCTION__ << endl;
-            throw logic_error( oss.str() );
-        }
-        else if ( m_layerType == SHPT_MULTIPOINTZ )
-        {
-            ostringstream oss;
-            oss << "MultipointsZ are not handled ... " << endl;
-            oss << "File : " <<__FILE__ << endl;
-            oss << "Line : " << __LINE__ << endl;
-            oss << "Function : " << __FUNCTION__ << endl;
-            throw logic_error( oss.str() );
-        }
-        else if ( m_layerType == SHPT_MULTIPOINTM )
-        {
-            ostringstream oss;
-            oss << "MultipointsM are not handled ... " << endl;
-            oss << "File : " <<__FILE__ << endl;
-            oss << "Line : " << __LINE__ << endl;
-            oss << "Function : " << __FUNCTION__ << endl;
-            throw logic_error( oss.str() );
-        }
-        else if ( m_layerType == SHPT_ARC )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerArc(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_ARCZ )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerArcZ(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_ARCM )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerArcM(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_POLYGON )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerPolygon(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_POLYGONZ )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerPolygonZ(handle,shapefileFileName) );
-        }
-        else if ( m_layerType == SHPT_POLYGONM )
-        {
-            m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerPolygonM(handle,shapefileFileName) );
-        }
-    	else if ( m_layerType == SHPT_MULTIPATCH )
-    	{
-            ostringstream oss;
-            oss << "Multipatch are not handled ... " << endl;
-            oss << "File : " <<__FILE__ << endl;
-            oss << "Line : " << __LINE__ << endl;
-            oss << "Function : " << __FUNCTION__ << endl;
-            throw logic_error( oss.str() );
-    	}
-        else
-        {
-            ostringstream oss;
-            oss << "Invalid geometry type ..." << endl;
-            oss << "File : " <<__FILE__ << endl;
-            oss << "Line : " << __LINE__ << endl;
-            oss << "Function : " << __FUNCTION__ << endl;
-            throw logic_error( oss.str() );
-        }
-        m_layerContent->ShapefileFileName( shapefileFileName );
-        m_layerContent->FlagPRJ( flagPRJ );
-        m_layerContent->FlagDBF( flagDBF );
-        if ( flagDBF )
-            m_layerContent->ReadAttributes( path+"/"+basename+".dbf" );
-        SetDefaultDisplayParameters();
-        notifyLayerSettingsControl_();
-    }
 }
 
 void VectorLayer::build_infos()
@@ -376,7 +169,6 @@ void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
         }
     }
 }
-
 
 void VectorLayer::set_inner_color(const wxColour &colour, bool update)
 {
@@ -422,25 +214,10 @@ void VectorLayer::set_style(const wxColour &inner_color, const wxColour &border_
     m_layerContent->set_width(width);
     if(update)
         notifyLayerSettingsControl_();
-
-    boost::shared_ptr<VectorLayerMultiGeometries> multi = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if (multi)
-    {
-        wxPen pen(border_color,width,border_style);
-        wxBrush brush(inner_color,inner_style);
-        multi->SetBrushVectorLayerMultiGeometries(brush);
-        multi->SetPenVectorLayerMultiGeometries(pen);
-    }
 }
 
 void VectorLayer::AddPoint( double x , double y )
 {
-    boost::shared_ptr<VectorLayerPoint> layerPoint = boost::dynamic_pointer_cast<VectorLayerPoint>( m_layerContent );
-    if ( layerPoint )
-    {
-        layerPoint->AddPoint(x,y);
-        return;
-    }
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
     {
@@ -451,9 +228,11 @@ void VectorLayer::AddPoint( double x , double y )
 
 void VectorLayer::AddPoints( const vector<double> &x , const vector<double> &y )
 {
+    /*
     boost::shared_ptr<VectorLayerPoint> layerPoint = boost::dynamic_pointer_cast<VectorLayerPoint>( m_layerContent );
     if ( layerPoint )
         layerPoint->AddPoints(x,y);
+        */
 }
 
 void VectorLayer::AddText( double x , double y , const string &text, const wxColour &color )
@@ -465,12 +244,6 @@ void VectorLayer::AddText( double x , double y , const string &text, const wxCol
 
 void VectorLayer::AddLine( double x1 , double y1 , double x2 , double y2 )
 {
-    boost::shared_ptr<VectorLayerArc> layerArc = boost::dynamic_pointer_cast<VectorLayerArc>( m_layerContent );
-    if ( layerArc )
-    {
-        layerArc->AddLine(x1,y1,x2,y2);
-        return;
-    }
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
     {
@@ -481,16 +254,15 @@ void VectorLayer::AddLine( double x1 , double y1 , double x2 , double y2 )
 
 void VectorLayer::AddPolyline( const vector<double> &x , const vector<double> &y )
 {
+    /*
     boost::shared_ptr<VectorLayerArc> layerArc = boost::dynamic_pointer_cast<VectorLayerArc>( m_layerContent );
     if ( layerArc )
         layerArc->AddPolyline(x,y);
+        */
 }
 
 void VectorLayer::AddPolygon( const vector<double> &x , const vector<double> &y )
 {
-    boost::shared_ptr<VectorLayerPolygon> layerPolygon = boost::dynamic_pointer_cast<VectorLayerPolygon>( m_layerContent );
-    if ( layerPolygon )
-        layerPolygon->AddPolygon(x,y);
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
         dfl->AddPolygon(x,y);
