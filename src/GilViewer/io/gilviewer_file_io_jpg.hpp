@@ -35,26 +35,24 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
+#ifndef GILVIEWER_FILE_IO_JPG_HPP
+#define GILVIEWER_FILE_IO_JPG_HPP
 
-#ifndef GILVIEWER_IO_FACTORY_HPP
-#define GILVIEWER_IO_FACTORY_HPP
-
-//#include <boost/thread/detail/singleton.hpp>
-
-#include "GilViewer/tools/PatternSingleton.hpp"
-#include "GilViewer/tools/PatternFactory.hpp"
 #include "gilviewer_file_io.hpp"
 
-//typedef boost::detail::thread::singleton<PatternFactory<boost::shared_ptr<gilviewer_file_io> > > gilviewer_io_factory;
-typedef PatternSingleton< PatternFactory< gilviewer_file_io,
-                                          std::string,
-                                          boost::function< boost::shared_ptr<gilviewer_file_io> () >,
-                                          boost::shared_ptr<gilviewer_file_io>
-                                        >
-                        > gilviewer_io_factory;
+class gilviewer_file_io_jpg : public gilviewer_file_io
+{
+public:
+    virtual ~gilviewer_file_io_jpg() {}
 
-void register_all_image_file_formats();
-void register_all_vector_file_formats();
-void register_all_file_formats();
+    virtual void load(boost::shared_ptr<Layer>& layer, const std::string &filename);
+    virtual void save(boost::shared_ptr<Layer>& layer, const std::string &filename);
 
-#endif // GILVIEWER_IO_FACTORY_HPP
+    static bool Register();
+    friend boost::shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg();
+
+private:
+    gilviewer_file_io_jpg() {}
+};
+
+#endif // GILVIEWER_FILE_IO_JPG_HPP
