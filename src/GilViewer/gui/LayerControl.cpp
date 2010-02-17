@@ -474,7 +474,7 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
                 AddLayer(ptr);
                 */
                 Layer::ptrLayerType ptr;
-                boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject("tif");
+                boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
                 file->load(ptr,filename);
                 AddLayer(ptr);
             }
