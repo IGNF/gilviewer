@@ -46,7 +46,6 @@ Authors:
 
 #include "tinyxml/tinyxml.h"
 
-#include "GilViewer/layers/VectorLayer.hpp"
 #include "GilViewer/gui/LayerControl.hpp"
 #include "GilViewer/gui/PanelViewer.hpp"
 

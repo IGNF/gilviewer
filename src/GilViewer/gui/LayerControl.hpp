@@ -35,7 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
  
 ***********************************************************************/
-
 #ifndef __LAYER_CONTROL_HPP__
 #define __LAYER_CONTROL_HPP__
 

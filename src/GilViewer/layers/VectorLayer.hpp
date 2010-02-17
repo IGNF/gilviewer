@@ -56,16 +56,14 @@ public:
     /// Constructeur a partir d'un nom de calque et d'un fichier shapefile
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
-    VectorLayer(const std::string &layerName,const std::string &shapefileFileName);
+    //VectorLayer(const std::string &layerName,const std::string &shapefileFileName);
     /// Simplement pour construire un calque "foutoir" (voir l'implementation)
     VectorLayer(const std::string &layerName , signed short flagPRJ , bool flagDBF);
 
 	virtual ~VectorLayer() {};
 
-    static ptrLayerType CreateVectorLayer(const std::string &layerName , const std::string &fileName);
-    static ptrLayerType CreateVectorLayer(const std::string &layerName , signed short flagPRJ, bool flagDBF);
-
-    virtual void AddVectorLayerContent( const std::string &shapefileFileName );
+    //static ptrLayerType CreateVectorLayer(const std::string &layerName , const std::string &fileName);
+    static ptrLayerType CreateVectorLayer(const std::string &layerName , signed short flagPRJ = 1 , bool flagDBF = false );
 
     /// Cette methode recupere les donnees d'affichage par defaut dans les parametres et les affecte au nouveau calque
     virtual void SetDefaultDisplayParameters();

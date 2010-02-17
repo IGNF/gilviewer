@@ -37,6 +37,7 @@ Authors:
 ***********************************************************************/
 
 #include <stdexcept>
+#include <iostream>
 
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
@@ -48,10 +49,12 @@ Authors:
 #include "FrameViewer.hpp"
 #include "GilViewer.h"
 
+#include <gdal/ogrsf_frmts.h>
+
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-    { wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_NONE } };
+{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+{ wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -66,6 +69,7 @@ bool GilViewerApp::OnInit()
 #endif
 
     register_all_file_formats();
+    OGRRegisterAll();
 
     // Langage
     set_langage(wxLANGUAGE_FRENCH);
