@@ -424,16 +424,13 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
             progress->Update(i, m);
         }
 
-        //On teste l'extension : soit c'est du shp, soit c'est du format image, soit c'est autre chose et on renvoie vers le panel
         string filename(names[i].fn_str());
         string extension(boost::filesystem::extension(filename));
         boost::to_lower(extension);
         try
         {
-            Layer::ptrLayerType ptr;
             boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
-            file->load(ptr,filename);
-            AddLayer(ptr);
+            AddLayer( file->load(filename) );
         }
         catch (exception &err)
         {
@@ -469,13 +466,6 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 
     // On construit le SettingsControl en fonction du type de calque ajoute
     LayerSettingsControl *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    /*
-    boost::shared_ptr<VectorLayer> vl = boost::dynamic_pointer_cast<VectorLayer>(layer);
-    if (vl != NULL)
-        settingscontrol = new VectorLayerSettingsControl(m_layers.size() - 1, this);
-    else
-        settingscontrol = new ImageLayerSettingsControl(m_layers.size() - 1, this);
-    */
     layer->SetNotifyLayerSettingsControl( boost::bind( &LayerSettingsControl::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     AddRow(layer->Name(), settingscontrol, layer->Filename());

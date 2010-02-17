@@ -9,9 +9,9 @@
 using namespace boost;
 using namespace std;
 
-void gilviewer_file_io_shp::load(shared_ptr<Layer>& layer, const string &filename)
+shared_ptr<Layer> gilviewer_file_io_shp::load(const string &filename)
 {
-    layer = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename),filename);
+    return VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename),filename);
 }
 
 void gilviewer_file_io_shp::save(shared_ptr<Layer>& layer, const string &filename)
