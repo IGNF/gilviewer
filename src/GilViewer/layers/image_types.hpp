@@ -36,6 +36,8 @@ typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
 
 #include <boost/gil/extension/dynamic_image/any_image.hpp>
 typedef boost::gil::any_image<all_image_types> any_image_type;
+typedef any_image_type::view_t any_view_type;
+
 struct image_type {
   typedef any_image_type type;
   type value;
@@ -43,7 +45,7 @@ struct image_type {
   image_type() {}
 };
 struct view_type {
-  typedef any_image_type::view_t type;
+  typedef any_view_type type;
   type value;
   view_type(const type& v) : value(v) {}
 };
