@@ -35,24 +35,24 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#ifndef GILVIEWER_TIFF_FILE_IO_HPP
-#define GILVIEWER_TIFF_FILE_IO_HPP
+#ifndef GILVIEWER_FILE_IO_TIFF_HPP
+#define GILVIEWER_FILE_IO_TIFF_HPP
 
 #include "gilviewer_file_io.hpp"
 
-class gilviewer_tiff_file_io : public gilviewer_file_io
+class gilviewer_file_io_tiff : public gilviewer_file_io
 {
 public:
-    virtual ~gilviewer_tiff_file_io() {}
+    virtual ~gilviewer_file_io_tiff() {}
 
     virtual void load(boost::shared_ptr<Layer>& layer, const std::string &filename);
     virtual void save(boost::shared_ptr<Layer>& layer, const std::string &filename);
 
     static bool Register();
-    friend boost::shared_ptr<gilviewer_tiff_file_io> create_gilviewer_tiff_file_io();
+    friend boost::shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff();
 
 private:
-    gilviewer_tiff_file_io() {}
+    gilviewer_file_io_tiff() {}
 };
 
-#endif // GILVIEWER_TIFF_FILE_IO_HPP
+#endif // GILVIEWER_FILE_IO_TIFF_HPP

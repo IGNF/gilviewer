@@ -44,13 +44,14 @@ Authors:
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 
+#include "../src/GilViewer/io/gilviewer_io_factory.hpp"
 #include "FrameViewer.hpp"
 #include "GilViewer.h"
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+    { wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -61,70 +62,72 @@ IMPLEMENT_APP(GilViewerApp);
 bool GilViewerApp::OnInit()
 {
 #ifdef __LINUX__
-	setlocale(LC_ALL, "POSIX");
+    setlocale(LC_ALL, "POSIX");
 #endif
 
-	// Langage
-	set_langage(wxLANGUAGE_FRENCH);
+    register_all_file_formats();
 
-	// Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
-	wxArrayString cmdFiles;
-	wxString cmdFilename;
-	wxCmdLineParser cmdLineParser(g_cmdLineDesc, argc, argv);
+    // Langage
+    set_langage(wxLANGUAGE_FRENCH);
 
-	cmdLineParser.Parse(false);
+    // Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
+    wxArrayString cmdFiles;
+    wxString cmdFilename;
+    wxCmdLineParser cmdLineParser(g_cmdLineDesc, argc, argv);
 
-	if (cmdLineParser.GetParamCount() > 0)
-	{
-		for (unsigned int i=0;i<cmdLineParser.GetParamCount();++i)
-		{
-			cmdFilename = cmdLineParser.GetParam(i);
-			wxFileName fileName(cmdFilename);
-			fileName.Normalize(wxPATH_NORM_LONG | wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE);
-			cmdFilename = fileName.GetFullPath();
-			cmdFiles.Add( cmdFilename );
-		}
-	}
+    cmdLineParser.Parse(false);
 
-	try{
+    if (cmdLineParser.GetParamCount() > 0)
+    {
+        for (unsigned int i=0;i<cmdLineParser.GetParamCount();++i)
+        {
+            cmdFilename = cmdLineParser.GetParam(i);
+            wxFileName fileName(cmdFilename);
+            fileName.Normalize(wxPATH_NORM_LONG | wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE);
+            cmdFilename = fileName.GetFullPath();
+            cmdFiles.Add( cmdFilename );
+        }
+    }
+
+    try{
 
 	m_frame = new FrameViewer((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
 	m_frame->AddLayersFromFiles( cmdFiles );
 	m_frame->Show();
-}
-catch( std::exception &e )
-{
+    }
+    catch( std::exception &e )
+    {
 	wxString message;
 	message << wxString(e.what(), *wxConvCurrent);
 	::wxMessageBox( message );
-}
-catch( ... )
-{
+    }
+    catch( ... )
+    {
 	::wxMessageBox( _("Unhandled exception ...") );
-}
+    }
 
-return true;
+    return true;
 }
 
 void GilViewerApp::set_langage(unsigned int language_id)
 {
-	wxLocale* locale;
-	long language;
+    wxLocale* locale;
+    long language;
 
-	language =  language_id;
+    language =  language_id;
 
-	// Load language if possible, fall back to english otherwise
+    // Load language if possible, fall back to english otherwise
     if(wxLocale::IsAvailable(language))
     {
         locale = new wxLocale( language, wxLOCALE_CONV_ENCODING );
 
 #		ifdef __WXGTK__
-			// add locale search paths
-	        locale->AddCatalogLookupPathPrefix(wxT("/usr"));
-	        locale->AddCatalogLookupPathPrefix(wxT("/usr/local"));
-	        wxStandardPaths* paths = (wxStandardPaths*) &wxStandardPaths::Get();
-	        wxString prefix = paths->GetInstallPrefix();
-	        locale->AddCatalogLookupPathPrefix( prefix );
+        // add locale search paths
+        locale->AddCatalogLookupPathPrefix(wxT("/usr"));
+        locale->AddCatalogLookupPathPrefix(wxT("/usr/local"));
+        wxStandardPaths* paths = (wxStandardPaths*) &wxStandardPaths::Get();
+        wxString prefix = paths->GetInstallPrefix();
+        locale->AddCatalogLookupPathPrefix( prefix );
 #		endif // __WXGTK__
 
         locale->AddCatalog(wxT("libGilViewer"));
@@ -132,7 +135,7 @@ void GilViewerApp::set_langage(unsigned int language_id)
 
         if(! locale->IsOk() )
         {
-        	::wxLogMessage( _("Selected language is wrong!") );
+            ::wxLogMessage( _("Selected language is wrong!") );
             delete locale;
             locale = new wxLocale( wxLANGUAGE_ENGLISH );
             language = wxLANGUAGE_ENGLISH;

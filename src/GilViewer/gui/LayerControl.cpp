@@ -401,6 +401,8 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
 }
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include "GilViewer/io/gilviewer_file_io.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 
 void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 {
@@ -459,6 +461,7 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
             try
             {
                 std::string filename(names[i].fn_str());
+                /*
                 wxFile filesize(names[i].c_str(), wxFile::read);
                 if ((filesize.Length() / 100000) > 100) // 100 Mo
 
@@ -468,6 +471,11 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
                     progressLargeFile->Update(0);
                 }
                 Layer::ptrLayerType ptr = ImageLayer::CreateImageLayer(filename);
+                AddLayer(ptr);
+                */
+                Layer::ptrLayerType ptr;
+                boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject("tif");
+                file->load(ptr,filename);
                 AddLayer(ptr);
             }
             catch (std::exception &err)
