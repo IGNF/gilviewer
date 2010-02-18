@@ -38,7 +38,7 @@ Authors:
 #include "ogr_vector_layer.hpp"
 
 #include <boost/filesystem.hpp>
-#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/detail/apply_visitor_unary.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -48,11 +48,18 @@ Authors:
 #include <wx/dc.h>
 
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
+#include "GilViewer/gui/define_id.hpp"
+
+#include "draw_geometry_visitor.hpp"
+#include "compute_center_visitor.hpp"
 
 using namespace std;
 using namespace boost::filesystem;
 
-ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename)
+ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename):
+        m_layertype(MULTI_GEOMETRIES_TYPE),
+        m_center_x(0.), m_center_y(0.),
+        m_nb_geometries(0)
 {
     try
     {
@@ -61,7 +68,7 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         poDS = OGRSFDriverRegistrar::Open(filename.c_str(), FALSE);
         if( poDS == NULL )
         {
-            string error_message("Open failed.\n");
+            string error_message("Open failed. Did you registered OGR formats (you MUST call OGRRegisterAll() ...)?\n");
             error_message += CPLGetLastErrorMsg();
             throw invalid_argument(error_message.c_str());
         }
@@ -93,19 +100,49 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
                 }
                 */
                 if(OGRLinearRing *poLine = dynamic_cast<OGRLinearRing*>(poFeature->GetGeometryRef()) )
+                {
                     m_geometries_features.push_back(std::make_pair<OGRLinearRing*,OGRFeature*>(poLine,poFeature));
+                    m_nb_geometries+=poLine->getNumPoints();
+                }
                 else if(OGRLineString *poLine = dynamic_cast<OGRLineString*>(poFeature->GetGeometryRef()) )
+                {
                     m_geometries_features.push_back(std::make_pair<OGRLineString*,OGRFeature*>(poLine,poFeature));
+                    m_nb_geometries+=poLine->getNumPoints();
+                }
                 else if(OGRMultiLineString* poMLine = dynamic_cast<OGRMultiLineString*>(poFeature->GetGeometryRef()))
+                {
                     m_geometries_features.push_back(std::make_pair<OGRMultiLineString*,OGRFeature*>(poMLine,poFeature));
+                    for(int i=0;i<poMLine->getNumGeometries();++i)
+                        m_nb_geometries+=((OGRLineString*)(poMLine->getGeometryRef(i)))->getNumPoints();
+                }
                 else if(OGRMultiPoint* poMPoint = dynamic_cast<OGRMultiPoint*>(poFeature->GetGeometryRef()))
+                {
                     m_geometries_features.push_back(std::make_pair<OGRMultiPoint*,OGRFeature*>(poMPoint,poFeature));
+                    m_nb_geometries+=poMPoint->getNumGeometries();
+                }
                 else if(OGRMultiPolygon* poMPolygon = dynamic_cast<OGRMultiPolygon*>(poFeature->GetGeometryRef()))
+                {
                     m_geometries_features.push_back(std::make_pair<OGRMultiPolygon*,OGRFeature*>(poMPolygon,poFeature));
+                    for(int i=0;i<poMLine->getNumGeometries();++i)
+                    {
+                        OGRPolygon* one_polygon =(OGRPolygon*)(poMPolygon->getGeometryRef(i));
+                        m_nb_geometries+=one_polygon->getExteriorRing()->getNumPoints();
+                        for(int i=0;i<one_polygon->getNumInteriorRings();++i)
+                            m_nb_geometries+=one_polygon->getInteriorRing(i)->getNumPoints();
+                    }
+                }
                 else if( OGRPoint *poPoint = dynamic_cast<OGRPoint*>(poFeature->GetGeometryRef()) )
+                {
                     m_geometries_features.push_back(std::make_pair<OGRPoint*,OGRFeature*>(poPoint,poFeature));
+                    ++m_nb_geometries;
+                }
                 else if(OGRPolygon *poPolygon = dynamic_cast<OGRPolygon*>(poFeature->GetGeometryRef()))
+                {
                     m_geometries_features.push_back(std::make_pair<OGRPolygon*,OGRFeature*>(poPolygon,poFeature));
+                    m_nb_geometries+=poPolygon->getExteriorRing()->getNumPoints();
+                    for(int i=0;i<poPolygon->getNumInteriorRings();++i)
+                        m_nb_geometries+=poPolygon->getInteriorRing(i)->getNumPoints();
+                }
             }
         }
         OGRDataSource::DestroyDataSource( poDS );
@@ -117,9 +154,13 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         oss << e.what();
         throw logic_error(oss.str());
     }
-    notifyLayerSettingsControl_();
 
     Name(layer_name);
+    Filename( system_complete(filename).string() );
+    notifyLayerSettingsControl_();
+    SetDefaultDisplayParameters();
+    m_layertype = MULTI_GEOMETRIES_TYPE;
+    compute_center();
 }
 
 ogr_vector_layer::~ogr_vector_layer()
@@ -130,7 +171,7 @@ ogr_vector_layer::~ogr_vector_layer()
 
 Layer::ptrLayerType ogr_vector_layer::CreateVectorLayer(const string &layerName , const string &fileName)
 {
-    path full = system_complete(fileName);
+    //path full = system_complete(fileName);
     if ( !exists(fileName) )
     {
         ostringstream oss;
@@ -144,11 +185,6 @@ Layer::ptrLayerType ogr_vector_layer::CreateVectorLayer(const string &layerName 
     try
     {
         Layer::ptrLayerType ptrLayer(new ogr_vector_layer(layerName,fileName));
-        ptrLayer->Name(fileName);
-        path full = system_complete(fileName);
-        ptrLayer->Filename( full.string() );
-        ptrLayer->notifyLayerSettingsControl_();
-        ptrLayer->SetDefaultDisplayParameters();
         return ptrLayer;
     }
     catch(const exception &e)
@@ -158,117 +194,6 @@ Layer::ptrLayerType ogr_vector_layer::CreateVectorLayer(const string &layerName 
         oss << e.what();
         throw logic_error(oss.str());
     }
-}
-
-class draw_geometry_visitor : public boost::static_visitor<>
-{
-public:
-    draw_geometry_visitor(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty):
-            m_dc(dc),
-            m_x(x), m_y(y),
-            m_transparent(transparent),
-            m_r(r), m_z(z), m_tx(tx), m_ty(ty)
-    {
-        m_delta=0.5*r;
-    }
-
-    template <typename T>
-    void operator()(T* operand) const
-    {
-        //throw std::invalid_argument("Unhandled geometry type!");
-        cout << "Unhandled geometry type!" << endl;
-    }
-private:
-    wxDC &m_dc;
-    wxCoord m_x, m_y;
-    bool m_transparent;
-    double m_r, m_z, m_tx, m_ty, m_delta;
-};
-
-// TODO: use (implement) FromLocal
-
-template <>
-void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
-{
-    // Merge with ()(OGRLineString*)?
-    for(int j=0;j<operand->getNumPoints()-1;++j)
-    {
-        double x1 = (m_delta+operand->getX(j)+m_tx)/m_z;
-        double y1 = (m_delta+operand->getY(j)+m_ty)/m_z;
-        double x2 = (m_delta+operand->getX(j+1)+m_tx)/m_z;
-        double y2 = (m_delta+operand->getY(j+1)+m_ty)/m_z;
-        m_dc.DrawLine(x1,y1,x2,y2);
-    }
-}
-
-template <>
-void draw_geometry_visitor::operator()(OGRLineString* operand) const
-{
-    for(int j=0;j<operand->getNumPoints()-1;++j)
-    {
-        double x1 = (m_delta+operand->getX(j)+m_tx)/m_z;
-        double y1 = (m_delta+operand->getY(j)+m_ty)/m_z;
-        double x2 = (m_delta+operand->getX(j+1)+m_tx)/m_z;
-        double y2 = (m_delta+operand->getY(j+1)+m_ty)/m_z;
-        m_dc.DrawLine(x1,y1,x2,y2);
-    }
-}
-
-template <>
-void draw_geometry_visitor::operator()(OGRMultiLineString* operand) const
-{
-    for(int i=0;i<operand->getNumGeometries();++i)
-    {
-        OGRLineString* l = (OGRLineString*)operand->getGeometryRef(i);
-        (*this)(l);
-    }
-}
-
-template <>
-void draw_geometry_visitor::operator()(OGRPoint* operand) const
-{
-    double x = (m_delta+operand->getX()+m_tx)/m_z;
-    double y = (m_delta+operand->getY()+m_ty)/m_z;
-    m_dc.DrawLine(x,y,x,y);
-}
-
-template <>
-void draw_geometry_visitor::operator()(OGRMultiPoint* operand) const
-{
-    for(int i=0;i<operand->getNumGeometries();++i)
-        (*this)((OGRPoint*)operand->getGeometryRef(i));
-}
-
-template <>
-void draw_geometry_visitor::operator()(OGRPolygon* operand) const
-{
-    // TODO: draw polygons
-    vector<wxPoint> points;
-    for(int j=0;j<operand->getExteriorRing()->getNumPoints();++j)
-    {
-        double x1 = (m_delta+operand->getExteriorRing()->getX(j)+m_tx)/m_z;
-        double y1 = (m_delta+operand->getExteriorRing()->getY(j)+m_ty)/m_z;
-        points.push_back(wxPoint(x1,y1));
-    }
-    m_dc.DrawPolygon(points.size(),&points.front());
-    for(int i=0;i<operand->getNumInteriorRings();++i)
-    {
-        vector<wxPoint> points;
-        for(int j=0;j<operand->getInteriorRing(i)->getNumPoints();++j)
-        {
-            double x1 = (m_delta+operand->getInteriorRing(i)->getX(j)+m_tx)/m_z;
-            double y1 = (m_delta+operand->getInteriorRing(i)->getY(j)+m_ty)/m_z;
-            points.push_back(wxPoint(x1,y1));
-        }
-        m_dc.DrawPolygon(points.size(),&points.front());
-    }
-}
-
-template <>
-void draw_geometry_visitor::operator()(OGRMultiPolygon* operand) const
-{
-    for(int i=0;i<operand->getNumGeometries();++i)
-        (*this)((OGRMultiPolygon*)operand->getGeometryRef(i));
 }
 
 void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
@@ -289,4 +214,11 @@ LayerSettingsControl* ogr_vector_layer::build_layer_settings_control(unsigned in
     return new VectorLayerSettingsControl(index, parent);
 }
 
-// TODO: notify, settings control, shared_ptr ...
+void ogr_vector_layer::compute_center()
+{
+    compute_center_visitor visitor(&m_center_x, &m_center_y, m_nb_geometries);
+    for(unsigned int i=0;i<m_geometries_features.size();++i)
+        boost::apply_visitor( visitor, m_geometries_features[i].first );
+}
+
+// TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...
