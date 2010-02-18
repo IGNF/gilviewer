@@ -81,8 +81,17 @@ public:
 
     virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
 
+    inline int Type() {return m_layertype;}
+    inline virtual double get_center_x() {return m_center_x;}
+    inline virtual double get_center_y() {return m_center_y;}
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
+    int m_layertype;
+    double m_center_x, m_center_y;
+    unsigned int m_nb_geometries;
+
+    void compute_center();
 };
 
 #endif // OGR_VECTOR_LAYER_HPP

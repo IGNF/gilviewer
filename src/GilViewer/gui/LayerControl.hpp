@@ -125,6 +125,7 @@ private:
 	void OnDeleteButton(wxCommandEvent& event);
 	/// Cette methode permet d'acceder aux parametres d'affichage du calque
 	void OnSettingsButton(wxCommandEvent& event);
+        void OnCenterButton(wxCommandEvent& event);
 	void OnCheckVisibility(wxCommandEvent& event);
 	void OnCheckTransformable(wxCommandEvent& event);
 	/// Cette methode permet de remettre l'ensemble des calques a leur position initiale, de reinitialiser les transformations, de tout rendre visible et transformable

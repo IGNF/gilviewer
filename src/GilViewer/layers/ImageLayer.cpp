@@ -315,3 +315,6 @@ LayerSettingsControl* ImageLayer::build_layer_settings_control(unsigned int inde
 {
     return new ImageLayerSettingsControl(index, parent);
 }
+
+double ImageLayer::get_center_x() {return m_view->value.width()/2.;}
+double ImageLayer::get_center_y() {return m_view->value.height()/2.;}

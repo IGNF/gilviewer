@@ -299,6 +299,7 @@ void LayerControl::OnDeleteButton(wxCommandEvent& event)
     m_rows.back()->m_saveButton->Destroy();
     m_rows.back()->m_deleteButton->Destroy();
     m_rows.back()->m_settingsButton->Destroy();
+    m_rows.back()->m_center_button->Destroy();
     m_rows.back()->m_layerSettingsControl->Destroy();
     m_sizer->Remove(m_rows.back()->m_boxSizer);
 
@@ -325,6 +326,19 @@ void LayerControl::OnSettingsButton(wxCommandEvent& event)
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SETTINGS);
     m_rows[id]->m_layerSettingsControl->Show(!m_rows[id]->m_layerSettingsControl->IsVisible());
+}
+
+void LayerControl::OnCenterButton(wxCommandEvent& event)
+{
+    // Get layer index
+    unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_CENTER);
+    for (LayerControl::iterator it = begin(); it != end(); ++it)
+    {
+        (*it)->TranslationX(-m_layers[id]->get_center_x());
+        (*it)->TranslationY(-m_layers[id]->get_center_y());
+        (*it)->HasToBeUpdated(true);
+    }
+    m_basicDrawPane->Refresh();
 }
 
 void LayerControl::OnCheckVisibility(wxCommandEvent& event)
@@ -410,7 +424,7 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
     unsigned int i;
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_WAIT));
     wxProgressDialog *progress = NULL;
-    wxProgressDialog *progressLargeFile = NULL;
+    //wxProgressDialog *progressLargeFile = NULL;
 
     //Liste des formats gérés par le viewer
     std::list<std::string> image_formats;

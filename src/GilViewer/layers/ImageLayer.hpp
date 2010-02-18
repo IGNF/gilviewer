@@ -138,6 +138,9 @@ class ImageLayer : public Layer
 
         virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
 
+        inline virtual double get_center_x();
+        inline virtual double get_center_y();
+
 	private:
 	ImageLayer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
 

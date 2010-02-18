@@ -90,6 +90,11 @@ LayerControlRow::LayerControlRow(LayerControl* parent, const std::string &name, 
     m_boxSizer->Add(m_settingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
     m_settingsButton->Connect(ID_SETTINGS + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnSettingsButton), NULL, m_parent);
 
+    m_center_button = new wxBitmapButton(m_parent->m_scroll, ID_CENTER + m_index, wxXmlResource::Get()->LoadBitmap( wxT("VIEW_FULLSCREEN_16x16") ) );
+    m_center_button->SetToolTip(_("Center layer"));
+    m_boxSizer->Add(m_center_button, 0, wxALL | wxALIGN_CENTRE, 5);
+    m_center_button->Connect(ID_CENTER + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnCenterButton), NULL, m_parent);
+
     // On lie la ligne au LayerSettingsControl
     m_layerSettingsControl = layersettings;
 }

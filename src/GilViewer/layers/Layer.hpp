@@ -119,6 +119,9 @@ public:
     virtual void TranslationY(double dy) { m_translationY = dy; }
     virtual inline double TranslationY() const { return m_translationY; }
 
+    inline virtual double get_center_x() {return 0.;}
+    inline virtual double get_center_y() {return 0.;}
+
     // local<->global transforms. Default: pixel-centered
     wxPoint FromLocal(const wxPoint &p, double delta=0.5) const
     {
