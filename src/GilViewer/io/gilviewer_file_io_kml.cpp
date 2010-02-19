@@ -1,4 +1,4 @@
-#include "gilviewer_file_io_shp.hpp"
+#include "gilviewer_file_io_kml.hpp"
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/variant/get.hpp>
@@ -12,22 +12,20 @@
 using namespace boost;
 using namespace std;
 
-shared_ptr<Layer> gilviewer_file_io_shp::load(const string &filename)
+shared_ptr<Layer> gilviewer_file_io_kml::load(const string &filename)
 {
     return ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(filename),filename);
 }
 
-#include <iostream>
-
-void gilviewer_file_io_shp::save(shared_ptr<Layer> layer, const string &filename)
+void gilviewer_file_io_kml::save(shared_ptr<Layer> layer, const string &filename)
 {
     shared_ptr<ogr_vector_layer> ogr_layer = dynamic_pointer_cast<ogr_vector_layer>(layer);
     if(!ogr_layer)
         throw invalid_argument("Bad layer type!\n");
 
-    OGRSFDriver *poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName( "ESRI Shapefile" );
+    OGRSFDriver *poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName( "KML" );
     if( poDriver == NULL )
-        throw invalid_argument("ESRI Shapefile driver is not available. Did you forget to call OGRRegisterAll()?\n");
+        throw invalid_argument("KML driver is not available. Did you forget to call OGRRegisterAll()?\n");
 
     OGRDataSource *poDS = poDriver->CreateDataSource( filename.c_str(), NULL );
     if( poDS == NULL )
@@ -156,15 +154,15 @@ void gilviewer_file_io_shp::save(shared_ptr<Layer> layer, const string &filename
     OGRDataSource::DestroyDataSource( poDS );
 }
 
-boost::shared_ptr<gilviewer_file_io_shp> create_gilviewer_file_io_shp()
+boost::shared_ptr<gilviewer_file_io_kml> create_gilviewer_file_io_kml()
 {
-    return shared_ptr<gilviewer_file_io_shp>(new gilviewer_file_io_shp());
+    return shared_ptr<gilviewer_file_io_kml>(new gilviewer_file_io_kml());
 }
 
-bool gilviewer_file_io_shp::Register()
+bool gilviewer_file_io_kml::Register()
 {
-    gilviewer_io_factory::Instance()->Register("shp", create_gilviewer_file_io_shp);
+    gilviewer_io_factory::Instance()->Register("kml", create_gilviewer_file_io_kml);
     return true;
 }
 
-bool register_shp_ok = gilviewer_file_io_shp::Register();
+bool register_kml_ok = gilviewer_file_io_kml::Register();

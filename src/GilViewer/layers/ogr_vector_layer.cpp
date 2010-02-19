@@ -40,6 +40,7 @@ Authors:
 #include <boost/filesystem.hpp>
 #include <boost/variant/detail/apply_visitor_unary.hpp>
 
+
 #include <iostream>
 #include <sstream>
 
@@ -51,7 +52,6 @@ Authors:
 #include "GilViewer/gui/define_id.hpp"
 
 #include "draw_geometry_visitor.hpp"
-#include "compute_center_visitor.hpp"
 
 using namespace std;
 using namespace boost::filesystem;
@@ -76,6 +76,14 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         for(int i=0;i<poDS->GetLayerCount();++i)
         {
             OGRLayer *poLayer = poDS->GetLayer(i);
+
+            // TODO: handle spatial reference
+            OGRSpatialReference *spatref = poLayer->GetSpatialRef();
+            build_infos(spatref);
+
+            // TODO: compute extent to get center
+            compute_center(poLayer,poDS->GetLayerCount());
+
             // TODO: read features
             OGRFeature *poFeature;
 
@@ -160,7 +168,6 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     notifyLayerSettingsControl_();
     SetDefaultDisplayParameters();
     m_layertype = MULTI_GEOMETRIES_TYPE;
-    compute_center();
 }
 
 ogr_vector_layer::~ogr_vector_layer()
@@ -171,7 +178,6 @@ ogr_vector_layer::~ogr_vector_layer()
 
 Layer::ptrLayerType ogr_vector_layer::CreateVectorLayer(const string &layerName , const string &fileName)
 {
-    //path full = system_complete(fileName);
     if ( !exists(fileName) )
     {
         ostringstream oss;
@@ -214,11 +220,57 @@ LayerSettingsControl* ogr_vector_layer::build_layer_settings_control(unsigned in
     return new VectorLayerSettingsControl(index, parent);
 }
 
-void ogr_vector_layer::compute_center()
+void ogr_vector_layer::compute_center(OGRLayer* layer, int nb_layers)
 {
-    compute_center_visitor visitor(&m_center_x, &m_center_y, m_nb_geometries);
-    for(unsigned int i=0;i<m_geometries_features.size();++i)
-        boost::apply_visitor( visitor, m_geometries_features[i].first );
+    static double ratio=1./(double)nb_layers;
+    OGREnvelope env;
+    layer->GetExtent(&env);
+    m_center_x+=ratio*(env.MaxX+env.MinX)/2.;
+    m_center_y+=ratio*(env.MaxY+env.MinY)/2.;
+}
+
+void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
+{
+    // Currently only handles infos if the layer has a spatial reference
+    m_infos = "";
+    ostringstream oss;
+    if(spatial_reference)
+    {
+        if(spatial_reference->IsGeographic())
+            oss << "Geographic system" << std::endl;
+        if(spatial_reference->IsLocal())
+            oss << "Local system" << std::endl;
+        if(spatial_reference->IsProjected())
+            oss << "Projected system" << std::endl;
+        oss << "PROJCS -> " << spatial_reference->GetAttrValue("PROJCS") << std::endl;
+        oss << "GEOGCS -> " << spatial_reference->GetAttrValue("GEOGCS") << std::endl;
+        oss << "DATUM -> " << spatial_reference->GetAttrValue("DATUM") << std::endl;
+        oss << "SPHEROID -> " << spatial_reference->GetAttrValue("SPHEROID") << std::endl;
+        oss << "PROJECTION -> " << spatial_reference->GetAttrValue("PROJECTION") << std::endl;
+        m_infos = oss.str();
+    }
+    else
+    {
+        std::cout << "No spatial reference defined!" << std::endl;
+    }
+}
+
+string ogr_vector_layer::get_available_formats_wildcard() const
+{
+    ostringstream wildcard;
+    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.kml|";
+    wildcard << "SHP (*.shp)|*.shp";
+    wildcard << "KML (*.kml)|*.kml";
+    return wildcard.str();
+}
+
+void ogr_vector_layer::Save(const std::string &filename) const
+{
+}
+
+const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() const
+{
+    return m_geometries_features;
 }
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

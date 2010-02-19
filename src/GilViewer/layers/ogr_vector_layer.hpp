@@ -53,6 +53,8 @@ class OGRMultiPoint;
 class OGRMultiPolygon;
 class OGRPoint;
 class OGRPolygon;
+class OGRSpatialReference;
+class OGRLayer;
 
 typedef boost::variant< OGRLinearRing*,
                         OGRLineString*,
@@ -78,6 +80,10 @@ public:
     virtual void Update(int, int) {}
 
     virtual bool is_saveable() const {return true;}
+    virtual void Save(const std::string &name) const;
+    virtual std::string get_available_formats_wildcard() const;
+
+    void build_infos(OGRSpatialReference *spatial_reference);
 
     virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
 
@@ -85,13 +91,15 @@ public:
     inline virtual double get_center_x() {return m_center_x;}
     inline virtual double get_center_y() {return m_center_y;}
 
+    const std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features() const;
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
     int m_layertype;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
 
-    void compute_center();
+    void compute_center(OGRLayer* layer, int nb_layers);
 };
 
 #endif // OGR_VECTOR_LAYER_HPP

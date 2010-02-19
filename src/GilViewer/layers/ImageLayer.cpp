@@ -64,7 +64,6 @@ Authors:
 #include "ImageLayer.hpp"
 #include "image_layer_screen_image_functor.hpp"
 #include "image_layer_min_max_functor.hpp"
-//#include "image_layer_get_any_image_functor.hpp"
 #include "image_layer_histogram_functor.hpp"
 #include "image_layer_to_string_functor.hpp"
 #include "image_layer_infos_functor.hpp"
@@ -219,31 +218,11 @@ void ImageLayer::Update(int width, int height)
     monImage.SetAlpha(interleaved_view_get_raw_data(view(*m_alpha_img)), true);
 
     m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
-
-
-
-////TODO loadWholeImage
-
-
 }
-
 
 void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
     dc.DrawBitmap(*m_bitmap, x, y, transparent); //-m_translationX+x*m_zoomFactor, -m_translationX+y*m_zoomFactor
-}
-
-
-void ImageLayer::Save(const string &name)
-{
-    string ext = boost::filesystem::extension(name);
-    boost::to_lower(ext);
-    if ( ext == ".tiff" || ext == ".tif" )
-        tiff_write_view( name.c_str() , m_view->value );
-    else if ( ext == ".jpeg" || ext == ".jpg" )
-        jpeg_write_view( name.c_str() , m_view->value );
-    else if ( ext == ".png" )
-        png_write_view( name.c_str() , m_view->value );
 }
 
 unsigned int ImageLayer::GetNbComponents() const
@@ -304,7 +283,7 @@ vector<string> ImageLayer::get_available_formats_extensions() const
 string ImageLayer::get_available_formats_wildcard() const
 {
     ostringstream wildcard;
-    wildcard << "All supported files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|";
+    wildcard << "All supported image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|";
     wildcard << "TIFF (*.tif;*.tiff)|*.tif;*.tiff|";
     wildcard << "PNG (*.png)|*.png|";
     wildcard << "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|";

@@ -124,8 +124,6 @@ class ImageLayer : public Layer
 	virtual void IsTransparent(bool t) { m_isTransparent=t; }
 	virtual bool IsTransparent() const { return m_isTransparent; }
 
-
-	virtual void Save(const std::string &name);
 	virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
 
 	virtual image_ptr Image() const { return m_img; };
