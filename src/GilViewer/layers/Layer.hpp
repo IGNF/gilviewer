@@ -106,7 +106,7 @@ public:
 
     std::string GetInfos() const {return m_infos;}
     virtual std::string get_layer_type_as_string() const {return "unknow type";}
-    virtual void Save(const std::string &name) {}
+    virtual void Save(const std::string &name) const {}
 
     virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
 

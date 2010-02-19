@@ -48,7 +48,7 @@ public:
     virtual ~gilviewer_file_io() {}
 
     virtual boost::shared_ptr<Layer> load(const std::string &filename)=0;
-    virtual void save(boost::shared_ptr<Layer>& layer, const std::string &filename)=0;
+    virtual void save(boost::shared_ptr<Layer> layer, const std::string &filename)=0;
 
 protected:
     gilviewer_file_io() {}

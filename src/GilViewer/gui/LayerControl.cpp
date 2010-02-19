@@ -39,8 +39,8 @@ Authors:
 #include <list>
 #include <sstream>
 #include <stdexcept>
-using namespace std;
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 
@@ -82,6 +82,8 @@ using namespace std;
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
 #endif
+
+using namespace std;
 
 BEGIN_EVENT_TABLE(LayerControl, wxFrame)
     EVT_CLOSE(LayerControl::OnCloseWindow)
@@ -266,7 +268,11 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
     {
         try
         {
-            Layers()[id]->Save( std::string( fileDialog->GetFilename().To8BitData() ) );
+            string filename(fileDialog->GetFilename().To8BitData());
+            string extension(boost::filesystem::extension(filename));
+            boost::to_lower(extension);
+            boost::shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+            file_out->save(Layers()[id],filename);
         }
         catch( std::exception &err )
         {
@@ -390,7 +396,7 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
 {
     wxString wildcard;
     wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP|");
+    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp;*.kml)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP;*.kml;*.KML|");
     wildcard << _("Image files ");
     wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
     wildcard << wxT("TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|");
@@ -398,6 +404,7 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
     wildcard << wxT("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
     wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
     wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
+    wildcard << wxT("KML (*.kml)|*.kml;*.KML|");
     wildcard << _("Custom format ");
     wildcard << wxT("(*)|*");
     wxString str;
@@ -416,8 +423,6 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
     Layout();
     Refresh();
 }
-
-#include <boost/algorithm/string/case_conv.hpp>
 
 void LayerControl::AddLayersFromFiles(const wxArrayString &names)
 {
