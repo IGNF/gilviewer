@@ -46,15 +46,18 @@ Authors:
 
 #include <wx/dc.h>
 
+#include "ogr_vector_layer.hpp"
+
 class draw_geometry_visitor : public boost::static_visitor<>
 {
 public:
-    draw_geometry_visitor(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty):
+    draw_geometry_visitor(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty, int coordinates):
             m_dc(dc),
             m_x(x), m_y(y),
             m_transparent(transparent),
             m_r(r), m_z(z), m_tx(tx), m_ty(ty),
-            m_delta(0.5*r)
+            m_delta(0.5*r),
+            m_coordinates(coordinates)
     {}
 
     template <typename T>
@@ -68,6 +71,7 @@ private:
     wxCoord m_x, m_y;
     bool m_transparent;
     double m_r, m_z, m_tx, m_ty, m_delta;
+    int m_coordinates;
 };
 
 // TODO: use (implement) FromLocal
@@ -78,11 +82,9 @@ void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
     // Merge with ()(OGRLineString*)?
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
-        double x1 = (m_delta+operand->getX(j)+m_tx)/m_z;
-        double y1 = (m_delta+operand->getY(j)+m_ty)/m_z;
-        double x2 = (m_delta+operand->getX(j+1)+m_tx)/m_z;
-        double y2 = (m_delta+operand->getY(j+1)+m_ty)/m_z;
-        m_dc.DrawLine(x1,y1,x2,y2);
+        wxPoint p1=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(j),operand->getY(j),m_coordinates);
+        wxPoint p2=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(j+1),operand->getY(j+1),m_coordinates);
+        m_dc.DrawLine(p1,p2);
     }
 }
 
@@ -91,11 +93,9 @@ void draw_geometry_visitor::operator()(OGRLineString* operand) const
 {
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
-        double x1 = (m_delta+operand->getX(j)+m_tx)/m_z;
-        double y1 = (m_delta+operand->getY(j)+m_ty)/m_z;
-        double x2 = (m_delta+operand->getX(j+1)+m_tx)/m_z;
-        double y2 = (m_delta+operand->getY(j+1)+m_ty)/m_z;
-        m_dc.DrawLine(x1,y1,x2,y2);
+        wxPoint p1=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(j),operand->getY(j),m_coordinates);
+        wxPoint p2=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(j+1),operand->getY(j+1),m_coordinates);
+        m_dc.DrawLine(p1,p2);
     }
 }
 
@@ -109,9 +109,8 @@ void draw_geometry_visitor::operator()(OGRMultiLineString* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRPoint* operand) const
 {
-    double x = (m_delta+operand->getX()+m_tx)/m_z;
-    double y = (m_delta+operand->getY()+m_ty)/m_z;
-    m_dc.DrawLine(x,y,x,y);
+    wxPoint p1=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(),operand->getY(),m_coordinates);
+    m_dc.DrawLine(p1,p1);
 }
 
 template <>
@@ -128,9 +127,8 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
     std::vector<wxPoint> points;
     for(int j=0;j<operand->getExteriorRing()->getNumPoints();++j)
     {
-        double x1 = (m_delta+operand->getExteriorRing()->getX(j)+m_tx)/m_z;
-        double y1 = (m_delta+operand->getExteriorRing()->getY(j)+m_ty)/m_z;
-        points.push_back(wxPoint(x1,y1));
+        wxPoint p=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getExteriorRing()->getX(j),operand->getExteriorRing()->getY(j),m_coordinates);
+        points.push_back(p);
     }
     m_dc.DrawPolygon(points.size(),&points.front());
     for(int i=0;i<operand->getNumInteriorRings();++i)
@@ -138,9 +136,8 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
         std::vector<wxPoint> points;
         for(int j=0;j<operand->getInteriorRing(i)->getNumPoints();++j)
         {
-            double x1 = (m_delta+operand->getInteriorRing(i)->getX(j)+m_tx)/m_z;
-            double y1 = (m_delta+operand->getInteriorRing(i)->getY(j)+m_ty)/m_z;
-            points.push_back(wxPoint(x1,y1));
+            wxPoint p=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getInteriorRing(i)->getX(j),operand->getInteriorRing(i)->getY(j),m_coordinates);
+            points.push_back(p);
         }
         m_dc.DrawPolygon(points.size(),&points.front());
     }

@@ -59,7 +59,8 @@ using namespace boost::filesystem;
 ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename):
         m_layertype(MULTI_GEOMETRIES_TYPE),
         m_center_x(0.), m_center_y(0.),
-        m_nb_geometries(0)
+        m_nb_geometries(0),
+        m_coordinates(1)
 {
     try
     {
@@ -210,7 +211,7 @@ void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
     dc.SetBrush(brush);
     // TODO: image or geographic coordinates
     // dc.SetAxisOrientation();
-    draw_geometry_visitor visitor(dc,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY());
+    draw_geometry_visitor visitor(dc,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY(),m_coordinates);
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );
 }
@@ -236,6 +237,8 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
     ostringstream oss;
     if(spatial_reference)
     {
+        // If the layer has a spatial reference, y coordinates must be inverted
+        m_coordinates=-1;
         if(spatial_reference->IsGeographic())
             oss << "Geographic system" << std::endl;
         if(spatial_reference->IsLocal())
@@ -264,13 +267,15 @@ string ogr_vector_layer::get_available_formats_wildcard() const
     return wildcard.str();
 }
 
-void ogr_vector_layer::Save(const std::string &filename) const
-{
-}
-
 const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() const
 {
     return m_geometries_features;
+}
+
+wxPoint ogr_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates)
+{
+    return wxPoint( static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
+                    static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor) );
 }
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

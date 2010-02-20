@@ -60,6 +60,7 @@ Authors:
 
 #include "GilViewer/layers/VectorLayerContent.hpp"
 #include "GilViewer/layers/VectorLayer.hpp"
+#include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/gui/define_id.hpp"
 
 wxString VectorLayerSettingsControl::choices_points[] =
@@ -89,7 +90,9 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 {
 	m_index = index;
 	boost::shared_ptr<VectorLayer> vectorLayer = boost::dynamic_pointer_cast<VectorLayer>(m_parent->Layers()[m_index]);
-	if (!vectorLayer)
+        // TODO: clean !!!!!!!!!!!!!!
+        boost::shared_ptr<ogr_vector_layer> ogr_vectorLayer = boost::dynamic_pointer_cast<ogr_vector_layer>(m_parent->Layers()[m_index]);
+        if (!vectorLayer && !ogr_vectorLayer)
 		return;
 
     m_colourPickerPoints = NULL;
@@ -119,12 +122,12 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  Points settings
 	///
 	////////////////////////
-        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)
+        if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)))
 	{
 		wxStaticBoxSizer *boxSizerPoints = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Points settings"));
-		m_colourPickerPoints = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
+                m_colourPickerPoints = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
 		wxStaticBoxSizer *boxSizerWidthPoints = new wxStaticBoxSizer(wxVERTICAL, this, _("Width"));
-		m_sliderWidthPoints = new wxSlider(this, wxID_ANY, 3, 1, 10, wxDefaultPosition, wxSize(100, 40), wxSL_HORIZONTAL | wxSL_LABELS);
+                m_sliderWidthPoints = new wxSlider(this, wxID_ANY, 3, 1, 10, wxDefaultPosition, wxSize(100, 40));
 		boxSizerWidthPoints->Add(m_sliderWidthPoints, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxSizerPoints->Add(m_colourPickerPoints, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxSizerPoints->Add(boxSizerWidthPoints, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -142,12 +145,12 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  Lines settings
 	///
 	////////////////////////
-        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)
+        if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)))
 	{
 		wxStaticBoxSizer *boxSizerLines = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lines settings"));
-		m_colourPickerLines = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
+                m_colourPickerLines = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
 		wxStaticBoxSizer *boxSizerWidthLines = new wxStaticBoxSizer(wxVERTICAL, this, _("Width"));
-		m_sliderWidthLines = new wxSlider(this, wxID_ANY, 1, 1, 10, wxDefaultPosition, wxSize(100, 40), wxSL_HORIZONTAL | wxSL_LABELS);
+                m_sliderWidthLines = new wxSlider(this, wxID_ANY, 1, 1, 10, wxDefaultPosition, wxSize(100, 40));
 		boxSizerWidthLines->Add(m_sliderWidthLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxSizerLines->Add(m_colourPickerLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxSizerLines->Add(boxSizerWidthLines, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -163,25 +166,23 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  Polygons settings
 	///
 	////////////////////////
-        if (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)
+        if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)))
 	{
 		wxStaticBoxSizer *boxSizerPolygons = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Polygons settings"));
 		wxBoxSizer *boxColorPickersPolygons = new wxBoxSizer(wxVERTICAL);
 		wxStaticBoxSizer *boxSizerRingsColour = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Rings colour"));
 		wxStaticBoxSizer *boxSizerInsideColour = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Inside colour"));
-		m_colourPickerRingsPolygons = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
-		m_colourPickerInsidePolygons = new wxColourPickerCtrl(this, wxID_ANY, *wxBLUE, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
+                m_colourPickerRingsPolygons = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
+                m_colourPickerInsidePolygons = new wxColourPickerCtrl(this, wxID_ANY, *wxBLUE, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
 		boxSizerRingsColour->Add(m_colourPickerRingsPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxSizerInsideColour->Add(m_colourPickerInsidePolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxColorPickersPolygons->Add(boxSizerRingsColour, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxColorPickersPolygons->Add(boxSizerInsideColour, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-		wxBoxSizer *boxSlidersPolygons = new wxBoxSizer(wxVERTICAL);
-		wxStaticBoxSizer *boxSizerAlphaPolygons = new wxStaticBoxSizer(wxVERTICAL, this, _("Alpha"));
+                wxBoxSizer *boxSlidersPolygons = new wxBoxSizer(wxVERTICAL);
 		wxStaticBoxSizer *boxSizerRingsWidth = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Rings width"));
 		// Ring width
-		m_sliderWidthRings = new wxSlider(this, wxID_ANY, 1, 1, 10, wxDefaultPosition, wxSize(100, 40), wxSL_HORIZONTAL | wxSL_LABELS);
-		boxSizerRingsWidth->Add(m_sliderWidthRings, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-		boxSlidersPolygons->Add(boxSizerAlphaPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+                m_sliderWidthRings = new wxSlider(this, wxID_ANY, 1, 1, 10, wxDefaultPosition, wxSize(100, 40));
+                boxSizerRingsWidth->Add(m_sliderWidthRings, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 		boxSlidersPolygons->Add(boxSizerRingsWidth, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 		boxSizerPolygons->Add(boxColorPickersPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -198,7 +199,7 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	///  DBF : etiquettes
 	///
 	////////////////////////
-		if (vectorLayer->LayerContent()->FlagDBF())
+                if (/*ogr_vectorLayer || */(vectorLayer && (vectorLayer->LayerContent()->FlagDBF())))
 		{
 			wxStaticBoxSizer *boxSizerLabels = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Labels"));
 
@@ -224,13 +225,15 @@ VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, Layer
 	// texts color
 	wxStaticBoxSizer *boxSizerTextsColor = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Texts color"));
 	boxSizerTexts->Add(boxSizerTextsColor, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-	m_colourPickerTexts = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE | wxCLRP_USE_TEXTCTRL);
+	m_colourPickerTexts = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
 	boxSizerTextsColor->Add(m_colourPickerTexts, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+        /*
 	// texts font
 	wxStaticBoxSizer *boxSizerTextsFont = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Texts font"));
 	boxSizerTexts->Add(boxSizerTextsFont, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	m_fontPickerTexts = new wxFontPickerCtrl(this, wxID_ANY, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_USE_TEXTCTRL);
 	boxSizerTextsFont->Add(m_fontPickerTexts, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+        */
 	// texts visibility
 	wxStaticBoxSizer *boxSizerTextsVisibility = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Texts visibility"));
 	boxSizerTexts->Add(boxSizerTextsVisibility, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
