@@ -75,7 +75,7 @@ LayerControlRow::LayerControlRow(LayerControl* parent, const std::string &name, 
     m_boxSizer->Add(m_infoButton, 0, wxALL | wxALIGN_CENTRE, 5);
     m_infoButton->Connect(ID_INFO + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnInfoButton), NULL, m_parent);
 
-    m_saveButton = new wxBitmapButton(m_parent->m_scroll, ID_SAVE + m_index, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ));
+    m_saveButton = new wxBitmapButton(m_parent->m_scroll, ID_SAVE + m_index, wxXmlResource::Get()->LoadBitmap( wxT("MEDIA-FLOPPY_16x16") ));
     m_saveButton->SetToolTip(_("Save layer"));
     m_boxSizer->Add(m_saveButton, 0, wxALL | wxALIGN_CENTRE, 5);
     m_saveButton->Connect(ID_SAVE + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(LayerControl::OnSaveButton), NULL, m_parent);

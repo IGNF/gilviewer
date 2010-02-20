@@ -80,7 +80,6 @@ public:
     virtual void Update(int, int) {}
 
     virtual bool is_saveable() const {return true;}
-    virtual void Save(const std::string &name) const;
     virtual std::string get_available_formats_wildcard() const;
 
     void build_infos(OGRSpatialReference *spatial_reference);
@@ -93,11 +92,17 @@ public:
 
     const std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features() const;
 
+    static wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
+    inline void set_coordinates(int c) {m_coordinates=c;}
+    virtual std::string get_layer_type_as_string() const {return "Vector";}
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
     int m_layertype;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
+    // 1 --> image; -1 --> cartographic coordinates
+    int m_coordinates;
 
     void compute_center(OGRLayer* layer, int nb_layers);
 };

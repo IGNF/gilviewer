@@ -156,7 +156,7 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost)
     globalSettingsSizer->Add(globalSettingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
 
     // Bouton pour la sauvegarde de la configuration d'affichage
-    wxBitmapButton* saveDisplayConfig = new wxBitmapButton(m_scroll, wxID_SAVE, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ) );
+    wxBitmapButton* saveDisplayConfig = new wxBitmapButton(m_scroll, wxID_SAVE, wxXmlResource::Get()->LoadBitmap( wxT("MEDIA-FLOPPY_16x16") ) );
     saveDisplayConfig->SetToolTip(_("Save display configuration"));
     globalSettingsSizer->Add(saveDisplayConfig, 0, wxALL | wxALIGN_CENTRE, 5);
 
@@ -228,10 +228,8 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
     if ( !toolBar )
         toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
-    const wxSize imageSize(16,16);
-
     toolBar->AddTool(wxID_OPEN, wxT("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
-    toolBar->AddTool(wxID_SAVE, wxT("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
+    toolBar->AddTool(wxID_SAVE, wxT("S"), wxXmlResource::Get()->LoadBitmap( wxT("MEDIA-FLOPPY_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
     toolBar->AddTool(wxID_RESET, wxT("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
     toolBar->Realize();
@@ -340,8 +338,10 @@ void LayerControl::OnCenterButton(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_CENTER);
     for (LayerControl::iterator it = begin(); it != end(); ++it)
     {
+        // TODO
         (*it)->TranslationX(-m_layers[id]->get_center_x());
-        (*it)->TranslationY(-m_layers[id]->get_center_y());
+
+        (*it)->TranslationY( m_layers[id]->get_center_y());
         (*it)->HasToBeUpdated(true);
     }
     m_basicDrawPane->Refresh();
@@ -495,13 +495,6 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 
     // On construit le SettingsControl en fonction du type de calque ajoute
     LayerSettingsControl *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    /*
-    boost::shared_ptr<VectorLayer> vl = boost::dynamic_pointer_cast<VectorLayer>(layer);
-    if (vl != NULL)
-        settingscontrol = new VectorLayerSettingsControl(m_layers.size() - 1, this);
-    else
-        settingscontrol = new ImageLayerSettingsControl(m_layers.size() - 1, this);
-    */
     layer->SetNotifyLayerSettingsControl( boost::bind( &LayerSettingsControl::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     AddRow(layer->Name(), settingscontrol, layer->Filename());
