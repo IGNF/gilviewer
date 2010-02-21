@@ -338,11 +338,12 @@ void LayerControl::OnCenterButton(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_CENTER);
     for (LayerControl::iterator it = begin(); it != end(); ++it)
     {
-        // TODO
-        (*it)->TranslationX(-m_layers[id]->get_center_x());
-
-        (*it)->TranslationY( m_layers[id]->get_center_y());
+        // TODO: handle cartographic or image coordinates
+        /*
+        (*it)->TranslationX((*it)->TranslationX()-m_layers[id]->get_center_x());
+        (*it)->TranslationY((*it)->TranslationY()+m_layers[id]->get_center_y());
         (*it)->HasToBeUpdated(true);
+        * */
     }
     m_basicDrawPane->Refresh();
 }
