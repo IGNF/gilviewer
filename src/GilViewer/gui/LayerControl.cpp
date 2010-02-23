@@ -334,18 +334,18 @@ void LayerControl::OnSettingsButton(wxCommandEvent& event)
 
 void LayerControl::OnCenterButton(wxCommandEvent& event)
 {
+    /*
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_CENTER);
     for (LayerControl::iterator it = begin(); it != end(); ++it)
     {
         // TODO: handle cartographic or image coordinates
-        /*
         (*it)->TranslationX((*it)->TranslationX()-m_layers[id]->get_center_x());
         (*it)->TranslationY((*it)->TranslationY()+m_layers[id]->get_center_y());
         (*it)->HasToBeUpdated(true);
-        * */
     }
     m_basicDrawPane->Refresh();
+    * */
 }
 
 void LayerControl::OnCheckVisibility(wxCommandEvent& event)
@@ -815,12 +815,10 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
     try
     {
         std::string filename(parameters.path.c_str());
-        Layer::ptrLayerType layer = ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
-        if (!layer) return;
-        AddLayer(layer);
-        //Layer::ptrLayerType ptr = VectorLayer::CreateVectorLayer(boost::filesystem::basename(filename), filename);
-        //if (!ptr) return;
-        //AddLayer(ptr);
+        string extension(boost::filesystem::extension(filename));
+        boost::to_lower(extension);
+        boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+        AddLayer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
         this->m_layers.back()->IsVisible(parameters.isVisible);

@@ -180,32 +180,6 @@ ogr_vector_layer::~ogr_vector_layer()
         OGRFeature::DestroyFeature(m_geometries_features[i].second);
 }
 
-Layer::ptrLayerType ogr_vector_layer::CreateVectorLayer(const string &layerName , const string &fileName)
-{
-    if ( !exists(fileName) )
-    {
-        ostringstream oss;
-        oss << "File does not exist: "<<fileName<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
-    }
-
-    try
-    {
-        Layer::ptrLayerType ptrLayer(new ogr_vector_layer(layerName,fileName));
-        return ptrLayer;
-    }
-    catch(const exception &e)
-    {
-        ostringstream oss;
-        oss << endl << "Exception propagated from:" << endl;
-        oss << e.what();
-        throw logic_error(oss.str());
-    }
-}
-
 void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
     wxPen point_pen(m_point_color,m_point_width);
@@ -213,8 +187,6 @@ void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
     wxPen polygon_pen(m_polygon_border_color,m_polygon_border_width,m_polygon_border_style);
     wxBrush polygon_brush(m_polygon_inner_color,m_polygon_inner_style);
 
-    // TODO: image or geographic coordinates
-    // dc.SetAxisOrientation();
     draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY(),m_coordinates);
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );
@@ -271,10 +243,9 @@ string ogr_vector_layer::get_available_formats_wildcard() const
     return wildcard.str();
 }
 
-const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() const
-{
-    return m_geometries_features;
-}
+const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() const {return m_geometries_features;}
+
+std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() {return m_geometries_features;}
 
 wxPoint ogr_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates)
 {
