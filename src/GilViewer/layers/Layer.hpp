@@ -190,20 +190,27 @@ public:
     virtual void AddEllipse(double x_center, double y_center, double a, double b) {}
     virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta) {}
 
+    virtual void set_point_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_point_color() const {return wxNullColour;}
+    virtual void set_point_width(unsigned int w, bool update=true) {}
+    virtual unsigned int get_point_width() const {return 1;}
+    virtual void set_line_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_line_color() {return wxNullColour;}
+    virtual void set_line_width(unsigned int w, bool update=true) {}
+    virtual unsigned int get_line_width() const {return 1;}
+    virtual void set_line_style(unsigned int s, bool update=true) {}
+    virtual unsigned int get_line_style() const {return wxSOLID;}
+    virtual void set_polygon_border_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_polygon_border_color() {return wxNullColour;}
+    virtual void set_polygon_inner_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_polygon_inner_color() {return wxNullColour;}
+    virtual void set_polygon_border_width(unsigned int w, bool update=true) {}
+    virtual unsigned int get_polygon_border_width() const {return 1;}
+    virtual void set_polygon_border_style(unsigned int , bool update=true) {}
+    virtual unsigned int get_polygon_border_style() const {return wxSOLID;}
+    virtual void set_polygon_inner_style(unsigned int s, bool update=true) {}
+    virtual unsigned int get_polygon_inner_style() const {return wxSOLID;}
 
-    virtual void set_inner_color( const wxColour &colour , bool update = true ) {}
-    virtual void set_border_color( const wxColour &colour , bool update = true ) {}
-    virtual void set_width( unsigned int width , bool update = true ) {}
-    virtual void set_style( const wxColour &inner_color, const wxColour &border_color, unsigned int inner_style, unsigned int border_style, unsigned int width , bool update = true ) {}
-    virtual wxColour get_inner_color() const {return wxNullColour;}
-    virtual wxColour get_border_color() const {return wxNullColour;}
-    virtual unsigned int get_width() const {return 3;}
-    virtual unsigned int get_inner_style() const {return wxSOLID;}
-    virtual unsigned int get_border_style() const {return wxSOLID;}
-
-    virtual void TextsColour( const wxColour &colour , bool update = true ) {}
-    virtual void TextsFont( const wxFont &font , bool update = true ) {}
-    virtual const wxFont& TextsFont() const { return wxNullFont; }
     virtual void TextsVisibility( bool value , bool update = true ) {}
     virtual bool TextsVisibility() const { return true; } // ???!!!???
 

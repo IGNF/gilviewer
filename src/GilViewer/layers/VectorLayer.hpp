@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __VECTOR_LAYER_HPP__
@@ -60,7 +60,7 @@ public:
     /// Simplement pour construire un calque "foutoir" (voir l'implementation)
     VectorLayer(const std::string &layerName , signed short flagPRJ , bool flagDBF);
 
-	virtual ~VectorLayer() {};
+    virtual ~VectorLayer() {};
 
     //static ptrLayerType CreateVectorLayer(const std::string &layerName , const std::string &fileName);
     static ptrLayerType CreateVectorLayer(const std::string &layerName , signed short flagPRJ = 1 , bool flagDBF = false );
@@ -77,50 +77,51 @@ public:
     virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y );
     virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
 
-    // Pour le FunnyVectorLayer
+    // Pour le VectorLayerMultiGeometries
     virtual void AddCircle( double x , double y , double radius );
     virtual void AddSpline( std::vector<std::pair<double,double> > points );
     virtual void AddEllipse(double x_center, double y_center, double a, double b);
     virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta);
+    // Fin VectorLayerMultiGeometries
 
-    virtual void SetBrushVectorLayerMultiGeometries( const wxBrush &brush );
-    virtual void SetBrushVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int style , unsigned char alpha=wxALPHA_OPAQUE );
-    virtual void SetPenVectorLayerMultiGeometries( const wxPen &pen );
-    virtual void SetPenVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int width = 1 , int style = wxSOLID , unsigned char alpha=wxALPHA_OPAQUE );
-    // Fin FunnyVectorLayer
-
-	virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
-	virtual void Update(int width, int height) {};
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
+    virtual void Update(int width, int height) {};
 
     void build_infos();
     virtual std::string get_layer_type_as_string() const {return "Vector";}
     virtual void Save(const std::string &name) const;
 
-    void set_inner_color(const wxColour &colour, bool update = true );
-    void set_border_color(const wxColour &colour, bool update = true );
-    void set_width(unsigned int width, bool update = true );
-    void set_inner_style(unsigned int style, bool update = true);
-    void set_border_style(unsigned int style, bool update = true);
-    void set_style( const wxColour &inner_color, const wxColour &border_color, unsigned int inner_style, unsigned int border_style, unsigned int width , bool update = true );
-    inline wxColour get_inner_color() const {return m_layerContent->get_inner_color();}
-    inline wxColour get_border_color() const {return m_layerContent->get_border_color();}
-    inline unsigned int get_width() const {return m_layerContent->get_width();}
-    inline unsigned int get_inner_style() const {return m_layerContent->get_inner_style();}
-    inline unsigned int get_border_style() const {return m_layerContent->get_border_style();}
+    virtual void set_point_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_point_color() const {return wxNullColour;}
+    virtual void set_point_width(unsigned int w, bool update=true) {}
+    virtual unsigned int get_point_width() const {return 1;}
+    virtual void set_line_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_line_color() {return wxNullColour;}
+    virtual void set_line_width(unsigned int w, bool update=true) {}
+    virtual unsigned int get_line_width() const {return 1;}
+    virtual void set_line_style(unsigned int s, bool update=true) {}
+    virtual unsigned int get_line_style() const {return wxSOLID;}
+    virtual void set_polygon_border_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_polygon_border_color() {return wxNullColour;}
+    virtual void set_polygon_inner_color(const wxColor& c, bool update=true) {}
+    virtual wxColor get_polygon_inner_color() {return wxNullColour;}
+    virtual void set_polygon_border_width(unsigned int w, bool update=true) {}
+    virtual unsigned int get_polygon_border_width() const {return 1;}
+    virtual void set_polygon_border_style(unsigned int , bool update=true) {}
+    virtual unsigned int get_polygon_border_style() const {return wxSOLID;}
+    virtual void set_polygon_inner_style(unsigned int s, bool update=true) {}
+    virtual unsigned int get_polygon_inner_style() const {return wxSOLID;}
 
-	// TODO
-	//virtual void TextsColour( const wxColour &colour );
-	virtual void TextsFont( const wxFont &font , bool update = true ) { m_textFont = font; if (update) notifyLayerSettingsControl_(); }
-	virtual const wxFont& TextsFont() const { return m_textFont; }
-	virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
-	virtual bool TextsVisibility() const { return m_isTextVisible; }
+    // TODO
+    virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
+    virtual bool TextsVisibility() const { return m_isTextVisible; }
 
     boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
 
-	virtual void Clear();
+    virtual void Clear();
 
-	virtual std::string Filename() const;
-	virtual void Filename(const std::string &filename) {m_filename=filename;}
+    virtual std::string Filename() const;
+    virtual void Filename(const std::string &filename) {m_filename=filename;}
 
     virtual std::vector<std::string> get_available_formats_extensions() const;
     virtual std::string get_available_formats_wildcard() const;
@@ -129,7 +130,7 @@ public:
     virtual bool is_saveable() const {return true;}
 
 private:
-	void Init();
+    void Init();
 
     boost::shared_ptr<VectorLayerContent> m_layerContent;
 

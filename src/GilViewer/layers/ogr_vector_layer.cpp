@@ -46,8 +46,6 @@ Authors:
 
 #include <gdal/ogrsf_frmts.h>
 
-#include <wx/dc.h>
-
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
 #include "GilViewer/gui/define_id.hpp"
 
@@ -60,7 +58,12 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         m_layertype(MULTI_GEOMETRIES_TYPE),
         m_center_x(0.), m_center_y(0.),
         m_nb_geometries(0),
-        m_coordinates(1)
+        m_coordinates(1),
+        m_point_width(3), m_line_width(3),
+        m_line_style(wxSOLID),
+        m_polygon_border_width(3),
+        m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
+        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN)
 {
     try
     {
@@ -205,13 +208,14 @@ Layer::ptrLayerType ogr_vector_layer::CreateVectorLayer(const string &layerName 
 
 void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
-    wxPen penColour( *wxRED , 3);
-    wxBrush brush(*wxBLUE,wxSOLID);
-    dc.SetPen( penColour );
-    dc.SetBrush(brush);
+    wxPen point_pen(m_point_color,m_point_width);
+    wxPen line_pen(m_line_color,m_line_width,m_line_style);
+    wxPen polygon_pen(m_polygon_border_color,m_polygon_border_width,m_polygon_border_style);
+    wxBrush polygon_brush(m_polygon_inner_color,m_polygon_inner_style);
+
     // TODO: image or geographic coordinates
     // dc.SetAxisOrientation();
-    draw_geometry_visitor visitor(dc,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY(),m_coordinates);
+    draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY(),m_coordinates);
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );
 }
@@ -277,5 +281,41 @@ wxPoint ogr_vector_layer::FromLocal(double zoomFactor, double translationX, doub
     return wxPoint( static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
                     static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor) );
 }
+
+void ogr_vector_layer::set_point_color(const wxColor& c, bool update)
+{
+    m_point_color=c;
+    if(update)
+        notifyLayerSettingsControl_();
+}
+
+wxColor ogr_vector_layer::get_point_color() const {return m_point_color;}
+
+void ogr_vector_layer::set_line_color(const wxColor& c, bool update)
+{
+    m_line_color=c;
+    if(update)
+        notifyLayerSettingsControl_();
+}
+
+wxColor ogr_vector_layer::get_line_color() {return m_line_color;}
+
+void ogr_vector_layer::set_polygon_border_color(const wxColor& c, bool update)
+{
+    m_polygon_border_color=c;
+    if(update)
+        notifyLayerSettingsControl_();
+}
+
+wxColor ogr_vector_layer::get_polygon_border_color() {return m_polygon_border_color;}
+
+void ogr_vector_layer::set_polygon_inner_color(const wxColor& c, bool update)
+{
+    m_polygon_inner_color=c;
+    if(update)
+        notifyLayerSettingsControl_();
+}
+
+wxColor ogr_vector_layer::get_polygon_inner_color() {return m_polygon_inner_color;}
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

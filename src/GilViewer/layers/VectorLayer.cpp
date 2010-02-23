@@ -46,7 +46,6 @@ using namespace std;
 #include <wx/config.h>
 
 #include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/layers/VectorLayerMultiGeometries.hpp"
 
 void VectorLayer::Init()
 {
@@ -113,12 +112,25 @@ void VectorLayer::SetDefaultDisplayParameters()
     //PolygonsInsideStyle( brushStyle );
     //PolygonsRingsWidth( ringWidth );
     /// Polygones
-    set_style(*wxBLUE,*wxRED,wxSOLID,wxSOLID,3);
+
+    set_point_color(wxColour(redPoint,greenPoint,bluePoint));
+    set_point_width(widthPoint);
+
+    set_line_color(wxColour(redLine,greenLine,blueLine));
+    set_line_width(widthLine);
+    set_line_style(styleLine);
+
+    set_polygon_border_color(wxColour(redRing,greenRing,blueRing));
+    set_polygon_inner_color(wxColour(redShape,greenShape,blueShape));
+    set_polygon_border_width(ringWidth);
+    set_polygon_border_style(penStyle);
+    set_polygon_inner_style(brushStyle);
 }
 
 VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool flagDBF ) :
         m_isFromFile(false)
 {
+    /*
     Name(layerName);
 
     m_layerContent = boost::shared_ptr<VectorLayerContent>( new VectorLayerMultiGeometries() );
@@ -128,6 +140,7 @@ VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool 
     SetDefaultDisplayParameters();
     notifyLayerSettingsControl_();
     Init();
+    */
 }
 
 Layer::ptrLayerType VectorLayer::CreateVectorLayer( const string &layerName , signed short flagPRJ , bool flagDBF )
@@ -140,7 +153,7 @@ Layer::ptrLayerType VectorLayer::CreateVectorLayer( const string &layerName , si
 
 void VectorLayer::build_infos()
 {
-    m_infos = m_layerContent->GetInfos();
+    //m_infos = m_layerContent->GetInfos();
 }
 
 void VectorLayer::Save(const string &name) const
@@ -170,60 +183,16 @@ void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
     }
 }
 
-void VectorLayer::set_inner_color(const wxColour &colour, bool update)
-{
-    m_layerContent->set_inner_color(colour);
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-void VectorLayer::set_border_color(const wxColour &colour, bool update)
-{
-    m_layerContent->set_border_color(colour);
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-void VectorLayer::set_inner_style(unsigned int style, bool update)
-{
-    m_layerContent->set_inner_style(style);
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-void VectorLayer::set_border_style(unsigned int style, bool update)
-{
-    m_layerContent->set_border_style(style);
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-void VectorLayer::set_width(unsigned int width, bool update)
-{
-    m_layerContent->set_width(width);
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-void VectorLayer::set_style(const wxColour &inner_color, const wxColour &border_color, unsigned int inner_style, unsigned int border_style, unsigned int width , bool update)
-{
-    m_layerContent->set_inner_color(inner_color);
-    m_layerContent->set_border_color(border_color);
-    m_layerContent->set_inner_style(inner_style);
-    m_layerContent->set_border_style(border_style);
-    m_layerContent->set_width(width);
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
 void VectorLayer::AddPoint( double x , double y )
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
     {
         dfl->AddPoint(x,y);
         return;
     }
+    */
 }
 
 void VectorLayer::AddPoints( const vector<double> &x , const vector<double> &y )
@@ -244,12 +213,14 @@ void VectorLayer::AddText( double x , double y , const string &text, const wxCol
 
 void VectorLayer::AddLine( double x1 , double y1 , double x2 , double y2 )
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
     {
         dfl->AddLine(x1,y1,x2,y2);
         return;
     }
+    */
 }
 
 void VectorLayer::AddPolyline( const vector<double> &x , const vector<double> &y )
@@ -263,70 +234,47 @@ void VectorLayer::AddPolyline( const vector<double> &x , const vector<double> &y
 
 void VectorLayer::AddPolygon( const vector<double> &x , const vector<double> &y )
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
         dfl->AddPolygon(x,y);
+        */
 }
 
 void VectorLayer::AddCircle( double x , double y , double radius )
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
         dfl->AddCircle(x,y,radius);
+        */
 }
 
 void VectorLayer::AddSpline( vector<pair<double,double> > points )
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
         dfl->AddSpline(points);
+        */
 }
 
 void VectorLayer::AddEllipse(double x_center, double y_center, double a, double b)
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
         dfl->AddEllipse(x_center,y_center,a,b);
+        */
 }
 
 void VectorLayer::AddEllipse(double x_center, double y_center, double a, double b, double theta)
 {
+    /*
     boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
     if ( dfl )
         dfl->AddEllipse(x_center,y_center,a,b,theta);
-}
-
-void VectorLayer::SetBrushVectorLayerMultiGeometries( const wxBrush &brush )
-{
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->SetBrushVectorLayerMultiGeometries(brush);
-}
-
-void VectorLayer::SetBrushVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int style , unsigned char alpha )
-{
-    wxBrush brush( wxColour(red,green,blue,alpha) , style );
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->SetBrushVectorLayerMultiGeometries(brush);
-    notifyLayerSettingsControl_();
-}
-
-void VectorLayer::SetPenVectorLayerMultiGeometries( const wxPen &pen )
-{
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->SetPenVectorLayerMultiGeometries(pen);
-}
-
-void VectorLayer::SetPenVectorLayerMultiGeometries( unsigned char red , unsigned char green , unsigned char blue , int style , int width , unsigned char alpha )
-{
-    // Bug wx !!! Inverser width et style !!!
-    wxPen pen(wxColour(red,green,blue,alpha) , style , width );
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->SetPenVectorLayerMultiGeometries(pen);
-    notifyLayerSettingsControl_();
+        */
 }
 
 void VectorLayer::Clear()

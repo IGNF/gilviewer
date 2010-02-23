@@ -834,7 +834,21 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
         this->m_layers.back()->PolygonsRingsStyle(parameters.polygonsRingsStyle);
         this->m_layers.back()->PolygonsInsideStyle(parameters.polygonsInsideStyle);
         */
-        this->m_layers.back()->set_style(parameters.polygonsInsideColor,parameters.polygonsRingsColor,parameters.polygonsInsideStyle,parameters.polygonsRingsStyle,parameters.polygonsRingsWidth);
+        //this->m_layers.back()->set_style(parameters.polygonsInsideColor,parameters.polygonsRingsColor,parameters.polygonsInsideStyle,parameters.polygonsRingsStyle,parameters.polygonsRingsWidth);
+
+        this->m_layers.back()->set_point_color(parameters.pointsColor);
+        this->m_layers.back()->set_point_width(parameters.pointsWidth);
+
+        this->m_layers.back()->set_line_color(parameters.linesColor);
+        this->m_layers.back()->set_line_width(parameters.linesWidth);
+        this->m_layers.back()->set_line_style(parameters.linesStyle);
+
+        this->m_layers.back()->set_polygon_border_color(parameters.polygonsRingsColor);
+        this->m_layers.back()->set_polygon_inner_color(parameters.polygonsInsideColor);
+        this->m_layers.back()->set_polygon_border_width(parameters.polygonsRingsWidth);
+        this->m_layers.back()->set_polygon_border_style(parameters.polygonsRingsStyle);
+        this->m_layers.back()->set_polygon_inner_style(parameters.polygonsInsideStyle);
+
         this->m_layers.back()->ZoomFactor(parameters.zoomFactor);
         this->m_layers.back()->TranslationX(parameters.translationX);
         this->m_layers.back()->TranslationY(parameters.translationY);

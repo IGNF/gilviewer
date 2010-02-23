@@ -45,14 +45,18 @@ Authors:
 #include <gdal/ogrsf_frmts.h>
 
 #include <wx/dc.h>
+#include <wx/pen.h>
+#include <wx/brush.h>
 
 #include "ogr_vector_layer.hpp"
 
 class draw_geometry_visitor : public boost::static_visitor<>
 {
 public:
-    draw_geometry_visitor(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty, int coordinates):
+    draw_geometry_visitor(wxDC &dc, wxPen point_pen, wxPen line_pen, wxPen poly_pen, wxBrush poly_brush, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty, int coordinates):
             m_dc(dc),
+            m_point_pen(point_pen), m_line_pen(line_pen), m_polygon_pen(poly_pen),
+            m_polygon_brush(poly_brush),
             m_x(x), m_y(y),
             m_transparent(transparent),
             m_r(r), m_z(z), m_tx(tx), m_ty(ty),
@@ -68,6 +72,8 @@ public:
     }
 private:
     wxDC &m_dc;
+    wxPen m_point_pen, m_line_pen, m_polygon_pen;
+    wxBrush m_polygon_brush;
     wxCoord m_x, m_y;
     bool m_transparent;
     double m_r, m_z, m_tx, m_ty, m_delta;
@@ -79,6 +85,7 @@ private:
 template <>
 void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
 {
+    m_dc.SetPen(m_line_pen);
     // Merge with ()(OGRLineString*)?
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
@@ -91,6 +98,7 @@ void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRLineString* operand) const
 {
+    m_dc.SetPen(m_line_pen);
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
         wxPoint p1=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(j),operand->getY(j),m_coordinates);
@@ -102,6 +110,7 @@ void draw_geometry_visitor::operator()(OGRLineString* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRMultiLineString* operand) const
 {
+    m_dc.SetPen(m_line_pen);
     for(int i=0;i<operand->getNumGeometries();++i)
         (*this)((OGRLineString*)operand->getGeometryRef(i));
 }
@@ -109,6 +118,7 @@ void draw_geometry_visitor::operator()(OGRMultiLineString* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRPoint* operand) const
 {
+    m_dc.SetPen(m_point_pen);
     wxPoint p1=ogr_vector_layer::FromLocal(m_z,m_tx,m_ty,m_delta,operand->getX(),operand->getY(),m_coordinates);
     m_dc.DrawLine(p1,p1);
 }
@@ -116,6 +126,7 @@ void draw_geometry_visitor::operator()(OGRPoint* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRMultiPoint* operand) const
 {
+    m_dc.SetPen(m_point_pen);
     for(int i=0;i<operand->getNumGeometries();++i)
         (*this)((OGRPoint*)operand->getGeometryRef(i));
 }
@@ -123,6 +134,8 @@ void draw_geometry_visitor::operator()(OGRMultiPoint* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRPolygon* operand) const
 {
+    m_dc.SetPen(m_polygon_pen);
+    m_dc.SetBrush(m_polygon_brush);
     // TODO: draw polygons
     std::vector<wxPoint> points;
     for(int j=0;j<operand->getExteriorRing()->getNumPoints();++j)
@@ -146,6 +159,8 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
 template <>
 void draw_geometry_visitor::operator()(OGRMultiPolygon* operand) const
 {
+    m_dc.SetPen(m_polygon_pen);
+    m_dc.SetBrush(m_polygon_brush);
     for(int i=0;i<operand->getNumGeometries();++i)
         (*this)((OGRMultiPolygon*)operand->getGeometryRef(i));
 }
