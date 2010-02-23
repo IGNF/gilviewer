@@ -43,7 +43,11 @@ Authors:
 #include <boost/mpl/vector.hpp>
 #include <boost/variant/variant.hpp>
 
+// TODO
+#include <iostream>
+
 class LayerSettingsControl;
+
 class OGRGeometry;
 class OGRFeature;
 class OGRMultiLineString;
@@ -55,6 +59,8 @@ class OGRPoint;
 class OGRPolygon;
 class OGRSpatialReference;
 class OGRLayer;
+
+class wxColor;
 
 typedef boost::variant< OGRLinearRing*,
                         OGRLineString*,
@@ -96,6 +102,27 @@ public:
     inline void set_coordinates(int c) {m_coordinates=c;}
     virtual std::string get_layer_type_as_string() const {return "Vector";}
 
+    virtual void set_point_color(const wxColor& c, bool update=true);
+    virtual wxColor get_point_color() const;
+    virtual void set_point_width(unsigned int w, bool update=true) {m_point_width=w; if(update) notifyLayerSettingsControl_();}
+    virtual unsigned int get_point_width() const  {return m_point_width;}
+    virtual void set_line_color(const wxColor& c, bool update=true);
+    virtual wxColor get_line_color();
+    virtual void set_line_width(unsigned int w, bool update=true) {m_line_width=w; if(update) notifyLayerSettingsControl_();}
+    virtual unsigned int get_line_width() const  {return m_line_width;}
+    virtual void set_line_style(unsigned int s, bool update=true)  {m_line_style=s; if(update) notifyLayerSettingsControl_();};
+    virtual unsigned int get_line_style() const  {return m_line_style;}
+    virtual void set_polygon_border_color(const wxColor& c, bool update=true);
+    virtual wxColor get_polygon_border_color();
+    virtual void set_polygon_inner_color(const wxColor& c, bool update=true);
+    virtual wxColor get_polygon_inner_color();
+    virtual void set_polygon_border_width(unsigned int w, bool update=true)  {m_polygon_border_width=w; if(update) notifyLayerSettingsControl_();}
+    virtual unsigned int get_polygon_border_width() const  {return m_line_width;}
+    virtual void set_polygon_border_style(unsigned int s, bool update=true)  {m_polygon_border_style=s; if(update) notifyLayerSettingsControl_();}
+    virtual unsigned int get_polygon_border_style() const {return m_polygon_border_style;}
+    virtual void set_polygon_inner_style(unsigned int s, bool update=true) {m_polygon_inner_style=s; if(update) notifyLayerSettingsControl_();}
+    virtual unsigned int get_polygon_inner_style() const {return m_polygon_inner_style;}
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
     int m_layertype;
@@ -105,6 +132,9 @@ private:
     int m_coordinates;
 
     void compute_center(OGRLayer* layer, int nb_layers);
+
+    unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
+    wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color;
 };
 
 #endif // OGR_VECTOR_LAYER_HPP
