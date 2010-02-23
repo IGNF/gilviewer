@@ -79,9 +79,6 @@ public:
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~ogr_vector_layer();
 
-    static ptrLayerType CreateVectorLayer(const std::string &layerName , const std::string &fileName);
-    static ptrLayerType CreateVectorLayer(const std::string &layerName , signed short flagPRJ = 1 , bool flagDBF = false );
-
     virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void Update(int, int) {}
 
@@ -97,6 +94,7 @@ public:
     inline virtual double get_center_y() {return m_center_y;}
 
     const std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features() const;
+    std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features();
 
     static wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
     inline void set_coordinates(int c) {m_coordinates=c;}

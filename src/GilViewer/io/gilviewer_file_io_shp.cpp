@@ -14,10 +14,8 @@ using namespace std;
 
 shared_ptr<Layer> gilviewer_file_io_shp::load(const string &filename)
 {
-    return ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(filename),filename);
+    return gilviewer_file_io::load(filename);
 }
-
-#include <iostream>
 
 void gilviewer_file_io_shp::save(shared_ptr<Layer> layer, const string &filename)
 {

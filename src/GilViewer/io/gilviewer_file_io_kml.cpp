@@ -1,6 +1,5 @@
 #include "gilviewer_file_io_kml.hpp"
 
-#include <boost/filesystem/convenience.hpp>
 #include <boost/variant/get.hpp>
 
 #include <gdal/ogrsf_frmts.h>
@@ -14,7 +13,7 @@ using namespace std;
 
 shared_ptr<Layer> gilviewer_file_io_kml::load(const string &filename)
 {
-    return ogr_vector_layer::CreateVectorLayer(boost::filesystem::basename(filename),filename);
+    return gilviewer_file_io::load(filename);
 }
 
 void gilviewer_file_io_kml::save(shared_ptr<Layer> layer, const string &filename)
