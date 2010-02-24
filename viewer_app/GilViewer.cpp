@@ -45,7 +45,7 @@ Authors:
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 
-#include "../src/GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "FrameViewer.hpp"
 #include "GilViewer.h"
 

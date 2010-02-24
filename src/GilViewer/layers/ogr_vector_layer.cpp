@@ -40,11 +40,11 @@ Authors:
 #include <boost/filesystem.hpp>
 #include <boost/variant/detail/apply_visitor_unary.hpp>
 
-
 #include <iostream>
 #include <sstream>
 
 #include <gdal/ogrsf_frmts.h>
+#include <ogr_geometry.h>
 
 #include "GilViewer/gui/VectorLayerSettingsControl.hpp"
 #include "GilViewer/gui/define_id.hpp"
@@ -174,6 +174,20 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     m_layertype = MULTI_GEOMETRIES_TYPE;
 }
 
+ogr_vector_layer::ogr_vector_layer(const std::string &layer_name):
+        m_layertype(MULTI_GEOMETRIES_TYPE),
+        m_center_x(0.), m_center_y(0.),
+        m_nb_geometries(0),
+        m_coordinates(1),
+        m_point_width(3), m_line_width(3),
+        m_line_style(wxSOLID),
+        m_polygon_border_width(3),
+        m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
+        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN)
+{
+    ;
+}
+
 ogr_vector_layer::~ogr_vector_layer()
 {
     for(unsigned int i=0;i<m_geometries_features.size();++i)
@@ -288,5 +302,82 @@ void ogr_vector_layer::set_polygon_inner_color(const wxColor& c, bool update)
 }
 
 wxColor ogr_vector_layer::get_polygon_inner_color() {return m_polygon_inner_color;}
+
+void ogr_vector_layer::AddPoint( double x , double y )
+{
+    OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
+    OGRPoint* p= new OGRPoint(x,y);
+    poFeature->SetGeometry(p);
+    m_geometries_features.push_back(std::make_pair<OGRPoint*,OGRFeature*>(p,poFeature));
+    ++m_nb_geometries;
+}
+
+void ogr_vector_layer::AddText( double x , double y , const std::string &text , const wxColour &color)
+{
+    cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
+}
+
+void ogr_vector_layer::AddLine( double x1 , double y1 , double x2 , double y2 )
+{
+    OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
+    OGRLineString* l= new OGRLineString();
+    l->addPoint(x1,y1);
+    l->addPoint(x2,y2);
+    poFeature->SetGeometry(l);
+    m_geometries_features.push_back(std::make_pair<OGRLineString*,OGRFeature*>(l,poFeature));
+    m_nb_geometries+=2;
+}
+
+void ogr_vector_layer::AddPolyline( const std::vector<double> &x , const std::vector<double> &y )
+{
+    OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
+    OGRLineString* l= new OGRLineString();
+    for(unsigned int i=0;i<x.size();++i)
+        l->addPoint(x[i],y[i]);
+    poFeature->SetGeometry(l);
+    m_geometries_features.push_back(std::make_pair<OGRLineString*,OGRFeature*>(l,poFeature));
+    m_nb_geometries+=x.size();
+}
+
+void ogr_vector_layer::AddPolygon( const std::vector<double> &x , const std::vector<double> &y )
+{
+    OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
+    OGRPolygon* p= new OGRPolygon();
+    OGRLinearRing* l = new OGRLinearRing();
+    for(unsigned int i=0;i<x.size();++i)
+        l->addPoint(x[i],y[i]);
+    p->addRing(l);
+    p->closeRings();
+    poFeature->SetGeometry(p);
+    m_geometries_features.push_back(std::make_pair<OGRPolygon*,OGRFeature*>(p,poFeature));
+    m_nb_geometries+=x.size();
+}
+
+void ogr_vector_layer::AddCircle( double x , double y , double radius )
+{
+    OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
+    OGRLineString* l= new OGRLineString();
+    for(unsigned int i=0;i<=360;++i)
+        l->addPoint(x+radius*cos((double)i*3.1415/180.),y+radius*sin((double)i*3.1415/180.));
+    poFeature->SetGeometry(l);
+    m_geometries_features.push_back(std::make_pair<OGRLineString*,OGRFeature*>(l,poFeature));
+    m_nb_geometries+=l->getNumPoints();
+}
+
+void ogr_vector_layer::AddSpline( std::vector<std::pair<double, double> > points )
+{
+    cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
+}
+
+void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, double b)
+{
+    cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
+}
+
+void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, double b, double theta)
+{
+    cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
+}
+
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

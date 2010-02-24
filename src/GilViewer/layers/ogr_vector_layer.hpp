@@ -75,6 +75,8 @@ class ogr_vector_layer : public Layer
 public:
     /// Constructeur a partir d'un nom de calque et d'un fichier shapefile
     ogr_vector_layer(const std::string &layer_name, const std::string &filename);
+    /// Constructeur vide: pour creer un layer a remplir a la main ...
+    ogr_vector_layer(const std::string &layer_name="default name");
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~ogr_vector_layer();
@@ -120,6 +122,16 @@ public:
     virtual unsigned int get_polygon_border_style() const {return m_polygon_border_style;}
     virtual void set_polygon_inner_style(unsigned int s, bool update=true) {m_polygon_inner_style=s; if(update) notifyLayerSettingsControl_();}
     virtual unsigned int get_polygon_inner_style() const {return m_polygon_inner_style;}
+
+    virtual void AddPoint( double x , double y );
+    virtual void AddText( double x , double y , const std::string &text , const wxColour &color = *wxBLACK );
+    virtual void AddLine( double x1 , double y1 , double x2 , double y2 );
+    virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y );
+    virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
+    virtual void AddCircle( double x , double y , double radius );
+    virtual void AddSpline( std::vector<std::pair<double, double> > points );
+    virtual void AddEllipse(double x_center, double y_center, double a, double b);
+    virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta);
 
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
