@@ -54,16 +54,9 @@ Authors:
 using namespace std;
 using namespace boost::filesystem;
 
-ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename):
-        m_layertype(MULTI_GEOMETRIES_TYPE),
-        m_center_x(0.), m_center_y(0.),
+ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename): Layer(),
         m_nb_geometries(0),
-        m_coordinates(1),
-        m_point_width(3), m_line_width(3),
-        m_line_style(wxSOLID),
-        m_polygon_border_width(3),
-        m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
-        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN)
+        m_coordinates(1)
 {
     try
     {
@@ -174,20 +167,6 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     m_layertype = MULTI_GEOMETRIES_TYPE;
 }
 
-ogr_vector_layer::ogr_vector_layer(const std::string &layer_name):
-        m_layertype(MULTI_GEOMETRIES_TYPE),
-        m_center_x(0.), m_center_y(0.),
-        m_nb_geometries(0),
-        m_coordinates(1),
-        m_point_width(3), m_line_width(3),
-        m_line_style(wxSOLID),
-        m_polygon_border_width(3),
-        m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
-        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN)
-{
-    ;
-}
-
 ogr_vector_layer::~ogr_vector_layer()
 {
     for(unsigned int i=0;i<m_geometries_features.size();++i)
@@ -261,47 +240,11 @@ const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get
 
 std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() {return m_geometries_features;}
 
-wxPoint ogr_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates)
+wxPoint ogr_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates = 1 /*IMAGE_COORDINATES*/)
 {
     return wxPoint( static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
                     static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor) );
 }
-
-void ogr_vector_layer::set_point_color(const wxColor& c, bool update)
-{
-    m_point_color=c;
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-wxColor ogr_vector_layer::get_point_color() const {return m_point_color;}
-
-void ogr_vector_layer::set_line_color(const wxColor& c, bool update)
-{
-    m_line_color=c;
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-wxColor ogr_vector_layer::get_line_color() {return m_line_color;}
-
-void ogr_vector_layer::set_polygon_border_color(const wxColor& c, bool update)
-{
-    m_polygon_border_color=c;
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-wxColor ogr_vector_layer::get_polygon_border_color() {return m_polygon_border_color;}
-
-void ogr_vector_layer::set_polygon_inner_color(const wxColor& c, bool update)
-{
-    m_polygon_inner_color=c;
-    if(update)
-        notifyLayerSettingsControl_();
-}
-
-wxColor ogr_vector_layer::get_polygon_inner_color() {return m_polygon_inner_color;}
 
 void ogr_vector_layer::AddPoint( double x , double y )
 {
@@ -377,6 +320,11 @@ void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, do
 void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, double b, double theta)
 {
     cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
+}
+
+void ogr_vector_layer::Clear()
+{
+    m_geometries_features.erase(m_geometries_features.begin(), m_geometries_features.end());
 }
 
 

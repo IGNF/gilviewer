@@ -68,20 +68,20 @@ public:
     /// Cette methode recupere les donnees d'affichage par defaut dans les parametres et les affecte au nouveau calque
     virtual void SetDefaultDisplayParameters();
 
-    int Type() const { return m_layerType; }
+    int Type() const { return m_layertype; }
 
-    virtual void AddPoint( double x , double y );
-    virtual void AddPoints( const std::vector<double> &x , const std::vector<double> &y );
-    virtual void AddText( double x , double y , const std::string &text, const wxColour &color = *wxBLACK);
-    virtual void AddLine( double x1 , double y1 , double x2 , double y2 );
-    virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y );
-    virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
+    virtual void AddPoint( double x , double y ) {}
+    virtual void AddPoints( const std::vector<double> &x , const std::vector<double> &y ) {}
+    virtual void AddText( double x , double y , const std::string &text, const wxColour &color = *wxBLACK) {}
+    virtual void AddLine( double x1 , double y1 , double x2 , double y2 ) {}
+    virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y ) {}
+    virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y ) {}
 
     // Pour le VectorLayerMultiGeometries
-    virtual void AddCircle( double x , double y , double radius );
-    virtual void AddSpline( std::vector<std::pair<double,double> > points );
-    virtual void AddEllipse(double x_center, double y_center, double a, double b);
-    virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta);
+    virtual void AddCircle( double x , double y , double radius ) {}
+    virtual void AddSpline( std::vector<std::pair<double,double> > points ) {}
+    virtual void AddEllipse(double x_center, double y_center, double a, double b) {}
+    virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta) {}
     // Fin VectorLayerMultiGeometries
 
     virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
@@ -90,27 +90,6 @@ public:
     void build_infos();
     virtual std::string get_layer_type_as_string() const {return "Vector";}
     virtual void Save(const std::string &name) const;
-
-    virtual void set_point_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_point_color() const {return wxNullColour;}
-    virtual void set_point_width(unsigned int w, bool update=true) {}
-    virtual unsigned int get_point_width() const {return 1;}
-    virtual void set_line_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_line_color() {return wxNullColour;}
-    virtual void set_line_width(unsigned int w, bool update=true) {}
-    virtual unsigned int get_line_width() const {return 1;}
-    virtual void set_line_style(unsigned int s, bool update=true) {}
-    virtual unsigned int get_line_style() const {return wxSOLID;}
-    virtual void set_polygon_border_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_polygon_border_color() {return wxNullColour;}
-    virtual void set_polygon_inner_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_polygon_inner_color() {return wxNullColour;}
-    virtual void set_polygon_border_width(unsigned int w, bool update=true) {}
-    virtual unsigned int get_polygon_border_width() const {return 1;}
-    virtual void set_polygon_border_style(unsigned int , bool update=true) {}
-    virtual unsigned int get_polygon_border_style() const {return wxSOLID;}
-    virtual void set_polygon_inner_style(unsigned int s, bool update=true) {}
-    virtual unsigned int get_polygon_inner_style() const {return wxSOLID;}
 
     // TODO
     virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
@@ -144,7 +123,7 @@ private:
     std::vector< wxColour > m_textColour;
 
 protected:
-    int m_layerType;
+    int m_layertype;
 };
 
 

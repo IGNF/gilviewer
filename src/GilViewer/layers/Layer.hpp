@@ -42,6 +42,7 @@ Authors:
 #include <wx/gdicmn.h>
 #include <wx/colour.h>
 #include <wx/font.h>
+#include <wx/colour.h>
 
 class wxDC;
 
@@ -75,7 +76,12 @@ public:
             m_zoomFactor(1.),
             m_translationX(0.), m_translationY(0.),
             m_hasOri(false),
-            m_infos("") {}
+            m_infos(""),
+            m_point_width(3), m_line_width(3),
+            m_line_style(wxSOLID),
+            m_polygon_border_width(3),
+            m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
+            m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN) {}
     static void notify_none() {}
 
     virtual ~Layer() {}
@@ -190,26 +196,26 @@ public:
     virtual void AddEllipse(double x_center, double y_center, double a, double b) {}
     virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta) {}
 
-    virtual void set_point_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_point_color() const {return wxNullColour;}
-    virtual void set_point_width(unsigned int w, bool update=true) {}
-    virtual unsigned int get_point_width() const {return 1;}
-    virtual void set_line_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_line_color() {return wxNullColour;}
-    virtual void set_line_width(unsigned int w, bool update=true) {}
-    virtual unsigned int get_line_width() const {return 1;}
-    virtual void set_line_style(unsigned int s, bool update=true) {}
-    virtual unsigned int get_line_style() const {return wxSOLID;}
-    virtual void set_polygon_border_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_polygon_border_color() {return wxNullColour;}
-    virtual void set_polygon_inner_color(const wxColor& c, bool update=true) {}
-    virtual wxColor get_polygon_inner_color() {return wxNullColour;}
-    virtual void set_polygon_border_width(unsigned int w, bool update=true) {}
-    virtual unsigned int get_polygon_border_width() const {return 1;}
-    virtual void set_polygon_border_style(unsigned int , bool update=true) {}
-    virtual unsigned int get_polygon_border_style() const {return wxSOLID;}
-    virtual void set_polygon_inner_style(unsigned int s, bool update=true) {}
-    virtual unsigned int get_polygon_inner_style() const {return wxSOLID;}
+    void set_point_color(const wxColor& c, bool update=true)          {m_point_color=c;          if(update) notifyLayerSettingsControl_();}
+    void set_point_width(unsigned int w, bool update=true)            {m_point_width=w;          if(update) notifyLayerSettingsControl_();}
+    void set_line_color(const wxColor& c, bool update=true)           {m_line_color=c;           if(update) notifyLayerSettingsControl_();}
+    void set_line_width(unsigned int w, bool update=true)             {m_line_width=w;           if(update) notifyLayerSettingsControl_();}
+    void set_line_style(unsigned int s, bool update=true)             {m_line_style=s;           if(update) notifyLayerSettingsControl_();}
+    void set_polygon_border_color(const wxColor& c, bool update=true) {m_polygon_border_color=c; if(update) notifyLayerSettingsControl_();}
+    void set_polygon_inner_color(const wxColor& c, bool update=true)  {m_polygon_inner_color=c;  if(update) notifyLayerSettingsControl_();}
+    void set_polygon_border_width(unsigned int w, bool update=true)   {m_polygon_border_width=w; if(update) notifyLayerSettingsControl_();}
+    void set_polygon_border_style(unsigned int s, bool update=true)   {m_polygon_border_style=s; if(update) notifyLayerSettingsControl_();}
+    void set_polygon_inner_style(unsigned int s, bool update=true)    {m_polygon_inner_style=s;  if(update) notifyLayerSettingsControl_();}
+    wxColor get_point_color() const               {return m_point_color;}
+    unsigned int get_point_width() const          {return m_point_width;}
+    wxColor get_line_color() const                {return m_line_color;}
+    unsigned int get_line_width() const           {return m_line_width;}
+    unsigned int get_line_style() const           {return m_line_style;}
+    wxColor get_polygon_border_color() const      {return m_polygon_border_color;}
+    wxColor get_polygon_inner_color() const       {return m_polygon_inner_color;}
+    unsigned int get_polygon_border_width() const {return m_line_width;}
+    unsigned int get_polygon_border_style() const {return m_polygon_border_style;}
+    unsigned int get_polygon_inner_style() const  {return m_polygon_inner_style;}
 
     virtual void TextsVisibility( bool value , bool update = true ) {}
     virtual bool TextsVisibility() const { return true; } // ???!!!???
@@ -244,7 +250,8 @@ protected:
     //infos du layer
     std::string m_infos;
 
-    static wxColour m_defaultPointColour;
+    unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
+    wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color;
 };
 
 

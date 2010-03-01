@@ -47,6 +47,7 @@ Authors:
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "GilViewer/layers/ogr_vector_layer.hpp"
+#include "GilViewer/layers/simple_vector_layer.hpp"
 #include "sample_vector_layer_viewer.hpp"
 #include "sample_vector_layer.h"
 
@@ -91,6 +92,26 @@ bool sample_vector_layer_app::OnInit()
         vector_layer->set_line_color(wxColor(246,123,123));
         vector_layer->set_line_width(10);
         vector_layer->set_line_style(wxSHORT_DASH);
+
+        // We now test the simple_vector_layer_interface
+        boost::shared_ptr<Layer> my_vector_layer = boost::shared_ptr<Layer>(new simple_vector_layer("Simple layer"));
+        m_frame->AddLayer(my_vector_layer);
+        my_vector_layer->AddCircle(100.,100.,10.);
+        my_vector_layer->set_polygon_border_color(*wxRED);
+        my_vector_layer->set_polygon_border_width(5);
+        my_vector_layer->set_polygon_inner_color(*wxBLUE);
+        my_vector_layer->AddCircle(123.,198.,2.3654654);
+        my_vector_layer->AddPoint(63.,45.654);
+        my_vector_layer->AddPoint(23.2,5.98);
+        my_vector_layer->AddLine(0.,0.,10.,10.);
+        my_vector_layer->AddEllipse(-50.,1.,10.,25.,0.987456);
+        my_vector_layer->AddEllipse(10.,-23.,10.,25.);
+        std::vector<double> xp, yp;
+        xp.push_back(12.3); xp.push_back(11.8); xp.push_back(-2.9);
+        yp.push_back( 2.3); yp.push_back(-1.8); yp.push_back(16.9);
+        my_vector_layer->AddPolyline(xp,yp);
+        my_vector_layer->set_line_style(wxSHORT_DASH);
+        my_vector_layer->set_line_width(1);
     }
     catch( std::exception &e )
     {

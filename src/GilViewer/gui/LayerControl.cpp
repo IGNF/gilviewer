@@ -397,13 +397,16 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
 {
     wxString wildcard;
     wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.shp;*.kml)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.shp;*.SHP;*.kml;*.KML|");
+    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin;*.shp;*.kml)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN;*.shp;*.SHP;*.kml;*.KML|");
     wildcard << _("Image files ");
     wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
     wildcard << wxT("TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|");
     wildcard << wxT("PNG (*.png;*.PNG)|*.png;*.PNG|");
     wildcard << wxT("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
     wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
+    wildcard << wxT("Serialization text (*.txt)|*.txt;*.TXT|");
+    wildcard << wxT("Serialization xml (*.xml)|*.xml;*.XML|");
+    wildcard << wxT("Serialization binary (*.bin)|*.bin;*.BIN|");
     wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
     wildcard << wxT("KML (*.kml)|*.kml;*.KML|");
     wildcard << _("Custom format ");
