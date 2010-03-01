@@ -6,6 +6,9 @@
 
 #include "gilviewer_file_io_shp.hpp"
 #include "gilviewer_file_io_kml.hpp"
+#include "gilviewer_file_io_serialization_txt.hpp"
+#include "gilviewer_file_io_serialization_xml.hpp"
+#include "gilviewer_file_io_serialization_binary.hpp"
 
 void register_all_image_file_formats()
 {
@@ -18,6 +21,9 @@ void register_all_vector_file_formats()
 {
     gilviewer_file_io_shp::Register();
     gilviewer_file_io_kml::Register();
+    gilviewer_file_io_serialization_txt::Register();
+    gilviewer_file_io_serialization_xml::Register();
+    gilviewer_file_io_serialization_binary::Register();
 }
 
 void register_all_file_formats()

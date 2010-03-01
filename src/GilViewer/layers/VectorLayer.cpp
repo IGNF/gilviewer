@@ -46,6 +46,7 @@ using namespace std;
 #include <wx/config.h>
 
 #include "GilViewer/layers/VectorLayer.hpp"
+#include "GilViewer/gui/define_id.hpp"
 
 void VectorLayer::Init()
 {
@@ -128,7 +129,8 @@ void VectorLayer::SetDefaultDisplayParameters()
 }
 
 VectorLayer::VectorLayer( const string &layerName , signed short flagPRJ , bool flagDBF ) :
-        m_isFromFile(false)
+        m_isFromFile(false),
+        m_layertype(MULTI_GEOMETRIES_TYPE)
 {
     /*
     Name(layerName);
@@ -181,100 +183,6 @@ void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
             dc.DrawText( wxString(itbv->c_str(), *wxConvCurrent), x, y);
         }
     }
-}
-
-void VectorLayer::AddPoint( double x , double y )
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-    {
-        dfl->AddPoint(x,y);
-        return;
-    }
-    */
-}
-
-void VectorLayer::AddPoints( const vector<double> &x , const vector<double> &y )
-{
-    /*
-    boost::shared_ptr<VectorLayerPoint> layerPoint = boost::dynamic_pointer_cast<VectorLayerPoint>( m_layerContent );
-    if ( layerPoint )
-        layerPoint->AddPoints(x,y);
-        */
-}
-
-void VectorLayer::AddText( double x , double y , const string &text, const wxColour &color )
-{
-    m_textCoordinates.push_back( make_pair(x,y) );
-    m_textValue.push_back( text );
-    m_textColour.push_back(color);
-}
-
-void VectorLayer::AddLine( double x1 , double y1 , double x2 , double y2 )
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-    {
-        dfl->AddLine(x1,y1,x2,y2);
-        return;
-    }
-    */
-}
-
-void VectorLayer::AddPolyline( const vector<double> &x , const vector<double> &y )
-{
-    /*
-    boost::shared_ptr<VectorLayerArc> layerArc = boost::dynamic_pointer_cast<VectorLayerArc>( m_layerContent );
-    if ( layerArc )
-        layerArc->AddPolyline(x,y);
-        */
-}
-
-void VectorLayer::AddPolygon( const vector<double> &x , const vector<double> &y )
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->AddPolygon(x,y);
-        */
-}
-
-void VectorLayer::AddCircle( double x , double y , double radius )
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->AddCircle(x,y,radius);
-        */
-}
-
-void VectorLayer::AddSpline( vector<pair<double,double> > points )
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->AddSpline(points);
-        */
-}
-
-void VectorLayer::AddEllipse(double x_center, double y_center, double a, double b)
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->AddEllipse(x_center,y_center,a,b);
-        */
-}
-
-void VectorLayer::AddEllipse(double x_center, double y_center, double a, double b, double theta)
-{
-    /*
-    boost::shared_ptr<VectorLayerMultiGeometries> dfl = boost::dynamic_pointer_cast<VectorLayerMultiGeometries> ( m_layerContent );
-    if ( dfl )
-        dfl->AddEllipse(x_center,y_center,a,b,theta);
-        */
 }
 
 void VectorLayer::Clear()
