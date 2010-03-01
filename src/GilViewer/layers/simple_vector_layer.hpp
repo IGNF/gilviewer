@@ -140,6 +140,7 @@ public:
     virtual void Update(int, int) {}
 
     virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
+    virtual std::string GetInfos();
 
     virtual bool is_saveable() const {return true;}
     virtual std::string get_available_formats_wildcard() const;

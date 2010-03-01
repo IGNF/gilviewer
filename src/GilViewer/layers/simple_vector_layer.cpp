@@ -58,6 +58,10 @@ simple_vector_layer::simple_vector_layer(const std::string& layer_name): Layer()
     m_polygons(std::vector< std::vector<PointType> > ())
 {
     m_name=layer_name;
+
+    Filename( "" );
+    notifyLayerSettingsControl_();
+    SetDefaultDisplayParameters();
 }
 
 //void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
@@ -297,4 +301,18 @@ string simple_vector_layer::get_available_formats_wildcard() const
 LayerSettingsControl* simple_vector_layer::build_layer_settings_control(unsigned int index, LayerControl* parent)
 {
     return new VectorLayerSettingsControl(index, parent);
+}
+
+std::string simple_vector_layer::GetInfos()
+{
+    ostringstream oss;
+    oss << m_circles.size() << " circles\n";
+    oss << m_ellipses.size() << " ellipses\n";
+    oss << m_rotatedellipses.size() << " rotated ellipses\n";
+    oss << m_arcs.size() << " arcs\n";
+    oss << m_points.size() << " points\n";
+    oss << m_splines.size() << " splines\n";
+    oss << m_polygons.size() << " polygons\n";
+    m_infos = oss.str();
+    return m_infos;
 }
