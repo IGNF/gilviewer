@@ -125,7 +125,7 @@ else()
 endif()
 
 ####
-#### Ajout du fichier contenant les regles de construction des libs externes : shapelib et tinyxml
+#### Ajout du fichier contenant les regles de construction des libs externes : tinyxml
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
@@ -156,14 +156,12 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_library.cmake )
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 
-# Ajout du repertoire d'include des lib externes (pour l'instant,  shapelib et tinyxml)
+# Ajout du repertoire d'include des lib externes (pour l'instant,  tinyxml)
 INCLUDE_DIRECTORIES( BEFORE "extern/" )
 # Ajout du repertoire d'include des sources du viewer
 INCLUDE_DIRECTORIES( BEFORE  "src/" )
 
-# Ajout d'une dependance du viewer a la shapelib. Ca permet de compiler la shapelib AVANT le viewer ...		
-ADD_DEPENDENCIES( GilViewer shapelib )
-# Idem pout Tinyxml
+# Ajout d'une dependance du viewer a tinyxml. Ca permet de compiler tinyxml AVANT le viewer ...
 ADD_DEPENDENCIES( GilViewer tinyxml )
 # Et enfin, le viewer depend de la lib ...
 ADD_DEPENDENCIES( GilViewerApp GilViewer )

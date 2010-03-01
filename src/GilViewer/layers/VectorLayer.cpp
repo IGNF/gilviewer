@@ -45,8 +45,8 @@ using namespace std;
 #include <wx/log.h>
 #include <wx/config.h>
 
-#include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/gui/define_id.hpp"
+#include "../layers/VectorLayer.hpp"
+#include "../gui/define_id.hpp"
 
 void VectorLayer::Init()
 {
@@ -158,45 +158,10 @@ void VectorLayer::build_infos()
     //m_infos = m_layerContent->GetInfos();
 }
 
-void VectorLayer::Save(const string &name) const
-{
-    m_layerContent->Save(name);
-}
-
-void VectorLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
-{
-    // On draw les geometries
-    m_layerContent->Draw(dc, x, y, transparent, ZoomFactor(), TranslationX(), TranslationY(), Resolution());
-    // ... puis le texte si besoin ...
-    if ( m_isTextVisible )
-    {
-        if ( m_textFont != wxNullFont )
-            dc.SetFont(m_textFont);
-        vector< pair<double,double> >::const_iterator itbc = m_textCoordinates.begin(), itec = m_textCoordinates.end();
-        vector< string >::const_iterator itbv = m_textValue.begin();
-        vector< wxColour >::const_iterator itbcolor = m_textColour.begin();
-        for (;itbc!=itec;++itbc,++itbv,++itbcolor)
-        {
-            wxDCTextColourChanger dcfortextcolor(dc,*itbcolor);
-            wxCoord x = wxCoord((itbc->first+TranslationX())/ZoomFactor());
-            wxCoord y = wxCoord((m_layerContent->FlagPRJ()*itbc->second+TranslationY())/ZoomFactor());
-            dc.DrawText( wxString(itbv->c_str(), *wxConvCurrent), x, y);
-        }
-    }
-}
-
 void VectorLayer::Clear()
 {
-    m_layerContent->Clear();
     m_textCoordinates.clear();
     m_textValue.clear();
-}
-
-string VectorLayer::Filename() const
-{
-    if(!m_layerContent) return m_filename;
-    boost::filesystem::path full = boost::filesystem::system_complete(m_layerContent->ShapefileFileName());
-    return full.string();
 }
 
 vector<string> VectorLayer::get_available_formats_extensions() const

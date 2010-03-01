@@ -42,9 +42,9 @@ Authors:
 #include <wx/dnd.h>
 #include <wx/panel.h>
 
-#include "GilViewer/layers/Layer.hpp"
+#include "../layers/Layer.hpp"
 
-#include "GilViewer/convenient/MacrosGilViewer.hpp"
+#include "../convenient/MacrosGilViewer.hpp"
 
 class ApplicationSettings;
 class LayerControl;

@@ -39,7 +39,7 @@ Authors:
 #ifndef __VECTOR_LAYER_SETTINGS_CONTROL_HPP__
 #define __VECTOR_LAYER_SETTINGS_CONTROL_HPP__
 
-#include "GilViewer/gui/LayerSettingsControl.hpp"
+#include "../gui/LayerSettingsControl.hpp"
 
 class wxSlider;
 class wxChoice;

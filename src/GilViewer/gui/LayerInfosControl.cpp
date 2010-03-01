@@ -36,7 +36,7 @@ Authors:
 
 ***********************************************************************/
 
-#include "GilViewer/gui/LayerInfosControl.hpp"
+#include "../gui/LayerInfosControl.hpp"
 
 #include <wx/sizer.h>
 #include <wx/button.h>

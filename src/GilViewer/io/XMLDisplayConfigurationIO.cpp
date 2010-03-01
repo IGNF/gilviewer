@@ -46,8 +46,8 @@ Authors:
 
 #include "tinyxml/tinyxml.h"
 
-#include "GilViewer/gui/LayerControl.hpp"
-#include "GilViewer/gui/PanelViewer.hpp"
+#include "../gui/LayerControl.hpp"
+#include "../gui/PanelViewer.hpp"
 
 void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::string filename )
 {

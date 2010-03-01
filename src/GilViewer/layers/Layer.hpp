@@ -50,9 +50,9 @@ class wxDC;
 #include <boost/function.hpp>
 
 
-#include "GilViewer/tools/Orientation2D.h"
-#include "GilViewer/tools/ColorLookupTable.h"
-#include "GilViewer/gui/LayerSettingsControl.hpp"
+#include "../tools/Orientation2D.h"
+#include "../tools/ColorLookupTable.h"
+#include "../gui/LayerSettingsControl.hpp"
 
 #ifdef WIN32
 #	include <wx/msw/winundef.h>

@@ -40,9 +40,9 @@ Authors:
 #define PANELMANAGER_H_
 #include <vector>
 
-#include "GilViewer/tools/PatternSingleton.hpp"
-#include "GilViewer/tools/PatternFactory.hpp"
-#include "GilViewer/gui/PanelViewer.hpp"
+#include "../tools/PatternSingleton.hpp"
+#include "../tools/PatternFactory.hpp"
+#include "../gui/PanelViewer.hpp"
 
 
 class PanelManagerModel : public  PatternFactory<PanelViewer>

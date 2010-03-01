@@ -40,7 +40,7 @@ Authors:
 #include <wx/pen.h>
 #include <wx/brush.h>
 
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
+#include "../gui/VectorLayerSettingsControl.hpp"
 
 #include "simple_vector_layer.hpp"
 

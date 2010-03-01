@@ -38,7 +38,7 @@ Authors:
 
 #include <wx/dc.h>
 
-#include "GilViewer/layers/VectorLayerGhost.h"
+#include "VectorLayerGhost.h"
 
 wxPoint VectorLayerGhost::FromLocal(const wxPoint &p, double delta) const
 {

@@ -41,7 +41,7 @@ Authors:
 
 #include <boost/shared_ptr.hpp>
 
-#include "GilViewer/layers/Layer.hpp"
+#include "../layers/Layer.hpp"
 
 // forward declaration of image types
 class image_type;

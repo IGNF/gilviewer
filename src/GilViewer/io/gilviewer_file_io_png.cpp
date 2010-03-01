@@ -4,8 +4,8 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/gil/extension/io/png_dynamic_io.hpp>
 
-#include "GilViewer/layers/ImageLayer.hpp"
-#include "GilViewer/layers/image_types.hpp"
+#include "../layers/ImageLayer.hpp"
+#include "../layers/image_types.hpp"
 
 using namespace boost;
 using namespace std;

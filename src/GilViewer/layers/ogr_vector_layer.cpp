@@ -46,8 +46,8 @@ Authors:
 #include <gdal/ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
-#include "GilViewer/gui/define_id.hpp"
+#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../gui/define_id.hpp"
 
 #include "draw_geometry_visitor.hpp"
 

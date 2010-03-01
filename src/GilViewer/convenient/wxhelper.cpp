@@ -36,7 +36,7 @@ Authors:
  
 ***********************************************************************/
 
-#include "GilViewer/convenient/wxhelper.hpp"
+#include "../convenient/wxhelper.hpp"
 
 #include <wx/defs.h>
 

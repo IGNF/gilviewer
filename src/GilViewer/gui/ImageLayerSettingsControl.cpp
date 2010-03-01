@@ -54,12 +54,12 @@ Authors:
 #include <wx/filepicker.h>
 #include <wx/valtext.h>
 
-#include "GilViewer/gui/PanelViewer.hpp"
-#include "GilViewer/gui/LayerControl.hpp"
-#include "GilViewer/gui/define_id.hpp"
-#include "GilViewer/gui/resources/image_icon.xpm"
+#include "../gui/PanelViewer.hpp"
+#include "../gui/LayerControl.hpp"
+#include "../gui/define_id.hpp"
+#include "../gui/resources/image_icon.xpm"
 
-#include "GilViewer/gui/ImageLayerSettingsControl.hpp"
+#include "../gui/ImageLayerSettingsControl.hpp"
 
 ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	LayerSettingsControl(parent, id, title, pos, size, style), m_parent(parent)
