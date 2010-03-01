@@ -110,7 +110,7 @@ public:
     virtual std::string Filename() const {return m_filename;}
     virtual void Filename(const std::string &filename) {m_filename=filename;}
 
-    std::string GetInfos() const {return m_infos;}
+    virtual std::string GetInfos() {return m_infos;}
     virtual std::string get_layer_type_as_string() const {return "unknow type";}
     virtual void Save(const std::string &name) const {}
 
