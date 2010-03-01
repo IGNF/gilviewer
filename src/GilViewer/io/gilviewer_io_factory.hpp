@@ -41,8 +41,8 @@ Authors:
 
 //#include <boost/thread/detail/singleton.hpp>
 
-#include "GilViewer/tools/PatternSingleton.hpp"
-#include "GilViewer/tools/PatternFactory.hpp"
+#include "../tools/PatternSingleton.hpp"
+#include "../tools/PatternFactory.hpp"
 #include "gilviewer_file_io.hpp"
 
 //typedef boost::detail::thread::singleton<PatternFactory<boost::shared_ptr<gilviewer_file_io> > > gilviewer_io_factory;

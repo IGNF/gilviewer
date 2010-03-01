@@ -1,8 +1,8 @@
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
-#include "GilViewer/gui/LayerControlUtils.hpp"
-#include "GilViewer/gui/LayerControl.hpp"
+#include "LayerControlUtils.hpp"
+#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../gui/LayerControl.hpp"
 
-#include "GilViewer/gui/define_id.hpp"
+#include "../gui/define_id.hpp"
 
 #include <wx/wx.h>
 #include <wx/xrc/xmlres.h>

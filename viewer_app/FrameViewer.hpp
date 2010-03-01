@@ -40,10 +40,10 @@ Authors:
 #define __FRAME_VIEWER_HPP__
 
 
-#include "GilViewer/layers/Layer.hpp"
+#include "../src/GilViewer/layers/Layer.hpp"
 
-#include "GilViewer/gui/BasicViewerFrame.h"
-#include "GilViewer/convenient/MacrosGilViewer.hpp"
+#include "../src/GilViewer/gui/BasicViewerFrame.h"
+#include "../src/GilViewer/convenient/MacrosGilViewer.hpp"
 
 #include "GilViewer.h"
 

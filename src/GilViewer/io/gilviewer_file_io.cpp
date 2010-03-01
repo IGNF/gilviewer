@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-#include "GilViewer/layers/ogr_vector_layer.hpp"
+#include "../layers/ogr_vector_layer.hpp"
 
 using namespace boost;
 using namespace std;

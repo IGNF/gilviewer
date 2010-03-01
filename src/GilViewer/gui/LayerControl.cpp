@@ -58,26 +58,25 @@ Authors:
 #include <wx/progdlg.h>
 #include <wx/log.h>
 
-#include "GilViewer/gui/LayerControl.hpp"
+#include "../gui/LayerControl.hpp"
 
-#include "GilViewer/layers/ImageLayer.hpp"
-#include "GilViewer/layers/ogr_vector_layer.hpp"
-#include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/layers/VectorLayerGhost.h"
-#include "GilViewer/layers/VectorLayerContent.hpp"
+#include "../layers/ImageLayer.hpp"
+#include "../layers/ogr_vector_layer.hpp"
+#include "../layers/VectorLayer.hpp"
+#include "../layers/VectorLayerGhost.h"
 
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
-#include "GilViewer/gui/ImageLayerSettingsControl.hpp"
-#include "GilViewer/gui/GlobalSettingsControl.hpp"
-#include "GilViewer/gui/LayerInfosControl.hpp"
-#include "GilViewer/gui/LayerControlUtils.hpp"
-#include "GilViewer/gui/PanelViewer.hpp"
-#include "GilViewer/gui/define_id.hpp"
+#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../gui/ImageLayerSettingsControl.hpp"
+#include "../gui/GlobalSettingsControl.hpp"
+#include "../gui/LayerInfosControl.hpp"
+#include "../gui/LayerControlUtils.hpp"
+#include "../gui/PanelViewer.hpp"
+#include "../gui/define_id.hpp"
 
-#include "GilViewer/io/XMLDisplayConfigurationIO.hpp"
-#include "GilViewer/io/gilviewer_file_io.hpp"
-#include "GilViewer/io/gilviewer_io_factory.hpp"
-#include "GilViewer/tools/Orientation2D.h"
+#include "../io/XMLDisplayConfigurationIO.hpp"
+#include "../io/gilviewer_file_io.hpp"
+#include "../io/gilviewer_io_factory.hpp"
+#include "../tools/Orientation2D.h"
 
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>

@@ -36,7 +36,7 @@ Authors:
 
 ***********************************************************************/
 
-#include "GilViewer/layers/ImageLayer.hpp"
+#include "../layers/ImageLayer.hpp"
 
 struct get_any_image_functor
 {

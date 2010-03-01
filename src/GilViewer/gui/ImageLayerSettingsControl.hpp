@@ -42,7 +42,7 @@ Authors:
 #include <vector>
 #include <wx/panel.h>
 
-#include "GilViewer/gui/LayerSettingsControl.hpp"
+#include "../gui/LayerSettingsControl.hpp"
 
 class HistogramPlotter;
 class LayerControl;

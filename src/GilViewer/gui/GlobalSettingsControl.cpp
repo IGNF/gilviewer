@@ -44,8 +44,8 @@ Authors:
 #include <wx/button.h>
 #include <wx/valtext.h>
 
-#include "GilViewer/gui/PanelViewer.hpp"
-#include "GilViewer/gui/LayerControl.hpp"
+#include "../gui/PanelViewer.hpp"
+#include "../gui/LayerControl.hpp"
 
 GlobalSettingsControl::GlobalSettingsControl(LayerControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	wxDialog( (wxWindow*)parent, id, title, pos, size, style), m_parent(parent)

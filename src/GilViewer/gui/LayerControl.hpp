@@ -42,8 +42,8 @@ Authors:
 
 #include <wx/frame.h>
 
-#include "GilViewer/gui/LayerControlUtils.hpp"
-#include "GilViewer/layers/Layer.hpp"
+#include "../gui/LayerControlUtils.hpp"
+#include "../layers/Layer.hpp"
 
 class wxFlexGridSizer;
 class wxToolBar;

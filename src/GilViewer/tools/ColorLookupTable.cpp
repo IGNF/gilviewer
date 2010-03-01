@@ -40,7 +40,7 @@ Authors:
 #include <ctime>
 #include <cstdlib>
 
-#include "GilViewer/tools/ColorLookupTable.h"
+#include "ColorLookupTable.h"
 
 ColorLookupTable::ColorLookupTable():m_clut(3*256)
 {

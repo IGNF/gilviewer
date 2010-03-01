@@ -57,9 +57,9 @@ Authors:
 #include <wx/log.h>
 #include <wx/config.h>
 
-#include "GilViewer/tools/ColorLookupTable.h"
-#include "GilViewer/layers/image_types.hpp"
-#include "GilViewer/gui/ImageLayerSettingsControl.hpp"
+#include "../tools/ColorLookupTable.h"
+#include "../layers/image_types.hpp"
+#include "../gui/ImageLayerSettingsControl.hpp"
 
 #include "ImageLayer.hpp"
 #include "image_layer_screen_image_functor.hpp"

@@ -53,10 +53,10 @@ Authors:
 #include <wx/slider.h>
 #include <wx/choice.h>
 
-#include "GilViewer/gui/ApplicationSettings.hpp"
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
+#include "../gui/ApplicationSettings.hpp"
+#include "../gui/VectorLayerSettingsControl.hpp"
 
-#include "GilViewer/convenient/wxhelper.hpp"
+#include "../convenient/wxhelper.hpp"
 
 
 

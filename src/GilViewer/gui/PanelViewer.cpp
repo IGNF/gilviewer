@@ -61,14 +61,13 @@
 #include <wx/statusbr.h>
 #include <wx/filedlg.h>
 
-#include "GilViewer/layers/VectorLayerGhost.h"
-#include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/gui/ApplicationSettings.hpp"
-#include "GilViewer/gui/LayerControlUtils.hpp"
-#include "GilViewer/gui/LayerControl.hpp"
-#include "GilViewer/gui/define_id.hpp"
-#include "GilViewer/gui/PanelManager.h"
-#include "PanelViewer.hpp"
+#include "../layers/VectorLayerGhost.h"
+#include "../layers/VectorLayer.hpp"
+#include "../gui/ApplicationSettings.hpp"
+#include "../gui/LayerControlUtils.hpp"
+#include "../gui/LayerControl.hpp"
+#include "../gui/define_id.hpp"
+#include "../gui/PanelManager.h"
 
 //#include "resources/geometry_moving_16x16.xpm"
 //#include "resources/icone_move16_16.xpm"

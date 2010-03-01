@@ -43,12 +43,8 @@ Authors:
 
 #include <boost/bind.hpp>
 
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
-#include "GilViewer/layers/VectorLayerContent.hpp"
-#include "GilViewer/layers/Layer.hpp"
-
-//ShapeLib
-#include "shapelib/shapefil.h"
+#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../layers/Layer.hpp"
 
 class VectorLayer : public Layer
 {
@@ -84,23 +80,17 @@ public:
     virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta) {}
     // Fin VectorLayerMultiGeometries
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
+    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
     virtual void Update(int width, int height) {};
 
     void build_infos();
     virtual std::string get_layer_type_as_string() const {return "Vector";}
-    virtual void Save(const std::string &name) const;
 
     // TODO
     virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
     virtual bool TextsVisibility() const { return m_isTextVisible; }
 
-    boost::shared_ptr<VectorLayerContent> LayerContent() { return m_layerContent; }
-
     virtual void Clear();
-
-    virtual std::string Filename() const;
-    virtual void Filename(const std::string &filename) {m_filename=filename;}
 
     virtual std::vector<std::string> get_available_formats_extensions() const;
     virtual std::string get_available_formats_wildcard() const;
@@ -110,8 +100,6 @@ public:
 
 private:
     void Init();
-
-    boost::shared_ptr<VectorLayerContent> m_layerContent;
 
     bool m_isFromFile;
 

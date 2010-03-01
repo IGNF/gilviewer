@@ -36,8 +36,8 @@ Authors:
 
 ***********************************************************************/
 
-#include "GilViewer/gui/VectorLayerSettingsControl.hpp"
-#include "GilViewer/gui/resources/polygon_icon.xpm"
+#include "VectorLayerSettingsControl.hpp"
+#include "../gui/resources/polygon_icon.xpm"
 
 #include <wx/frame.h>
 #include <wx/choice.h>
@@ -53,15 +53,14 @@ Authors:
 #include <wx/fontpicker.h>
 #include <wx/clrpicker.h>
 
-#include "GilViewer/gui/LayerControl.hpp"
-#include "GilViewer/gui/PanelViewer.hpp"
+#include "../gui/LayerControl.hpp"
+#include "../gui/PanelViewer.hpp"
 
-#include "GilViewer/convenient/wxhelper.hpp"
+#include "../convenient/wxhelper.hpp"
 
-#include "GilViewer/layers/VectorLayerContent.hpp"
-#include "GilViewer/layers/VectorLayer.hpp"
-#include "GilViewer/layers/ogr_vector_layer.hpp"
-#include "GilViewer/gui/define_id.hpp"
+#include "../layers/VectorLayer.hpp"
+#include "../layers/ogr_vector_layer.hpp"
+#include "../gui/define_id.hpp"
 
 wxString VectorLayerSettingsControl::choices_points[] =
 { _("Point"), _("Transparent"), _("Cross"), _("Plus"), _("Triangle"), _("Circle") };
@@ -122,7 +121,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  Points settings
     ///
     ////////////////////////
-    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)))
+    if (ogr_vectorLayer )//|| (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)))
     {
         wxStaticBoxSizer *boxSizerPoints = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Points settings"));
         m_colourPickerPoints = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
@@ -145,7 +144,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  Lines settings
     ///
     ////////////////////////
-    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)))
+    if (ogr_vectorLayer )//|| (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)))
     {
         wxStaticBoxSizer *boxSizerLines = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lines settings"));
         m_colourPickerLines = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
@@ -166,7 +165,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  Polygons settings
     ///
     ////////////////////////
-    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)))
+    if (ogr_vectorLayer )//|| (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)))
     {
         wxStaticBoxSizer *boxSizerPolygons = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Polygons settings"));
         wxBoxSizer *boxColorPickersPolygons = new wxBoxSizer(wxVERTICAL);
@@ -199,7 +198,8 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  DBF : etiquettes
     ///
     ////////////////////////
-    if (/*ogr_vectorLayer || */(vectorLayer && (vectorLayer->LayerContent()->FlagDBF())))
+    /*
+    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->LayerContent()->FlagDBF())))
     {
         wxStaticBoxSizer *boxSizerLabels = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Labels"));
 
@@ -214,6 +214,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
         boxSizerLabels->Add(m_choiceLabels, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
         m_main_sizer->Add(boxSizerLabels, 1, wxEXPAND | wxALL, 5);
     }
+    */
 
     ////////////////////////
     ///
@@ -348,6 +349,7 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
     if (!vectorLayer && !ogr_vectorLayer)
         return;
     wxString mes;
+    /*
     if ( vectorLayer)
     {
         // Points
@@ -388,6 +390,7 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
         vectorLayer->HasToBeUpdated(true);
         m_parent->GetPanelViewer()->Refresh();
     }
+    */
 
     // TODO
     // Texts

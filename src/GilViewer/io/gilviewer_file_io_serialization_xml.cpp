@@ -45,7 +45,7 @@ Authors:
 
 #include "gilviewer_io_factory.hpp"
 
-#include "GilViewer/layers/simple_vector_layer.hpp"
+#include "../layers/simple_vector_layer.hpp"
 
 using namespace boost;
 using namespace std;

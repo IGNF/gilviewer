@@ -52,12 +52,12 @@
 #	include <wx/icon.h>
 #endif
 
-#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
-#include "GilViewer/gui/ApplicationSettings.hpp"
-#include "GilViewer/gui/LayerControl.hpp"
-#include "GilViewer/gui/PanelViewer.hpp"
-#include "GilViewer/gui/define_id.hpp"
-#include "GilViewer/gui/PanelManager.h"
+#include "../src/GilViewer/gui/resources/LOGO_MATIS_small.xpm"
+#include "../src/GilViewer/gui/ApplicationSettings.hpp"
+#include "../src/GilViewer/gui/LayerControl.hpp"
+#include "../src/GilViewer/gui/PanelViewer.hpp"
+#include "../src/GilViewer/gui/define_id.hpp"
+#include "../src/GilViewer/gui/PanelManager.h"
 #include "FrameViewer.hpp"
 
 BEGIN_EVENT_TABLE(FrameViewer,BasicViewerFrame)

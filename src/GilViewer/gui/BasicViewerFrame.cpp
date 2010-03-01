@@ -46,7 +46,7 @@ Authors:
 #include <wx/dialog.h>
 #include <wx/html/htmlwin.h>
 
-#include "GilViewer/gui/define_id.hpp"
+#include "../gui/define_id.hpp"
 
 #include "BasicViewerFrame.h"
 
