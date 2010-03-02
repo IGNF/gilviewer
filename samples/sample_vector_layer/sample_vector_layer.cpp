@@ -107,6 +107,8 @@ bool sample_vector_layer_app::OnInit()
         my_vector_layer->AddLine(0.,0.,10.,10.);
         my_vector_layer->AddEllipse(-50.,1.,10.,25.,0.987456);
         my_vector_layer->AddEllipse(10.,-23.,10.,25.);
+        my_vector_layer->set_polygon_inner_color(*wxGREEN);
+        my_vector_layer->set_polygon_inner_style(wxCROSSDIAG_HATCH);
         std::vector<double> xp, yp;
         xp.push_back(12.3); xp.push_back(11.8); xp.push_back(-2.9);
         yp.push_back( 2.3); yp.push_back(-1.8); yp.push_back(16.9);
