@@ -1,0 +1,18 @@
+lib
+CMakeFiles
+.project
+.cproject
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+bin
+GilViewerConfig.cmake
+install_manifest.txt 
+src/GilViewer/gui/resources/resources.cpp
+CMakeLists.txt.user
+GilViewer.cbp
+
+syntax: glob
+
+*~
+*.kdev*
