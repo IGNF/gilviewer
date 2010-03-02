@@ -39,41 +39,35 @@ Authors:
 #ifndef __SIMPLE_VECTOR_LAYER_HPP__
 #define __SIMPLE_VECTOR_LAYER_HPP__
 
-#include "Layer.hpp"
+#include "VectorLayer.hpp"
 
 #include <boost/serialization/vector.hpp>
 
+// TODO: move in basic_geometries.hpp
 typedef struct __circle
 {
-    double x;
-    double y;
-    double radius;
+    double x, y, radius;
 
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-        // note, version is always the latest when saving
-        ar & BOOST_SERIALIZATION_NVP(x);
-        ar & BOOST_SERIALIZATION_NVP(y);
-        ar & BOOST_SERIALIZATION_NVP(radius);
+        ar & BOOST_SERIALIZATION_NVP(x)
+           & BOOST_SERIALIZATION_NVP(y)
+           & BOOST_SERIALIZATION_NVP(radius);
     }
 } CircleType;
 
 typedef struct __ellipse
 {
-    double x;
-    double y;
-    double a;
-    double b;
+    double x, y, a, b;
 
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-        // note, version is always the latest when saving
-        ar & BOOST_SERIALIZATION_NVP(x);
-        ar & BOOST_SERIALIZATION_NVP(y);
-        ar & BOOST_SERIALIZATION_NVP(a);
-        ar & BOOST_SERIALIZATION_NVP(b);
+        ar & BOOST_SERIALIZATION_NVP(x)
+           & BOOST_SERIALIZATION_NVP(y)
+           & BOOST_SERIALIZATION_NVP(a)
+           & BOOST_SERIALIZATION_NVP(b);
     }
 } EllipseType;
 
@@ -85,11 +79,9 @@ typedef struct __rotated_ellipse : public EllipseType
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-        // note, version is always the latest when saving
-        //ar & boost::serialization::base_object<EllipseType>(*this);
-        ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(EllipseType);
-        ar & BOOST_SERIALIZATION_NVP(theta);
-        ar & BOOST_SERIALIZATION_NVP(controlPoints);
+        ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(EllipseType)
+           & BOOST_SERIALIZATION_NVP(theta)
+           & BOOST_SERIALIZATION_NVP(controlPoints);
     }
 } RotatedEllipseType;
 
@@ -100,8 +92,8 @@ typedef struct __point
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-        ar & BOOST_SERIALIZATION_NVP(x);
-        ar & BOOST_SERIALIZATION_NVP(y);
+        ar & BOOST_SERIALIZATION_NVP(x)
+           & BOOST_SERIALIZATION_NVP(y);
     }
 } PointType;
 
@@ -121,14 +113,14 @@ namespace boost { namespace serialization {
 template<class Archive>
 void serialize(Archive & ar, wxPoint & p, const unsigned int version)
 {
-    ar & BOOST_SERIALIZATION_NVP(p.x);
-    ar & BOOST_SERIALIZATION_NVP(p.y);
+    ar & BOOST_SERIALIZATION_NVP(p.x)
+       & BOOST_SERIALIZATION_NVP(p.y);
 }
 
 } // namespace serialization
 } // namespace boost
 
-class simple_vector_layer: public Layer
+class simple_vector_layer: public VectorLayer
 {
 public:
     simple_vector_layer(const std::string& layer_name="default layer name");
@@ -160,13 +152,13 @@ public:
     void serialize(Archive & ar, const unsigned int version)
     {
         // note, version is always the latest when saving
-        ar & BOOST_SERIALIZATION_NVP(m_circles);
-        ar & BOOST_SERIALIZATION_NVP(m_ellipses);
-        ar & BOOST_SERIALIZATION_NVP(m_rotatedellipses);
-        ar & BOOST_SERIALIZATION_NVP(m_arcs);
-        ar & BOOST_SERIALIZATION_NVP(m_points);
-        ar & BOOST_SERIALIZATION_NVP(m_splines);
-        ar & BOOST_SERIALIZATION_NVP(m_polygons);
+        ar & BOOST_SERIALIZATION_NVP(m_circles)
+           & BOOST_SERIALIZATION_NVP(m_ellipses)
+           & BOOST_SERIALIZATION_NVP(m_rotatedellipses)
+           & BOOST_SERIALIZATION_NVP(m_arcs)
+           & BOOST_SERIALIZATION_NVP(m_points)
+           & BOOST_SERIALIZATION_NVP(m_splines)
+           & BOOST_SERIALIZATION_NVP(m_polygons);
     }
 
 private:
