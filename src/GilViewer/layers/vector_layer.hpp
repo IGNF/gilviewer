@@ -46,11 +46,12 @@ Authors:
 #include "../gui/VectorLayerSettingsControl.hpp"
 #include "../layers/Layer.hpp"
 
-class VectorLayer : public Layer
+class vector_layer : public Layer
 {
 public:
+    virtual ~vector_layer() {}
     /// Cette methode recupere les donnees d'affichage par defaut dans les parametres et les affecte au nouveau calque
-    virtual void SetDefaultDisplayParameters();
+    virtual void set_default_display_parameters();
 
     // Abstract interface
     virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
@@ -58,21 +59,24 @@ public:
 
     // Accessors
     virtual std::string get_layer_type_as_string() const {return "Vector";}
+    virtual bool is_saveable() const {return true;}
 
     // TODO
-    virtual void TextsVisibility( bool value , bool update = true ) { m_isTextVisible = value; if (update) notifyLayerSettingsControl_(); }
-    virtual bool TextsVisibility() const { return m_isTextVisible; }
+    virtual void text_visibility( bool value , bool update = true ) { m_is_text_visible = value; if (update) notifyLayerSettingsControl_(); }
+    virtual bool text_visibility() const { return m_is_text_visible; }
 
     virtual void Clear();
 
 private:
     // Textx display
-    bool m_isTextVisible;
-    std::vector< std::pair<double,double> > m_textCoordinates;
-    std::vector< std::string > m_textValue;
+    bool m_is_text_visible;
+    std::vector< std::pair<double,double> > m_text_coordinates;
+    std::vector< std::string > m_text_value;
 
 protected:
-    VectorLayer() : m_isTextVisible(true) {}
+    vector_layer(): m_is_text_visible(true)
+                  , m_text_coordinates(std::vector< std::pair<double,double> >())
+                  , m_text_value(std::vector< std::string >()) {}
 };
 
 

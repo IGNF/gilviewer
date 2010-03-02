@@ -62,7 +62,7 @@
 #include <wx/filedlg.h>
 
 #include "../layers/VectorLayerGhost.h"
-#include "../layers/VectorLayer.hpp"
+#include "../layers/vector_layer.hpp"
 #include "../gui/ApplicationSettings.hpp"
 #include "../gui/LayerControlUtils.hpp"
 #include "../gui/LayerControl.hpp"

@@ -47,10 +47,10 @@ class LayerSettingsControl : public wxDialog
 {
 public:
 	LayerSettingsControl(LayerControl *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){;}
-	~LayerSettingsControl() {;}
+        ~LayerSettingsControl() {}
 
 	// Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
-	virtual void update() {}
+        virtual void update() {}
 
 	unsigned int Index() { return m_index; }
 	void Index(const unsigned int index){  m_index = index; }
