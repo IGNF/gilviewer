@@ -213,12 +213,12 @@ public:
     unsigned int get_line_style() const           {return m_line_style;}
     wxColor get_polygon_border_color() const      {return m_polygon_border_color;}
     wxColor get_polygon_inner_color() const       {return m_polygon_inner_color;}
-    unsigned int get_polygon_border_width() const {return m_line_width;}
+    unsigned int get_polygon_border_width() const {return m_polygon_border_width;}
     unsigned int get_polygon_border_style() const {return m_polygon_border_style;}
     unsigned int get_polygon_inner_style() const  {return m_polygon_inner_style;}
 
-    virtual void TextsVisibility( bool value , bool update = true ) {}
-    virtual bool TextsVisibility() const { return true; } // ???!!!???
+    virtual void text_visibility( bool value , bool update = true ) {}
+    virtual bool text_visibility() const { return true; } // ???!!!???
 
     virtual void Clear() {}
     // Methodes specifiques VectorLayer

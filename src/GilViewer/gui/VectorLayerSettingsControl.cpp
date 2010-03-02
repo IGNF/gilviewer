@@ -58,8 +58,7 @@ Authors:
 
 #include "../convenient/wxhelper.hpp"
 
-#include "../layers/VectorLayer.hpp"
-#include "../layers/ogr_vector_layer.hpp"
+#include "../layers/simple_vector_layer.hpp"
 #include "../gui/define_id.hpp"
 
 wxString VectorLayerSettingsControl::choices_points[] =
@@ -87,13 +86,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
         VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, LayerControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
         LayerSettingsControl(parent, id, title, pos, size, style), m_parent(parent)
 {
-    m_index = index;
-    boost::shared_ptr<VectorLayer> vectorLayer = boost::dynamic_pointer_cast<VectorLayer>(m_parent->Layers()[m_index]);
-    // TODO: clean !!!!!!!!!!!!!!
-    boost::shared_ptr<ogr_vector_layer> ogr_vectorLayer = boost::dynamic_pointer_cast<ogr_vector_layer>(m_parent->Layers()[m_index]);
-    if (!vectorLayer && !ogr_vectorLayer)
-        return;
-
+    Index(index);
     m_colourPickerPoints = NULL;
     m_colourPickerRingsPolygons = NULL;
     m_colourPickerInsidePolygons = NULL;
@@ -121,7 +114,6 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  Points settings
     ///
     ////////////////////////
-    if (ogr_vectorLayer )//|| (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)))
     {
         wxStaticBoxSizer *boxSizerPoints = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Points settings"));
         m_colourPickerPoints = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
@@ -144,7 +136,6 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  Lines settings
     ///
     ////////////////////////
-    if (ogr_vectorLayer )//|| (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)))
     {
         wxStaticBoxSizer *boxSizerLines = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lines settings"));
         m_colourPickerLines = new wxColourPickerCtrl(this, wxID_ANY, *wxRED, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE);
@@ -165,7 +156,6 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     ///  Polygons settings
     ///
     ////////////////////////
-    if (ogr_vectorLayer )//|| (vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)))
     {
         wxStaticBoxSizer *boxSizerPolygons = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Polygons settings"));
         wxBoxSizer *boxColorPickersPolygons = new wxBoxSizer(wxVERTICAL);
@@ -264,70 +254,20 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
 
 void VectorLayerSettingsControl::update()
 {
-    boost::shared_ptr<VectorLayer> vectorLayer = boost::dynamic_pointer_cast<VectorLayer>(m_parent->Layers()[m_index]);
-    // TODO: clean !!!!!!!!!!!!!!
-    boost::shared_ptr<ogr_vector_layer> ogr_vectorLayer = boost::dynamic_pointer_cast<ogr_vector_layer>(m_parent->Layers()[m_index]);
-    if (!vectorLayer && !ogr_vectorLayer)
-        return;
-    /*
-    // Points
-    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)))
-    {
-        m_colourPickerPoints->SetColour(vectorLayer->get_border_color());
-        m_sliderWidthPoints->SetValue(vectorLayer->get_width());
-    }
-    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)))
-    {
-        m_colourPickerLines->SetColour(vectorLayer->get_border_color());
-        m_sliderWidthLines->SetValue(vectorLayer->get_width());
-        m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(vectorLayer->get_border_style()) );
-    }
-    // Polygons
-    if (ogr_vectorLayer || (vectorLayer && (vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)))
-    {
-        m_colourPickerRingsPolygons->SetColour(vectorLayer->get_border_color());
-        m_colourPickerInsidePolygons->SetColour(vectorLayer->get_inner_color());
-        m_sliderWidthRings->SetValue(vectorLayer->get_width());
-        m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(vectorLayer->get_inner_style()) );
-    }
-    */
+    m_colourPickerPoints->SetColour(m_parent->Layers()[m_index]->get_point_color());
+    m_sliderWidthPoints->SetValue(m_parent->Layers()[m_index]->get_point_width());
 
-    if (vectorLayer)
-    {
-        /*
-        set_point_color(vectorLayer->get_point_color());
-        set_point_width(vectorLayer->get_point_width());
+    m_colourPickerLines->SetColour(m_parent->Layers()[m_index]->get_line_color());
+    m_sliderWidthLines->SetValue(m_parent->Layers()[m_index]->get_line_width());
+    m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(m_parent->Layers()[m_index]->get_line_style()) );
 
-        set_line_color(vectorLayer->get_line_color());
-        set_line_width(vectorLayer->get_line_width());
-        set_line_style(vectorLayer->get_line_style());
+    m_colourPickerRingsPolygons->SetColour(m_parent->Layers()[m_index]->get_polygon_border_color());
+    m_colourPickerInsidePolygons->SetColour(m_parent->Layers()[m_index]->get_polygon_inner_color());
+    m_sliderWidthRings->SetValue(m_parent->Layers()[m_index]->get_polygon_border_width());
+    m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(m_parent->Layers()[m_index]->get_polygon_inner_style()) );
 
-        set_polygon_border_color(vectorLayer->get_polygon_border_color());
-        set_polygon_inner_color(vectorLayer->get_polygon_inner_color());
-        set_polygon_border_width(vectorLayer->get_polygon_border_width());
-        set_polygon_border_style(vectorLayer->get_polygon_border_style());
-        set_polygon_inner_style(vectorLayer->get_polygon_inner_style());
-        */
-    }
-    else if(ogr_vectorLayer)
-    {
-        m_colourPickerPoints->SetColour(ogr_vectorLayer->get_point_color());
-        m_sliderWidthPoints->SetValue(ogr_vectorLayer->get_point_width());
-
-        m_colourPickerLines->SetColour(ogr_vectorLayer->get_line_color());
-        m_sliderWidthLines->SetValue(ogr_vectorLayer->get_line_width());
-        m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(ogr_vectorLayer->get_line_style()) );
-
-        m_colourPickerRingsPolygons->SetColour(ogr_vectorLayer->get_polygon_border_color());
-        m_colourPickerInsidePolygons->SetColour(ogr_vectorLayer->get_polygon_inner_color());
-        m_sliderWidthRings->SetValue(ogr_vectorLayer->get_polygon_border_width());
-        //set_polygon_border_style(ogr_vectorLayer->get_polygon_border_style());
-        m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(ogr_vectorLayer->get_polygon_inner_style()) );
-    }
-
-    //TODO
     // Text visibility
-    //m_checkShowTexts->SetValue(vectorLayer->TextsVisibility());
+    m_checkShowTexts->SetValue(m_parent->Layers()[m_index]->text_visibility());
 }
 
 void VectorLayerSettingsControl::OnOKButton(wxCommandEvent &event)
@@ -343,80 +283,25 @@ void VectorLayerSettingsControl::OnCancelButton(wxCommandEvent &event)
 
 void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 {
-    boost::shared_ptr<VectorLayer> vectorLayer = boost::dynamic_pointer_cast<VectorLayer>(m_parent->Layers()[m_index]);
-    // TODO: clean !!!!!!!!!!!!!!
-    boost::shared_ptr<ogr_vector_layer> ogr_vectorLayer = boost::dynamic_pointer_cast<ogr_vector_layer>(m_parent->Layers()[m_index]);
-    if (!vectorLayer && !ogr_vectorLayer)
-        return;
-    wxString mes;
-    /*
-    if ( vectorLayer)
-    {
-        // Points
-        if ((vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POINT || vectorLayer->Type() == SHPT_POINTM || vectorLayer->Type() == SHPT_POINTZ || vectorLayer->Type() == SHPT_MULTIPOINT || vectorLayer->Type() == SHPT_MULTIPOINTM || vectorLayer->Type() == SHPT_MULTIPOINTZ)))
-        {
-            vectorLayer->set_point_color(m_colourPickerPoints->GetColour(),false);
-            vectorLayer->set_point_width(m_sliderWidthPoints->GetValue(),false);
-        }
-
-        // Polygons
-        if ((vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_POLYGON || vectorLayer->Type() == SHPT_POLYGONZ || vectorLayer->Type() == SHPT_POLYGONM)))
-        {
-            wxColour ringsColour(m_colourPickerRingsPolygons->GetColour());
-            wxColour ringsColourWithAlpha(ringsColour.Red(), ringsColour.Green(), ringsColour.Blue(), 1);
-            wxColour insideColour(m_colourPickerInsidePolygons->GetColour());
-            wxColour insideColourWithAlpha(insideColour.Red(), insideColour.Green(), insideColour.Blue(), 1);
-            ogr_vectorLayer->set_polygon_border_color(ringsColourWithAlpha,false);
-            ogr_vectorLayer->set_polygon_inner_color(insideColourWithAlpha,false);
-            ogr_vectorLayer->set_polygon_border_width(m_sliderWidthRings->GetValue(),false);
-            ogr_vectorLayer->set_polygon_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
-        }
-
-        // Lines
-        if ((vectorLayer && (vectorLayer->Type() == MULTI_GEOMETRIES_TYPE || vectorLayer->Type() == SHPT_ARC || vectorLayer->Type() == SHPT_ARCZ || vectorLayer->Type() == SHPT_ARCM)))
-        {
-            ogr_vectorLayer->set_line_color(m_colourPickerLines->GetColour(),false);
-            ogr_vectorLayer->set_line_width(m_sliderWidthLines->GetValue(),false);
-            ogr_vectorLayer->set_line_style(style_lines[m_choiceLines->GetSelection()],false);
-        }
-
-        // Labels
-        if (vectorLayer->LayerContent()->FlagDBF())
-            vectorLayer->LayerContent()->DrawAttribute(m_choiceLabels->GetSelection());
-        else
-            vectorLayer->LayerContent()->DrawAttribute(0);
-
-        // On refresh ...
-        vectorLayer->HasToBeUpdated(true);
-        m_parent->GetPanelViewer()->Refresh();
-    }
-    */
-
-    // TODO
     // Texts
     // La, on appelle l'update (via le callback notifier ...) !
-    //vectorLayer->TextsVisibility(m_checkShowTexts->GetValue(),false);
+    m_parent->Layers()[m_index]->text_visibility(m_checkShowTexts->GetValue(),false);
 
-    if(ogr_vectorLayer)
-    {
-        ogr_vectorLayer->set_point_color(m_colourPickerPoints->GetColour(),false);
-        ogr_vectorLayer->set_point_width(m_sliderWidthPoints->GetValue(),false);
+    m_parent->Layers()[m_index]->set_point_color(m_colourPickerPoints->GetColour(),false);
+    m_parent->Layers()[m_index]->set_point_width(m_sliderWidthPoints->GetValue(),false);
 
-        ogr_vectorLayer->set_line_color(m_colourPickerLines->GetColour(),false);
-        ogr_vectorLayer->set_line_width(m_sliderWidthLines->GetValue(),false);
-        ogr_vectorLayer->set_line_style(style_lines[m_choiceLines->GetSelection()],false);
+    m_parent->Layers()[m_index]->set_line_color(m_colourPickerLines->GetColour(),false);
+    m_parent->Layers()[m_index]->set_line_width(m_sliderWidthLines->GetValue(),false);
+    m_parent->Layers()[m_index]->set_line_style(style_lines[m_choiceLines->GetSelection()],false);
 
-        ogr_vectorLayer->set_polygon_border_color(m_colourPickerRingsPolygons->GetColour(),false);
-        ogr_vectorLayer->set_polygon_inner_color(m_colourPickerInsidePolygons->GetColour(),false);
-        ogr_vectorLayer->set_polygon_border_width(m_sliderWidthRings->GetValue(),false);
-        ogr_vectorLayer->set_polygon_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
+    m_parent->Layers()[m_index]->set_polygon_border_color(m_colourPickerRingsPolygons->GetColour(),false);
+    m_parent->Layers()[m_index]->set_polygon_inner_color(m_colourPickerInsidePolygons->GetColour(),false);
+    m_parent->Layers()[m_index]->set_polygon_border_width(m_sliderWidthRings->GetValue(),false);
+    m_parent->Layers()[m_index]->set_polygon_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
 
-        // On refresh ...
-        ogr_vectorLayer->HasToBeUpdated(true);
-        m_parent->GetPanelViewer()->Refresh();
-    }
-
-
+    // On refresh ...
+    m_parent->Layers()[m_index]->HasToBeUpdated(true);
+    m_parent->GetPanelViewer()->Refresh();
 }
 
 void VectorLayerSettingsControl::OnCloseWindow(wxCloseEvent& event)

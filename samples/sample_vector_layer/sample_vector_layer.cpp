@@ -103,6 +103,7 @@ bool sample_vector_layer_app::OnInit()
         my_vector_layer->AddCircle(123.,198.,2.3654654);
         my_vector_layer->AddPoint(63.,45.654);
         my_vector_layer->AddPoint(23.2,5.98);
+        my_vector_layer->set_point_width(8);
         my_vector_layer->AddLine(0.,0.,10.,10.);
         my_vector_layer->AddEllipse(-50.,1.,10.,25.,0.987456);
         my_vector_layer->AddEllipse(10.,-23.,10.,25.);

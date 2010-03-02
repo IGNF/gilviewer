@@ -39,7 +39,7 @@ Authors:
 #ifndef __SIMPLE_VECTOR_LAYER_HPP__
 #define __SIMPLE_VECTOR_LAYER_HPP__
 
-#include "VectorLayer.hpp"
+#include "vector_layer.hpp"
 
 #include <boost/serialization/vector.hpp>
 
@@ -120,7 +120,7 @@ void serialize(Archive & ar, wxPoint & p, const unsigned int version)
 } // namespace serialization
 } // namespace boost
 
-class simple_vector_layer: public VectorLayer
+class simple_vector_layer: public vector_layer
 {
 public:
     simple_vector_layer(const std::string& layer_name="default layer name");
@@ -134,7 +134,6 @@ public:
     virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
     virtual std::string GetInfos();
 
-    virtual bool is_saveable() const {return true;}
     virtual std::string get_available_formats_wildcard() const;
 
     void AddCircle( double x , double y , double radius );

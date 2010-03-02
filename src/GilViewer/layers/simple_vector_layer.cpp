@@ -48,7 +48,7 @@ Authors:
 #include <sstream>
 using namespace std;
 
-simple_vector_layer::simple_vector_layer(const std::string& layer_name): VectorLayer(),
+simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_layer(),
     m_circles(std::vector<CircleType>() ),
     m_ellipses(std::vector<EllipseType>() ),
     m_rotatedellipses(std::vector<RotatedEllipseType> ()),
@@ -60,8 +60,8 @@ simple_vector_layer::simple_vector_layer(const std::string& layer_name): VectorL
     m_name=layer_name;
 
     Filename( "" );
-    notifyLayerSettingsControl_();
     SetDefaultDisplayParameters();
+    notifyLayerSettingsControl_();
 }
 
 //void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const

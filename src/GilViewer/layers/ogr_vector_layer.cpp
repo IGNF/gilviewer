@@ -47,14 +47,13 @@ Authors:
 #include <ogr_geometry.h>
 
 #include "../gui/VectorLayerSettingsControl.hpp"
-#include "../gui/define_id.hpp"
 
 #include "draw_geometry_visitor.hpp"
 
 using namespace std;
 using namespace boost::filesystem;
 
-ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename): Layer(),
+ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename): vector_layer(),
         m_nb_geometries(0),
         m_coordinates(1)
 {
@@ -162,9 +161,8 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
 
     Name(layer_name);
     Filename( system_complete(filename).string() );
-    notifyLayerSettingsControl_();
     SetDefaultDisplayParameters();
-    m_layertype = MULTI_GEOMETRIES_TYPE;
+    notifyLayerSettingsControl_();
 }
 
 ogr_vector_layer::~ogr_vector_layer()

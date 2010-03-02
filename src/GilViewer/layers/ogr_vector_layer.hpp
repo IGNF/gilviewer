@@ -38,7 +38,7 @@ Authors:
 #ifndef OGR_VECTOR_LAYER_HPP
 #define OGR_VECTOR_LAYER_HPP
 
-#include "Layer.hpp"
+#include "vector_layer.hpp"
 
 #include <boost/mpl/vector.hpp>
 #include <boost/variant/variant.hpp>
@@ -67,13 +67,13 @@ typedef boost::variant< OGRLinearRing*,
                         OGRPoint*,
                         OGRPolygon* > geometry_types;
 
-class ogr_vector_layer : public Layer
+class ogr_vector_layer : public vector_layer
 {
 public:
     /// Constructeur a partir d'un nom de calque et d'un fichier shapefile
     ogr_vector_layer(const std::string &layer_name, const std::string &filename);
     /// Constructeur vide: pour creer un layer a remplir a la main ...
-    ogr_vector_layer(const std::string &layer_name="default name"): Layer(),
+    ogr_vector_layer(const std::string &layer_name="default name"): vector_layer(),
             m_nb_geometries(0),
             m_coordinates(1) {m_name=layer_name;}
     /// @param layerName Le nom du calque
@@ -83,14 +83,12 @@ public:
     virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void Update(int, int) {}
 
-    virtual bool is_saveable() const {return true;}
     virtual std::string get_available_formats_wildcard() const;
 
     void build_infos(OGRSpatialReference *spatial_reference);
 
     virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
 
-    inline int Type() {return m_layertype;}
     inline virtual double get_center_x() {return m_center_x;}
     inline virtual double get_center_y() {return m_center_y;}
 
@@ -99,7 +97,6 @@ public:
 
     static wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
     inline void set_coordinates(int c) {m_coordinates=c;}
-    virtual std::string get_layer_type_as_string() const {return "Vector";}
 
     virtual void AddPoint( double x , double y );
     virtual void AddText( double x , double y , const std::string &text , const wxColour &color = *wxBLACK );
@@ -115,7 +112,6 @@ public:
 
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
-    int m_layertype;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
     // 1 --> image; -1 --> cartographic coordinates
