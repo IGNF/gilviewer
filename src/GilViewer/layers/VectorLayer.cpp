@@ -36,7 +36,7 @@ Authors:
 
 ***********************************************************************/
 
-#include "../layers/VectorLayer.hpp"
+#include "VectorLayer.hpp"
 
 void VectorLayer::SetDefaultDisplayParameters()
 {
@@ -44,13 +44,13 @@ void VectorLayer::SetDefaultDisplayParameters()
     int redPoint = 255, bluePoint = 0, greenPoint = 0;
     int widthPoint = 3;
     /// Lignes
-    int redLine = 255, blueLine = 0, greenLine = 0;
+    int redLine = 0, blueLine = 0, greenLine = 255;
     int widthLine = 3;
     int styleLine = wxSOLID;
     /// Polygones
-    int redRing = 255, blueRing = 0, greenRing = 0;
-    int redShape = 255, blueShape = 0, greenShape = 0;
-    int ringWidth = 1;
+    int redRing = 255, blueRing = 255, greenRing = 0;
+    int redShape = 0, blueShape = 255, greenShape = 0;
+    int ringWidth = 3;
     int penStyle = wxSOLID;
     int brushStyle = wxSOLID;
 

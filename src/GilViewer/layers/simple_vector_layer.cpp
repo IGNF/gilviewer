@@ -48,7 +48,7 @@ Authors:
 #include <sstream>
 using namespace std;
 
-simple_vector_layer::simple_vector_layer(const std::string& layer_name): Layer(),
+simple_vector_layer::simple_vector_layer(const std::string& layer_name): VectorLayer(),
     m_circles(std::vector<CircleType>() ),
     m_ellipses(std::vector<EllipseType>() ),
     m_rotatedellipses(std::vector<RotatedEllipseType> ()),
@@ -279,6 +279,14 @@ void simple_vector_layer::Clear()
     m_points.clear();
     m_splines.clear();
     m_polygons.clear();
+    // deallocate memory
+    vector<CircleType>().        swap(m_circles);
+    vector<EllipseType>().       swap(m_ellipses);
+    vector<RotatedEllipseType>().swap(m_rotatedellipses);
+    vector<ArcType>().           swap(m_arcs);
+    vector<PointType>().         swap(m_points);
+    vector<vector<PointType> >().swap(m_splines);
+    vector<vector<PointType> >().swap(m_polygons);
 }
 
 wxPoint simple_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates) const {
