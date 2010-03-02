@@ -21,8 +21,6 @@ SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
 
 SET(CMAKE_CONFIG_DIR cmake)
 
-MESSAGE(STATUS " parent ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
-
 ####
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
 ####
