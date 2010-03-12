@@ -1,3 +1,6 @@
+#include "../config/config.hpp"
+#if GILVIEWER_USE_GDAL
+
 #include "gilviewer_file_io_shp.hpp"
 
 #include <boost/filesystem/convenience.hpp>
@@ -166,3 +169,5 @@ bool gilviewer_file_io_shp::Register()
 }
 
 bool register_shp_ok = gilviewer_file_io_shp::Register();
+
+#endif // GILVIEWER_USE_GDAL

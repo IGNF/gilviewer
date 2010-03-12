@@ -227,7 +227,6 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
         toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
     toolBar->AddTool(wxID_OPEN, wxT("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
-    toolBar->AddTool(wxID_SAVE, wxT("S"), wxXmlResource::Get()->LoadBitmap( wxT("MEDIA-FLOPPY_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
     toolBar->AddTool(wxID_RESET, wxT("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
     toolBar->Realize();
@@ -561,6 +560,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
         layer->Resolution(1.);
 
     Refresh();
+    m_parent->Refresh();
     m_basicDrawPane->Refresh();
 }
 

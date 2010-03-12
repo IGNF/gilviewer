@@ -9,6 +9,8 @@
 using namespace boost;
 using namespace std;
 
+#include "../config/config.hpp"
+
 boost::shared_ptr<Layer> gilviewer_file_io::load(const string& filename)
 {
     if ( !filesystem::exists(filename) )
@@ -23,8 +25,11 @@ boost::shared_ptr<Layer> gilviewer_file_io::load(const string& filename)
 
     try
     {
+#if GILVIEWER_USE_GDAL
         Layer::ptrLayerType ptrLayer(new ogr_vector_layer(filesystem::basename(filename),filename));
         return ptrLayer;
+#endif // GILVIEWER_USE_GDAL
+        return boost::shared_ptr<Layer>();
     }
     catch(const std::exception &e)
     {

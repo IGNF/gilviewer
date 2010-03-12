@@ -35,6 +35,9 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
+#include "../config/config.hpp"
+#if GILVIEWER_USE_GDAL
+
 #include "ogr_vector_layer.hpp"
 
 #include <boost/filesystem.hpp>
@@ -327,3 +330,5 @@ void ogr_vector_layer::Clear()
 
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...
+
+#endif // GILVIEWER_USE_GDAL
