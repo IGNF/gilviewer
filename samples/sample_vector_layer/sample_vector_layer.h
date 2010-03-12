@@ -51,7 +51,6 @@ class sample_vector_layer_app: public wxApp
 	void set_langage(unsigned int language_id);
 
         sample_vector_layer_viewer *m_frame;
-
 };
 
 DECLARE_APP(sample_vector_layer_app);

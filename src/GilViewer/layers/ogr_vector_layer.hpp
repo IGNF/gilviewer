@@ -38,6 +38,9 @@ Authors:
 #ifndef OGR_VECTOR_LAYER_HPP
 #define OGR_VECTOR_LAYER_HPP
 
+#include "../config/config.hpp"
+#if GILVIEWER_USE_GDAL
+
 #include "vector_layer.hpp"
 
 #include <boost/mpl/vector.hpp>
@@ -121,3 +124,5 @@ private:
 };
 
 #endif // OGR_VECTOR_LAYER_HPP
+
+#endif // GILVIEWER_USE_GDAL

@@ -51,7 +51,10 @@ Authors:
 #include "sample_vector_layer_viewer.hpp"
 #include "sample_vector_layer.h"
 
-#include <gdal/ogrsf_frmts.h>
+#include "GilViewer/config/config.hpp"
+#if GILVIEWER_USE_GDAL
+#   include <gdal/ogrsf_frmts.h>
+#endif // GILVIEWER_USE_GDAL
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
@@ -71,14 +74,16 @@ bool sample_vector_layer_app::OnInit()
 #endif
 
     register_all_file_formats();
+#if GILVIEWER_USE_GDAL
     OGRRegisterAll();
+#endif // GILVIEWER_USE_GDAL
 
     try
     {
-
         m_frame = new sample_vector_layer_viewer((wxFrame *)NULL, wxID_ANY, _("Sample vector layer viewer"), wxPoint(50,50), wxSize(800,600));
 	m_frame->Show();
 
+#if GILVIEWER_USE_GDAL
         // Here, we first create an ogr_vector_layer
         boost::shared_ptr<Layer> vector_layer = boost::shared_ptr<Layer>(new ogr_vector_layer("Hand made layer"));
         m_frame->AddLayer(vector_layer);
@@ -92,6 +97,7 @@ bool sample_vector_layer_app::OnInit()
         vector_layer->set_line_color(wxColor(246,123,123));
         vector_layer->set_line_width(10);
         vector_layer->set_line_style(wxSHORT_DASH);
+#endif // GILVIEWER_USE_GDAL
 
         // We now test the simple_vector_layer_interface
         boost::shared_ptr<Layer> my_vector_layer = boost::shared_ptr<Layer>(new simple_vector_layer("Simple layer"));
