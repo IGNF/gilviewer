@@ -42,12 +42,11 @@ Authors:
 #include <utility>
 
 #include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>   
 
 #include <boost/gil/algorithm.hpp>
-#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
-#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
-#include <boost/gil/extension/io/png_dynamic_io.hpp>
+#include <boost/gil/extension/io_new/tiff_read.hpp>
+#include <boost/gil/extension/io_new/jpeg_read.hpp>
+#include <boost/gil/extension/io_new/png_read.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
 #include "boost/gil/extension/numeric/resample.hpp"
 
@@ -113,82 +112,11 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const image_ptr &image, const s
     return ptrLayerType(new ImageLayer(image, name));
 }
 
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
-{
-    if ( !boost::filesystem::exists(filename) )
-    {
-        ostringstream oss;
-        oss << "File does not exist: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
-        return ptrLayerType();
-    }
-
-    boost::filesystem::path path(boost::filesystem::system_complete(filename));
-    std::string ext(path.extension());
-    boost::to_lower(ext);
-
-//	image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
-
-    image_ptr image(new image_t);
-
-	try
-	{
-		if (ext == ".tif" || ext == ".tiff")
-			tiff_read_image(filename, image->value);
-		else if (ext == ".jpg" || ext == ".jpeg")
-			jpeg_read_image(filename, image->value);
-		else if (ext == ".png")
-			png_read_image (filename, image->value);
-	}
-	catch( const exception &e )
-    {
-        ostringstream oss;
-        oss << "Read error: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
-        return ptrLayerType();
-    }
-
-    //Creation de la couche image
-    ptrLayerType maLayer(new ImageLayer(image, path.stem(), path.string()));
-
-    //Lecture de l'ori et test d'existence
-    try
-    {
-	Orientation2D ori;
-	ori.ReadOriFromImageFile(filename);
-        maLayer->Orientation(ori);
-        maLayer->HasOri(true);
-    }
-    catch (exception &e)
-    {
-        ostringstream message;
-        message << "No orientation for image " << filename;
-        message << "\n" << e.what();
-        wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
-        maLayer->HasOri(false);
-    }
-
-    return maLayer;
-}
-
 template<class ImageType>
 Layer::ptrLayerType ImageLayer::CreateImageLayer(const ImageType &image, const std::string &name)
 {
     image_ptr any_img(new image_t(image));
     return ptrLayerType(new ImageLayer(any_img, name));
-}
-
-template<typename T>
-inline int iRound(const T x)
-{
-    using namespace std;
-    return static_cast<int>(floor(x + 0.5));
 }
 
 void ImageLayer::Update(int width, int height)

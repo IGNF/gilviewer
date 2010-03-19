@@ -60,7 +60,6 @@ class ImageLayer : public Layer
 
 	virtual ~ImageLayer() {}
 
-	static ptrLayerType CreateImageLayer(const std::string    &file);
 	static ptrLayerType CreateImageLayer(const image_ptr &image, const std::string &name ="Image Layer");
 
 	///ATTENTION ici l'image est recopiée dans une any_image !!
@@ -139,8 +138,9 @@ class ImageLayer : public Layer
         inline virtual double get_center_x();
         inline virtual double get_center_y();
 
-	private:
-	ImageLayer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
+        ImageLayer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
+
+        private:
 
 	image_ptr       m_img;
 	view_ptr        m_view;

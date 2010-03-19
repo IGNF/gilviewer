@@ -49,10 +49,12 @@ class wxDC;
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
+#include <sstream>
 
 #include "../tools/Orientation2D.h"
 #include "../tools/ColorLookupTable.h"
 #include "../gui/LayerSettingsControl.hpp"
+#include "../tools/error_logger.hpp"
 
 #ifdef WIN32
 #	include <wx/msw/winundef.h>
@@ -151,6 +153,23 @@ public:
     virtual bool HasOri() const { return m_hasOri; }
     virtual void Orientation(const Orientation2D &orientation)  {}
     virtual const Orientation2D &Orientation() const  { return m_ori; }
+    void add_orientation( const std::string &image_filename )
+    {
+        try
+        {
+            Orientation2D ori;
+            ori.ReadOriFromImageFile(image_filename);
+            this->Orientation(ori);
+            this->HasOri(true);
+        }
+        catch (const std::exception &e)
+        {
+            std::ostringstream oss;
+            oss << "No orientation for image " << image_filename << "\n" << e.what();
+            error_logger::log_wx_log_message(oss.str());
+            this->HasOri(false);
+        }
+    }
 
     // Methodes specifiques ImageLayer
     virtual void Alpha(unsigned char alpha) {}
