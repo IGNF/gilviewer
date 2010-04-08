@@ -49,7 +49,10 @@ Authors:
 #include "FrameViewer.hpp"
 #include "GilViewer.h"
 
-#include <gdal/ogrsf_frmts.h>
+#include "GilViewer/config/config.hpp"
+#if GILVIEWER_USE_GDAL
+#   include <gdal/ogrsf_frmts.h>
+#endif // GILVIEWER_USE_GDAL
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
@@ -69,7 +72,9 @@ bool GilViewerApp::OnInit()
 #endif
 
     register_all_file_formats();
+#if GILVIEWER_USE_GDAL
     OGRRegisterAll();
+#endif // GILVIEWER_USE_GDAL
 
     // Langage
     set_langage(wxLANGUAGE_FRENCH);

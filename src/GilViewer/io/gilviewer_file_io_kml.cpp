@@ -1,3 +1,6 @@
+#include "../config/config.hpp"
+#if GILVIEWER_USE_GDAL
+
 #include "gilviewer_file_io_kml.hpp"
 
 #include <boost/variant/get.hpp>
@@ -165,3 +168,5 @@ bool gilviewer_file_io_kml::Register()
 }
 
 bool register_kml_ok = gilviewer_file_io_kml::Register();
+
+#endif // GILVIEWER_USE_GDAL
