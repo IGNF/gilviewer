@@ -58,7 +58,6 @@ Authors:
 
 #include "../convenient/wxhelper.hpp"
 
-#include "../layers/simple_vector_layer.hpp"
 #include "../gui/define_id.hpp"
 
 wxString VectorLayerSettingsControl::choices_points[] =
