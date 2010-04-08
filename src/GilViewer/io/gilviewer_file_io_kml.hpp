@@ -38,6 +38,9 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_KML_HPP
 #define GILVIEWER_FILE_IO_KML_HPP
 
+#include "../config/config.hpp"
+#if GILVIEWER_USE_GDAL
+
 #include "gilviewer_file_io.hpp"
 
 class gilviewer_file_io_kml : public gilviewer_file_io
@@ -56,3 +59,5 @@ private:
 };
 
 #endif // GILVIEWER_FILE_IO_KML_HPP
+
+#endif // GILVIEWER_USE_GDAL

@@ -25,13 +25,12 @@ SET(CMAKE_CONFIG_DIR cmake)
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
 ####
 SET(SRC_DIR src/GilViewer)
+FILE( GLOB ALL_CONFIG_HEADER_FILES ${SRC_DIR}/config/*.h ${SRC_DIR}/config/*.hpp  )
 FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.h ${SRC_DIR}/convenient/*.hpp ${SRC_DIR}/convenient/*.hxx ${SRC_DIR}/convenient/*.inl )
 FILE( GLOB ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl )
 FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
-FILE( GLOB ALL_VECTORUTILS_HEADER_FILES ${SRC_DIR}/vectorutils/*.h ${SRC_DIR}/vectorutils/*.hpp ${SRC_DIR}/vectorutils/*.hxx ${SRC_DIR}/vectorutils/*.inl )
-FILE( GLOB ALL_WRAPPERS_HEADER_FILES ${SRC_DIR}/wrappers/*.h ${SRC_DIR}/wrappers/*.hpp ${SRC_DIR}/wrappers/*.hxx ${SRC_DIR}/wrappers/*.inl )
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
@@ -113,14 +112,6 @@ ELSE()
         INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 	link_directories( ${Boost_LIBRARY_DIRS} )
 ENDIF()
-
-# Find GDAL
-find_package(GDAL)
-if(GDAL_FOUND)
-    include_directories(${GDAL_INCLUDE_DIR})
-else()
-    message(FATAL_ERROR "GDAL not found!")
-endif()
 
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : tinyxml
