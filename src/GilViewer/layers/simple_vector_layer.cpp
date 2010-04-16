@@ -301,6 +301,7 @@ void simple_vector_layer::Clear()
     m_points.clear();
     m_splines.clear();
     m_polygons.clear();
+    m_texts.clear();
     // deallocate memory
     vector<CircleType>().        swap(m_circles);
     vector<EllipseType>().       swap(m_ellipses);
@@ -309,6 +310,7 @@ void simple_vector_layer::Clear()
     vector<PointType>().         swap(m_points);
     vector<vector<PointType> >().swap(m_splines);
     vector<vector<PointType> >().swap(m_polygons);
+    vector< pair<PointType,string> >().swap(m_texts);
 }
 
 wxPoint simple_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates) const {

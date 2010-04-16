@@ -343,7 +343,10 @@ void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, do
 
 void ogr_vector_layer::Clear()
 {
-    m_geometries_features.erase(m_geometries_features.begin(), m_geometries_features.end());
+    m_geometries_features.clear();
+    m_texts.clear();
+    vector<pair<geometry_types,OGRFeature*> >().swap(m_geometries_features);
+    vector< pair< internal_point_type , string > >().swap(m_texts);
 }
 
 
