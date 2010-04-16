@@ -97,6 +97,8 @@ bool sample_vector_layer_app::OnInit()
         vector_layer->set_line_color(wxColor(246,123,123));
         vector_layer->set_line_width(10);
         vector_layer->set_line_style(wxSHORT_DASH);
+
+        vector_layer->AddText(52.3, 65.8, "text in ogr_vector_layer!!");
 #endif // GILVIEWER_USE_GDAL
 
         // We now test the simple_vector_layer_interface
@@ -121,6 +123,7 @@ bool sample_vector_layer_app::OnInit()
         my_vector_layer->AddPolyline(xp,yp);
         my_vector_layer->set_line_style(wxSHORT_DASH);
         my_vector_layer->set_line_width(1);
+        my_vector_layer->AddText(12., 32., "Youhou!!!");
     }
     catch( std::exception &e )
     {

@@ -144,6 +144,7 @@ public:
     void AddEllipse(double x_center, double y_center, double a, double b);
     void AddEllipse(double x_center, double y_center, double a, double b, double theta);
     void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
+    void AddText( double x , double y , const std::string &text , const wxColour &color = *wxRED );
 
     virtual void Clear();
 
@@ -168,6 +169,7 @@ private:
     std::vector<PointType> m_points;
     std::vector< std::vector<PointType> > m_splines;
     std::vector< std::vector<PointType> > m_polygons;
+    std::vector< std::pair< PointType, std::string > > m_texts;
 };
 
 #endif /* __SIMPLE_VECTOR_LAYER_HPP__ */

@@ -181,9 +181,25 @@ void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
     wxPen polygon_pen(m_polygon_border_color,m_polygon_border_width,m_polygon_border_style);
     wxBrush polygon_brush(m_polygon_inner_color,m_polygon_inner_style);
 
+    /// Geometries
     draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY(),m_coordinates);
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );
+
+    /// Texts
+    if(text_visibility())
+    {
+        wxPen text_pen;
+        text_pen.SetColour(m_text_color);
+        dc.SetPen(text_pen);
+        double delta=0.5*Resolution();
+        for(unsigned int i=0;i<m_texts.size();++i)
+        {
+            wxPoint p = ogr_vector_layer::FromLocal(ZoomFactor(), TranslationX(), TranslationY(), delta, m_texts[i].first.x, m_texts[i].first.y, m_coordinates);
+            //dc.DrawLine(p);
+            dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
+        }
+    }
 }
 
 LayerSettingsControl* ogr_vector_layer::build_layer_settings_control(unsigned int index, LayerControl* parent)
@@ -258,7 +274,9 @@ void ogr_vector_layer::AddPoint( double x , double y )
 
 void ogr_vector_layer::AddText( double x , double y , const std::string &text , const wxColour &color)
 {
-    cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
+    internal_point_type pt;
+    pt.x=x; pt.y=y;
+    m_texts.push_back( make_pair<internal_point_type,string>(pt,text) );
 }
 
 void ogr_vector_layer::AddLine( double x1 , double y1 , double x2 , double y2 )

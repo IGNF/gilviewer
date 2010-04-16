@@ -172,6 +172,21 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         //dc.DrawLine(p);
         dc.DrawPoint(p);
     }
+
+    // Text
+    if(text_visibility())
+    {
+        pen.SetColour(m_text_color);
+        dc.SetPen(pen);
+        for (unsigned int i = 0; i < m_texts.size(); i++)
+        {
+            wxPoint p = simple_vector_layer::FromLocal(
+                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+                    m_texts[i].first.x,m_texts[i].first.y);
+            //dc.DrawLine(p);
+            dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
+        }
+    }
 }
 
 void simple_vector_layer::AddCircle(double x, double y, double radius)
@@ -268,6 +283,13 @@ void simple_vector_layer::AddEllipse(double dx_center, double dy_center, double 
     et.controlPoints.push_back(wxPoint(x_center-a,y_center));
 
     m_rotatedellipses.push_back(et);
+}
+
+void simple_vector_layer::AddText( double x , double y , const std::string &text , const wxColour &color )
+{
+    PointType pt;
+    pt.x=x; pt.y=y;
+    m_texts.push_back( make_pair<PointType,string>(pt,text) );
 }
 
 void simple_vector_layer::Clear()
