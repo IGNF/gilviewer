@@ -102,7 +102,7 @@ public:
     inline void set_coordinates(int c) {m_coordinates=c;}
 
     virtual void AddPoint( double x , double y );
-    virtual void AddText( double x , double y , const std::string &text , const wxColour &color = *wxBLACK );
+    virtual void AddText( double x , double y , const std::string &text , const wxColour &color = *wxRED );
     virtual void AddLine( double x1 , double y1 , double x2 , double y2 );
     virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y );
     virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
@@ -115,6 +115,8 @@ public:
 
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
+    typedef struct __internal_point { double x, y; } internal_point_type;
+    std::vector< std::pair< internal_point_type , std::string > > m_texts;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
     // 1 --> image; -1 --> cartographic coordinates
