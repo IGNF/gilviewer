@@ -81,7 +81,7 @@ public:
             m_line_style(wxSOLID),
             m_polygon_border_width(3),
             m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
-            m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN) {}
+            m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {}
     static void notify_none() {}
 
     virtual ~Layer() {}
@@ -206,16 +206,18 @@ public:
     void set_polygon_border_width(unsigned int w, bool update=true)   {m_polygon_border_width=w; if(update) notifyLayerSettingsControl_();}
     void set_polygon_border_style(unsigned int s, bool update=true)   {m_polygon_border_style=s; if(update) notifyLayerSettingsControl_();}
     void set_polygon_inner_style(unsigned int s, bool update=true)    {m_polygon_inner_style=s;  if(update) notifyLayerSettingsControl_();}
-    wxColor get_point_color() const               {return m_point_color;}
-    unsigned int get_point_width() const          {return m_point_width;}
-    wxColor get_line_color() const                {return m_line_color;}
-    unsigned int get_line_width() const           {return m_line_width;}
-    unsigned int get_line_style() const           {return m_line_style;}
-    wxColor get_polygon_border_color() const      {return m_polygon_border_color;}
-    wxColor get_polygon_inner_color() const       {return m_polygon_inner_color;}
-    unsigned int get_polygon_border_width() const {return m_polygon_border_width;}
-    unsigned int get_polygon_border_style() const {return m_polygon_border_style;}
-    unsigned int get_polygon_inner_style() const  {return m_polygon_inner_style;}
+    void set_text_color(const wxColor& c, bool update=true)           {m_text_color=c;           if(update) notifyLayerSettingsControl_();}
+    wxColor get_point_color() const                                   {return m_point_color;}
+    unsigned int get_point_width() const                              {return m_point_width;}
+    wxColor get_line_color() const                                    {return m_line_color;}
+    unsigned int get_line_width() const                               {return m_line_width;}
+    unsigned int get_line_style() const                               {return m_line_style;}
+    wxColor get_polygon_border_color() const                          {return m_polygon_border_color;}
+    wxColor get_polygon_inner_color() const                           {return m_polygon_inner_color;}
+    unsigned int get_polygon_border_width() const                     {return m_polygon_border_width;}
+    unsigned int get_polygon_border_style() const                     {return m_polygon_border_style;}
+    unsigned int get_polygon_inner_style() const                      {return m_polygon_inner_style;}
+    wxColor get_text_color() const                                    {return m_text_color;}
 
     virtual void text_visibility( bool value , bool update = true ) {}
     virtual bool text_visibility() const { return true; } // ???!!!???
@@ -251,7 +253,7 @@ protected:
     std::string m_infos;
 
     unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
-    wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color;
+    wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
 };
 
 
