@@ -546,7 +546,8 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
         double translationInitY = m_ori.OriginY();
 
         double newZoomFactor = m_ori.Step();
-        layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
+        //layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
+        layer->ZoomFactor(m_layers[0]->ZoomFactor());
         layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);
         layer->TranslationY(translationInitY + m_layers[0]->TranslationY() * newZoomFactor);
     }
@@ -557,7 +558,9 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
     if(m_isOrientationSet)
         layer->Resolution(m_ori.Step());
     else
+    {
         layer->Resolution(1.);
+    }
 
     Refresh();
     m_parent->Refresh();
