@@ -54,9 +54,15 @@ struct channel_converter_functor
             m_max_src(max),
             m_255_over_delta( 255 / (m_max_src - m_min_src) ),
             m_lut(&lut.getData().front()),
+<<<<<<< local
+            m_red_index(0),
+            m_green_index(1),
+            m_blue_index(2)
+=======
             m_red_index(red_index),
             m_green_index(green_index),
             m_blue_index(blue_index)
+>>>>>>> other
     {
         boost::gil::at_c<0>(m_min_dst) = m_lut[0];
         boost::gil::at_c<1>(m_min_dst) = m_lut[256];
@@ -73,11 +79,11 @@ struct channel_converter_functor
         m_atc2max = boost::gil::at_c<2>(m_max_dst);
     }
 
-    template <typename ViewType>
+    template <typename PixelType>
     typename boost::enable_if_c<
-      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      boost::gil::num_channels<typename PixelType::value_type>::value == 1,
       result_type >::type
-    operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    operator()(const PixelType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         if (src < m_min_src)
         {
@@ -95,11 +101,11 @@ struct channel_converter_functor
         boost::gil::at_c<2>(dst) = m_lut[512+index];
     }
 
-    template<class ViewType> 
+    template<class PixelType>
     typename boost::enable_if_c<
-      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      boost::gil::num_channels<typename PixelType::value_type>::value >= 3,
       result_type >::type
-    operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    operator()(const PixelType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         using namespace boost::gil;
 

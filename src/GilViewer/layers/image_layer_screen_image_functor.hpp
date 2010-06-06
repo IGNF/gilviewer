@@ -41,7 +41,16 @@ Authors:
 struct screen_image_functor
 {
     typedef void result_type;
-    screen_image_functor( boost::gil::dev3n8_view_t &screen_view, channel_converter_functor cc, double z, double tx, double ty, boost::gil::gray8_view_t& canal_alpha, const double min_alpha, const double max_alpha, const unsigned char alpha, bool isTransparent) :
+    screen_image_functor( boost::gil::dev3n8_view_t &screen_view,
+                          channel_converter_functor cc,
+                          double z,
+                          double tx,
+                          double ty,
+                          boost::gil::gray8_view_t& canal_alpha,
+                          const double min_alpha,
+                          const double max_alpha,
+                          const unsigned char alpha,
+                          bool isTransparent) :
             m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc),
             m_zoomFactor(z), m_translationX(tx), m_translationY(ty),
             m_alpha(alpha),
