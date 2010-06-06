@@ -36,7 +36,7 @@ Authors:
  
 ***********************************************************************/
 
-#include "../convenient/wxhelper.hpp"
+#include "wxhelper.hpp"
 
 #include <wx/defs.h>
 
@@ -81,8 +81,8 @@ int FromPolygonSelectionIndexToWxStyle( unsigned int selection )
 	{
 		case 0:
 			return wxSOLID;
-		case 1:
-			return wxTRANSPARENT;
+                case 1:
+                        return wxTRANSPARENT;
 		case 2:
 			return wxDOT;
 		case 3:
@@ -120,4 +120,4 @@ int FromLineSelectionIndexToWxStyle( unsigned int selection )
 			return wxSOLID;
 	}
 }
-}
+} // namespace wxhelper

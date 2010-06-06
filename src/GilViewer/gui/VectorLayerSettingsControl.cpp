@@ -58,7 +58,6 @@ Authors:
 
 #include "../convenient/wxhelper.hpp"
 
-#include "../layers/simple_vector_layer.hpp"
 #include "../gui/define_id.hpp"
 
 wxString VectorLayerSettingsControl::choices_points[] =
@@ -268,6 +267,7 @@ void VectorLayerSettingsControl::update()
 
     // Text visibility
     m_checkShowTexts->SetValue(m_parent->Layers()[m_index]->text_visibility());
+    m_colourPickerTexts->SetColour(m_parent->Layers()[m_index]->get_text_color());
 }
 
 void VectorLayerSettingsControl::OnOKButton(wxCommandEvent &event)
@@ -285,18 +285,19 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 {
     // Texts
     // La, on appelle l'update (via le callback notifier ...) !
-    m_parent->Layers()[m_index]->text_visibility(m_checkShowTexts->GetValue(),false);
+    m_parent->Layers()[m_index]->text_visibility(m_checkShowTexts->GetValue(),    false);
+    m_parent->Layers()[m_index]->set_text_color(m_colourPickerTexts->GetColour(), false);
 
-    m_parent->Layers()[m_index]->set_point_color(m_colourPickerPoints->GetColour(),false);
-    m_parent->Layers()[m_index]->set_point_width(m_sliderWidthPoints->GetValue(),false);
+    m_parent->Layers()[m_index]->set_point_color(m_colourPickerPoints->GetColour(), false);
+    m_parent->Layers()[m_index]->set_point_width(m_sliderWidthPoints->GetValue(),   false);
 
-    m_parent->Layers()[m_index]->set_line_color(m_colourPickerLines->GetColour(),false);
-    m_parent->Layers()[m_index]->set_line_width(m_sliderWidthLines->GetValue(),false);
+    m_parent->Layers()[m_index]->set_line_color(m_colourPickerLines->GetColour(),          false);
+    m_parent->Layers()[m_index]->set_line_width(m_sliderWidthLines->GetValue(),            false);
     m_parent->Layers()[m_index]->set_line_style(style_lines[m_choiceLines->GetSelection()],false);
 
-    m_parent->Layers()[m_index]->set_polygon_border_color(m_colourPickerRingsPolygons->GetColour(),false);
-    m_parent->Layers()[m_index]->set_polygon_inner_color(m_colourPickerInsidePolygons->GetColour(),false);
-    m_parent->Layers()[m_index]->set_polygon_border_width(m_sliderWidthRings->GetValue(),false);
+    m_parent->Layers()[m_index]->set_polygon_border_color(m_colourPickerRingsPolygons->GetColour(),              false);
+    m_parent->Layers()[m_index]->set_polygon_inner_color(m_colourPickerInsidePolygons->GetColour(),              false);
+    m_parent->Layers()[m_index]->set_polygon_border_width(m_sliderWidthRings->GetValue(),                        false);
     m_parent->Layers()[m_index]->set_polygon_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
 
     // On refresh ...
