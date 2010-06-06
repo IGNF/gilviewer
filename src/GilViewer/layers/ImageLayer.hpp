@@ -86,7 +86,7 @@ class ImageLayer : public Layer
 		m_ori.SizeY( orientation.SizeY() );
 	}
 	virtual void SetChannels(unsigned int red, unsigned int green, unsigned int blue)
-	{
+        {
 		m_red   = red;
 		m_green = green;
 		m_blue  = blue;

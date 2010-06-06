@@ -136,7 +136,14 @@ void ImageLayer::Update(int width, int height)
     alpha_image_t::view_t alpha_view = view(*m_alpha_img);
     fill_pixels(alpha_view, 0);
 
-    channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT);
+    std::size_t nb_channels = GetNbComponents();
+    if(m_red>=nb_channels)
+        m_red=nb_channels-1;
+    if(m_green>=nb_channels)
+        m_green=nb_channels-1;
+    if(m_blue>=nb_channels)
+        m_blue=nb_channels-1;
+    channel_converter_functor my_cc(IntensityMin(), IntensityMax(), *m_cLUT, m_red, m_green, m_blue);
     apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, IsTransparent()));
 
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);

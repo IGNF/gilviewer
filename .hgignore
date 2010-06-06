@@ -11,6 +11,7 @@ install_manifest.txt
 src/GilViewer/gui/resources/resources.cpp
 CMakeLists.txt.user
 GilViewer.cbp
+doc/html/*
 
 syntax: glob
 

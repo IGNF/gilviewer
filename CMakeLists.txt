@@ -21,12 +21,11 @@ SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin )
 
 SET(CMAKE_CONFIG_DIR cmake)
 
-MESSAGE(STATUS " parent ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
-
 ####
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
 ####
 SET(SRC_DIR src/GilViewer)
+FILE( GLOB ALL_CONFIG_HEADER_FILES ${SRC_DIR}/config/*.h ${SRC_DIR}/config/*.hpp  )
 FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.h ${SRC_DIR}/convenient/*.hpp ${SRC_DIR}/convenient/*.hxx ${SRC_DIR}/convenient/*.inl )
 FILE( GLOB ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl )
 FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )

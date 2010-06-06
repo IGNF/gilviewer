@@ -495,7 +495,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 					parameters.linesColor = wxColour(lines_red,lines_green,lines_blue,lines_alpha);
 					parameters.polygonsInsideColor = wxColour(polygons_inside_red,polygons_inside_green,polygons_inside_blue,polygons_inside_alpha);
 					parameters.polygonsRingsColor = wxColour(polygons_rings_red,polygons_rings_green,polygons_rings_blue,polygons_rings_alpha);
-					parameters.polygonsInsideStyle = polygons_inside_style;
+                                        parameters.polygonsInsideStyle = polygons_inside_style;
 					parameters.polygonsRingsStyle = polygons_rings_style;
 					parameters.polygonsRingsWidth = polygons_rings_width;
 					parameters.zoomFactor = zoom_factor;
@@ -780,7 +780,7 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 			elemPolygonsInsideColour->SetAttribute("alpha",colour.Alpha());
 			TiXmlElement *elemPolygonsInsideStyle = new TiXmlElement( "Style" );
 			elemPolygonsInside->LinkEndChild( elemPolygonsInsideStyle );
-                        elemPolygonsInsideStyle->SetAttribute("value",(*it)->get_polygon_border_style());
+                        elemPolygonsInsideStyle->SetAttribute("value",(*it)->get_polygon_inner_style());
 		}
 	}
 

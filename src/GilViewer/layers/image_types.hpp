@@ -32,8 +32,8 @@ typedef boost::mpl::vector<
 
 // Concatenation of all available image types defined below
 typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
-                                            boost::mpl::back_inserter< rgb_image_types  > >::type,
-                          boost::mpl::back_inserter< rgba_image_types > >::type
+                 boost::mpl::back_inserter< rgb_image_types  > >::type,
+                 boost::mpl::back_inserter< rgba_image_types > >::type
 	all_image_types;
 
 #include <boost/gil/extension/dynamic_image/any_image.hpp>

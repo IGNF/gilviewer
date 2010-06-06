@@ -49,14 +49,20 @@ struct channel_converter_functor
     const unsigned char* m_lut;
     unsigned int m_red_index, m_green_index, m_blue_index;
 
-    channel_converter_functor(const float min, const float max, const ColorLookupTable& lut):
+    channel_converter_functor(const float min, const float max, const ColorLookupTable& lut, unsigned int red_index=0, unsigned int green_index=1, unsigned int blue_index=2):
             m_min_src(min),
             m_max_src(max),
             m_255_over_delta( 255 / (m_max_src - m_min_src) ),
             m_lut(&lut.getData().front()),
+<<<<<<< local
             m_red_index(0),
             m_green_index(1),
             m_blue_index(2)
+=======
+            m_red_index(red_index),
+            m_green_index(green_index),
+            m_blue_index(blue_index)
+>>>>>>> other
     {
         boost::gil::at_c<0>(m_min_dst) = m_lut[0];
         boost::gil::at_c<1>(m_min_dst) = m_lut[256];
@@ -147,5 +153,4 @@ struct channel_converter_functor
         else
             at_c<2>(dst) = (unsigned char) (m_255_over_delta*(src[m_blue_index] - m_min_src));
     }
-
 };
