@@ -40,21 +40,21 @@ Authors:
 
 #include "VectorLayerGhost.h"
 
-wxPoint VectorLayerGhost::FromLocal(const wxPoint &p, double delta) const
+wxPoint vector_layer_ghost::FromLocal(const wxPoint &p, double delta) const
 {
 	return wxPoint(
 		wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
 		wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
 }
 
-wxPoint VectorLayerGhost::ToLocal(const wxPoint &p, double delta) const
+wxPoint vector_layer_ghost::ToLocal(const wxPoint &p, double delta) const
 {
 	return wxPoint(
 		wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
 		wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
 }
 
-VectorLayerGhost::VectorLayerGhost(bool isCarto) :
+vector_layer_ghost::vector_layer_ghost(bool isCarto) :
 	m_pointPosition(0, 0), m_rectangleSelection(std::make_pair(wxPoint(0, 0), wxPoint(0, 0)) ), m_isCarto(isCarto), m_drawPointPosition(false),
 	m_drawRectangleSelection(false), m_rectangleSelectionFirstPointSet(false),
 	m_drawCircle(false), m_CircleFirstPointSet(false),
@@ -63,7 +63,7 @@ VectorLayerGhost::VectorLayerGhost(bool isCarto) :
 {
 }
 
-wxRect VectorLayerGhost::GetRectangle() const {
+wxRect vector_layer_ghost::GetRectangle() const {
 	wxPoint p(m_rectangleSelection.first );
 	wxPoint q(m_rectangleSelection.second);
 	if(p.x>q.x) std::swap(p.x,q.x);
@@ -71,7 +71,7 @@ wxRect VectorLayerGhost::GetRectangle() const {
 	return wxRect(FromLocal(p,0),FromLocal(q,1));
 }
 
-void VectorLayerGhost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
+void vector_layer_ghost::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 {
 	if (m_drawCircle)
 	{

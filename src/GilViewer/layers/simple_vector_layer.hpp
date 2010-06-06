@@ -131,7 +131,7 @@ public:
     virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void Update(int, int) {}
 
-    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
+    virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
     virtual std::string GetInfos();
 
     virtual std::string get_available_formats_wildcard() const;

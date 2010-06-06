@@ -46,12 +46,12 @@ Authors:
 
 #include "../convenient/MacrosGilViewer.hpp"
 
-class ApplicationSettings;
-class LayerControl;
+class application_settings;
+class layer_control;
 class wxLogWindow;
 class wxToolBar;
 class wxMenuBar;
-class VectorLayerGhost;
+class vector_layer_ghost;
 
 #if wxUSE_DRAG_AND_DROP
         class gilviewer_file_drop_target;
@@ -69,10 +69,10 @@ public:
 
         virtual ~panel_viewer() {}
 
-	void AddLayer( const Layer::ptrLayerType &layer );
+        void AddLayer( const layer::ptrLayerType &layer );
 
-	LayerControl* GetLayerControl() const;
-	ApplicationSettings* GetApplicationSettings() const;
+        layer_control* GetLayerControl() const;
+        application_settings* GetApplicationSettings() const;
 
 	// On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
 	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
@@ -129,7 +129,7 @@ public:
 
 	inline eMode GetCurrentMode() { return m_mode; }
 	inline eGEOMETRY GetCurrentGeometry() { return m_geometry; }
-	inline boost::shared_ptr<VectorLayerGhost> GetVectorLayerGhost() { return m_ghostLayer; }
+	inline boost::shared_ptr<vector_layer_ghost> GetVectorLayerGhost() { return m_ghostLayer; }
 
 	DECLARE_EVENT_TABLE();
 
@@ -158,11 +158,11 @@ protected:
 	wxPoint m_translationDrag;
 
 	// Le controle des couches
-	LayerControl* m_layerControl;
-	ApplicationSettings* m_applicationSettings;
+        layer_control* m_layerControl;
+        application_settings* m_applicationSettings;
 
 	//ref sur le ghostLayer du LayerControl
-	boost::shared_ptr<VectorLayerGhost> m_ghostLayer;
+	boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
 
 	void executeMode();
 	virtual void executeModeNavigation();

@@ -41,14 +41,14 @@ Authors:
 
 #include <wx/dialog.h>
 
-class LayerControl;
+class layer_control;
 class wxTextCtrl;
 
-class GlobalSettingsControl : public wxDialog
+class global_settings_control : public wxDialog
 {
 public:
-	GlobalSettingsControl(LayerControl *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Global settings"), long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
-	virtual ~GlobalSettingsControl() {};
+        global_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Global settings"), long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
+        virtual ~global_settings_control() {};
 
 	void OnScroll(wxScrollEvent &event);
 	void OnOKButton(wxCommandEvent &event);
@@ -65,7 +65,9 @@ private:
 	wxTextCtrl* m_textMinimumGlobalIntensity;
 	wxTextCtrl* m_textMaximumGlobalIntensity;
 
-	LayerControl *m_parent;
+	layer_control *m_parent;
 };
+
+typedef global_settings_control GlobalSettingsControl;
 
 #endif //__GLOBAL_SETTINGS_CONTROL_HPP__

@@ -43,19 +43,19 @@ Authors:
 #include <boost/filesystem.hpp>
 #include "Orientation2D.h"
 
-Orientation2D::Orientation2D() :
+orientation_2d::orientation_2d() :
 	m_originX(-1), m_originY(-1), m_step(-1), m_zoneCarto(-1), m_sizeX(-1), m_sizeY(-1)
 {
 }
 
 
-Orientation2D::Orientation2D(const double origineX, const double origineY, const double step, const unsigned int zoneCarto, const unsigned int tailleX, const unsigned int tailleY):
+orientation_2d::orientation_2d(const double origineX, const double origineY, const double step, const unsigned int zoneCarto, const unsigned int tailleX, const unsigned int tailleY):
 	m_originX(origineX), m_originY(origineY), m_step(step), m_zoneCarto(zoneCarto), m_sizeX(tailleX), m_sizeY(tailleY)
 {
 
 }
 
-void Orientation2D::ReadOriFromImageFile(const std::string &filename)
+void orientation_2d::ReadOriFromImageFile(const std::string &filename)
 {
 	if ( !boost::filesystem::exists(filename) )
 	{
@@ -82,7 +82,7 @@ void Orientation2D::ReadOriFromImageFile(const std::string &filename)
 	}
 }
 
-void Orientation2D::ReadOriFromOriFile(const std::string &filename)
+void orientation_2d::ReadOriFromOriFile(const std::string &filename)
 {
 	if ( !boost::filesystem::exists(filename) )
 	{
@@ -145,7 +145,7 @@ void Orientation2D::ReadOriFromOriFile(const std::string &filename)
 
 }
 
-void Orientation2D::ReadOriFromTFWFile(const std::string &filename)
+void orientation_2d::ReadOriFromTFWFile(const std::string &filename)
 {
 	if ( !boost::filesystem::exists(filename) )
 	{
@@ -201,7 +201,7 @@ void Orientation2D::ReadOriFromTFWFile(const std::string &filename)
 }
 
 
-void Orientation2D::SaveOriToFile(const std::string &filename)
+void orientation_2d::SaveOriToFile(const std::string &filename)
 {
 	std::ofstream fileOri(filename.c_str() , std::ofstream::out);
 
@@ -214,7 +214,7 @@ void Orientation2D::SaveOriToFile(const std::string &filename)
 	fileOri.close();
 }
 
-std::string Orientation2D::Affiche() const
+std::string orientation_2d::Affiche() const
 {
 	std::ostringstream result;
 	result << "Orientation : \n";

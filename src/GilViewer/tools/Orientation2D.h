@@ -49,11 +49,11 @@ Authors:
 
 #include <cmath>
 
-class Orientation2D
+class orientation_2d
 {
 public:
-	Orientation2D();
-	Orientation2D(const double origineX, const double origineY, const double step,const unsigned int zoneCarto, const unsigned int tailleX, const unsigned int tailleY);
+        orientation_2d();
+        orientation_2d(const double origineX, const double origineY, const double step,const unsigned int zoneCarto, const unsigned int tailleX, const unsigned int tailleY);
 
 	///Accesseurs/Setteurs
 	double OriginX() const { return m_originX; }
@@ -97,16 +97,18 @@ private:
 
 };
 
-inline void Orientation2D::ImageToMap(const int col, const int lig, double &x, double &y) const
+inline void orientation_2d::ImageToMap(const int col, const int lig, double &x, double &y) const
 {
 	x = m_originX + col * m_step;
 	y = m_originY - lig * m_step;
 }
 
-inline void Orientation2D::MapToImage(const double x, const double y, int &col, int &lig) const
+inline void orientation_2d::MapToImage(const double x, const double y, int &col, int &lig) const
 {
 	col = static_cast<int>( std::floor((x - m_originX ) / m_step + 0.5)); //0.5 pour le round
 	lig = -static_cast<int>( std::floor((y - m_originY ) / m_step + 0.5));
 }
+
+typedef orientation_2d Orientation2D;
 
 #endif /*VIEWERORIENTATION2D_H_*/

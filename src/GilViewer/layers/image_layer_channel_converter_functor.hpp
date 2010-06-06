@@ -49,7 +49,7 @@ struct channel_converter_functor
     const unsigned char* m_lut;
     unsigned int m_red_index, m_green_index, m_blue_index;
 
-    channel_converter_functor(const float min, const float max, const ColorLookupTable& lut, unsigned int red_index=0, unsigned int green_index=1, unsigned int blue_index=2):
+    channel_converter_functor(const float min, const float max, const color_lookup_table& lut, unsigned int red_index=0, unsigned int green_index=1, unsigned int blue_index=2):
             m_min_src(min),
             m_max_src(max),
             m_255_over_delta( 255 / (m_max_src - m_min_src) ),

@@ -44,17 +44,17 @@ Authors:
 
 #include "../gui/LayerSettingsControl.hpp"
 
-class HistogramPlotter;
-class LayerControl;
+class histogram_plotter;
+class layer_control;
 class wxSlider;
 class wxTextCtrl;
 class wxCheckBox;
 class wxFilePickerCtrl;
 
-class ImageLayerSettingsControl : public LayerSettingsControl
+class image_layer_settings_control : public layer_settings_control
 {
 public:
-	ImageLayerSettingsControl(unsigned int index, LayerControl *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Image layer settings"),
+        image_layer_settings_control(unsigned int index, layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Image layer settings"),
 		long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
 	void OnScroll(wxScrollEvent &event);
@@ -69,8 +69,8 @@ public:
 
 	wxSlider* AlphaSlider() const {return m_alphaSlider;}
 
-	LayerControl* GetLayerControl() { return m_parent; }
-	HistogramPlotter* GetHistogramPlotter() { return m_histogramPanel; }
+	layer_control* GetLayerControl() { return m_parent; }
+        histogram_plotter* GetHistogramPlotter() { return m_histogramPanel; }
 
 	// Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
 	virtual void update();
@@ -110,18 +110,18 @@ public:
 
 	DECLARE_EVENT_TABLE();
 private:
-	HistogramPlotter *m_histogramPanel;
+        histogram_plotter *m_histogramPanel;
 
-	LayerControl *m_parent;
+	layer_control *m_parent;
 
 	bool IsNumeric( const std::string& value );
 };
 
-class HistogramPlotter : public wxPanel
+class histogram_plotter : public wxPanel
 {
 public:
-	HistogramPlotter(ImageLayerSettingsControl* parent, const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL);
-	virtual ~HistogramPlotter() {;}
+        histogram_plotter(image_layer_settings_control* parent, const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL);
+        virtual ~histogram_plotter() {;}
 
     inline std::vector< std::vector< double > > &Data() { return m_histogram; }
     double &Min(){ return m_min; }
@@ -137,7 +137,7 @@ public:
 	DECLARE_EVENT_TABLE();
 
 private:
-	ImageLayerSettingsControl* m_parent;
+        image_layer_settings_control* m_parent;
 	std::vector< std::vector< double > > m_histogram;
 	double m_min, m_max;
 	bool m_isInit;
@@ -145,10 +145,10 @@ private:
 
 };
 
-class ThreadHistogram : public wxThread
+class thread_histogram : public wxThread
 {
 public:
-	ThreadHistogram(ImageLayerSettingsControl *parent);
+        thread_histogram(image_layer_settings_control *parent);
 
 	// thread execution starts here
 	virtual void *Entry();
@@ -159,6 +159,11 @@ public:
 
 public:
 	size_t   m_count;
-	ImageLayerSettingsControl *m_parent;
+        image_layer_settings_control *m_parent;
 };
+
+typedef image_layer_settings_control ImageLayerSettingsControl;
+typedef histogram_plotter histogram_plotter;
+typedef thread_histogram thread_histogram;
+
 #endif // __IMAGE_LAYER_SETTINGS_CONTROL_HPP__

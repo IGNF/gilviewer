@@ -52,21 +52,18 @@ Authors:
  *
  */
 
-class ColorLookupTable
+class color_lookup_table
 {
 public:
-	ColorLookupTable();
-	virtual ~ColorLookupTable(){}
+        color_lookup_table();
+        virtual ~color_lookup_table(){}
 
 	///Charge une CLUT depuis un fichier binaire (de taille 768 octets = 256 * 3)
 	void LoadFromBinaryFile(const std::string &fileCLUT);
 	///Charge une CLUT depuis un fichier ASCII (3 colonnes RGB, 256 lignes)
 	void LoadFromTextFile(const std::string &fileCLUT);
 	/// Cree une LUT aleatoire
-	void createRandom();
-
-	///Recupere la couleur a partir de l'indice (0 a 255)
-//	itk::RGBPixel<unsigned char> GetColor(unsigned int index) const;
+        void createRandom();
 
 	const std::vector<unsigned char>& getData() const { return m_clut; }
 
@@ -76,5 +73,7 @@ private:
 
 
 };
+
+typedef color_lookup_table ColorLookupTable;
 
 #endif /*COLORLOOKUPTABLE_H_*/

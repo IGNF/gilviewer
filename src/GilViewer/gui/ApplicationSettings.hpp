@@ -54,11 +54,11 @@ class wxCheckBox;
 class wxSlider;
 class wxChoice;
 
-class ApplicationSettings: public wxDialog
+class application_settings: public wxDialog
 {
 public:
-	ApplicationSettings(wxWindow *parent = (wxWindow *) NULL, wxWindowID id = wxID_ANY, const wxString& title = _("Application settings"), long style = wxDEFAULT_FRAME_STYLE, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-	virtual ~ApplicationSettings();
+        application_settings(wxWindow *parent = (wxWindow *) NULL, wxWindowID id = wxID_ANY, const wxString& title = _("Application settings"), long style = wxDEFAULT_FRAME_STYLE, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
+        virtual ~application_settings();
 
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnApplyButton(wxCommandEvent &event);
@@ -107,5 +107,7 @@ private:
 	wxChoice* m_choiceLines;
 	wxChoice* m_choiceLabels;
 };
+
+typedef application_settings ApplicationSettings;
 
 #endif /* APPLICATIONSETTINGS_HPP_ */

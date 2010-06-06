@@ -90,7 +90,7 @@ public:
 
     void build_infos(OGRSpatialReference *spatial_reference);
 
-    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
+    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, layer_control* parent);
 
     inline virtual double get_center_x() {return m_center_x;}
     inline virtual double get_center_y() {return m_center_y;}

@@ -41,13 +41,13 @@ Authors:
 
 #include <wx/dialog.h>
 
-class LayerControl;
+class layer_control;
 
-class LayerSettingsControl : public wxDialog
+class layer_settings_control : public wxDialog
 {
 public:
-	LayerSettingsControl(LayerControl *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){;}
-        ~LayerSettingsControl() {}
+        layer_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){;}
+        ~layer_settings_control() {}
 
 	// Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
         virtual void update() {}
@@ -61,5 +61,7 @@ public:
 protected:
 	unsigned int m_index;
 };
+
+typedef layer_settings_control LayerSettingsControl;
 
 #endif // __LAYER_SETTINGS_CONTROL_HPP__

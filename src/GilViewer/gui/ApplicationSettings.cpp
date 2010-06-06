@@ -60,12 +60,12 @@ Authors:
 
 
 
-BEGIN_EVENT_TABLE(ApplicationSettings, wxDialog)
-EVT_CLOSE(ApplicationSettings::OnCloseWindow)
-EVT_BUTTON(wxID_APPLY,ApplicationSettings::OnApplyButton)
+BEGIN_EVENT_TABLE(application_settings, wxDialog)
+EVT_CLOSE(application_settings::OnCloseWindow)
+EVT_BUTTON(wxID_APPLY,application_settings::OnApplyButton)
 END_EVENT_TABLE()
 
-ApplicationSettings::ApplicationSettings(wxWindow *parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+application_settings::application_settings(wxWindow *parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	wxDialog(parent, id, title, pos, size, style)
 {
         const wxSize imageSize(24, 24);
@@ -118,12 +118,12 @@ ApplicationSettings::ApplicationSettings(wxWindow *parent, wxWindowID id, const 
 }
 
 
-ApplicationSettings::~ApplicationSettings()
+application_settings::~application_settings()
 {
 	WriteConfig();
 }
 
-wxPanel* ApplicationSettings::CreatePathsSettingsPanel()
+wxPanel* application_settings::CreatePathsSettingsPanel()
 {
 	wxPanel *panel = new wxPanel(m_bookCtrl, wxID_ANY);
 	wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -162,7 +162,7 @@ wxPanel* ApplicationSettings::CreatePathsSettingsPanel()
 	return panel;
 }
 
-wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
+wxPanel* application_settings::CreateOptionsSettingsPanel()
 {
 	wxPanel *panel = new wxPanel(m_bookCtrl, wxID_ANY);
 	wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -229,7 +229,7 @@ wxPanel* ApplicationSettings::CreateOptionsSettingsPanel()
 }
 
 
-wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
+wxPanel* application_settings::CreateVetorLayerSettingsPanel()
 {
 	wxPanel *panel = new wxPanel(m_bookCtrl, wxID_ANY);
 	wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -248,7 +248,7 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	boxSizerWidthPoints->Add(m_sliderWidthPoints, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSizerPoints->Add(m_colourPickerPoints, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSizerPoints->Add(boxSizerWidthPoints, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-	m_choicePoints = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_points), VectorLayerSettingsControl::choices_points);
+        m_choicePoints = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(vector_layer_settings_control::choices_points), vector_layer_settings_control::choices_points);
 	m_choicePoints->SetSelection(0);
 	m_choicePoints->Enable(false);
 	boxSizerPoints->Add(m_choicePoints, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -276,7 +276,7 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	boxSizerWidthLines->Add(m_sliderWidthLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSizerLines->Add(m_colourPickerLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSizerLines->Add(boxSizerWidthLines, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-	m_choiceLines = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_lines), VectorLayerSettingsControl::choices_lines);
+        m_choiceLines = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(vector_layer_settings_control::choices_lines), vector_layer_settings_control::choices_lines);
 	m_choiceLines->SetSelection(0);
 	boxSizerLines->Add(m_choiceLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
@@ -292,7 +292,7 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 		pConfig->Read(wxT("/Options/VectorLayerArc/Width"), &widthLine, 3);
 		m_sliderWidthLines->SetValue( widthLine );
 		pConfig->Read(wxT("/Options/VectorLayerArc/Style"), &styleLine, wxSOLID);
-		m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(styleLine) );
+		m_choiceLines->SetSelection( wxhelper::from_wx_style_to_selection_index(styleLine) );
 	}
 
 	////////////////////////
@@ -318,7 +318,7 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	boxSlidersPolygons->Add(boxSizerRingsWidth, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSizerPolygons->Add(boxColorPickersPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 	boxSizerPolygons->Add(boxSlidersPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-	m_choicePolygons = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_inside_polygons), VectorLayerSettingsControl::choices_inside_polygons);
+        m_choicePolygons = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(vector_layer_settings_control::choices_inside_polygons), vector_layer_settings_control::choices_inside_polygons);
 	m_choicePolygons->SetSelection(0);
 	boxSizerPolygons->Add(m_choicePolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
@@ -338,7 +338,7 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 		m_colourPickerInsidePolygons->SetColour( wxColour(red,green,blue) );
 		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
 		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxSOLID);
-		m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(brushStyle) );
+		m_choicePolygons->SetSelection( wxhelper::from_wx_style_to_selection_index(brushStyle) );
 	}
 
 	mainSizer->Add(boxSizerPoints, 0, wxEXPAND | wxHORIZONTAL, 5);
@@ -354,17 +354,17 @@ wxPanel* ApplicationSettings::CreateVetorLayerSettingsPanel()
 	return panel;
 }
 
-void ApplicationSettings::OnCloseWindow(wxCloseEvent& event)
+void application_settings::OnCloseWindow(wxCloseEvent& event)
 {
 	Hide();
 }
 
-void ApplicationSettings::OnApplyButton(wxCommandEvent &event)
+void application_settings::OnApplyButton(wxCommandEvent &event)
 {
 	WriteConfig();
 }
 
-void ApplicationSettings::WriteConfig()
+void application_settings::WriteConfig()
 {
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	if (pConfig == NULL)
@@ -397,7 +397,7 @@ void ApplicationSettings::WriteConfig()
 	pConfig->Write(wxT("/Options/VectorLayerLine/Color/Green"), m_colourPickerLines->GetColour().Green());
 	pConfig->Write(wxT("/Options/VectorLayerLine/Color/Blue"), m_colourPickerLines->GetColour().Blue());
 	pConfig->Write(wxT("/Options/VectorLayerLine/Width"), m_sliderWidthLines->GetValue());
-	pConfig->Write(wxT("/Options/VectorLayerLine/Style"), wxhelper::FromLineSelectionIndexToWxStyle(m_choiceLines->GetSelection()) );
+	pConfig->Write(wxT("/Options/VectorLayerLine/Style"), wxhelper::from_line_selection_index_to_wx_style(m_choiceLines->GetSelection()) );
 
 	pConfig->Write(wxT("/Options/VectorLayerPolygon/Ring/Color/Red"), m_colourPickerRingsPolygons->GetColour().Red());
 	pConfig->Write(wxT("/Options/VectorLayerPolygon/Ring/Color/Green"), m_colourPickerRingsPolygons->GetColour().Green());
@@ -407,5 +407,5 @@ void ApplicationSettings::WriteConfig()
 	pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), m_colourPickerInsidePolygons->GetColour().Green());
 	pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), m_colourPickerInsidePolygons->GetColour().Blue());
 	pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
-	pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::FromPolygonSelectionIndexToWxStyle(m_choicePolygons->GetSelection()) );
+	pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::from_polygon_selection_index_to_wx_style(m_choicePolygons->GetSelection()) );
 }

@@ -74,7 +74,7 @@ class alpha_image_type : public boost::gil::gray8_image_t {};
 using namespace std;
 using namespace boost::gil;
 
-ImageLayer::ImageLayer(const image_ptr &image, const std::string &name, const std::string &filename, const view_ptr& v):
+image_layer::image_layer(const image_ptr &image, const std::string &name, const std::string &filename, const view_ptr& v):
         m_img(image), m_view(v)
 {
     if(!v) m_view.reset(new view_t(view(m_img->value)));
@@ -95,7 +95,7 @@ ImageLayer::ImageLayer(const image_ptr &image, const std::string &name, const st
     TransparencyMin(0.);
     Gamma(1.);
 
-    m_cLUT = boost::shared_ptr<ColorLookupTable>(new ColorLookupTable);
+    m_cLUT = boost::shared_ptr<color_lookup_table>(new color_lookup_table);
 
     ostringstream oss;
     oss << "Dimensions: " << m_view->value.width()  << " x " << m_view->value.height() << "\n";
@@ -108,12 +108,12 @@ ImageLayer::ImageLayer(const image_ptr &image, const std::string &name, const st
     SetAlphaChannel(false,0);
 }
 
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const image_ptr &image, const string &name)
+layer::ptrLayerType image_layer::CreateImageLayer(const image_ptr &image, const string &name)
 {
-    return ptrLayerType(new ImageLayer(image, name));
+    return ptrLayerType(new image_layer(image, name));
 }
 
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
+layer::ptrLayerType image_layer::CreateImageLayer(const std::string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
@@ -155,12 +155,12 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
     }
 
     //Creation de la couche image
-    ptrLayerType maLayer(new ImageLayer(image, path.stem(), path.string()));
+    ptrLayerType maLayer(new image_layer(image, path.stem(), path.string()));
 
     //Lecture de l'ori et test d'existence
     try
     {
-	Orientation2D ori;
+        orientation_2d ori;
 	ori.ReadOriFromImageFile(filename);
         maLayer->Orientation(ori);
         maLayer->HasOri(true);
@@ -178,10 +178,10 @@ Layer::ptrLayerType ImageLayer::CreateImageLayer(const std::string &filename)
 }
 
 template<class ImageType>
-Layer::ptrLayerType ImageLayer::CreateImageLayer(const ImageType &image, const std::string &name)
+layer::ptrLayerType image_layer::CreateImageLayer(const ImageType &image, const std::string &name)
 {
     image_ptr any_img(new image_t(image));
-    return ptrLayerType(new ImageLayer(any_img, name));
+    return ptrLayerType(new image_layer(any_img, name));
 }
 
 template<typename T>
@@ -191,7 +191,7 @@ inline int iRound(const T x)
     return static_cast<int>(floor(x + 0.5));
 }
 
-void ImageLayer::Update(int width, int height)
+void image_layer::Update(int width, int height)
 {
     // Lecture de la configuration des differentes options ...
     wxConfigBase *pConfig = wxConfigBase::Get();
@@ -227,22 +227,22 @@ void ImageLayer::Update(int width, int height)
     m_bitmap = boost::shared_ptr<wxBitmap>(new wxBitmap(monImage));
 }
 
-void ImageLayer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
+void image_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
     dc.DrawBitmap(*m_bitmap, x, y, transparent); //-m_translationX+x*m_zoomFactor, -m_translationX+y*m_zoomFactor
 }
 
-unsigned int ImageLayer::GetNbComponents() const
+unsigned int image_layer::GetNbComponents() const
 {
     return apply_operation(m_view->value, nb_components_functor());
 }
 
-string ImageLayer::GetTypeChannel() const
+string image_layer::GetTypeChannel() const
 {
     return apply_operation(m_view->value, type_channel_functor());
 }
 
-void ImageLayer::Histogram(vector< vector<double> > &histo, double &min, double &max) const
+void image_layer::Histogram(vector< vector<double> > &histo, double &min, double &max) const
 {
     min = m_minmaxResult.first;
     max = m_minmaxResult.second;
@@ -253,7 +253,7 @@ void ImageLayer::Histogram(vector< vector<double> > &histo, double &min, double 
     apply_operation( m_view->value, histogram_functor(histo,min,max) );
 }
 
-string ImageLayer::GetPixelValue(int i, int j) const
+string image_layer::GetPixelValue(int i, int j) const
 {
     ostringstream oss;
     oss.precision(6);
@@ -265,7 +265,7 @@ string ImageLayer::GetPixelValue(int i, int j) const
     return oss.str();
 }
 
-Layer::ptrLayerType ImageLayer::crop(int& x0, int& y0, int& x1, int& y1) const
+layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
 {
     if(x0<0) x0=0;
     if(y0<0) y0=0;
@@ -279,15 +279,15 @@ Layer::ptrLayerType ImageLayer::crop(int& x0, int& y0, int& x1, int& y1) const
     oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
     file.replace_extension(oss.str() + file.extension());
     std::string name = Name() + oss.str();
-    return ptrLayerType(new ImageLayer(m_img, name, file.string(), crop_ptr) );
+    return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
 }
 
-vector<string> ImageLayer::get_available_formats_extensions() const
+vector<string> image_layer::get_available_formats_extensions() const
 {
     return vector<string>();
 }
 
-string ImageLayer::get_available_formats_wildcard() const
+string image_layer::get_available_formats_wildcard() const
 {
     ostringstream wildcard;
     wildcard << "All supported image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|";
@@ -297,10 +297,10 @@ string ImageLayer::get_available_formats_wildcard() const
     return wildcard.str();
 }
 
-LayerSettingsControl* ImageLayer::build_layer_settings_control(unsigned int index, LayerControl* parent)
+layer_settings_control* image_layer::build_layer_settings_control(unsigned int index, layer_control* parent)
 {
-    return new ImageLayerSettingsControl(index, parent);
+    return new image_layer_settings_control(index, parent);
 }
 
-double ImageLayer::get_center_x() {return m_view->value.width()/2.;}
-double ImageLayer::get_center_y() {return m_view->value.height()/2.;}
+double image_layer::get_center_x() {return m_view->value.width()/2.;}
+double image_layer::get_center_y() {return m_view->value.height()/2.;}

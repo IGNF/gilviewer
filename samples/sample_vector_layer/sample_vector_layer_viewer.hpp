@@ -52,13 +52,13 @@ class wxStatusBar;
 class wxDialog;
 class wxMenuBar;
 
-class sample_vector_layer_viewer : public BasicViewerFrame
+class sample_vector_layer_viewer : public basic_viewer_frame
 {
 public:
         sample_vector_layer_viewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
         virtual ~sample_vector_layer_viewer() { wxGetApp().ExitMainLoop(); };
 
-	void AddLayer( const Layer::ptrLayerType &layer);
+	void AddLayer( const layer::ptrLayerType &layer);
 	void AddLayersFromFiles(const wxArrayString &names);
 
 private:

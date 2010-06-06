@@ -96,7 +96,7 @@ IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(PanelViewer,this)
 using namespace std;
 
 void panel_viewer::OnSize(wxSizeEvent &e) {
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
 		(*it)->HasToBeUpdated(true);
 }
 
@@ -171,11 +171,11 @@ void panel_viewer::SetGeometryPolygone() {
 	//	m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
 }
 
-LayerControl* panel_viewer::GetLayerControl() const {
+layer_control* panel_viewer::GetLayerControl() const {
 	return m_layerControl;
 }
 
-ApplicationSettings* panel_viewer::GetApplicationSettings() const {
+application_settings* panel_viewer::GetApplicationSettings() const {
 	return m_applicationSettings;
 }
 
@@ -185,14 +185,14 @@ panel_viewer::panel_viewer(wxFrame* parent) :
 			m_mouseMovementStarted(false), m_translationDrag(0, 0),
 			// Construction des differentes fenetres liees au PanelViewer :
 			//		- layer control
-			m_layerControl(new LayerControl(this, parent, wxID_ANY, _("Layers control"))),
+			m_layerControl(new layer_control(this, parent, wxID_ANY, _("Layers control"))),
 			//		- applications settings
 			//reference au ghostLayer du LayerControl
 			m_ghostLayer(GetLayerControl()->m_ghostLayer),
 			//Setting des modes d'interface :
 			m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT) {
 	if (panel_manager::Instance()->GetPanelsList().size() == 0)
-		m_applicationSettings = new ApplicationSettings(this, wxID_ANY);
+		m_applicationSettings = new application_settings(this, wxID_ANY);
 
 #if wxUSE_DRAG_AND_DROP
 	SetDropTarget(new GilViewerFileDropTarget(this));
@@ -357,7 +357,7 @@ void panel_viewer::OnPaint(wxPaintEvent& evt) {
 	int dx = static_cast<int> (m_translationDrag.x);
 	int dy = static_cast<int> (m_translationDrag.y);
 
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsVisible()) {
 			if ((*it)->HasToBeUpdated()) {
 				try {
@@ -575,7 +575,7 @@ void panel_viewer::OnKeydown(wxKeyEvent& event) {
 }
 
 void panel_viewer::UpdateIfTransformable() {
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsTransformable()) {
 			(*it)->HasToBeUpdated(true);
 		}
@@ -583,7 +583,7 @@ void panel_viewer::UpdateIfTransformable() {
 }
 
 void panel_viewer::SceneMove(const wxPoint& translation) {
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsTransformable()) {
 			(*it)->TranslationX((*it)->TranslationX() + translation.x * (*it)->ZoomFactor());
 			(*it)->TranslationY((*it)->TranslationY() + translation.y * (*it)->ZoomFactor());
@@ -596,7 +596,7 @@ void panel_viewer::SceneMove(const wxPoint& translation) {
 
 bool panel_viewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const {
 	bool coordOK = false;
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
 		if ((*it)->IsVisible() && ((*it)->GetPixelValue(i, j).length() != 0)) {
 			coordOK = true;
 			double zoom = (*it)->ZoomFactor();
@@ -609,7 +609,7 @@ bool panel_viewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int
 
 bool panel_viewer::GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double &j) const {
 	bool coordOK = false;
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
 		if ((*it)->IsVisible()) {
 			coordOK = true;
 			double zoom = (*it)->ZoomFactor();
@@ -633,7 +633,7 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
 	// On n'update que lorsque la status bar existe chez le parent ...
 	if (m_parent->GetStatusBar()) {
 		unsigned int nb = 0;
-		for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+		for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 			if ((*it)->IsVisible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
 				nb++;
 		}
@@ -641,7 +641,7 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
 		if (nb == 0)
 			return;
 
-		Orientation2D ori;
+		orientation_2d ori;
 		if (m_layerControl->IsOriented()) {
 			++nb; //on affiche aussi les coord carto dans ce cas
 			ori = m_layerControl->GetOrientation();
@@ -653,7 +653,7 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
 		bool affichagePixelDone = false;
 		bool affichageCartoDone = false;
 
-		for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+		for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 			std::string affichage;
 
 			if ((*it)->IsVisible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
@@ -703,7 +703,7 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
 }
 
 void panel_viewer::Zoom(double zoomFactor, wxMouseEvent &event) {
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsTransformable()) {
 			(*it)->TranslationX((*it)->TranslationX() + event.m_x * (*it)->ZoomFactor() * (zoomFactor - 1));
 			(*it)->TranslationY((*it)->TranslationY() + event.m_y * (*it)->ZoomFactor() * (zoomFactor - 1));
@@ -725,7 +725,7 @@ void panel_viewer::Zoom(double zoomFactor, wxMouseEvent &event) {
  }
  */
 
-void panel_viewer::AddLayer(const Layer::ptrLayerType &layer) {
+void panel_viewer::AddLayer(const layer::ptrLayerType &layer) {
 	try {
 		m_layerControl->AddLayer(layer);
 	} catch (const std::exception &e) {
@@ -1058,21 +1058,21 @@ void panel_viewer::Crop() {
 	SetModeCapture();
 	SetGeometryRectangle();
 	// On recherche le calque selectionne
-	std::vector<boost::shared_ptr<LayerControlRow> >::iterator itr = m_layerControl->GetRows().begin();
+	std::vector<boost::shared_ptr<layer_control_row> >::iterator itr = m_layerControl->GetRows().begin();
 	unsigned int i = 0, size = m_layerControl->GetRows().size();
-	std::vector<Layer::ptrLayerType> selected_layers;
-	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < size; ++it, ++i) {
+	std::vector<layer::ptrLayerType> selected_layers;
+	for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < size; ++it, ++i) {
 		if (m_layerControl->GetRows()[i]->m_nameStaticText->IsSelected()) {
 			selected_layers.push_back(*it);
 		}
 	}
 
-	for(std::vector<Layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
+	for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
 		wxRect  r  = m_ghostLayer->GetRectangle();
 		wxPoint p0 = (*it)->ToLocal(r.GetTopLeft());
 		wxPoint p1 = (*it)->ToLocal(r.GetBottomRight());
 		try {
-			Layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
+			layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
 			if(!layer) continue; // todo : warn the user ??
 			m_layerControl->AddLayer(layer);
 			// now that the layer is added, we can set its geometry

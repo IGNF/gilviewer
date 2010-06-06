@@ -48,7 +48,7 @@ class wxFlexGridSizer;
 class wxFontPickerCtrl;
 class wxColourPickerCtrl;
 
-class VectorLayerSettingsControl : public LayerSettingsControl
+class vector_layer_settings_control : public layer_settings_control
 {
 public:
     /// Constructeur
@@ -56,7 +56,7 @@ public:
     /// @param parent ...
     /// @param id ...
     /// @param title ...
-    VectorLayerSettingsControl(unsigned int index, LayerControl *parent , wxWindowID id = wxID_ANY, const wxString& title = _("Vector layer settings"),
+    vector_layer_settings_control(unsigned int index, layer_control *parent , wxWindowID id = wxID_ANY, const wxString& title = _("Vector layer settings"),
                                long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
     void OnOKButton(wxCommandEvent &event);
@@ -79,7 +79,7 @@ public:
     virtual const char** get_icon_xpm() const;
 
     //private:
-    LayerControl *m_parent;
+    layer_control *m_parent;
 
     wxFlexGridSizer *m_main_sizer;
     wxColourPickerCtrl* m_colourPickerPoints;
@@ -101,5 +101,7 @@ public:
 
     DECLARE_EVENT_TABLE()
         };
+
+typedef vector_layer_settings_control VectorLayerSettingsControl;
 
 #endif // __VECTOR_LAYER_SETTINGS_CONTROL_HPP__

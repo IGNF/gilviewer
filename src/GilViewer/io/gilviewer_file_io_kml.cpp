@@ -14,12 +14,12 @@
 using namespace boost;
 using namespace std;
 
-shared_ptr<Layer> gilviewer_file_io_kml::load(const string &filename)
+shared_ptr<layer> gilviewer_file_io_kml::load(const string &filename)
 {
     return gilviewer_file_io::load(filename);
 }
 
-void gilviewer_file_io_kml::save(shared_ptr<Layer> layer, const string &filename)
+void gilviewer_file_io_kml::save(shared_ptr<layer> layer, const string &filename)
 {
     shared_ptr<ogr_vector_layer> ogr_layer = dynamic_pointer_cast<ogr_vector_layer>(layer);
     if(!ogr_layer)

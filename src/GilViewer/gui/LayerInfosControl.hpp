@@ -41,15 +41,17 @@ Authors:
 
 #include <wx/frame.h>
 
-class LayerInfosControl : public wxFrame
+class layer_infos_control : public wxFrame
 {
 public:
-	LayerInfosControl(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position=wxDefaultPosition, const wxSize& size=wxDefaultSize);
-	virtual ~LayerInfosControl();
+        layer_infos_control(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position=wxDefaultPosition, const wxSize& size=wxDefaultSize);
+        virtual ~layer_infos_control();
 
 	void OnOKButton(wxCommandEvent &event);
 
 	DECLARE_EVENT_TABLE();
 };
+
+typedef layer_infos_control LayerInfosControl;
 
 #endif // __IMAGE_LAYER_INFOS_CONTROL_HPP__

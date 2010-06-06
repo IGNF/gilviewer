@@ -60,30 +60,30 @@ Authors:
 
 #include "../gui/define_id.hpp"
 
-wxString VectorLayerSettingsControl::choices_points[] =
+wxString vector_layer_settings_control::choices_points[] =
 { _("Point"), _("Transparent"), _("Cross"), _("Plus"), _("Triangle"), _("Circle") };
 
-wxString VectorLayerSettingsControl::choices_inside_polygons[] =
+wxString vector_layer_settings_control::choices_inside_polygons[] =
 { _("Solid"), _("Transparent"), _("Backward diagonal hatch"), _("Forward diagonal hatch"), _("Cross diagonal hatch"), _("Horizontal hatch"), _("Vertical hatch"), _("Cross hatch") };
 
-wxString VectorLayerSettingsControl::choices_lines[] =
+wxString vector_layer_settings_control::choices_lines[] =
 { _("Solid"), _("Transparent"), _("Dot"), _("Long dash"), _("Short dash"), _("Dot dash") };
 
-int VectorLayerSettingsControl::style_lines[] =
+int vector_layer_settings_control::style_lines[] =
 { wxSOLID, wxTRANSPARENT, wxDOT, wxLONG_DASH, wxSHORT_DASH, wxDOT_DASH };
 
-int VectorLayerSettingsControl::style_inside_polygons[] =
+int vector_layer_settings_control::style_inside_polygons[] =
 { wxSOLID, wxTRANSPARENT, wxBDIAGONAL_HATCH, wxFDIAGONAL_HATCH, wxCROSSDIAG_HATCH, wxHORIZONTAL_HATCH, wxVERTICAL_HATCH, wxCROSS_HATCH };
 
-BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
-        EVT_CLOSE(VectorLayerSettingsControl::OnCloseWindow)
-        EVT_BUTTON(wxID_OK,VectorLayerSettingsControl::OnOKButton)
-        EVT_BUTTON(wxID_CANCEL,VectorLayerSettingsControl::OnCancelButton)
-        EVT_BUTTON(wxID_APPLY,VectorLayerSettingsControl::OnApplyButton)
+BEGIN_EVENT_TABLE(vector_layer_settings_control, wxDialog)
+        EVT_CLOSE(vector_layer_settings_control::OnCloseWindow)
+        EVT_BUTTON(wxID_OK,vector_layer_settings_control::OnOKButton)
+        EVT_BUTTON(wxID_CANCEL,vector_layer_settings_control::OnCancelButton)
+        EVT_BUTTON(wxID_APPLY,vector_layer_settings_control::OnApplyButton)
         END_EVENT_TABLE()
 
-        VectorLayerSettingsControl::VectorLayerSettingsControl(unsigned int index, LayerControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-        LayerSettingsControl(parent, id, title, pos, size, style), m_parent(parent)
+        vector_layer_settings_control::vector_layer_settings_control(unsigned int index, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+        layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
 {
     Index(index);
     m_colourPickerPoints = NULL;
@@ -123,7 +123,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
         boxSizerPoints->Add(boxSizerWidthPoints, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
         //m_choicePoints = new wxRadioBox( this, wxID_ANY, _("Points style"), wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_points), VectorLayerSettingsControl::choices_points, 1, wxRA_SPECIFY_COLS );
-        m_choicePoints = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_points), VectorLayerSettingsControl::choices_points);
+        m_choicePoints = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(vector_layer_settings_control::choices_points), vector_layer_settings_control::choices_points);
         m_choicePoints->SetSelection(0);
         m_choicePoints->Enable(false);
         boxSizerPoints->Add(m_choicePoints, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -144,7 +144,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
         boxSizerLines->Add(m_colourPickerLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
         boxSizerLines->Add(boxSizerWidthLines, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
-        m_choiceLines = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_lines), VectorLayerSettingsControl::choices_lines);
+        m_choiceLines = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(vector_layer_settings_control::choices_lines), vector_layer_settings_control::choices_lines);
         m_choiceLines->SetSelection(0);
         boxSizerLines->Add(m_choiceLines, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
         m_main_sizer->Add(boxSizerLines, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -176,7 +176,7 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
         boxSizerPolygons->Add(boxColorPickersPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
         boxSizerPolygons->Add(boxSlidersPolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
-        m_choicePolygons = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(VectorLayerSettingsControl::choices_inside_polygons), VectorLayerSettingsControl::choices_inside_polygons);
+        m_choicePolygons = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(vector_layer_settings_control::choices_inside_polygons), vector_layer_settings_control::choices_inside_polygons);
         m_choicePolygons->SetSelection(0);
         boxSizerPolygons->Add(m_choicePolygons, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
         m_main_sizer->Add(boxSizerPolygons, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
@@ -251,37 +251,37 @@ BEGIN_EVENT_TABLE(VectorLayerSettingsControl, wxDialog)
     Centre();
 }
 
-void VectorLayerSettingsControl::update()
+void vector_layer_settings_control::update()
 {
     m_colourPickerPoints->SetColour(m_parent->Layers()[m_index]->get_point_color());
     m_sliderWidthPoints->SetValue(m_parent->Layers()[m_index]->get_point_width());
 
     m_colourPickerLines->SetColour(m_parent->Layers()[m_index]->get_line_color());
     m_sliderWidthLines->SetValue(m_parent->Layers()[m_index]->get_line_width());
-    m_choiceLines->SetSelection( wxhelper::FromWxStyleToSelectionIndex(m_parent->Layers()[m_index]->get_line_style()) );
+    m_choiceLines->SetSelection( wxhelper::from_wx_style_to_selection_index(m_parent->Layers()[m_index]->get_line_style()) );
 
     m_colourPickerRingsPolygons->SetColour(m_parent->Layers()[m_index]->get_polygon_border_color());
     m_colourPickerInsidePolygons->SetColour(m_parent->Layers()[m_index]->get_polygon_inner_color());
     m_sliderWidthRings->SetValue(m_parent->Layers()[m_index]->get_polygon_border_width());
-    m_choicePolygons->SetSelection( wxhelper::FromWxStyleToSelectionIndex(m_parent->Layers()[m_index]->get_polygon_inner_style()) );
+    m_choicePolygons->SetSelection( wxhelper::from_wx_style_to_selection_index(m_parent->Layers()[m_index]->get_polygon_inner_style()) );
 
     // Text visibility
     m_checkShowTexts->SetValue(m_parent->Layers()[m_index]->text_visibility());
     m_colourPickerTexts->SetColour(m_parent->Layers()[m_index]->get_text_color());
 }
 
-void VectorLayerSettingsControl::OnOKButton(wxCommandEvent &event)
+void vector_layer_settings_control::OnOKButton(wxCommandEvent &event)
 {
     OnApplyButton(event);
     Hide();
 }
 
-void VectorLayerSettingsControl::OnCancelButton(wxCommandEvent &event)
+void vector_layer_settings_control::OnCancelButton(wxCommandEvent &event)
 {
     Hide();
 }
 
-void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
+void vector_layer_settings_control::OnApplyButton(wxCommandEvent &event)
 {
     // Texts
     // La, on appelle l'update (via le callback notifier ...) !
@@ -305,9 +305,9 @@ void VectorLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
     m_parent->GetPanelViewer()->Refresh();
 }
 
-void VectorLayerSettingsControl::OnCloseWindow(wxCloseEvent& event)
+void vector_layer_settings_control::OnCloseWindow(wxCloseEvent& event)
 {
     Hide();
 }
 
-const char** VectorLayerSettingsControl::get_icon_xpm() const {return polygon_icon_xpm;}
+const char** vector_layer_settings_control::get_icon_xpm() const {return polygon_icon_xpm;}

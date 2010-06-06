@@ -49,10 +49,10 @@ Authors:
 class wxDC;
 class wxPoint;
 
-class VectorLayerGhost
+class vector_layer_ghost
 {
 	public:
-		VectorLayerGhost( bool isCarto = false );
+                vector_layer_ghost( bool isCarto = false );
 
 		void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
     		inline double ZoomFactor() const { return m_zoomFactor; }
@@ -97,5 +97,7 @@ private:
     double m_resolution;
 
 };
+
+typedef vector_layer_ghost VectorLayerGhost;
 
 #endif /*VECTORLAYERGENERIC_H_*/

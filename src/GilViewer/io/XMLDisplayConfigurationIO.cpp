@@ -49,7 +49,7 @@ Authors:
 #include "../gui/LayerControl.hpp"
 #include "../gui/PanelViewer.hpp"
 
-void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::string filename )
+void xml_display_configuration_io::read( layer_control* layerControl , const std::string filename )
 {
 	TiXmlDocument doc( filename.c_str() );
 	if ( !doc.LoadFile() )
@@ -592,7 +592,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 	layerControl->m_basicDrawPane->Refresh();
 }
 
-void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const std::string filename )
+void xml_display_configuration_io::write( const layer_control* layerControl , const std::string filename )
 {
 	if ( layerControl->GetRows().size() == 0 )
 	{
@@ -615,7 +615,7 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 	TiXmlElement *elementLayers = new TiXmlElement( "Layers" );
 	root->LinkEndChild( elementLayers );
 
-	LayerControl::const_iterator it = layerControl->begin();
+        layer_control::const_iterator it = layerControl->begin();
 	unsigned int i = 0;
 	for (;it!=layerControl->end();++it,++i)
 	{

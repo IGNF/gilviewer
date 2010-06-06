@@ -10,18 +10,18 @@
 using namespace boost;
 using namespace std;
 
-shared_ptr<Layer> gilviewer_file_io_png::load(const string &filename)
+shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
 {
-    return ImageLayer::CreateImageLayer(filename);
+    return image_layer::CreateImageLayer(filename);
 }
 
-void gilviewer_file_io_png::save(shared_ptr<Layer> layer, const string &filename)
+void gilviewer_file_io_png::save(shared_ptr<layer> layer, const string &filename)
 {
-    shared_ptr<ImageLayer> image_layer = dynamic_pointer_cast<ImageLayer>(layer);
-    if(!image_layer)
+    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
+    if(!imagelayer)
         throw invalid_argument("Bad layer type!\n");
 
-    gil::png_write_view( filename.c_str() , image_layer->View()->value );
+    gil::png_write_view( filename.c_str() , imagelayer->View()->value );
 }
 
 boost::shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()

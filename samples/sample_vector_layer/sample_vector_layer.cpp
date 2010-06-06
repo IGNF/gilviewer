@@ -85,7 +85,7 @@ bool sample_vector_layer_app::OnInit()
 
 #if GILVIEWER_USE_GDAL
         // Here, we first create an ogr_vector_layer
-        boost::shared_ptr<Layer> vector_layer = boost::shared_ptr<Layer>(new ogr_vector_layer("Hand made layer"));
+        boost::shared_ptr<layer> vector_layer = boost::shared_ptr<layer>(new ogr_vector_layer("Hand made layer"));
         m_frame->AddLayer(vector_layer);
         vector_layer->AddCircle(50.,123.,65.);
         vector_layer->AddPoint(50.,123.);
@@ -102,7 +102,7 @@ bool sample_vector_layer_app::OnInit()
 #endif // GILVIEWER_USE_GDAL
 
         // We now test the simple_vector_layer_interface
-        boost::shared_ptr<Layer> my_vector_layer = boost::shared_ptr<Layer>(new simple_vector_layer("Simple layer"));
+        boost::shared_ptr<layer> my_vector_layer = boost::shared_ptr<layer>(new simple_vector_layer("Simple layer"));
         m_frame->AddLayer(my_vector_layer);
         my_vector_layer->AddCircle(100.,100.,10.);
         my_vector_layer->set_polygon_border_color(*wxRED);

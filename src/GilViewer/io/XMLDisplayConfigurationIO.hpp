@@ -41,13 +41,15 @@ Authors:
 
 #include <string>
 
-class LayerControl;
+class layer_control;
 
-class XMLDisplayConfigurationIO
+class xml_display_configuration_io
 {
 public:
-	static void Read( LayerControl* layerControl , const std::string filename );
-	static void Write( const LayerControl* layerControl , const std::string filename );
+        static void read( layer_control* layerControl , const std::string filename );
+        static void write( const layer_control* layerControl , const std::string filename );
 };
+
+typedef xml_display_configuration_io XMLDisplayConfigurationIO;
 
 #endif // __XML_DISPLAY_CONFIGURATION_IO_HPP__
