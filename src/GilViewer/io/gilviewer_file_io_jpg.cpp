@@ -42,6 +42,7 @@ shared_ptr<Layer> gilviewer_file_io_jpg::load(const string &filename)
     {
         ostringstream oss;
         oss << "Read error: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
+        oss << e.what() << endl;
         error_logger::log_wx_log_message(oss.str());
         return Layer::ptrLayerType();
     }

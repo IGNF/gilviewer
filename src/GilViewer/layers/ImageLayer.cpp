@@ -44,9 +44,6 @@ Authors:
 #include <boost/filesystem.hpp>
 
 #include <boost/gil/algorithm.hpp>
-#include <boost/gil/extension/io_new/tiff_read.hpp>
-#include <boost/gil/extension/io_new/jpeg_read.hpp>
-#include <boost/gil/extension/io_new/png_read.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
 #include "boost/gil/extension/numeric/resample.hpp"
 
