@@ -5,6 +5,14 @@
 
 namespace boost { namespace gil {
 
+//GIL_DEFINE_ALL_TYPEDEFS_INTERNAL(16, dev4n, devicen_t<4>, rgb_layout_t)
+//GIL_DEFINE_ALL_TYPEDEFS_INTERNAL(16s, dev4n, devicen_t<4>, rgb_layout_t)
+
+struct ir_t {};
+typedef boost::mpl::vector4<red_t,green_t,blue_t,ir_t> rgbi_t;
+typedef layout<rgbi_t> rgbi_layout_t;
+GIL_DEFINE_ALL_TYPEDEFS_INTERNAL(16, dev4ni, devicen_t<4>, rgbi_layout_t)
+
 typedef float bits32F;
 GIL_DEFINE_BASE_TYPEDEFS(32F,gray)
 GIL_DEFINE_ALL_TYPEDEFS_INTERNAL(32F, dev2n, devicen_t<2>, devicen_layout_t<2>)

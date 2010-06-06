@@ -42,12 +42,8 @@ Authors:
 #include <utility>
 
 #include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>   
 
 #include <boost/gil/algorithm.hpp>
-#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
-#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
-#include <boost/gil/extension/io/png_dynamic_io.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
 #include "boost/gil/extension/numeric/resample.hpp"
 
@@ -114,6 +110,8 @@ layer::ptrLayerType image_layer::CreateImageLayer(const image_ptr &image, const 
     return ptrLayerType(new image_layer(image, name));
 }
 
+<<<<<<< local
+=======
 layer::ptrLayerType image_layer::CreateImageLayer(const std::string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
@@ -178,6 +176,7 @@ layer::ptrLayerType image_layer::CreateImageLayer(const std::string &filename)
     return maLayer;
 }
 
+>>>>>>> other
 template<class ImageType>
 layer::ptrLayerType image_layer::CreateImageLayer(const ImageType &image, const std::string &name)
 {
@@ -185,6 +184,9 @@ layer::ptrLayerType image_layer::CreateImageLayer(const ImageType &image, const 
     return ptrLayerType(new image_layer(any_img, name));
 }
 
+<<<<<<< local
+void ImageLayer::Update(int width, int height)
+=======
 template<typename T>
 inline int iRound(const T x)
 {
@@ -193,6 +195,7 @@ inline int iRound(const T x)
 }
 
 void image_layer::Update(int width, int height)
+>>>>>>> other
 {
     // Lecture de la configuration des differentes options ...
     wxConfigBase *pConfig = wxConfigBase::Get();

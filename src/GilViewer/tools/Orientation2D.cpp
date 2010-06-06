@@ -57,171 +57,171 @@ orientation_2d::orientation_2d(const double origineX, const double origineY, con
 
 void orientation_2d::ReadOriFromImageFile(const std::string &filename)
 {
-	if ( !boost::filesystem::exists(filename) )
-	{
-		std::ostringstream oss;
-		oss << "Image file does not exist: "<<filename<< " ! " << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		throw std::logic_error( oss.str() );
-	}
+    if ( !boost::filesystem::exists(filename) )
+    {
+        std::ostringstream oss;
+        oss << "Image file does not exist: "<<filename<< " ! " << std::endl;
+        oss << "File : " <<__FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        throw std::logic_error( oss.str() );
+    }
 
-	std::string basename = boost::filesystem::basename(filename);
-	std::string path = boost::filesystem::path(filename).branch_path().string();
+    std::string basename = boost::filesystem::basename(filename);
+    std::string path = boost::filesystem::path(filename).branch_path().string();
 
-	try
-	{
-		ReadOriFromOriFile(path+"/"+basename+".ori");
-	}
-	catch (const std::logic_error &)
-	{
-		// Si on catche cette erreur, cela signifie que le .ori n'existe pas
-		// On essaie de lire un .tfw
-		ReadOriFromTFWFile(path+"/"+basename+".tfw");
-	}
+    try
+    {
+        ReadOriFromOriFile(path+"/"+basename+".ori");
+    }
+    catch (const std::logic_error &)
+    {
+        // Si on catche cette erreur, cela signifie que le .ori n'existe pas
+        // On essaie de lire un .tfw
+        ReadOriFromTFWFile(path+"/"+basename+".tfw");
+    }
 }
 
 void orientation_2d::ReadOriFromOriFile(const std::string &filename)
 {
-	if ( !boost::filesystem::exists(filename) )
-	{
-		std::ostringstream oss;
-		oss << "Image file does not exist: "<<filename<< " ! " << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		throw std::logic_error( oss.str() );
-	}
+    if ( !boost::filesystem::exists(filename) )
+    {
+        std::ostringstream oss;
+        oss << "Image file does not exist: "<<filename<< " ! " << std::endl;
+        oss << "File : " <<__FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        throw std::logic_error( oss.str() );
+    }
 
-	std::ifstream fileOri(filename.c_str() , std::ifstream::in );
+    std::ifstream fileOri(filename.c_str() , std::ifstream::in );
 
 #ifndef WIN32
-	//Renvoit des exceptions en cas d'erreur de lecture/ouverture de fichier
-	// Ca, sous windows, ca me lance direct une exception ...
-	fileOri.exceptions ( std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit );
+    //Renvoit des exceptions en cas d'erreur de lecture/ouverture de fichier
+    // Ca, sous windows, ca me lance direct une exception ...
+    fileOri.exceptions ( std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit );
 #endif
 
-	//Verification de la presence du carto
-	std::string carto;
-	fileOri >> carto;
+    //Verification de la presence du carto
+    std::string carto;
+    fileOri >> carto;
 
-	// On suppose un formattage comme suit :
-	// CARTO
-	// OriginX (en m)   OriginY (en m)
-	// Zone carto
-	// TailleX    TailleY   (taille de l'image en pixels)
-	// Pas en X (>0 - en m)    Pas en Y (<0 - en m)
+    // On suppose un formattage comme suit :
+    // CARTO
+    // OriginX (en m)   OriginY (en m)
+    // Zone carto
+    // TailleX    TailleY   (taille de l'image en pixels)
+    // Pas en X (>0 - en m)    Pas en Y (<0 - en m)
 
-	if (carto != "CARTO")
-	{
-		std::ostringstream oss;
-		oss << "Bad ORI format!" << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		throw std::logic_error( oss.str() );
-	}
+    if (carto != "CARTO")
+    {
+        std::ostringstream oss;
+        oss << "Bad ORI format!" << std::endl;
+        oss << "File : " <<__FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        throw std::logic_error( oss.str() );
+    }
 
-	fileOri >> m_originX >> m_originY;
-	fileOri >> m_zoneCarto;
-	fileOri >> m_sizeX >> m_sizeY;
-	double pasX, pasY;
-	fileOri >> pasX >> pasY;
+    fileOri >> m_originX >> m_originY;
+    fileOri >> m_zoneCarto;
+    fileOri >> m_sizeX >> m_sizeY;
+    double pasX, pasY;
+    fileOri >> pasX >> pasY;
 
-	if(pasX != pasY)
-	{
-		std::ostringstream oss;
-		oss << "Unsupported orientaton: X and Y steps are different!" << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		throw std::logic_error( oss.str() );
-	}
-	else
+    if(pasX != pasY)
+    {
+        std::ostringstream oss;
+        oss << "Unsupported orientaton: X and Y steps are different!" << std::endl;
+        oss << "File : " <<__FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        throw std::logic_error( oss.str() );
+    }
+    else
 	m_step = pasX;
 
-	fileOri.close();
+    fileOri.close();
 
 }
 
 void orientation_2d::ReadOriFromTFWFile(const std::string &filename)
 {
-	if ( !boost::filesystem::exists(filename) )
-	{
-		std::ostringstream oss;
-		oss << "TFW file does not exist: "<<filename<< " ! " << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		throw std::logic_error( oss.str() );
-	}
+    if ( !boost::filesystem::exists(filename) )
+    {
+        std::ostringstream oss;
+        oss << "TFW file does not exist: "<<filename<< " ! " << std::endl;
+        oss << "File : " <<__FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        throw std::logic_error( oss.str() );
+    }
 
-	std::ifstream fileTFW(filename.c_str() , std::ifstream::in );
+    std::ifstream fileTFW(filename.c_str() , std::ifstream::in );
 
 #ifndef WIN32
-	//Renvoit des exceptions en cas d'erreur de lecture/ouverture de fichier
-	// Ca, sous windows, ca me lance direct une exception ...
-	fileTFW.exceptions ( std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit );
+    //Renvoit des exceptions en cas d'erreur de lecture/ouverture de fichier
+    // Ca, sous windows, ca me lance direct une exception ...
+    fileTFW.exceptions ( std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit );
 #endif
 
-	// On suppose un formattage comme suit :
-	// Pas en X (>0 - en m)
-	// Sais pas
-	// Sais pas
-	// Pas en Y (<0 - en m)
-	// OriginX (en m)
-	// OriginY (en m)
+    // On suppose un formattage comme suit :
+    // Pas en X (>0 - en m)
+    // Sais pas
+    // Sais pas
+    // Pas en Y (<0 - en m)
+    // OriginX (en m)
+    // OriginY (en m)
 
-	double temp, pasX, pasY;
-	fileTFW >> pasX;
-//	pasX *= 1000.;
-	fileTFW >> temp;
-	fileTFW >> temp;
-	fileTFW >> pasY;
-	pasY *= -1.;
-	fileTFW >> m_originX;
-//	m_originX *= 1000.;
-	fileTFW >> m_originY;
-//	m_originY *= 1000.;
+    double temp, pasX, pasY;
+    fileTFW >> pasX;
+    //	pasX *= 1000.;
+    fileTFW >> temp;
+    fileTFW >> temp;
+    fileTFW >> pasY;
+    pasY *= -1.;
+    fileTFW >> m_originX;
+    //	m_originX *= 1000.;
+    fileTFW >> m_originY;
+    //	m_originY *= 1000.;
 
-	if(pasX != pasY)
-	{
-		std::ostringstream oss;
-		oss << "Unsupported orientaton: X and Y steps are different!" << std::endl;
-		oss << "File : " <<__FILE__ << std::endl;
-		oss << "Line : " << __LINE__ << std::endl;
-		oss << "Function : " << __FUNCTION__ << std::endl;
-		throw std::logic_error( oss.str() );
-	}
-	else
-		m_step = pasX;
+    if(pasX != pasY)
+    {
+        std::ostringstream oss;
+        oss << "Unsupported orientaton: X and Y steps are different!" << std::endl;
+        oss << "File : " <<__FILE__ << std::endl;
+        oss << "Line : " << __LINE__ << std::endl;
+        oss << "Function : " << __FUNCTION__ << std::endl;
+        throw std::logic_error( oss.str() );
+    }
+    else
+        m_step = pasX;
 
-	fileTFW.close();
+    fileTFW.close();
 }
 
 
 void orientation_2d::SaveOriToFile(const std::string &filename)
 {
-	std::ofstream fileOri(filename.c_str() , std::ofstream::out);
+    std::ofstream fileOri(filename.c_str() , std::ofstream::out);
 
-	fileOri<<"CARTO\n";
-	fileOri<< m_originX << "\t" << m_originY << std::endl;
-	fileOri<< m_zoneCarto << std::endl;
-	fileOri<< m_sizeX << "\t" << m_sizeY << std::endl;
-	fileOri<< m_step << "\t" << m_step << std::endl;
+    fileOri<<"CARTO\n";
+    fileOri<< m_originX << "\t" << m_originY << std::endl;
+    fileOri<< m_zoneCarto << std::endl;
+    fileOri<< m_sizeX << "\t" << m_sizeY << std::endl;
+    fileOri<< m_step << "\t" << m_step << std::endl;
 
-	fileOri.close();
+    fileOri.close();
 }
 
 std::string orientation_2d::Affiche() const
 {
-	std::ostringstream result;
-	result << "Orientation : \n";
-	result << "[Origin] : ("<<m_originX<<","<<m_originY<<"\n";
-	result << "[Size] : ("<<m_sizeX<<","<<m_sizeY<<"\n";
-	result << "[Step] : "<<m_step<<"\n";
-	result << "[Zone] : "<<m_zoneCarto<<"\n";
-	return result.str();
+    std::ostringstream result;
+    result << "Orientation : \n";
+    result << "[Origin] : ("<<m_originX<<","<<m_originY<<"\n";
+    result << "[Size] : ("<<m_sizeX<<","<<m_sizeY<<"\n";
+    result << "[Step] : "<<m_step<<"\n";
+    result << "[Zone] : "<<m_zoneCarto<<"\n";
+    return result.str();
 }
 

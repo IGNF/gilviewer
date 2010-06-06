@@ -73,11 +73,11 @@ struct channel_converter_functor
         m_atc2max = boost::gil::at_c<2>(m_max_dst);
     }
 
-    template <typename ViewType>
+    template <typename PixelType>
     typename boost::enable_if_c<
-      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      boost::gil::num_channels<typename PixelType::value_type>::value == 1,
       result_type >::type
-    operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    operator()(const PixelType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         if (src < m_min_src)
         {
@@ -95,11 +95,11 @@ struct channel_converter_functor
         boost::gil::at_c<2>(dst) = m_lut[512+index];
     }
 
-    template<class ViewType> 
+    template<class PixelType>
     typename boost::enable_if_c<
-      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      boost::gil::num_channels<typename PixelType::value_type>::value >= 3,
       result_type >::type
-    operator()(const ViewType& src, boost::gil::dev3n8_pixel_t& dst)  const
+    operator()(const PixelType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         using namespace boost::gil;
 
