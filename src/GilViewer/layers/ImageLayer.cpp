@@ -110,73 +110,6 @@ layer::ptrLayerType image_layer::CreateImageLayer(const image_ptr &image, const 
     return ptrLayerType(new image_layer(image, name));
 }
 
-<<<<<<< local
-=======
-layer::ptrLayerType image_layer::CreateImageLayer(const std::string &filename)
-{
-    if ( !boost::filesystem::exists(filename) )
-    {
-        ostringstream oss;
-        oss << "File does not exist: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
-        return ptrLayerType();
-    }
-
-    boost::filesystem::path path(boost::filesystem::system_complete(filename));
-    std::string ext(path.extension());
-    boost::to_lower(ext);
-
-    //	image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
-
-    image_ptr image(new image_t);
-
-    try
-    {
-        if (ext == ".tif" || ext == ".tiff")
-            tiff_read_image(filename, image->value);
-        else if (ext == ".jpg" || ext == ".jpeg")
-            jpeg_read_image(filename, image->value);
-        else if (ext == ".png")
-            png_read_image (filename, image->value);
-    }
-    catch( const exception &e )
-    {
-        ostringstream oss;
-        oss << "Read error: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        wxLogMessage( wxString(oss.str().c_str(), *wxConvCurrent) );
-        return ptrLayerType();
-    }
-
-    //Creation de la couche image
-    ptrLayerType maLayer(new image_layer(image, path.stem(), path.string()));
-
-    //Lecture de l'ori et test d'existence
-    try
-    {
-        orientation_2d ori;
-	ori.ReadOriFromImageFile(filename);
-        maLayer->Orientation(ori);
-        maLayer->HasOri(true);
-    }
-    catch (exception &e)
-    {
-        ostringstream message;
-        message << "No orientation for image " << filename;
-        message << "\n" << e.what();
-        wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
-        maLayer->HasOri(false);
-    }
-
-    return maLayer;
-}
-
->>>>>>> other
 template<class ImageType>
 layer::ptrLayerType image_layer::CreateImageLayer(const ImageType &image, const std::string &name)
 {
@@ -184,18 +117,7 @@ layer::ptrLayerType image_layer::CreateImageLayer(const ImageType &image, const 
     return ptrLayerType(new image_layer(any_img, name));
 }
 
-<<<<<<< local
-void ImageLayer::Update(int width, int height)
-=======
-template<typename T>
-inline int iRound(const T x)
-{
-    using namespace std;
-    return static_cast<int>(floor(x + 0.5));
-}
-
 void image_layer::Update(int width, int height)
->>>>>>> other
 {
     // Lecture de la configuration des differentes options ...
     wxConfigBase *pConfig = wxConfigBase::Get();

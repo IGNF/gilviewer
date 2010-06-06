@@ -16,7 +16,6 @@ using namespace std;
 
 shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
 {
-<<<<<<< local
     if ( !exists(filename) )
     {
         ostringstream oss;
@@ -52,9 +51,6 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
     layer->add_orientation(filename);
 
     return layer;
-=======
-    return image_layer::CreateImageLayer(filename);
->>>>>>> other
 }
 
 void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename)
@@ -63,11 +59,10 @@ void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename
     if(!imagelayer)
         throw invalid_argument("Bad layer type!\n");
 
-<<<<<<< local
     try
     {
         write_view( filename
-                    , image_layer->View()->value
+                    , imagelayer->View()->value
                     , gil::jpeg_tag()
                     );
     }
@@ -77,9 +72,6 @@ void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename
         oss << "Write error: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
         error_logger::log_wx_log_message(oss.str());
     }
-=======
-    gil::jpeg_write_view( filename.c_str() , imagelayer->View()->value );
->>>>>>> other
 }
 
 boost::shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg()

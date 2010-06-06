@@ -203,13 +203,8 @@ void layer_control::AddRow(const std::string &name, layer_settings_control *laye
 
     // on ajoute la ligne dans le conteneur
     unsigned int nb = m_rows.size();
-<<<<<<< local
-    m_rows.push_back(shared_ptr<LayerControlRow>(new LayerControlRow(this, ln, nb, layersettings, tooltip)));
-    // On ajoute a proprement parler les controles de la ligne dans le LayerControl
-=======
     m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, nb, layersettings, tooltip)));
     // On ajoute a proprement parler les controles de la ligne dans le layer_control
->>>>>>> other
     m_rows.back()->m_nameStaticText->IsSelected(true);
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
@@ -497,21 +492,12 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     if (!layer) return;
 
     // On ajoute le calque dans le conteneur
-<<<<<<< local
-    layer->SetNotifyLayerControl( bind( &LayerControl::update, this ) );
-=======
-    layer->SetNotifyLayerControl( boost::bind( &layer_control::update, this ) );
->>>>>>> other
+    layer->SetNotifyLayerControl( bind( &layer_control::update, this ) );
     m_layers.push_back(layer);
 
     // On construit le SettingsControl en fonction du type de calque ajoute
-<<<<<<< local
-    LayerSettingsControl *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    layer->SetNotifyLayerSettingsControl( bind( &LayerSettingsControl::update, settingscontrol ) );
-=======
     layer_settings_control *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    layer->SetNotifyLayerSettingsControl( boost::bind( &layer_settings_control::update, settingscontrol ) );
->>>>>>> other
+    layer->SetNotifyLayerSettingsControl( bind( &layer_settings_control::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     AddRow(layer->Name(), settingscontrol, layer->Filename());
 
@@ -798,18 +784,12 @@ void layer_control::CreateNewImageLayerWithParameters(const ImageLayerParameters
     try
     {
         std::string filename(parameters.path.c_str());
-<<<<<<< local
         string extension(filesystem::extension(filename));
         to_lower(extension);
         shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
-        Layer::ptrLayerType ptr = file->load(filename);
+        layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
-=======
-
-        layer::ptrLayerType ptr = image_layer::CreateImageLayer(filename);
-        if (!ptr) return;
->>>>>>> other
         AddLayer(ptr);
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
