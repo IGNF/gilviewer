@@ -48,7 +48,7 @@ class image_type;
 class view_type;
 class alpha_image_type;
 
-class ImageLayer : public Layer
+class image_layer : public layer
 {
 	public:
 	typedef image_type       image_t;
@@ -58,7 +58,7 @@ class ImageLayer : public Layer
 	typedef boost::shared_ptr<view_t       > view_ptr;
 	typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
-	virtual ~ImageLayer() {}
+        virtual ~image_layer() {}
 
 	static ptrLayerType CreateImageLayer(const std::string    &file);
 	static ptrLayerType CreateImageLayer(const image_ptr &image, const std::string &name ="Image Layer");
@@ -75,9 +75,9 @@ class ImageLayer : public Layer
 	virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const;
 	virtual std::string GetPixelValue(int i, int j) const;
 
-	virtual boost::shared_ptr<ColorLookupTable> GetColorLookupTable() { return m_cLUT; }
+        virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable() { return m_cLUT; }
 
-	virtual void Orientation(const Orientation2D &orientation)
+        virtual void Orientation(const orientation_2d &orientation)
 	{
 		m_ori.OriginX( orientation.OriginX() );
 		m_ori.OriginY( orientation.OriginY() );
@@ -134,13 +134,13 @@ class ImageLayer : public Layer
         virtual bool is_saveable() const {return true;}
         virtual std::string get_layer_type_as_string() const {return "Image";}
 
-        virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent);
+        virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
         inline virtual double get_center_x();
         inline virtual double get_center_y();
 
 	private:
-	ImageLayer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
+        image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
 
 	image_ptr       m_img;
 	view_ptr        m_view;
@@ -158,7 +158,7 @@ class ImageLayer : public Layer
 	bool m_useAlphaChannel;
 	unsigned int m_alphaChannel;
 	//CLUT
-	boost::shared_ptr<ColorLookupTable> m_cLUT;
+        boost::shared_ptr<color_lookup_table> m_cLUT;
 
 	unsigned char m_alpha;
 	double m_intensityMin;
@@ -172,5 +172,7 @@ class ImageLayer : public Layer
 
 	double m_oldZoomFactor;
 };
+
+typedef image_layer ImageLayer;
 
 #endif // __IMAGE_LAYER_HPP__

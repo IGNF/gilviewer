@@ -46,7 +46,7 @@ Authors:
 #include "../gui/VectorLayerSettingsControl.hpp"
 #include "../layers/Layer.hpp"
 
-class vector_layer : public Layer
+class vector_layer : public layer
 {
 public:
     virtual ~vector_layer() {}

@@ -330,9 +330,9 @@ string simple_vector_layer::get_available_formats_wildcard() const
     return wildcard.str();
 }
 
-LayerSettingsControl* simple_vector_layer::build_layer_settings_control(unsigned int index, LayerControl* parent)
+layer_settings_control* simple_vector_layer::build_layer_settings_control(unsigned int index, layer_control* parent)
 {
-    return new VectorLayerSettingsControl(index, parent);
+    return new vector_layer_settings_control(index, parent);
 }
 
 std::string simple_vector_layer::GetInfos()

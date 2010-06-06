@@ -50,7 +50,7 @@ Authors:
 using namespace boost;
 using namespace std;
 
-shared_ptr<Layer> gilviewer_file_io_serialization_xml::load(const string &filename)
+shared_ptr<layer> gilviewer_file_io_serialization_xml::load(const string &filename)
 {
     simple_vector_layer simple_layer;
     {
@@ -61,10 +61,10 @@ shared_ptr<Layer> gilviewer_file_io_serialization_xml::load(const string &filena
         ia >> BOOST_SERIALIZATION_NVP(simple_layer);
         // archive and stream closed when destructors are called
     }
-    return shared_ptr<Layer>(new simple_vector_layer(simple_layer));
+    return shared_ptr<layer>(new simple_vector_layer(simple_layer));
 }
 
-void gilviewer_file_io_serialization_xml::save(shared_ptr<Layer> layer, const string &filename)
+void gilviewer_file_io_serialization_xml::save(shared_ptr<layer> layer, const string &filename)
 {
     shared_ptr<simple_vector_layer> simple_layer2 = dynamic_pointer_cast<simple_vector_layer>(layer);
     if(!simple_layer2)

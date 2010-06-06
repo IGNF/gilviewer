@@ -49,7 +49,7 @@ class wxDC;
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
-
+// TODO: Create a cpp file and forward declarations ...
 #include "../tools/Orientation2D.h"
 #include "../tools/ColorLookupTable.h"
 #include "../gui/LayerSettingsControl.hpp"
@@ -58,14 +58,14 @@ class wxDC;
 #	include <wx/msw/winundef.h>
 #endif
 
-class LayerControl;
+class layer_control;
 
-class Layer
+class layer
 {
 public:
-    typedef boost::shared_ptr< Layer > ptrLayerType;
+    typedef boost::shared_ptr< layer > ptrLayerType;
 
-    Layer(const boost::function<void()> &notifyLayerControl = notify_none, const boost::function<void()> &notifyLayerSettingsControl = notify_none):
+    layer(const boost::function<void()> &notifyLayerControl = notify_none, const boost::function<void()> &notifyLayerSettingsControl = notify_none):
             notifyLayerControl_(notifyLayerControl),
             notifyLayerSettingsControl_(notifyLayerSettingsControl),
             m_isVisible(true),
@@ -84,7 +84,7 @@ public:
             m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {}
     static void notify_none() {}
 
-    virtual ~Layer() {}
+    virtual ~layer() {}
     
     /// Set the callback to notify the LayerControl from changes
     void SetNotifyLayerControl( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
@@ -116,7 +116,7 @@ public:
 
     virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
 
-    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, LayerControl* parent) {return new LayerSettingsControl(parent);}
+    virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent) {return new layer_settings_control(parent);}
 
     virtual void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
     virtual inline double ZoomFactor() const { return m_zoomFactor; }
@@ -149,8 +149,8 @@ public:
 
     virtual void HasOri(bool hasOri) { m_hasOri = hasOri; }
     virtual bool HasOri() const { return m_hasOri; }
-    virtual void Orientation(const Orientation2D &orientation)  {}
-    virtual const Orientation2D &Orientation() const  { return m_ori; }
+    virtual void Orientation(const orientation_2d &orientation)  {}
+    virtual const orientation_2d &Orientation() const  { return m_ori; }
 
     // Methodes specifiques ImageLayer
     virtual void Alpha(unsigned char alpha) {}
@@ -171,7 +171,7 @@ public:
     virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue) const {}
     virtual void SetAlphaChannel(bool useAlphaChannel, unsigned int alphaChannel) {}
     virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
-    virtual boost::shared_ptr<ColorLookupTable> GetColorLookupTable() { return boost::shared_ptr<ColorLookupTable>(); }
+    virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable() { return boost::shared_ptr<color_lookup_table>(); }
 
     virtual unsigned int GetNbComponents() const { return 0; }
     virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
@@ -246,7 +246,7 @@ protected:
     double m_resolution;
 
     //orientation (possible que pour les calques images)
-    Orientation2D m_ori;
+    orientation_2d m_ori;
     bool m_hasOri;
 
     //infos du layer
@@ -256,5 +256,6 @@ protected:
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
 };
 
+typedef layer Layer;
 
 #endif // __LAYER_HPP__

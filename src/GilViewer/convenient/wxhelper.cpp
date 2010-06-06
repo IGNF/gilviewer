@@ -42,7 +42,7 @@ Authors:
 
 namespace wxhelper
 {
-int FromWxStyleToSelectionIndex( unsigned int style )
+int from_wx_style_to_selection_index( unsigned int style )
 {
 	switch ( style )
 	{
@@ -75,7 +75,7 @@ int FromWxStyleToSelectionIndex( unsigned int style )
 	}
 }
 
-int FromPolygonSelectionIndexToWxStyle( unsigned int selection )
+int from_polygon_selection_index_to_wx_style( unsigned int selection )
 {
 	switch ( selection )
 	{
@@ -96,7 +96,7 @@ int FromPolygonSelectionIndexToWxStyle( unsigned int selection )
 	}
 }
 
-int FromLineSelectionIndexToWxStyle( unsigned int selection )
+int from_line_selection_index_to_wx_style( unsigned int selection )
 {
 	switch ( selection )
 	{

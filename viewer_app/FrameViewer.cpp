@@ -60,7 +60,7 @@
 #include "../src/GilViewer/gui/PanelManager.h"
 #include "FrameViewer.hpp"
 
-BEGIN_EVENT_TABLE(FrameViewer,BasicViewerFrame)
+BEGIN_EVENT_TABLE(FrameViewer,basic_viewer_frame)
 ADD_GILVIEWER_EVENTS_TO_TABLE(FrameViewer)
 EVT_TOOL(wxID_HELP, FrameViewer::OnHelp)
 END_EVENT_TABLE()
@@ -68,7 +68,7 @@ END_EVENT_TABLE()
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(FrameViewer,m_drawPane)
 
 FrameViewer::FrameViewer(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
-BasicViewerFrame(parent, id, title, pos, size, style, name)
+basic_viewer_frame(parent, id, title, pos, size, style, name)
 {
 #if defined(__WXMSW__)
 	// Sous windows, on va chercher l'image dans les resources
@@ -120,7 +120,7 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	SetMenuBar( m_drawPane->GetMenuBar() );
 }
 
-void FrameViewer::AddLayer(const Layer::ptrLayerType &layer) {
+void FrameViewer::AddLayer(const layer::ptrLayerType &layer) {
 	m_drawPane->AddLayer(layer);
 }
 

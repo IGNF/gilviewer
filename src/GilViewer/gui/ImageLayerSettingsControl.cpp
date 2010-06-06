@@ -61,8 +61,18 @@ Authors:
 
 #include "../gui/ImageLayerSettingsControl.hpp"
 
-ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-	LayerSettingsControl(parent, id, title, pos, size, style), m_parent(parent)
+BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
+EVT_CLOSE(image_layer_settings_control::OnCloseWindow)
+EVT_BUTTON(wxID_OK,image_layer_settings_control::OnOKButton)
+EVT_BUTTON(wxID_CANCEL,image_layer_settings_control::OnCancelButton)
+EVT_BUTTON(wxID_APPLY,image_layer_settings_control::OnApplyButton)
+EVT_CHECKBOX(ID_ALPHA_RANGE_CHECK, image_layer_settings_control::OnCheckAlphaRange)
+EVT_CHECKBOX(ID_ALPHA_CHANNEL_CHECK, image_layer_settings_control::OnCheckAlphaChannel)
+EVT_SET_FOCUS(image_layer_settings_control::OnGetFocus)
+END_EVENT_TABLE()
+
+image_layer_settings_control::image_layer_settings_control(unsigned int index, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+	layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
 {
 	m_index = index;
 
@@ -74,7 +84,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 	main_sizer->AddGrowableCol(0);
 	main_sizer->AddGrowableRow(0);
 
-	m_histogramPanel = new HistogramPlotter(this, 0, 1, 2, wxID_ANY,wxDefaultPosition,wxSize(300,150));
+	m_histogramPanel = new histogram_plotter(this, 0, 1, 2, wxID_ANY,wxDefaultPosition,wxSize(300,150));
         wxColour bgcolorpanel(*wxWHITE);
 	m_histogramPanel->SetBackgroundColour(bgcolorpanel);
 	m_histogramPanel->ClearBackground();
@@ -268,17 +278,7 @@ ImageLayerSettingsControl::ImageLayerSettingsControl(unsigned int index, LayerCo
 	Centre();
 }
 
-BEGIN_EVENT_TABLE(ImageLayerSettingsControl, wxDialog)
-EVT_CLOSE(ImageLayerSettingsControl::OnCloseWindow)
-EVT_BUTTON(wxID_OK,ImageLayerSettingsControl::OnOKButton)
-EVT_BUTTON(wxID_CANCEL,ImageLayerSettingsControl::OnCancelButton)
-EVT_BUTTON(wxID_APPLY,ImageLayerSettingsControl::OnApplyButton)
-EVT_CHECKBOX(ID_ALPHA_RANGE_CHECK, ImageLayerSettingsControl::OnCheckAlphaRange)
-EVT_CHECKBOX(ID_ALPHA_CHANNEL_CHECK, ImageLayerSettingsControl::OnCheckAlphaChannel)
-EVT_SET_FOCUS(ImageLayerSettingsControl::OnGetFocus)
-END_EVENT_TABLE()
-
-void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
+void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
 {
 	// Pour l'instant, on se concentre sur le canal RED ...
 	wxString redMinLabel = m_textRedMinimumIntensity->GetValue();
@@ -442,9 +442,9 @@ void ImageLayerSettingsControl::OnApplyButton(wxCommandEvent &event)
 	m_parent->GetPanelViewer()->Refresh();
 }
 
-void ImageLayerSettingsControl::update()
+void image_layer_settings_control::update()
 {
-	Layer::ptrLayerType layer = m_parent->Layers()[m_index];
+        layer::ptrLayerType layer = m_parent->Layers()[m_index];
 	wxString min, max, gamma;
 	// Mise a jour pour le canal rouge (il y en a toujours un)
 	min << layer->IntensityMin();
@@ -494,7 +494,7 @@ void ImageLayerSettingsControl::update()
 	}
 }
 
-void ImageLayerSettingsControl::OnCheckAlphaRange(wxCommandEvent &event)
+void image_layer_settings_control::OnCheckAlphaRange(wxCommandEvent &event)
 {
 	bool chk = event.IsChecked();
 
@@ -504,36 +504,36 @@ void ImageLayerSettingsControl::OnCheckAlphaRange(wxCommandEvent &event)
 	m_textAlphaRangeMax->SetEditable(chk);
 }
 
-void ImageLayerSettingsControl::OnCheckAlphaChannel(wxCommandEvent &event)
+void image_layer_settings_control::OnCheckAlphaChannel(wxCommandEvent &event)
 {
 	bool chk = event.IsChecked();
 
 	m_textAlphaChannel->Enable(chk);
 }
 
-void ImageLayerSettingsControl::OnOKButton(wxCommandEvent &event)
+void image_layer_settings_control::OnOKButton(wxCommandEvent &event)
 {
 	// On ne fait que cacher ...
 	OnApplyButton(event);
 	Hide();
 }
 
-void ImageLayerSettingsControl::OnCancelButton(wxCommandEvent &event)
+void image_layer_settings_control::OnCancelButton(wxCommandEvent &event)
 {
 	Hide();
 }
 
-void ImageLayerSettingsControl::OnSize(wxSizeEvent &event)
+void image_layer_settings_control::OnSize(wxSizeEvent &event)
 {
 	m_histogramPanel->Refresh();
 }
 
-void ImageLayerSettingsControl::OnCloseWindow(wxCloseEvent& event)
+void image_layer_settings_control::OnCloseWindow(wxCloseEvent& event)
 {
 	Hide();
 }
 
-void ImageLayerSettingsControl::OnGetFocus(wxFocusEvent &event)
+void image_layer_settings_control::OnGetFocus(wxFocusEvent &event)
 {
 	//Pour recharger les valeurs des parametres quand la fenetre reprend le focus
 	wxString valueIntensityMin;
@@ -546,21 +546,21 @@ void ImageLayerSettingsControl::OnGetFocus(wxFocusEvent &event)
 
 }
 
-const char** ImageLayerSettingsControl::get_icon_xpm() const {return image_icon_xpm;}
+const char** image_layer_settings_control::get_icon_xpm() const {return image_icon_xpm;}
 
-BEGIN_EVENT_TABLE(HistogramPlotter,wxPanel)
-EVT_PAINT(HistogramPlotter::OnPaint)
-EVT_SIZE(HistogramPlotter::OnSize)
-EVT_MOTION(HistogramPlotter::OnMouseMove)
+BEGIN_EVENT_TABLE(histogram_plotter,wxPanel)
+EVT_PAINT(histogram_plotter::OnPaint)
+EVT_SIZE(histogram_plotter::OnSize)
+EVT_MOTION(histogram_plotter::OnMouseMove)
 END_EVENT_TABLE()
 
-HistogramPlotter::HistogramPlotter(ImageLayerSettingsControl* parent,  const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
+histogram_plotter::histogram_plotter(image_layer_settings_control* parent,  const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
 	wxPanel(parent, id, pos, size, style), m_parent(parent), m_isInit(false)
 {
 	SetChannels(redChannel, greenChannel, blueChannel);
 }
 
-void HistogramPlotter::OnMouseMove(wxMouseEvent &event)
+void histogram_plotter::OnMouseMove(wxMouseEvent &event)
 {
 	if (m_isInit)
 	{
@@ -617,7 +617,7 @@ void HistogramPlotter::OnMouseMove(wxMouseEvent &event)
 	}
 }
 
-void HistogramPlotter::OnPaint(wxPaintEvent &event)
+void histogram_plotter::OnPaint(wxPaintEvent &event)
 {
 	if (m_isInit)
 	{
@@ -718,7 +718,7 @@ void HistogramPlotter::OnPaint(wxPaintEvent &event)
 
 		dc.DrawText( _("In progress ...") , 15 , 15 );
 
-		ThreadHistogram *thread = new ThreadHistogram(m_parent);
+		thread_histogram *thread = new thread_histogram(m_parent);
 
 		if ( thread->Create() != wxTHREAD_NO_ERROR )
 		wxLogError(_("Can't create thread to compute image histogram!"));
@@ -727,25 +727,25 @@ void HistogramPlotter::OnPaint(wxPaintEvent &event)
 	}
 }
 
-void HistogramPlotter::OnSize(wxSizeEvent &event)
+void histogram_plotter::OnSize(wxSizeEvent &event)
 {
 	Refresh();
 }
 
-ThreadHistogram::ThreadHistogram(ImageLayerSettingsControl *parent) :
+thread_histogram::thread_histogram(image_layer_settings_control *parent) :
 	wxThread()
 {
 	m_count = 0;
 	m_parent = parent;
 }
 
-void ThreadHistogram::OnExit()
+void thread_histogram::OnExit()
 {
 	m_parent->GetHistogramPlotter()->IsInit(true);
 	m_parent->GetHistogramPlotter()->Refresh();
 }
 
-void *ThreadHistogram::Entry()
+void *thread_histogram::Entry()
 {
 	m_parent->GetLayerControl()->Layers()[m_parent->Index()]->Histogram(m_parent->GetHistogramPlotter()->Data(), m_parent->GetHistogramPlotter()->Min(), m_parent->GetHistogramPlotter()->Max() );
 

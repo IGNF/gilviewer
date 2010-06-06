@@ -47,11 +47,11 @@ class wxLogWindow;
 class wxStatusBar;
 class wxToolBar;
 
-class BasicViewerFrame : public wxFrame
+class basic_viewer_frame : public wxFrame
 {
 	public:
-		BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame"));
-		virtual ~BasicViewerFrame();
+                basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame"));
+                virtual ~basic_viewer_frame();
 
 	protected:
 		wxStatusBar* m_statusBar;
@@ -73,5 +73,7 @@ class BasicViewerFrame : public wxFrame
 
 		DECLARE_EVENT_TABLE();
 };
+
+typedef basic_viewer_frame BasicViewerFrame;
 
 #endif /* BASICVIEWERFRAME_H_ */

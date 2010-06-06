@@ -60,7 +60,7 @@
 #include "GilViewer/gui/PanelManager.h"
 #include "sample_vector_layer_viewer.hpp"
 
-BEGIN_EVENT_TABLE(sample_vector_layer_viewer,BasicViewerFrame)
+BEGIN_EVENT_TABLE(sample_vector_layer_viewer,basic_viewer_frame)
 ADD_GILVIEWER_EVENTS_TO_TABLE(sample_vector_layer_viewer)
 EVT_TOOL(wxID_HELP, sample_vector_layer_viewer::OnHelp)
 END_EVENT_TABLE()
@@ -68,7 +68,7 @@ END_EVENT_TABLE()
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(sample_vector_layer_viewer,m_drawPane)
 
 sample_vector_layer_viewer::sample_vector_layer_viewer(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
-BasicViewerFrame(parent, id, title, pos, size, style, name)
+basic_viewer_frame(parent, id, title, pos, size, style, name)
 {
 #if defined(__WXMSW__)
 	// Sous windows, on va chercher l'image dans les resources
@@ -120,7 +120,7 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	SetMenuBar( m_drawPane->GetMenuBar() );
 }
 
-void sample_vector_layer_viewer::AddLayer(const Layer::ptrLayerType &layer) {
+void sample_vector_layer_viewer::AddLayer(const layer::ptrLayerType &layer) {
 	m_drawPane->AddLayer(layer);
 }
 

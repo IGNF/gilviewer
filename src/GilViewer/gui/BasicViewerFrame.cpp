@@ -53,14 +53,14 @@ Authors:
 extern void InitXmlResource();
 
 
-BEGIN_EVENT_TABLE(BasicViewerFrame,wxFrame)
-EVT_TOOL(wxID_ABOUT, BasicViewerFrame::OnAbout)
-EVT_TOOL(wxID_HELP, BasicViewerFrame::OnHelp)
-EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, BasicViewerFrame::OnShowHideLogWindow)
-//EVT_TOOL(wxID_PREFERENCES, BasicViewerFrame::OnApplicationSettings)
+BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
+EVT_TOOL(wxID_ABOUT, basic_viewer_frame::OnAbout)
+EVT_TOOL(wxID_HELP, basic_viewer_frame::OnHelp)
+EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, basic_viewer_frame::OnShowHideLogWindow)
+//EVT_TOOL(wxID_PREFERENCES, basic_viewer_frame::OnApplicationSettings)
 END_EVENT_TABLE()
 
-BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
+basic_viewer_frame::basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
 	wxFrame(parent, id, title, pos, size, style, name),
 	m_isLogWindowVisible(false)
 {
@@ -112,24 +112,24 @@ BasicViewerFrame::BasicViewerFrame(wxWindow* parent, wxWindowID id, const wxStri
 
 }
 
-BasicViewerFrame::~BasicViewerFrame()
+basic_viewer_frame::~basic_viewer_frame()
 {
 	m_dockManager.UnInit();
 }
 
 
-void BasicViewerFrame::OnShowHideLogWindow(wxCommandEvent& event)
+void basic_viewer_frame::OnShowHideLogWindow(wxCommandEvent& event)
 {
 	m_isLogWindowVisible = !m_isLogWindowVisible;
 	m_logWindow->Show(m_isLogWindowVisible);
 }
 
-void BasicViewerFrame::OnAbout(wxCommandEvent& event)
+void basic_viewer_frame::OnAbout(wxCommandEvent& event)
 {
 	wxAboutBox(getAboutInfo());
 }
 
-void BasicViewerFrame::OnHelp(wxCommandEvent& event)
+void basic_viewer_frame::OnHelp(wxCommandEvent& event)
 {
 	getHelp()->Show(true);
 }
@@ -140,7 +140,7 @@ void BasicViewerFrame::OnHelp(wxCommandEvent& event)
 //}
 
 
-wxAboutDialogInfo BasicViewerFrame::getAboutInfo() const
+wxAboutDialogInfo basic_viewer_frame::getAboutInfo() const
 {
 	wxAboutDialogInfo info;
 	info.AddDeveloper(_("Authors:"));
@@ -157,7 +157,7 @@ wxAboutDialogInfo BasicViewerFrame::getAboutInfo() const
 	return info;
 }
 
-wxDialog* BasicViewerFrame::getHelp() const
+wxDialog* basic_viewer_frame::getHelp() const
 {
 	wxDialog* helpDialog = new wxDialog(NULL, wxID_ANY, wxString(_("Help")));
 	wxHtmlWindow* helpWindow = new wxHtmlWindow(helpDialog, wxID_ANY, wxDefaultPosition, wxSize(380, 400), wxHW_SCROLLBAR_AUTO);

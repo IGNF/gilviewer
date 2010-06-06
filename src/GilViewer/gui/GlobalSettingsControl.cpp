@@ -47,7 +47,7 @@ Authors:
 #include "../gui/PanelViewer.hpp"
 #include "../gui/LayerControl.hpp"
 
-GlobalSettingsControl::GlobalSettingsControl(LayerControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+global_settings_control::global_settings_control(layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	wxDialog( (wxWindow*)parent, id, title, pos, size, style), m_parent(parent)
 {
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
@@ -76,14 +76,14 @@ GlobalSettingsControl::GlobalSettingsControl(LayerControl* parent, wxWindowID id
 	Centre();
 }
 
-BEGIN_EVENT_TABLE(GlobalSettingsControl, wxDialog)
-EVT_CLOSE(GlobalSettingsControl::OnCloseWindow)
-EVT_BUTTON(wxID_OK,GlobalSettingsControl::OnOKButton)
-EVT_BUTTON(wxID_CANCEL,GlobalSettingsControl::OnCancelButton)
-EVT_BUTTON(wxID_APPLY,GlobalSettingsControl::OnApplyButton)
+BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
+EVT_CLOSE(global_settings_control::OnCloseWindow)
+EVT_BUTTON(wxID_OK,global_settings_control::OnOKButton)
+EVT_BUTTON(wxID_CANCEL,global_settings_control::OnCancelButton)
+EVT_BUTTON(wxID_APPLY,global_settings_control::OnApplyButton)
 END_EVENT_TABLE()
 
-void GlobalSettingsControl::OnApplyButton(wxCommandEvent &event)
+void global_settings_control::OnApplyButton(wxCommandEvent &event)
 {
 	if ( !Validate() )
 		::wxMessageBox(_("Incorrect entry!"));
@@ -96,7 +96,7 @@ void GlobalSettingsControl::OnApplyButton(wxCommandEvent &event)
 	MinLabel.ToDouble(&MinDouble);
 	MaxLabel.ToDouble(&MaxDouble);
 
-	for (LayerControl::LayerContainerType::iterator it = m_parent->begin(); it != m_parent->end(); ++it)
+	for (layer_control::LayerContainerType::iterator it = m_parent->begin(); it != m_parent->end(); ++it)
 	{
 		(*it)->IntensityMin(MinDouble);
 		(*it)->IntensityMax(MaxDouble);
@@ -109,23 +109,23 @@ void GlobalSettingsControl::OnApplyButton(wxCommandEvent &event)
 	m_parent->GetPanelViewer()->Refresh();
 }
 
-void GlobalSettingsControl::OnOKButton(wxCommandEvent &event)
+void global_settings_control::OnOKButton(wxCommandEvent &event)
 {
 	OnApplyButton(event);
 	Hide();
 }
 
-void GlobalSettingsControl::OnCancelButton(wxCommandEvent &event)
+void global_settings_control::OnCancelButton(wxCommandEvent &event)
 {
 	Hide();
 }
 
-void GlobalSettingsControl::OnCloseWindow(wxCloseEvent& event)
+void global_settings_control::OnCloseWindow(wxCloseEvent& event)
 {
 	Hide();
 }
 
-bool GlobalSettingsControl::Validate()
+bool global_settings_control::Validate()
 {
 	bool checkTest = wxDialog::Validate();
 	return checkTest;

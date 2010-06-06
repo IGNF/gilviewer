@@ -42,11 +42,11 @@ Authors:
 #include <wx/button.h>
 #include <wx/stattext.h>
 
-BEGIN_EVENT_TABLE(LayerInfosControl, wxFrame)
-EVT_BUTTON(wxID_OK,LayerInfosControl::OnOKButton)
+BEGIN_EVENT_TABLE(layer_infos_control , wxFrame)
+EVT_BUTTON(wxID_OK,layer_infos_control ::OnOKButton)
 END_EVENT_TABLE()
 
-LayerInfosControl::LayerInfosControl(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position, const wxSize& size) :
+layer_infos_control::layer_infos_control(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position, const wxSize& size) :
 wxFrame(parent,id,title,position,size,style)
 {
 	wxColour bgcolor( 220, 220, 220);
@@ -65,12 +65,12 @@ wxFrame(parent,id,title,position,size,style)
 	SetSizer(sizer);
 }
 
-LayerInfosControl::~LayerInfosControl()
+layer_infos_control::~layer_infos_control()
 {
 	Destroy();
 }
 
-void LayerInfosControl::OnOKButton(wxCommandEvent &event)
+void layer_infos_control::OnOKButton(wxCommandEvent &event)
 {
 	Destroy();
 }

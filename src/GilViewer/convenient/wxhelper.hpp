@@ -42,11 +42,11 @@ Authors:
 namespace wxhelper
 {
 	/// Cette fonction permet de retourner l'indice dans la liste a partir d'un style WX
-	int FromWxStyleToSelectionIndex( unsigned int style );
+        int from_wx_style_to_selection_index( unsigned int style );
 	// Meme fonction que la precedente pour les lignes, mais dans l'autre sens ...
-	int FromPolygonSelectionIndexToWxStyle( unsigned int selection );
+        int from_polygon_selection_index_to_wx_style( unsigned int selection );
 	// Meme fonction que la precedente pour les polygones, mais dans l'autre sens ...
-	int FromLineSelectionIndexToWxStyle( unsigned int selection );
+        int from_line_selection_index_to_wx_style( unsigned int selection );
 }
 
 #endif // __WXHELPER_HPP__

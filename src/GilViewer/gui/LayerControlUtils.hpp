@@ -56,13 +56,13 @@ class wxCheckBox;
 class wxBitmapButton;
 class wxBoxSizer;
 
-class LayerControl;
-class LayerSettingsControl;
+class layer_control;
+class layer_settings_control;
 
 /**
 * @brief Cette classe permet simplement de changer la couleur de fond d'un texte (wxStaticText) lorsque l'on clique dessus.
 **/
-class SelectableStaticText : public wxStaticText
+class selectable_static_text : public wxStaticText
 {
 public:
     /// Constructor
@@ -74,7 +74,7 @@ public:
     /// @param size Control size
     /// @param style Control style
     /// @param name Control name
-    SelectableStaticText(wxWindow* parent, LayerControl* layercontrol, wxWindowID id, const wxString& label, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALIGN_LEFT, const wxString& name = wxT("staticText")) : wxStaticText(parent,id,label,pos,size, wxBG_STYLE_CUSTOM, name), m_parent(layercontrol), m_isSelected(false)
+    selectable_static_text(wxWindow* parent, layer_control* layercontrol, wxWindowID id, const wxString& label, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALIGN_LEFT, const wxString& name = wxT("staticText")) : wxStaticText(parent,id,label,pos,size, wxBG_STYLE_CUSTOM, name), m_parent(layercontrol), m_isSelected(false)
     {
 	    //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
         m_unselectedColour.Set( 100 , 50 , 50 );
@@ -82,7 +82,7 @@ public:
         SetForegroundColour( m_unselectedColour );
     };
     /// Destructor
-    virtual ~SelectableStaticText() {};
+    virtual ~selectable_static_text() {};
 
     /// Getter for the selection flag
     bool IsSelected() const { return m_isSelected; }
@@ -98,14 +98,14 @@ private:
     /// Selected text color (120,120,220)
     wxColour m_selectedColour;
     /// The LayerControl to whom the text is associated to
-    LayerControl* m_parent;
+    layer_control* m_parent;
     /// Flag indicating if the text is selected
     bool m_isSelected;
 
     DECLARE_EVENT_TABLE();
 };
 
-struct paramBase
+struct param_base
 {
 	std::string path;
 	bool isVisible;
@@ -115,7 +115,7 @@ struct paramBase
 	double translationY;
 };
 
-typedef struct paramImageLayer : paramBase
+typedef struct param_image_layer : param_base
 {
 	unsigned char alpha;
 	double gamma;
@@ -131,7 +131,7 @@ typedef struct paramImageLayer : paramBase
 	unsigned int alphaChannel;
 } ImageLayerParameters;
 
-typedef struct paramVectorLayer : paramBase
+typedef struct param_vector_layer : param_base
 {
 	wxColour pointsColor;
 	unsigned int pointsWidth;
@@ -145,13 +145,13 @@ typedef struct paramVectorLayer : paramBase
 	int polygonsInsideStyle;
 } VectorLayerParameters;
 
-class LayerControlRow
+class layer_control_row
 {
 public:
-	LayerControlRow( LayerControl* parent , const std::string &name , const unsigned int index , LayerSettingsControl *layersettings  , const std::string &tooltip="");
-	~LayerControlRow(){}
+        layer_control_row( layer_control* parent , const std::string &name , const unsigned int index , layer_settings_control *layersettings  , const std::string &tooltip="");
+        ~layer_control_row(){}
 
-	SelectableStaticText	*m_nameStaticText;
+        selectable_static_text	*m_nameStaticText;
 	wxCheckBox				*m_visibilityCheckBox;
 	wxCheckBox				*m_transformationCheckBox;
 	wxBitmapButton			*m_infoButton;
@@ -160,9 +160,15 @@ public:
 	wxBitmapButton			*m_settingsButton;
         wxBitmapButton			*m_center_button;
 	wxBoxSizer				*m_boxSizer;
-	LayerControl			*m_parent;
-	LayerSettingsControl	*m_layerSettingsControl;
+	layer_control			*m_parent;
+	layer_settings_control	*m_layerSettingsControl;
 	unsigned int			m_index;
 };
+
+typedef selectable_static_text SelectableStaticText;
+typedef param_base paramBase;
+typedef param_image_layer paramImageLayer;
+typedef param_vector_layer paramVectorLayer;
+typedef layer_control_row LayerControlRow;
 
 #endif // __LAYER_CONTROL_UTILS_HPP__

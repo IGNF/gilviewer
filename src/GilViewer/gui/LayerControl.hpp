@@ -49,38 +49,38 @@ class wxFlexGridSizer;
 class wxToolBar;
 class wxScrolledWindow;
 
-class GlobalSettingsControl;
-class VectorLayerGhost;
-class Orientation2D;
+class global_settings_control;
+class vector_layer_ghost;
+class orientation_2d;
 class panel_viewer;
 class VectorLayer;
 
 /**
 * @brief Classe de gestion des differents calques.
 **/
-class LayerControl: public wxFrame
+class layer_control: public wxFrame
 {
 	// On passe la classe de sauvegarde en friend ...
-	friend class XMLDisplayConfigurationIO;
-	friend class LayerControlRow;
+        friend class xml_display_configuration_io;
+        friend class layer_control_row;
 
 public:
-    LayerControl(panel_viewer* DrawPane, wxFrame *parent, wxWindowID id = wxID_ANY, const wxString& title = _("wxToolBar Sample"),
+    layer_control(panel_viewer* DrawPane, wxFrame *parent, wxWindowID id = wxID_ANY, const wxString& title = _("wxToolBar Sample"),
         long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
 	/// Cette methode permet d'ajouter un calque
-	void AddLayer(const Layer::ptrLayerType &layer);
+        void AddLayer(const layer::ptrLayerType &layer);
 	///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
 	bool IsOriented() const {return m_isOrientationSet; }
 	///Recupere l'orientation du viewer
-	Orientation2D GetOrientation() const { return m_ori; }
+        orientation_2d GetOrientation() const { return m_ori; }
 
 	inline unsigned int GetNumberOfLayers() { return m_numberOfLayers; }
 
 	void update();
 
 	// Iterateurs pour acceder aux layers
-	typedef std::vector < Layer::ptrLayerType > LayerContainerType;
+        typedef std::vector < layer::ptrLayerType > LayerContainerType;
 	typedef LayerContainerType::iterator iterator;
 	typedef LayerContainerType::const_iterator const_iterator;
 	typedef LayerContainerType::reverse_iterator reverse_iterator;
@@ -99,7 +99,7 @@ public:
 
 	inline panel_viewer* GetPanelViewer() {return m_basicDrawPane;}
 
-	inline std::vector< boost::shared_ptr<LayerControlRow> > GetRows() const { return m_rows; }
+        inline std::vector< boost::shared_ptr<layer_control_row> > GetRows() const { return m_rows; }
 
 	/// Cette methode permet d'ajouter un calque existant (image ou shapefile ...)
         void OnOpenLayer(wxCommandEvent& event);
@@ -113,7 +113,7 @@ public:
 	void AddLayersFromFiles( const wxArrayString &names );
 
     ///Calque ghost
-	boost::shared_ptr<VectorLayerGhost> m_ghostLayer;
+	boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
 
 private:
 	 void OnCloseWindow(wxCloseEvent& event);
@@ -151,7 +151,7 @@ private:
 	void InitToolbar(wxToolBar* toolBar);
 
 	/// Cette methode permet d'ajouter une ligne dans le LayerControl (elle est appelee lors de l'ajout d'un calque)
-	void AddRow(const std::string &name , LayerSettingsControl *layersettings , const std::string &tooltip = "" );
+	void AddRow(const std::string &name , layer_settings_control *layersettings , const std::string &tooltip = "" );
 
 	wxScrolledWindow 	*m_scroll;
 
@@ -162,15 +162,17 @@ protected:
 	panel_viewer* m_basicDrawPane;
 	LayerContainerType	m_layers;
 	// La, il faudrait mettre un boost::shared_array ...
-	std::vector< boost::shared_ptr<LayerControlRow> > m_rows;
+        std::vector< boost::shared_ptr<layer_control_row> > m_rows;
 
 	//Orientation generale du viewer
-	Orientation2D m_ori;
+        orientation_2d m_ori;
 	bool m_isOrientationSet;
 
-	GlobalSettingsControl* m_globalSettingsControl;
+        global_settings_control* m_globalSettingsControl;
 
 	DECLARE_EVENT_TABLE();
 };
+
+typedef layer_control LayerControl;
 
 #endif // __LAYER_CONTROL_HPP__

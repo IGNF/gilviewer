@@ -83,27 +83,27 @@ Authors:
 
 using namespace std;
 
-BEGIN_EVENT_TABLE(LayerControl, wxFrame)
-    EVT_CLOSE(LayerControl::OnCloseWindow)
-    EVT_BUTTON(ID_INFO,LayerControl::OnInfoButton)
-    EVT_BUTTON(ID_SAVE,LayerControl::OnSaveButton)
-    EVT_BUTTON(ID_DELETE,LayerControl::OnDeleteButton)
+BEGIN_EVENT_TABLE(layer_control, wxFrame)
+    EVT_CLOSE(layer_control::OnCloseWindow)
+    EVT_BUTTON(ID_INFO,layer_control::OnInfoButton)
+    EVT_BUTTON(ID_SAVE,layer_control::OnSaveButton)
+    EVT_BUTTON(ID_DELETE,layer_control::OnDeleteButton)
     // Gestion des evenements de la toolbar
-    EVT_TOOL(wxID_RESET,LayerControl::OnReset)
-    EVT_TOOL(wxID_OPEN,LayerControl::OnOpenLayer)
-    // Gestion des evenements "globaux" du LayerControl
-    EVT_BUTTON(wxID_UP,LayerControl::OnLayerUp)
-    EVT_BUTTON(wxID_DOWN,LayerControl::OnLayerDown)
-    EVT_BUTTON(ID_VISIBILITY_BUTTON,LayerControl::OnVisibilityButton)
-    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,LayerControl::OnTransformationButton)
-    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,LayerControl::OnGlobalSettingsButton)
-    EVT_BUTTON(wxID_SAVE,LayerControl::OnSaveDisplayConfigButton)
-    EVT_BUTTON(wxID_OPEN,LayerControl::OnLoadDisplayConfigButton)
-    EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
+    EVT_TOOL(wxID_RESET,layer_control::OnReset)
+    EVT_TOOL(wxID_OPEN,layer_control::OnOpenLayer)
+    // Gestion des evenements "globaux" du layer_control
+    EVT_BUTTON(wxID_UP,layer_control::OnLayerUp)
+    EVT_BUTTON(wxID_DOWN,layer_control::OnLayerDown)
+    EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::OnVisibilityButton)
+    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::OnTransformationButton)
+    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::OnGlobalSettingsButton)
+    EVT_BUTTON(wxID_SAVE,layer_control::OnSaveDisplayConfigButton)
+    EVT_BUTTON(wxID_OPEN,layer_control::OnLoadDisplayConfigButton)
+    EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::OnDeleteAllRowsButton)
 END_EVENT_TABLE()
 
-LayerControl::LayerControl(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
+layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 {
 
     SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
@@ -170,9 +170,9 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost)
 
     m_sizer->Add(globalSettingsSizer, 0, wxALL | wxALIGN_CENTRE, 5);
 
-    // Quand on cree le layercontrol, on en profite pour creer la fenetre de GlobalSettings.
+    // Quand on cree le layer_control, on en profite pour creer la fenetre de GlobalSettings.
     // On ne l'affiche que sur demande (clic bouton)
-    m_globalSettingsControl = new GlobalSettingsControl(this);
+    m_globalSettingsControl = new global_settings_control(this);
 
     /*
 	m_sizer->SetSizeHints(this);
@@ -188,13 +188,13 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost)
     SetSizer(main_sizer);
 }
 
-void LayerControl::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
+void layer_control::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 {
     // On ne fait que cacher la fenetre. Ca permet de garder les settings courants et de ne pas recalculer tout a chaque fois ...
     Hide();
 }
 
-void LayerControl::AddRow(const std::string &name, LayerSettingsControl *layersettings, const std::string &tooltip)
+void layer_control::AddRow(const std::string &name, layer_settings_control *layersettings, const std::string &tooltip)
 {
     // Le nom du layer a une longueur maximale de 20 caracteres
     wxString layerName(name.substr(0, 50).c_str(), *wxConvCurrent);
@@ -202,8 +202,8 @@ void LayerControl::AddRow(const std::string &name, LayerSettingsControl *layerse
 
     // on ajoute la ligne dans le conteneur
     unsigned int nb = m_rows.size();
-    m_rows.push_back(boost::shared_ptr<LayerControlRow>(new LayerControlRow(this, ln, nb, layersettings, tooltip)));
-    // On ajoute a proprement parler les controles de la ligne dans le LayerControl
+    m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, nb, layersettings, tooltip)));
+    // On ajoute a proprement parler les controles de la ligne dans le layer_control
     m_rows.back()->m_nameStaticText->IsSelected(true);
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
@@ -221,7 +221,7 @@ void LayerControl::AddRow(const std::string &name, LayerSettingsControl *layerse
     m_scroll->Layout();
 }
 
-void LayerControl::InitToolbar(wxToolBar* toolBar)
+void layer_control::InitToolbar(wxToolBar* toolBar)
 {
     if ( !toolBar )
         toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
@@ -232,7 +232,7 @@ void LayerControl::InitToolbar(wxToolBar* toolBar)
     toolBar->Realize();
 }
 
-void LayerControl::update()
+void layer_control::update()
 {
     for (unsigned int id = 0;id<m_layers.size();++id)
     {
@@ -241,18 +241,18 @@ void LayerControl::update()
     }
 }
 
-void LayerControl::OnInfoButton(wxCommandEvent& event)
+void layer_control::OnInfoButton(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_INFO);
 
     wxString title(_("Infos: "));
     title << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
-    LayerInfosControl *lic = new LayerInfosControl(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
+    layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
     lic->Show();
 }
 
-void LayerControl::OnSaveButton(wxCommandEvent& event)
+void layer_control::OnSaveButton(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
@@ -281,7 +281,7 @@ void LayerControl::OnSaveButton(wxCommandEvent& event)
     }
 }
 
-void LayerControl::OnDeleteButton(wxCommandEvent& event)
+void layer_control::OnDeleteButton(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_DELETE);
@@ -322,19 +322,19 @@ void LayerControl::OnDeleteButton(wxCommandEvent& event)
 
 }
 
-void LayerControl::OnSettingsButton(wxCommandEvent& event)
+void layer_control::OnSettingsButton(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SETTINGS);
     m_rows[id]->m_layerSettingsControl->Show(!m_rows[id]->m_layerSettingsControl->IsVisible());
 }
 
-void LayerControl::OnCenterButton(wxCommandEvent& event)
+void layer_control::OnCenterButton(wxCommandEvent& event)
 {
     /*
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_CENTER);
-    for (LayerControl::iterator it = begin(); it != end(); ++it)
+    for (layer_control::iterator it = begin(); it != end(); ++it)
     {
         // TODO: handle cartographic or image coordinates
         (*it)->TranslationX((*it)->TranslationX()-m_layers[id]->get_center_x());
@@ -345,7 +345,7 @@ void LayerControl::OnCenterButton(wxCommandEvent& event)
     * */
 }
 
-void LayerControl::OnCheckVisibility(wxCommandEvent& event)
+void layer_control::OnCheckVisibility(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_VISIBILITY);
@@ -356,7 +356,7 @@ void LayerControl::OnCheckVisibility(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::OnCheckTransformable(wxCommandEvent& event)
+void layer_control::OnCheckTransformable(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_TRANSFORMATION);
@@ -366,10 +366,10 @@ void LayerControl::OnCheckTransformable(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::OnReset(wxCommandEvent& event)
+void layer_control::OnReset(wxCommandEvent& event)
 {
     // Pour chaque calque, on reinitialise
-    for (LayerControl::iterator it = begin(); it != end(); ++it)
+    for (layer_control::iterator it = begin(); it != end(); ++it)
     {
         (*it)->ZoomFactor(1.);
         (*it)->TranslationX(0.);
@@ -390,7 +390,7 @@ void LayerControl::OnReset(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::OnOpenLayer(wxCommandEvent& event)
+void layer_control::OnOpenLayer(wxCommandEvent& event)
 {
     wxString wildcard;
     wildcard << _("All supported files ");
@@ -425,7 +425,7 @@ void LayerControl::OnOpenLayer(wxCommandEvent& event)
     Refresh();
 }
 
-void LayerControl::AddLayersFromFiles(const wxArrayString &names)
+void layer_control::AddLayersFromFiles(const wxArrayString &names)
 {
     unsigned int i;
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_WAIT));
@@ -486,17 +486,17 @@ void LayerControl::AddLayersFromFiles(const wxArrayString &names)
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 }
 
-void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
+void layer_control::AddLayer(const layer::ptrLayerType &layer)
 {
     if (!layer) return;
 
     // On ajoute le calque dans le conteneur
-    layer->SetNotifyLayerControl( boost::bind( &LayerControl::update, this ) );
+    layer->SetNotifyLayerControl( boost::bind( &layer_control::update, this ) );
     m_layers.push_back(layer);
 
     // On construit le SettingsControl en fonction du type de calque ajoute
-    LayerSettingsControl *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    layer->SetNotifyLayerSettingsControl( boost::bind( &LayerSettingsControl::update, settingscontrol ) );
+    layer_settings_control *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
+    layer->SetNotifyLayerSettingsControl( boost::bind( &layer_settings_control::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     AddRow(layer->Name(), settingscontrol, layer->Filename());
 
@@ -526,7 +526,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
     {
         ::wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
 
-        const Orientation2D &oriLayer = layer->Orientation();
+        const orientation_2d &oriLayer = layer->Orientation();
 
         double newZoomFactor = m_ori.Step() / oriLayer.Step();
         double translationInitX = (oriLayer.OriginX() - m_ori.OriginX()) / oriLayer.Step();//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
@@ -567,7 +567,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int secondRow)
+void layer_control::SwapRows(const unsigned int firstRow, const unsigned int secondRow)
 {
     if (firstRow < 0 || secondRow < 0)
     {
@@ -628,14 +628,14 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 
     //layer
     {
-        Layer::ptrLayerType temp = m_layers[firstRow];
+        layer::ptrLayerType temp = m_layers[firstRow];
         m_layers[firstRow] = m_layers[secondRow];
         m_layers[secondRow] = temp;
     }
 
     //layersettingscontrol
     {
-        LayerSettingsControl *temp = m_rows[firstRow]->m_layerSettingsControl;
+        layer_settings_control *temp = m_rows[firstRow]->m_layerSettingsControl;
         m_rows[firstRow]->m_layerSettingsControl = m_rows[secondRow]->m_layerSettingsControl;
         m_rows[secondRow]->m_layerSettingsControl = temp;
 
@@ -656,7 +656,7 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
     }
 }
 
-void LayerControl::OnLayerUp(wxCommandEvent& WXUNUSED(event))
+void layer_control::OnLayerUp(wxCommandEvent& WXUNUSED(event))
 {
     for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
@@ -672,7 +672,7 @@ void LayerControl::OnLayerUp(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void LayerControl::OnLayerDown(wxCommandEvent& WXUNUSED(event))
+void layer_control::OnLayerDown(wxCommandEvent& WXUNUSED(event))
 {
     for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
@@ -687,7 +687,7 @@ void LayerControl::OnLayerDown(wxCommandEvent& WXUNUSED(event))
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::OnVisibilityButton(wxCommandEvent& event)
+void layer_control::OnVisibilityButton(wxCommandEvent& event)
 {
     // On parcourt tous les calques et on inverse la visibilite si la selection est a true
     for (unsigned int i = 0; i < m_rows.size(); ++i)
@@ -703,7 +703,7 @@ void LayerControl::OnVisibilityButton(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::OnTransformationButton(wxCommandEvent& event)
+void layer_control::OnTransformationButton(wxCommandEvent& event)
 {
     // On parcourt tous les calques et on inverse la transformabilite (!!!) si la section est a true
     for (unsigned int i = 0; i < m_rows.size(); ++i)
@@ -719,12 +719,12 @@ void LayerControl::OnTransformationButton(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void LayerControl::OnGlobalSettingsButton(wxCommandEvent& event)
+void layer_control::OnGlobalSettingsButton(wxCommandEvent& event)
 {
     m_globalSettingsControl->Show();
 }
 
-void LayerControl::OnSaveDisplayConfigButton(wxCommandEvent& event)
+void layer_control::OnSaveDisplayConfigButton(wxCommandEvent& event)
 {
     // Choix du fichier de sauvegarde
     wxFileDialog* fd = new wxFileDialog(this, _("Save display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
@@ -734,12 +734,12 @@ void LayerControl::OnSaveDisplayConfigButton(wxCommandEvent& event)
         if (boost::filesystem::extension(savename) != ".xml")
             boost::filesystem::change_extension(savename, ".xml");
 
-        XMLDisplayConfigurationIO::Write(this, savename.c_str());
+        xml_display_configuration_io::write(this, savename.c_str());
     }
     delete fd;
 }
 
-void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
+void layer_control::OnLoadDisplayConfigButton(wxCommandEvent& event)
 {
     // Choix du fichier de sauvegarde
     wxFileDialog* fd = new wxFileDialog(this, _("Load display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
@@ -756,14 +756,14 @@ void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
             return;
         }
 
-        XMLDisplayConfigurationIO::Read(this, loadname);
+        xml_display_configuration_io::read(this, loadname);
         m_basicDrawPane->Refresh();
     }
 
     delete fd;
 }
 
-void LayerControl::OnDeleteAllRowsButton(wxCommandEvent& event)
+void layer_control::OnDeleteAllRowsButton(wxCommandEvent& event)
 {
     while( m_rows.size() > 0 )
     {
@@ -773,14 +773,14 @@ void LayerControl::OnDeleteAllRowsButton(wxCommandEvent& event)
     }
 }
 
-void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters &parameters)
+void layer_control::CreateNewImageLayerWithParameters(const ImageLayerParameters &parameters)
 {
     try
     {
         // On cree cette fameuse image ...
         std::string filename(parameters.path.c_str());
 
-        Layer::ptrLayerType ptr = ImageLayer::CreateImageLayer(filename);
+        layer::ptrLayerType ptr = image_layer::CreateImageLayer(filename);
         if (!ptr) return;
         AddLayer(ptr);
 
@@ -814,7 +814,7 @@ void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters 
     }
 }
 
-void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameters &parameters)
+void layer_control::CreateNewVectorLayerWithParameters(const VectorLayerParameters &parameters)
 {
     try
     {

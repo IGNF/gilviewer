@@ -42,7 +42,7 @@ Authors:
 
 #include "ColorLookupTable.h"
 
-ColorLookupTable::ColorLookupTable():m_clut(3*256)
+color_lookup_table::color_lookup_table():m_clut(3*256)
 {
 	//Initialisation par défaut à une LUT en niveaux de gris
 	for (unsigned int i = 0; i < m_clut.size(); ++i)
@@ -51,7 +51,7 @@ ColorLookupTable::ColorLookupTable():m_clut(3*256)
 	}
 }
 
-void ColorLookupTable::LoadFromBinaryFile(const std::string &fileCLUT)
+void color_lookup_table::LoadFromBinaryFile(const std::string &fileCLUT)
 {
 
 	std::ifstream ficCLUT(fileCLUT.c_str());
@@ -88,7 +88,7 @@ void ColorLookupTable::LoadFromBinaryFile(const std::string &fileCLUT)
 
 #include <iostream>
 
-void ColorLookupTable::createRandom()
+void color_lookup_table::createRandom()
 {
 	std::srand( clock() );
 
@@ -96,7 +96,7 @@ void ColorLookupTable::createRandom()
 		m_clut[i] = (unsigned char)( (double(std::rand()) / RAND_MAX) * 255 + 1 );
 }
 
-void ColorLookupTable::LoadFromTextFile(const std::string &fileCLUT)
+void color_lookup_table::LoadFromTextFile(const std::string &fileCLUT)
 {
 
 //	std::ifstream ficCLUT("/home/achauve/Logiciels/ImageJ/luts/sepia.lut");//(fileCLUT.c_str());
