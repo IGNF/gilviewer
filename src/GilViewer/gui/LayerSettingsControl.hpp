@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __LAYER_SETTINGS_CONTROL_HPP__
@@ -46,20 +46,20 @@ class layer_control;
 class layer_settings_control : public wxDialog
 {
 public:
-        layer_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){;}
-        ~layer_settings_control() {}
+    layer_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){;}
+    ~layer_settings_control() {}
 
-	// Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
-        virtual void update() {}
+    // Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
+    virtual void update() {}
 
-	unsigned int Index() { return m_index; }
-	void Index(const unsigned int index){  m_index = index; }
+    unsigned int Index() { return m_index; }
+    void Index(const unsigned int index){  m_index = index; }
 
-        virtual std::string get_info_button_name() const {return "";}
-        virtual const char** get_icon_xpm() const {return NULL;}
+    virtual std::string get_info_button_name() const {return "";}
+    virtual const char** get_icon_xpm() const {return NULL;}
 
 protected:
-	unsigned int m_index;
+    unsigned int m_index;
 };
 
 typedef layer_settings_control LayerSettingsControl;

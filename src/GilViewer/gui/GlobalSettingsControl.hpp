@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __GLOBAL_SETTINGS_CONTROL_HPP__
@@ -47,25 +47,25 @@ class wxTextCtrl;
 class global_settings_control : public wxDialog
 {
 public:
-        global_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Global settings"), long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
-        virtual ~global_settings_control() {};
+    global_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Global settings"), long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
+    virtual ~global_settings_control() {};
 
-	void OnScroll(wxScrollEvent &event);
-	void OnOKButton(wxCommandEvent &event);
-	void OnCancelButton(wxCommandEvent &event);
-	void OnApplyButton(wxCommandEvent &event);
-	void OnCloseWindow(wxCloseEvent& event);
+    void OnScroll(wxScrollEvent &event);
+    void OnOKButton(wxCommandEvent &event);
+    void OnCancelButton(wxCommandEvent &event);
+    void OnApplyButton(wxCommandEvent &event);
+    void OnCloseWindow(wxCloseEvent& event);
 
-	bool Validate();
+    bool Validate();
 
-	DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
 private:
-	// Je laisse beaucoup de choses pour l'instant, ca pourra servir lors des evolutions futures
-	wxTextCtrl* m_textMinimumGlobalIntensity;
-	wxTextCtrl* m_textMaximumGlobalIntensity;
+    // Je laisse beaucoup de choses pour l'instant, ca pourra servir lors des evolutions futures
+    wxTextCtrl* m_textMinimumGlobalIntensity;
+    wxTextCtrl* m_textMaximumGlobalIntensity;
 
-	layer_control *m_parent;
+    layer_control *m_parent;
 };
 
 typedef global_settings_control GlobalSettingsControl;

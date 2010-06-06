@@ -57,6 +57,7 @@ Authors:
 #include <wx/log.h>
 #include <wx/config.h>
 
+#include "../tools/Orientation2D.h"
 #include "../tools/ColorLookupTable.h"
 #include "../layers/image_types.hpp"
 #include "../gui/ImageLayerSettingsControl.hpp"
@@ -130,20 +131,20 @@ layer::ptrLayerType image_layer::CreateImageLayer(const std::string &filename)
     std::string ext(path.extension());
     boost::to_lower(ext);
 
-//	image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
+    //	image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
 
     image_ptr image(new image_t);
 
-	try
-	{
-		if (ext == ".tif" || ext == ".tiff")
-			tiff_read_image(filename, image->value);
-		else if (ext == ".jpg" || ext == ".jpeg")
-			jpeg_read_image(filename, image->value);
-		else if (ext == ".png")
-			png_read_image (filename, image->value);
-	}
-	catch( const exception &e )
+    try
+    {
+        if (ext == ".tif" || ext == ".tiff")
+            tiff_read_image(filename, image->value);
+        else if (ext == ".jpg" || ext == ".jpeg")
+            jpeg_read_image(filename, image->value);
+        else if (ext == ".png")
+            png_read_image (filename, image->value);
+    }
+    catch( const exception &e )
     {
         ostringstream oss;
         oss << "Read error: "<<filename<< " ! " << endl;
@@ -263,6 +264,21 @@ string image_layer::GetPixelValue(int i, int j) const
     apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
     oss<<")";
     return oss.str();
+}
+
+boost::shared_ptr<color_lookup_table> image_layer::GetColorLookupTable()
+{
+    return m_cLUT;
+}
+
+void image_layer::Orientation(const boost::shared_ptr<orientation_2d> &orientation)
+{
+    m_ori->OriginX( orientation->OriginX() );
+    m_ori->OriginY( orientation->OriginY() );
+    m_ori->Step( orientation->Step() );
+    m_ori->ZoneCarto( orientation->ZoneCarto() );
+    m_ori->SizeX( orientation->SizeX() );
+    m_ori->SizeY( orientation->SizeY() );
 }
 
 layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const

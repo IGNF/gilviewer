@@ -54,84 +54,84 @@ extern void InitXmlResource();
 
 
 BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
-EVT_TOOL(wxID_ABOUT, basic_viewer_frame::OnAbout)
-EVT_TOOL(wxID_HELP, basic_viewer_frame::OnHelp)
-EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, basic_viewer_frame::OnShowHideLogWindow)
-//EVT_TOOL(wxID_PREFERENCES, basic_viewer_frame::OnApplicationSettings)
-END_EVENT_TABLE()
+        EVT_TOOL(wxID_ABOUT, basic_viewer_frame::OnAbout)
+        EVT_TOOL(wxID_HELP, basic_viewer_frame::OnHelp)
+        EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, basic_viewer_frame::OnShowHideLogWindow)
+        //EVT_TOOL(wxID_PREFERENCES, basic_viewer_frame::OnApplicationSettings)
+        END_EVENT_TABLE()
 
-basic_viewer_frame::basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
+        basic_viewer_frame::basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
 	wxFrame(parent, id, title, pos, size, style, name),
 	m_isLogWindowVisible(false)
 {
-	wxInitAllImageHandlers();
+    wxInitAllImageHandlers();
 
     // Initialising resources ...
     wxXmlResource::Get()->InitAllHandlers();
     InitXmlResource();
 
-	m_dockManager.SetManagedWindow(this);
+    m_dockManager.SetManagedWindow(this);
 
-	m_statusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, wxT("statusBar"));
-	SetStatusBar(m_statusBar);
+    m_statusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP, wxT("statusBar"));
+    SetStatusBar(m_statusBar);
 
-	wxConfigBase *pConfig = wxConfigBase::Get();
-	double fontSize;
-	if ( pConfig )
-		wxConfigBase::Get()->Read(wxT("/Options/FontSize"), &fontSize, 8);
-	// On tente un setting de la font pour pouvoir afficher les infos dans la status bar qd il y a bcp d'images ...
-	wxFont fontFrameViewer((unsigned int)fontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-	m_statusBar->SetFont(fontFrameViewer);
+    wxConfigBase *pConfig = wxConfigBase::Get();
+    double fontSize;
+    if ( pConfig )
+        wxConfigBase::Get()->Read(wxT("/Options/FontSize"), &fontSize, 8);
+    // On tente un setting de la font pour pouvoir afficher les infos dans la status bar qd il y a bcp d'images ...
+    wxFont fontFrameViewer((unsigned int)fontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    m_statusBar->SetFont(fontFrameViewer);
 
 
-	//Construction de la log window
-	wxLog::SetActiveTarget(NULL);
-	m_logWindow = new wxLogWindow(this, _("Log window"));
-	m_logWindow->Show(m_isLogWindowVisible);
+    //Construction de la log window
+    wxLog::SetActiveTarget(NULL);
+    m_logWindow = new wxLogWindow(this, _("Log window"));
+    m_logWindow->Show(m_isLogWindowVisible);
 
-	//ToolBar
-	m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
-	m_baseToolBar->AddTool(wxID_ABOUT, wxT("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_22x22") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
-	m_baseToolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, wxT("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
-	m_baseToolBar->Realize();
+    //ToolBar
+    m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+    m_baseToolBar->AddTool(wxID_ABOUT, wxT("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_22x22") ), wxNullBitmap, wxITEM_NORMAL, _("About"));
+    m_baseToolBar->AddTool(ID_SHOW_HIDE_LOG_WINDOW, wxT("SHLG"), wxXmlResource::Get()->LoadBitmap( wxT("X-OFFICE-ADDRESS-BOOK_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Show / Hide Log Window"));
+    m_baseToolBar->Realize();
 
-	wxAuiPaneInfo paneInfoToolbar;
-	paneInfoToolbar.ToolbarPane();
-	paneInfoToolbar.Caption( _("Toolbar Info") );
-	paneInfoToolbar.TopDockable();
-	paneInfoToolbar.Top();
-	paneInfoToolbar.Fixed();
-	paneInfoToolbar.Resizable(false);
-	paneInfoToolbar.CloseButton(false);
-	paneInfoToolbar.CaptionVisible(false);
-	m_dockManager.AddPane(m_baseToolBar, paneInfoToolbar);
+    wxAuiPaneInfo paneInfoToolbar;
+    paneInfoToolbar.ToolbarPane();
+    paneInfoToolbar.Caption( _("Toolbar Info") );
+    paneInfoToolbar.TopDockable();
+    paneInfoToolbar.Top();
+    paneInfoToolbar.Fixed();
+    paneInfoToolbar.Resizable(false);
+    paneInfoToolbar.CloseButton(false);
+    paneInfoToolbar.CaptionVisible(false);
+    m_dockManager.AddPane(m_baseToolBar, paneInfoToolbar);
 
-	m_dockManager.Update();
+    m_dockManager.Update();
 
-	CenterOnScreen();
+    CenterOnScreen();
 
 }
 
 basic_viewer_frame::~basic_viewer_frame()
 {
-	m_dockManager.UnInit();
+    m_dockManager.UnInit();
 }
 
 
 void basic_viewer_frame::OnShowHideLogWindow(wxCommandEvent& event)
 {
-	m_isLogWindowVisible = !m_isLogWindowVisible;
-	m_logWindow->Show(m_isLogWindowVisible);
+    m_isLogWindowVisible = !m_isLogWindowVisible;
+    m_logWindow->Show(m_isLogWindowVisible);
 }
 
 void basic_viewer_frame::OnAbout(wxCommandEvent& event)
 {
-	wxAboutBox(getAboutInfo());
+    wxAboutBox(getAboutInfo());
 }
 
 void basic_viewer_frame::OnHelp(wxCommandEvent& event)
 {
-	getHelp()->Show(true);
+    getHelp()->Show(true);
 }
 
 //void BasicViewerFrame::OnApplicationSettings(wxCommandEvent& event)
@@ -142,35 +142,35 @@ void basic_viewer_frame::OnHelp(wxCommandEvent& event)
 
 wxAboutDialogInfo basic_viewer_frame::getAboutInfo() const
 {
-	wxAboutDialogInfo info;
-	info.AddDeveloper(_("Authors:"));
-	info.AddDeveloper(wxT("Olivier Tournaire"));
-	info.AddDeveloper(wxT("Adrien Chauve"));
-	info.AddDeveloper(wxT(""));
-	info.AddDeveloper(_("Contributors:"));
-	info.AddDeveloper(wxT("Nicolas David (CMake guru)"));
-	info.SetName(wxT("GilViewer"));
-	info.SetVersion(wxT("0.1.0"));
-	info.SetWebSite(wxT("http://code.google.com/p/gilviewer"), _("Home page") );
-	info.SetDescription(_("2D raster and vector viewer"));
-	info.SetCopyright(wxT("olivier.tournaire@gmail.com\nadrien.chauve@gmail.com"));
-	return info;
+    wxAboutDialogInfo info;
+    info.AddDeveloper(_("Authors:"));
+    info.AddDeveloper(wxT("Olivier Tournaire"));
+    info.AddDeveloper(wxT("Adrien Chauve"));
+    info.AddDeveloper(wxT(""));
+    info.AddDeveloper(_("Contributors:"));
+    info.AddDeveloper(wxT("Nicolas David (CMake guru)"));
+    info.SetName(wxT("GilViewer"));
+    info.SetVersion(wxT("0.1.0"));
+    info.SetWebSite(wxT("http://code.google.com/p/gilviewer"), _("Home page") );
+    info.SetDescription(_("2D raster and vector viewer"));
+    info.SetCopyright(wxT("olivier.tournaire@gmail.com\nadrien.chauve@gmail.com"));
+    return info;
 }
 
 wxDialog* basic_viewer_frame::getHelp() const
 {
-	wxDialog* helpDialog = new wxDialog(NULL, wxID_ANY, wxString(_("Help")));
-	wxHtmlWindow* helpWindow = new wxHtmlWindow(helpDialog, wxID_ANY, wxDefaultPosition, wxSize(380, 400), wxHW_SCROLLBAR_AUTO);
+    wxDialog* helpDialog = new wxDialog(NULL, wxID_ANY, wxString(_("Help")));
+    wxHtmlWindow* helpWindow = new wxHtmlWindow(helpDialog, wxID_ANY, wxDefaultPosition, wxSize(380, 400), wxHW_SCROLLBAR_AUTO);
 
-	wxBoxSizer *topsizer;
-	topsizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *topsizer;
+    topsizer = new wxBoxSizer(wxVERTICAL);
 
-	helpWindow->LoadPage(wxT("help/help.html"));
-	topsizer->Add(helpWindow, 1, wxALL, 10);
+    helpWindow->LoadPage(wxT("help/help.html"));
+    topsizer->Add(helpWindow, 1, wxALL, 10);
     helpDialog->SetSizer(topsizer);
     topsizer->Fit(helpDialog);
 
-	return helpDialog;
+    return helpDialog;
 }
 
 

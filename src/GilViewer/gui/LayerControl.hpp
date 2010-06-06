@@ -73,7 +73,7 @@ public:
 	///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
 	bool IsOriented() const {return m_isOrientationSet; }
 	///Recupere l'orientation du viewer
-        orientation_2d GetOrientation() const { return m_ori; }
+        boost::shared_ptr<orientation_2d> GetOrientation() const;
 
 	inline unsigned int GetNumberOfLayers() { return m_numberOfLayers; }
 
@@ -165,7 +165,7 @@ protected:
         std::vector< boost::shared_ptr<layer_control_row> > m_rows;
 
 	//Orientation generale du viewer
-        orientation_2d m_ori;
+        boost::shared_ptr<orientation_2d> m_ori;
 	bool m_isOrientationSet;
 
         global_settings_control* m_globalSettingsControl;

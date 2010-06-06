@@ -526,11 +526,11 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     {
         ::wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
 
-        const orientation_2d &oriLayer = layer->Orientation();
+        const boost::shared_ptr<orientation_2d> &oriLayer = layer->Orientation();
 
-        double newZoomFactor = m_ori.Step() / oriLayer.Step();
-        double translationInitX = (oriLayer.OriginX() - m_ori.OriginX()) / oriLayer.Step();//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
-        double translationInitY = -(oriLayer.OriginY() - m_ori.OriginY()) / oriLayer.Step();//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
+        double newZoomFactor = m_ori->Step() / oriLayer->Step();
+        double translationInitX = (oriLayer->OriginX() - m_ori->OriginX()) / oriLayer->Step();//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
+        double translationInitY = -(oriLayer->OriginY() - m_ori->OriginY()) / oriLayer->Step();//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
 
         layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
         layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);//* layer->ZoomFactor());
@@ -542,10 +542,10 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     {
         ::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
 
-        double translationInitX =-m_ori.OriginX();
-        double translationInitY = m_ori.OriginY();
+        double translationInitX =-m_ori->OriginX();
+        double translationInitY = m_ori->OriginY();
 
-        double newZoomFactor = m_ori.Step();
+        double newZoomFactor = m_ori->Step();
         //layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
         layer->ZoomFactor(m_layers[0]->ZoomFactor());
         layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);
@@ -556,7 +556,7 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
 
 
     if(m_isOrientationSet)
-        layer->Resolution(m_ori.Step());
+        layer->Resolution(m_ori->Step());
     else
     {
         layer->Resolution(1.);
@@ -565,6 +565,11 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     Refresh();
     m_parent->Refresh();
     m_basicDrawPane->Refresh();
+}
+
+boost::shared_ptr<orientation_2d> layer_control::GetOrientation() const
+{
+    return m_ori;
 }
 
 void layer_control::SwapRows(const unsigned int firstRow, const unsigned int secondRow)

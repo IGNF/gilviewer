@@ -43,34 +43,34 @@ Authors:
 #include <wx/stattext.h>
 
 BEGIN_EVENT_TABLE(layer_infos_control , wxFrame)
-EVT_BUTTON(wxID_OK,layer_infos_control ::OnOKButton)
-END_EVENT_TABLE()
+        EVT_BUTTON(wxID_OK,layer_infos_control ::OnOKButton)
+        END_EVENT_TABLE()
 
-layer_infos_control::layer_infos_control(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position, const wxSize& size) :
-wxFrame(parent,id,title,position,size,style)
+        layer_infos_control::layer_infos_control(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position, const wxSize& size) :
+        wxFrame(parent,id,title,position,size,style)
 {
-	wxColour bgcolor( 220, 220, 220);
-	SetBackgroundColour(bgcolor);
-	ClearBackground();
+    wxColour bgcolor( 220, 220, 220);
+    SetBackgroundColour(bgcolor);
+    ClearBackground();
 
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-	wxStaticText *text = new wxStaticText(this,wxID_ANY,wxString(infos.c_str(),*wxConvCurrent));
-	sizer->Add( text , 0 , wxALL|wxALIGN_CENTRE , 5);
+    wxStaticText *text = new wxStaticText(this,wxID_ANY,wxString(infos.c_str(),*wxConvCurrent));
+    sizer->Add( text , 0 , wxALL|wxALIGN_CENTRE , 5);
 
-	wxButton *okButton = new wxButton(this,wxID_OK,wxT("OK"));
-	sizer->Add( okButton , 0 , wxALL|wxALIGN_CENTRE , 5);
+    wxButton *okButton = new wxButton(this,wxID_OK,wxT("OK"));
+    sizer->Add( okButton , 0 , wxALL|wxALIGN_CENTRE , 5);
 
-	sizer->SetSizeHints(this);
-	SetSizer(sizer);
+    sizer->SetSizeHints(this);
+    SetSizer(sizer);
 }
 
 layer_infos_control::~layer_infos_control()
 {
-	Destroy();
+    Destroy();
 }
 
 void layer_infos_control::OnOKButton(wxCommandEvent &event)
 {
-	Destroy();
+    Destroy();
 }

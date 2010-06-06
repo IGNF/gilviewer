@@ -57,7 +57,7 @@ public:
     /// @param id ...
     /// @param title ...
     vector_layer_settings_control(unsigned int index, layer_control *parent , wxWindowID id = wxID_ANY, const wxString& title = _("Vector layer settings"),
-                               long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
+                                  long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
     void OnOKButton(wxCommandEvent &event);
     void OnCancelButton(wxCommandEvent &event);
