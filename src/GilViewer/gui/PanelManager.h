@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef PANELMANAGER_H_
@@ -47,25 +47,25 @@ Authors:
 
 class PanelManagerModel : public  PatternFactory<PanelViewer>
 {
-	public:
-		typedef std::vector<PanelViewer*> ArrayOfPanels;
+public:
+    typedef std::vector<PanelViewer*> ArrayOfPanels;
 
-		friend class PatternSingleton<PanelManagerModel>;
-		virtual ~PanelManagerModel();
-
-
-		// La méthode  qui va nous permettre de récupérer
-		// la liste des panels
-		const ArrayOfPanels &GetPanelsList();
-
-		PanelViewer* createObject(const std::string& id);
+    friend class PatternSingleton<PanelManagerModel>;
+    virtual ~PanelManagerModel();
 
 
-	private:
-		PanelManagerModel();
+    // La méthode  qui va nous permettre de récupérer
+    // la liste des panels
+    const ArrayOfPanels &GetPanelsList();
 
-		// Le tableau des plugins
-		ArrayOfPanels m_panels;
+    PanelViewer* createObject(const std::string& id);
+
+
+private:
+    PanelManagerModel();
+
+    // Le tableau des plugins
+    ArrayOfPanels m_panels;
 
 };
 
