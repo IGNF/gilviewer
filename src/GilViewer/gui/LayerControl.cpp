@@ -81,6 +81,7 @@ Authors:
 #	include <wx/msw/winundef.h>
 #endif
 
+using namespace boost;
 using namespace std;
 
 BEGIN_EVENT_TABLE(layer_control, wxFrame)
@@ -202,8 +203,13 @@ void layer_control::AddRow(const std::string &name, layer_settings_control *laye
 
     // on ajoute la ligne dans le conteneur
     unsigned int nb = m_rows.size();
+<<<<<<< local
+    m_rows.push_back(shared_ptr<LayerControlRow>(new LayerControlRow(this, ln, nb, layersettings, tooltip)));
+    // On ajoute a proprement parler les controles de la ligne dans le LayerControl
+=======
     m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, nb, layersettings, tooltip)));
     // On ajoute a proprement parler les controles de la ligne dans le layer_control
+>>>>>>> other
     m_rows.back()->m_nameStaticText->IsSelected(true);
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
@@ -264,9 +270,9 @@ void layer_control::OnSaveButton(wxCommandEvent& event)
         try
         {
             string filename(fileDialog->GetFilename().To8BitData());
-            string extension(boost::filesystem::extension(filename));
-            boost::to_lower(extension);
-            boost::shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+            string extension(filesystem::extension(filename));
+            to_lower(extension);
+            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
             file_out->save(Layers()[id],filename);
         }
         catch( std::exception &err )
@@ -455,14 +461,14 @@ void layer_control::AddLayersFromFiles(const wxArrayString &names)
         }
 
         string filename(names[i].fn_str());
-        string extension(boost::filesystem::extension(filename));
-        boost::to_lower(extension);
+        string extension(filesystem::extension(filename));
+        to_lower(extension);
         try
         {
-            boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
             AddLayer( file->load(filename) );
         }
-        catch (exception &err)
+        catch (const std::exception &err)
         {
             if (progress)
                 progress->Destroy();
@@ -491,12 +497,21 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     if (!layer) return;
 
     // On ajoute le calque dans le conteneur
+<<<<<<< local
+    layer->SetNotifyLayerControl( bind( &LayerControl::update, this ) );
+=======
     layer->SetNotifyLayerControl( boost::bind( &layer_control::update, this ) );
+>>>>>>> other
     m_layers.push_back(layer);
 
     // On construit le SettingsControl en fonction du type de calque ajoute
+<<<<<<< local
+    LayerSettingsControl *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
+    layer->SetNotifyLayerSettingsControl( bind( &LayerSettingsControl::update, settingscontrol ) );
+=======
     layer_settings_control *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
     layer->SetNotifyLayerSettingsControl( boost::bind( &layer_settings_control::update, settingscontrol ) );
+>>>>>>> other
     // On ajoute la ligne correspondante
     AddRow(layer->Name(), settingscontrol, layer->Filename());
 
@@ -736,8 +751,8 @@ void layer_control::OnSaveDisplayConfigButton(wxCommandEvent& event)
     if (fd->ShowModal() == wxID_OK)
     {
         std::string savename(fd->GetPath().fn_str());
-        if (boost::filesystem::extension(savename) != ".xml")
-            boost::filesystem::change_extension(savename, ".xml");
+        if (filesystem::extension(savename) != ".xml")
+            filesystem::change_extension(savename, ".xml");
 
         xml_display_configuration_io::write(this, savename.c_str());
     }
@@ -755,7 +770,7 @@ void layer_control::OnLoadDisplayConfigButton(wxCommandEvent& event)
         ::wxLogMessage(message);
 
         std::string loadname(fd->GetPath().fn_str());
-        if (boost::filesystem::extension(loadname) != ".xml")
+        if (filesystem::extension(loadname) != ".xml")
         {
             wxLogMessage(_("Display configuration file must have the extension .xml !"), _("Error!"));
             return;
@@ -782,11 +797,19 @@ void layer_control::CreateNewImageLayerWithParameters(const ImageLayerParameters
 {
     try
     {
-        // On cree cette fameuse image ...
         std::string filename(parameters.path.c_str());
+<<<<<<< local
+        string extension(filesystem::extension(filename));
+        to_lower(extension);
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+        Layer::ptrLayerType ptr = file->load(filename);
+        if (!ptr)
+            return;
+=======
 
         layer::ptrLayerType ptr = image_layer::CreateImageLayer(filename);
         if (!ptr) return;
+>>>>>>> other
         AddLayer(ptr);
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
@@ -824,9 +847,9 @@ void layer_control::CreateNewVectorLayerWithParameters(const VectorLayerParamete
     try
     {
         std::string filename(parameters.path.c_str());
-        string extension(boost::filesystem::extension(filename));
-        boost::to_lower(extension);
-        boost::shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+        string extension(filesystem::extension(filename));
+        to_lower(extension);
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
         AddLayer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...

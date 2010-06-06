@@ -48,21 +48,38 @@ Authors:
 class panel_manager_model : public  PatternFactory<panel_viewer>
 {
 public:
+<<<<<<< local
+    typedef std::vector<PanelViewer*> ArrayOfPanels;
+=======
     typedef std::vector<panel_viewer*> ArrayOfPanels;
+>>>>>>> other
 
+<<<<<<< local
+    friend class PatternSingleton<PanelManagerModel>;
+    virtual ~PanelManagerModel();
+=======
     friend class PatternSingleton<panel_manager_model>;
     virtual ~panel_manager_model();
+>>>>>>> other
 
 
     // La méthode  qui va nous permettre de récupérer
     // la liste des panels
     const ArrayOfPanels &GetPanelsList();
 
+<<<<<<< local
+    PanelViewer* createObject(const std::string& id);
+=======
     panel_viewer* createObject(const std::string& id);
+>>>>>>> other
 
 
 private:
+<<<<<<< local
+    PanelManagerModel();
+=======
     panel_manager_model();
+>>>>>>> other
 
     // Le tableau des plugins
     ArrayOfPanels m_panels;
