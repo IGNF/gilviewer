@@ -63,13 +63,7 @@ public:
 
     virtual ~image_layer() {}
 
-<<<<<<< local
-	static ptrLayerType CreateImageLayer(const image_ptr &image, const std::string &name ="Image Layer");
-=======
-    static ptrLayerType CreateImageLayer(const std::string    &file);
     static ptrLayerType CreateImageLayer(const image_ptr &image, const std::string &name ="Image Layer");
->>>>>>> other
-
     ///ATTENTION ici l'image est recopiée dans une any_image !!
     template<class ImageType>
     static ptrLayerType CreateImageLayer(const ImageType &image, const std::string &name ="Image Layer");
@@ -138,14 +132,9 @@ public:
     inline virtual double get_center_x();
     inline virtual double get_center_y();
 
-<<<<<<< local
-        ImageLayer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
+    image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
 
         private:
-=======
-	private:
-    image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
->>>>>>> other
 
     image_ptr       m_img;
     view_ptr        m_view;
