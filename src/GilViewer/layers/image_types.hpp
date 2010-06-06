@@ -9,7 +9,8 @@
 /**
 This header defines image types available in GilViewer. They are separated in several categories to be easily used in functors specialization.
 */
-typedef boost::mpl::vector<
+
+typedef boost::mpl::vector<
 	boost::gil::gray8_image_t,
 	boost::gil::gray16_image_t,
 	boost::gil::gray16s_image_t,
@@ -25,13 +26,14 @@ typedef boost::mpl::vector<
 > rgb_image_types;
 
 typedef boost::mpl::vector<
-	boost::gil::rgba8_image_t
+        boost::gil::rgba8_image_t,
+        boost::gil::rgba16_image_t
 > rgba_image_types;
 
 // Concatenation of all available image types defined below
 typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
-                 boost::mpl::back_inserter< rgb_image_types  > >::type,
-                 boost::mpl::back_inserter< rgba_image_types > >::type
+                                            boost::mpl::back_inserter< rgb_image_types  > >::type,
+                          boost::mpl::back_inserter< rgba_image_types > >::type
 	all_image_types;
 
 #include <boost/gil/extension/dynamic_image/any_image.hpp>
