@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __XML_DISPLAY_CONFIGURATION_IO_HPP__
@@ -46,8 +46,8 @@ class layer_control;
 class xml_display_configuration_io
 {
 public:
-        static void read( layer_control* layerControl , const std::string filename );
-        static void write( const layer_control* layerControl , const std::string filename );
+    static void read( layer_control* layerControl , const std::string filename );
+    static void write( const layer_control* layerControl , const std::string filename );
 };
 
 typedef xml_display_configuration_io XMLDisplayConfigurationIO;

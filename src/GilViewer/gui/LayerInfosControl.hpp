@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __IMAGE_LAYER_INFOS_CONTROL_HPP__
@@ -44,12 +44,12 @@ Authors:
 class layer_infos_control : public wxFrame
 {
 public:
-        layer_infos_control(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position=wxDefaultPosition, const wxSize& size=wxDefaultSize);
-        virtual ~layer_infos_control();
+    layer_infos_control(const std::string &infos ,wxWindow* parent, wxWindowID id, const wxString& title, const unsigned long style, const wxPoint& position=wxDefaultPosition, const wxSize& size=wxDefaultSize);
+    virtual ~layer_infos_control();
 
-	void OnOKButton(wxCommandEvent &event);
+    void OnOKButton(wxCommandEvent &event);
 
-	DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 typedef layer_infos_control LayerInfosControl;

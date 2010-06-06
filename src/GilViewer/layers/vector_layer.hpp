@@ -39,11 +39,8 @@ Authors:
 #ifndef __VECTOR_LAYER_HPP__
 #define __VECTOR_LAYER_HPP__
 
-#include <map>
-
 #include <boost/bind.hpp>
 
-#include "../gui/VectorLayerSettingsControl.hpp"
 #include "../layers/Layer.hpp"
 
 class vector_layer : public layer
@@ -75,8 +72,8 @@ private:
 
 protected:
     vector_layer(): m_is_text_visible(true)
-                  , m_text_coordinates(std::vector< std::pair<double,double> >())
-                  , m_text_value(std::vector< std::string >()) {}
+            , m_text_coordinates(std::vector< std::pair<double,double> >())
+            , m_text_value(std::vector< std::string >()) {}
 };
 
 

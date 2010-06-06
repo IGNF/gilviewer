@@ -49,29 +49,29 @@ class wxToolBar;
 
 class basic_viewer_frame : public wxFrame
 {
-	public:
-                basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame"));
-                virtual ~basic_viewer_frame();
+public:
+    basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame"));
+    virtual ~basic_viewer_frame();
 
-	protected:
-		wxStatusBar* m_statusBar;
+protected:
+    wxStatusBar* m_statusBar;
 
-		bool m_isLogWindowVisible;
-		wxLogWindow* m_logWindow;
+    bool m_isLogWindowVisible;
+    wxLogWindow* m_logWindow;
 
-		wxAuiManager m_dockManager;
+    wxAuiManager m_dockManager;
 
-		wxToolBar* m_baseToolBar;
+    wxToolBar* m_baseToolBar;
 
-		virtual wxAboutDialogInfo getAboutInfo() const;
-		virtual wxDialog* getHelp() const;
+    virtual wxAboutDialogInfo getAboutInfo() const;
+    virtual wxDialog* getHelp() const;
 
-		void OnAbout(wxCommandEvent& event);
-		void OnHelp(wxCommandEvent& event);
-		void OnShowHideLogWindow(wxCommandEvent& event);
-		void OnApplicationSettings(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+    void OnHelp(wxCommandEvent& event);
+    void OnShowHideLogWindow(wxCommandEvent& event);
+    void OnApplicationSettings(wxCommandEvent& event);
 
-		DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 typedef basic_viewer_frame BasicViewerFrame;

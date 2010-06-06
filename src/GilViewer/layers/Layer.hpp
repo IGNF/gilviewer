@@ -39,6 +39,11 @@ Authors:
 #ifndef __LAYER_HPP__
 #define __LAYER_HPP__
 
+#include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+
+#include <vector>
+
 #include <wx/gdicmn.h>
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -46,18 +51,13 @@ Authors:
 
 class wxDC;
 
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-
-// TODO: Create a cpp file and forward declarations ...
-#include "../tools/Orientation2D.h"
-#include "../tools/ColorLookupTable.h"
-#include "../gui/LayerSettingsControl.hpp"
-
 #ifdef WIN32
 #	include <wx/msw/winundef.h>
 #endif
 
+class orientation_2d;
+class color_lookup_table;
+class layer_settings_control;
 class layer_control;
 
 class layer
@@ -116,7 +116,7 @@ public:
 
     virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
 
-    virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent) {return new layer_settings_control(parent);}
+    virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
     virtual void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
     virtual inline double ZoomFactor() const { return m_zoomFactor; }
@@ -150,7 +150,7 @@ public:
     virtual void HasOri(bool hasOri) { m_hasOri = hasOri; }
     virtual bool HasOri() const { return m_hasOri; }
     virtual void Orientation(const orientation_2d &orientation)  {}
-    virtual const orientation_2d &Orientation() const  { return m_ori; }
+    virtual const boost::shared_ptr<orientation_2d> &Orientation() const;
 
     // Methodes specifiques ImageLayer
     virtual void Alpha(unsigned char alpha) {}
@@ -171,7 +171,7 @@ public:
     virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue) const {}
     virtual void SetAlphaChannel(bool useAlphaChannel, unsigned int alphaChannel) {}
     virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
-    virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable() { return boost::shared_ptr<color_lookup_table>(); }
+    virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable();
 
     virtual unsigned int GetNbComponents() const { return 0; }
     virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
@@ -246,7 +246,7 @@ protected:
     double m_resolution;
 
     //orientation (possible que pour les calques images)
-    orientation_2d m_ori;
+    boost::shared_ptr<orientation_2d> m_ori;
     bool m_hasOri;
 
     //infos du layer

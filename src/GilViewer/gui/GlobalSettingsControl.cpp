@@ -50,83 +50,83 @@ Authors:
 global_settings_control::global_settings_control(layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	wxDialog( (wxWindow*)parent, id, title, pos, size, style), m_parent(parent)
 {
-	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-	wxStaticBoxSizer *intensity_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Intensity"));
-	m_textMinimumGlobalIntensity = new wxTextCtrl(this,wxID_ANY);
-	m_textMinimumGlobalIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-	intensity_sizer->Add(m_textMinimumGlobalIntensity, 1, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
-	m_textMaximumGlobalIntensity = new wxTextCtrl(this,wxID_ANY);
-	m_textMaximumGlobalIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-	intensity_sizer->Add(m_textMaximumGlobalIntensity, 1, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
+    wxStaticBoxSizer *intensity_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Intensity"));
+    m_textMinimumGlobalIntensity = new wxTextCtrl(this,wxID_ANY);
+    m_textMinimumGlobalIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
+    intensity_sizer->Add(m_textMinimumGlobalIntensity, 1, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
+    m_textMaximumGlobalIntensity = new wxTextCtrl(this,wxID_ANY);
+    m_textMaximumGlobalIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
+    intensity_sizer->Add(m_textMaximumGlobalIntensity, 1, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
 
-	main_sizer->Add(intensity_sizer, 0, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
+    main_sizer->Add(intensity_sizer, 0, wxEXPAND|wxALL|wxADJUST_MINSIZE, 5);
 
-	wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
-	buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
-	buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, wxT("Apply")));
-	buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, wxT("Cancel")));
-	buttons_sizer->Realize();
-	main_sizer->Add(buttons_sizer, 0, wxALIGN_RIGHT|wxALL, 5);
+    wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
+    buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
+    buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, wxT("Apply")));
+    buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, wxT("Cancel")));
+    buttons_sizer->Realize();
+    main_sizer->Add(buttons_sizer, 0, wxALIGN_RIGHT|wxALL, 5);
 
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
-	SetMaxSize(this->GetSize());
-	Layout();
-	Centre();
+    main_sizer->SetSizeHints(this);
+    SetSizer(main_sizer);
+    SetMaxSize(this->GetSize());
+    Layout();
+    Centre();
 }
 
 BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
-EVT_CLOSE(global_settings_control::OnCloseWindow)
-EVT_BUTTON(wxID_OK,global_settings_control::OnOKButton)
-EVT_BUTTON(wxID_CANCEL,global_settings_control::OnCancelButton)
-EVT_BUTTON(wxID_APPLY,global_settings_control::OnApplyButton)
-END_EVENT_TABLE()
+        EVT_CLOSE(global_settings_control::OnCloseWindow)
+        EVT_BUTTON(wxID_OK,global_settings_control::OnOKButton)
+        EVT_BUTTON(wxID_CANCEL,global_settings_control::OnCancelButton)
+        EVT_BUTTON(wxID_APPLY,global_settings_control::OnApplyButton)
+        END_EVENT_TABLE()
 
-void global_settings_control::OnApplyButton(wxCommandEvent &event)
+        void global_settings_control::OnApplyButton(wxCommandEvent &event)
 {
-	if ( !Validate() )
-		::wxMessageBox(_("Incorrect entry!"));
+    if ( !Validate() )
+        ::wxMessageBox(_("Incorrect entry!"));
 
-	// et bien on parcourt tous les calques image du layer control et on applique la transformation ...
-	// Pour l'instant, on se concentre sur le canal RED ...
-	wxString MinLabel = m_textMinimumGlobalIntensity->GetValue();
-	wxString MaxLabel = m_textMaximumGlobalIntensity->GetValue();
-	double MinDouble, MaxDouble;
-	MinLabel.ToDouble(&MinDouble);
-	MaxLabel.ToDouble(&MaxDouble);
+    // et bien on parcourt tous les calques image du layer control et on applique la transformation ...
+    // Pour l'instant, on se concentre sur le canal RED ...
+    wxString MinLabel = m_textMinimumGlobalIntensity->GetValue();
+    wxString MaxLabel = m_textMaximumGlobalIntensity->GetValue();
+    double MinDouble, MaxDouble;
+    MinLabel.ToDouble(&MinDouble);
+    MaxLabel.ToDouble(&MaxDouble);
 
-	for (layer_control::LayerContainerType::iterator it = m_parent->begin(); it != m_parent->end(); ++it)
-	{
-		(*it)->IntensityMin(MinDouble);
-		(*it)->IntensityMax(MaxDouble);
-		(*it)->HasToBeUpdated(true);
+    for (layer_control::LayerContainerType::iterator it = m_parent->begin(); it != m_parent->end(); ++it)
+    {
+        (*it)->IntensityMin(MinDouble);
+        (*it)->IntensityMax(MaxDouble);
+        (*it)->HasToBeUpdated(true);
 
-                // MAJ de l'interface
-                (*it)->notifyLayerSettingsControl_();
-	}
+        // MAJ de l'interface
+        (*it)->notifyLayerSettingsControl_();
+    }
 
-	m_parent->GetPanelViewer()->Refresh();
+    m_parent->GetPanelViewer()->Refresh();
 }
 
 void global_settings_control::OnOKButton(wxCommandEvent &event)
 {
-	OnApplyButton(event);
-	Hide();
+    OnApplyButton(event);
+    Hide();
 }
 
 void global_settings_control::OnCancelButton(wxCommandEvent &event)
 {
-	Hide();
+    Hide();
 }
 
 void global_settings_control::OnCloseWindow(wxCloseEvent& event)
 {
-	Hide();
+    Hide();
 }
 
 bool global_settings_control::Validate()
 {
-	bool checkTest = wxDialog::Validate();
-	return checkTest;
+    bool checkTest = wxDialog::Validate();
+    return checkTest;
 }
