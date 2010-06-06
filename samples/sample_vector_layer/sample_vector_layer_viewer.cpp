@@ -78,8 +78,8 @@ BasicViewerFrame(parent, id, title, pos, size, style, name)
 	SetIcon(wxICON(LOGO_MATIS_small));
 #endif
 
-	PanelViewer::Register(this);
-	m_drawPane = PanelManager::Instance()->createObject("PanelViewer");
+	panel_viewer::Register(this);
+	m_drawPane = panel_manager::Instance()->createObject("PanelViewer");
 
 	m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
 

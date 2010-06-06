@@ -52,7 +52,7 @@ class wxScrolledWindow;
 class GlobalSettingsControl;
 class VectorLayerGhost;
 class Orientation2D;
-class PanelViewer;
+class panel_viewer;
 class VectorLayer;
 
 /**
@@ -65,7 +65,7 @@ class LayerControl: public wxFrame
 	friend class LayerControlRow;
 
 public:
-    LayerControl(PanelViewer* DrawPane, wxFrame *parent, wxWindowID id = wxID_ANY, const wxString& title = _("wxToolBar Sample"),
+    LayerControl(panel_viewer* DrawPane, wxFrame *parent, wxWindowID id = wxID_ANY, const wxString& title = _("wxToolBar Sample"),
         long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
 	/// Cette methode permet d'ajouter un calque
@@ -97,7 +97,7 @@ public:
 
 	LayerContainerType Layers() const {return m_layers;}
 
-	inline PanelViewer* GetPanelViewer() {return m_basicDrawPane;}
+	inline panel_viewer* GetPanelViewer() {return m_basicDrawPane;}
 
 	inline std::vector< boost::shared_ptr<LayerControlRow> > GetRows() const { return m_rows; }
 
@@ -159,7 +159,7 @@ protected:
 	wxFlexGridSizer		*m_sizer;
 	wxBoxSizer			*inner_sizer;
 	unsigned int		m_numberOfLayers;
-	PanelViewer* m_basicDrawPane;
+	panel_viewer* m_basicDrawPane;
 	LayerContainerType	m_layers;
 	// La, il faudrait mettre un boost::shared_array ...
 	std::vector< boost::shared_ptr<LayerControlRow> > m_rows;

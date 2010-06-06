@@ -47,7 +47,7 @@ Authors:
 
 #include "GilViewer.h"
 
-class PanelViewer;
+class panel_viewer;
 class wxStatusBar;
 class wxDialog;
 class wxMenuBar;
@@ -62,7 +62,7 @@ public:
 	void AddLayersFromFiles(const wxArrayString &names);
 
 private:
-	PanelViewer* m_drawPane;
+	panel_viewer* m_drawPane;
 	wxMenu* m_menuOptions;
 	wxMenu* m_submenuLangage;
 

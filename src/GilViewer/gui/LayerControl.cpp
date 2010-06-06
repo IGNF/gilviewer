@@ -102,7 +102,7 @@ BEGIN_EVENT_TABLE(LayerControl, wxFrame)
     EVT_BUTTON(ID_DELETE_ALL_ROWS,LayerControl::OnDeleteAllRowsButton)
 END_EVENT_TABLE()
 
-LayerControl::LayerControl(PanelViewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+LayerControl::LayerControl(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new VectorLayerGhost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
 {
 

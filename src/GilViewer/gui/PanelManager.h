@@ -45,31 +45,33 @@ Authors:
 #include "../gui/PanelViewer.hpp"
 
 
-class PanelManagerModel : public  PatternFactory<PanelViewer>
+class panel_manager_model : public  PatternFactory<panel_viewer>
 {
 	public:
-		typedef std::vector<PanelViewer*> ArrayOfPanels;
+                typedef std::vector<panel_viewer*> ArrayOfPanels;
 
-		friend class PatternSingleton<PanelManagerModel>;
-		virtual ~PanelManagerModel();
+                friend class PatternSingleton<panel_manager_model>;
+                virtual ~panel_manager_model();
 
 
 		// La méthode  qui va nous permettre de récupérer
 		// la liste des panels
 		const ArrayOfPanels &GetPanelsList();
 
-		PanelViewer* createObject(const std::string& id);
+                panel_viewer* createObject(const std::string& id);
 
 
 	private:
-		PanelManagerModel();
+                panel_manager_model();
 
 		// Le tableau des plugins
 		ArrayOfPanels m_panels;
 
 };
 
-typedef PatternSingleton<PanelManagerModel> PanelManager;
+typedef PatternSingleton<panel_manager_model> panel_manager;
+// Only for compatibility purposes
+typedef panel_manager PanelManager;
 
 #endif /* PANELMANAGER_H_ */
 

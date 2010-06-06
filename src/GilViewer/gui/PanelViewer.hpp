@@ -54,20 +54,20 @@ class wxMenuBar;
 class VectorLayerGhost;
 
 #if wxUSE_DRAG_AND_DROP
-	class GilViewerFileDropTarget;
+        class gilviewer_file_drop_target;
 #endif // wxUSE_DRAG_AND_DROP
 
-class PanelViewer : public wxPanel
+class panel_viewer : public wxPanel
 {
 public:
 #if wxUSE_DRAG_AND_DROP
-	friend class GilViewerFileDropTarget;
+        friend class gilviewer_file_drop_target;
 #endif // wxUSE_DRAG_AND_DROP
 
 	static void Register(wxFrame* parent);
 
 
-	virtual ~PanelViewer() {}
+        virtual ~panel_viewer() {}
 
 	void AddLayer( const Layer::ptrLayerType &layer );
 
@@ -216,21 +216,26 @@ protected:
 	void UpdateIfTransformable();
 
 	///pour ne créer des panels qu'à partir de la factory (PanelManager)
-	PanelViewer(wxFrame* parent);
-	friend PanelViewer* createPanelViewer(wxFrame* parent);
+        panel_viewer(wxFrame* parent);
+        friend panel_viewer* createPanelViewer(wxFrame* parent);
 
 };
+
+// Only for compatibility purposes
+typedef panel_viewer PanelViewer;
 
 #if wxUSE_DRAG_AND_DROP
-class GilViewerFileDropTarget : public wxFileDropTarget
+class gilviewer_file_drop_target : public wxFileDropTarget
 {
 public:
-	GilViewerFileDropTarget( PanelViewer* panelviewer ) : m_panelViewer(panelviewer){}
-	virtual ~GilViewerFileDropTarget() {}
+        gilviewer_file_drop_target( panel_viewer* panelviewer ) : m_panelViewer(panelviewer){}
+        virtual ~gilviewer_file_drop_target() {}
 	bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 private:
-	PanelViewer* m_panelViewer;
+        panel_viewer* m_panelViewer;
 };
+
+typedef gilviewer_file_drop_target GilViewerFileDropTarget;
 #endif // wxUSE_DRAG_AND_DROP
 
 #endif /*PANELVIEWER_HPP_*/

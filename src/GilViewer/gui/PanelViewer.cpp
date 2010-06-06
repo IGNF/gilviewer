@@ -95,42 +95,42 @@ IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(PanelViewer,this)
 
 using namespace std;
 
-void PanelViewer::OnSize(wxSizeEvent &e) {
+void panel_viewer::OnSize(wxSizeEvent &e) {
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
 		(*it)->HasToBeUpdated(true);
 }
 
-void PanelViewer::SetModeNavigation() {
+void panel_viewer::SetModeNavigation() {
 	m_mode = MODE_NAVIGATION;
 	//m_toolBar->ToggleTool(ID_MODE_NAVIGATION, true);
 	//	m_menuMain->Check(ID_MODE_NAVIGATION, true);
 }
 
-void PanelViewer::SetModeCapture() {
+void panel_viewer::SetModeCapture() {
 	m_mode = MODE_CAPTURE;
 	//m_toolBar->ToggleTool(ID_MODE_CAPTURE, true);
 	//	m_menuMain->Check(ID_MODE_CAPTURE, true);
 }
 
-void PanelViewer::SetModeGeometryMoving() {
+void panel_viewer::SetModeGeometryMoving() {
 	m_mode = MODE_GEOMETRY_MOVING;
 	//m_toolBar->ToggleTool(ID_MODE_GEOMETRY_MOVING, true);
 	//	m_menuMain->Check(ID_MODE_GEOMETRY_MOVING, true);
 }
 
-void PanelViewer::SetModeEdition() {
+void panel_viewer::SetModeEdition() {
 	m_mode = MODE_EDITION;
 	//m_toolBar->ToggleTool(ID_MODE_EDITION, true);
 	//	m_menuMain->Check(ID_MODE_EDITION, true);
 }
 
-void PanelViewer::SetModeSelection() {
+void panel_viewer::SetModeSelection() {
 	m_mode = MODE_SELECTION;
 	//m_toolBar->ToggleTool(ID_MODE_SELECTION, true);
 	//	m_menuMain->Check(ID_MODE_SELECTION, true);
 }
 
-void PanelViewer::SetGeometryNull() {
+void panel_viewer::SetGeometryNull() {
 	m_ghostLayer->m_drawPointPosition = false;
 	m_ghostLayer->m_drawCircle = false;
 	m_ghostLayer->m_drawRectangleSelection = false;
@@ -141,45 +141,45 @@ void PanelViewer::SetGeometryNull() {
 	Refresh();
 }
 
-void PanelViewer::SetGeometryPoint() {
+void panel_viewer::SetGeometryPoint() {
 	m_geometry = GEOMETRY_POINT;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_POINT, true);
 	//	m_menuMain->Check(ID_GEOMETRY_POINT, true);
 }
 
-void PanelViewer::SetGeometryCircle() {
+void panel_viewer::SetGeometryCircle() {
 	m_geometry = GEOMETRY_CIRCLE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_CIRCLE, true);
 	//	m_menuMain->Check(ID_GEOMETRY_CIRCLE, true);
 }
 
-void PanelViewer::SetGeometryRectangle() {
+void panel_viewer::SetGeometryRectangle() {
 	m_geometry = GEOMETRY_RECTANGLE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_RECTANGLE, true);
 	//	m_menuMain->Check(ID_GEOMETRY_RECTANGLE, true);
 }
 
-void PanelViewer::SetGeometryLine() {
+void panel_viewer::SetGeometryLine() {
 	m_geometry = GEOMETRY_LINE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_LINE, true);
 	//	m_menuMain->Check(ID_GEOMETRY_LINE, true);
 }
 
-void PanelViewer::SetGeometryPolygone() {
+void panel_viewer::SetGeometryPolygone() {
 	m_geometry = GEOMETRY_POLYGONE;
 	//m_toolBar->ToggleTool(ID_GEOMETRY_POLYGONE, true);
 	//	m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
 }
 
-LayerControl* PanelViewer::GetLayerControl() const {
+LayerControl* panel_viewer::GetLayerControl() const {
 	return m_layerControl;
 }
 
-ApplicationSettings* PanelViewer::GetApplicationSettings() const {
+ApplicationSettings* panel_viewer::GetApplicationSettings() const {
 	return m_applicationSettings;
 }
 
-PanelViewer::PanelViewer(wxFrame* parent) :
+panel_viewer::panel_viewer(wxFrame* parent) :
 	wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
 	//m_menuMain(NULL),
 			m_mouseMovementStarted(false), m_translationDrag(0, 0),
@@ -191,7 +191,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 			m_ghostLayer(GetLayerControl()->m_ghostLayer),
 			//Setting des modes d'interface :
 			m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT) {
-	if (PanelManager::Instance()->GetPanelsList().size() == 0)
+	if (panel_manager::Instance()->GetPanelsList().size() == 0)
 		m_applicationSettings = new ApplicationSettings(this, wxID_ANY);
 
 #if wxUSE_DRAG_AND_DROP
@@ -272,7 +272,7 @@ PanelViewer::PanelViewer(wxFrame* parent) :
 
 }
 
-wxToolBar* PanelViewer::GetMainToolBar(wxWindow* parent) {
+wxToolBar* panel_viewer::GetMainToolBar(wxWindow* parent) {
 
 	if (!m_mainToolbar) {
 		m_mainToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
@@ -311,7 +311,7 @@ wxToolBar* PanelViewer::GetMainToolBar(wxWindow* parent) {
 	return m_mainToolbar;
 }
 
-wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent) {
+wxToolBar* panel_viewer::GetModeAndGeometryToolBar(wxWindow* parent) {
 	if (!m_modeAndGeometryToolbar) {
 		m_modeAndGeometryToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
@@ -338,16 +338,16 @@ wxToolBar* PanelViewer::GetModeAndGeometryToolBar(wxWindow* parent) {
 	return m_modeAndGeometryToolbar;
 }
 
-wxMenuBar* PanelViewer::GetMenuBar() {
+wxMenuBar* panel_viewer::GetMenuBar() {
 	return m_menuBar;
 }
 
-bool PanelViewer::InitToolbar() {
+bool panel_viewer::InitToolbar() {
 
 	return true;
 }
 
-void PanelViewer::OnPaint(wxPaintEvent& evt) {
+void panel_viewer::OnPaint(wxPaintEvent& evt) {
 	wxBufferedPaintDC dc(this);
 	if (!dc.Ok())
 		return;
@@ -384,7 +384,7 @@ void PanelViewer::OnPaint(wxPaintEvent& evt) {
 	m_ghostLayer->Draw(dc,dx,dy,false);
 }
 
-void PanelViewer::OnLeftDown(wxMouseEvent &event) {
+void panel_viewer::OnLeftDown(wxMouseEvent &event) {
 	// on commence un cliquer-glisser pour bouger
 	m_mouseMovementStarted = true;
 	SetCursor(wxCursor(wxCURSOR_HAND));
@@ -401,7 +401,7 @@ void PanelViewer::OnLeftDown(wxMouseEvent &event) {
 
 }
 
-void PanelViewer::OnLeftUp(wxMouseEvent &event) {
+void panel_viewer::OnLeftUp(wxMouseEvent &event) {
 	///si on était en mode navigation
 	if (m_mouseMovementStarted) {
 		SetCursor(wxCursor(wxCURSOR_ARROW));
@@ -425,7 +425,7 @@ void PanelViewer::OnLeftUp(wxMouseEvent &event) {
 
 }
 
-void PanelViewer::OnRightDown(wxMouseEvent &event) {
+void panel_viewer::OnRightDown(wxMouseEvent &event) {
 	//	/////Clique droit popup menu
 	//	if (event.m_shiftDown) //pour ne pas interférer avec le double-click !
 	//	{
@@ -457,7 +457,7 @@ void PanelViewer::OnRightDown(wxMouseEvent &event) {
 
 }
 
-void PanelViewer::OnLeftDClick(wxMouseEvent &event) {
+void panel_viewer::OnLeftDClick(wxMouseEvent &event) {
 	///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation)
 	if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
 		wxConfigBase *pConfig = wxConfigBase::Get();
@@ -468,7 +468,7 @@ void PanelViewer::OnLeftDClick(wxMouseEvent &event) {
 	UpdateStatusBar(event.m_x, event.m_y);
 }
 
-void PanelViewer::OnRightDClick(wxMouseEvent &event) {
+void panel_viewer::OnRightDClick(wxMouseEvent &event) {
 	///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation)
 	if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
 		wxConfigBase *pConfig = wxConfigBase::Get();
@@ -479,7 +479,7 @@ void PanelViewer::OnRightDClick(wxMouseEvent &event) {
 	UpdateStatusBar(event.m_x, event.m_y);
 }
 
-void PanelViewer::OnMiddleDown(wxMouseEvent & event) {
+void panel_viewer::OnMiddleDown(wxMouseEvent & event) {
 	///Affichage du layer control
 	wxPoint pos = event.GetPosition();
 	pos += GetScreenPosition();
@@ -491,7 +491,7 @@ void PanelViewer::OnMiddleDown(wxMouseEvent & event) {
 	UpdateStatusBar(event.m_x, event.m_y);
 }
 
-void PanelViewer::OnMouseWheel(wxMouseEvent& event) {
+void panel_viewer::OnMouseWheel(wxMouseEvent& event) {
 	////Zoom
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	double zoom, dezoom;
@@ -507,7 +507,7 @@ void PanelViewer::OnMouseWheel(wxMouseEvent& event) {
 	UpdateStatusBar(event.m_x, event.m_y);
 }
 
-void PanelViewer::OnMouseMove(wxMouseEvent &event) {
+void panel_viewer::OnMouseMove(wxMouseEvent &event) {
 	//déplacement (de l'image ou de la géométrie) si on a bouton gauche enfoncé (m_mouseMovementStarted)
 	if (m_mouseMovementStarted) {
 		wxPoint translation((int) (event.m_x - m_mouseMovementInitX), (int) (event.m_y - m_mouseMovementInitY));
@@ -535,7 +535,7 @@ void PanelViewer::OnMouseMove(wxMouseEvent &event) {
 	//	SetFocus();
 }
 
-void PanelViewer::OnKeydown(wxKeyEvent& event) {
+void panel_viewer::OnKeydown(wxKeyEvent& event) {
 	int step;
 	if (event.m_controlDown)
 		step = 50;
@@ -574,7 +574,7 @@ void PanelViewer::OnKeydown(wxKeyEvent& event) {
 
 }
 
-void PanelViewer::UpdateIfTransformable() {
+void panel_viewer::UpdateIfTransformable() {
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsTransformable()) {
 			(*it)->HasToBeUpdated(true);
@@ -582,7 +582,7 @@ void PanelViewer::UpdateIfTransformable() {
 	}
 }
 
-void PanelViewer::SceneMove(const wxPoint& translation) {
+void panel_viewer::SceneMove(const wxPoint& translation) {
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsTransformable()) {
 			(*it)->TranslationX((*it)->TranslationX() + translation.x * (*it)->ZoomFactor());
@@ -594,7 +594,7 @@ void PanelViewer::SceneMove(const wxPoint& translation) {
 	Refresh();
 }
 
-bool PanelViewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const {
+bool panel_viewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const {
 	bool coordOK = false;
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
 		if ((*it)->IsVisible() && ((*it)->GetPixelValue(i, j).length() != 0)) {
@@ -607,7 +607,7 @@ bool PanelViewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int 
 	return coordOK;
 }
 
-bool PanelViewer::GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double &j) const {
+bool panel_viewer::GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double &j) const {
 	bool coordOK = false;
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
 		if ((*it)->IsVisible()) {
@@ -620,7 +620,7 @@ bool PanelViewer::GetSubPixCoordImage(const int mouseX, const int mouseY, double
 	return coordOK;
 }
 
-void PanelViewer::OpenCustomFormat(const std::string &filename) {
+void panel_viewer::OpenCustomFormat(const std::string &filename) {
 	std::ostringstream oss;
 	oss << "File : " << __FILE__ << "\n";
 	oss << "Function : " << __FUNCTION__ << "\n";
@@ -629,7 +629,7 @@ void PanelViewer::OpenCustomFormat(const std::string &filename) {
 	::wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
 }
 
-void PanelViewer::UpdateStatusBar(const int i, const int j) {
+void panel_viewer::UpdateStatusBar(const int i, const int j) {
 	// On n'update que lorsque la status bar existe chez le parent ...
 	if (m_parent->GetStatusBar()) {
 		unsigned int nb = 0;
@@ -702,7 +702,7 @@ void PanelViewer::UpdateStatusBar(const int i, const int j) {
 	}
 }
 
-void PanelViewer::Zoom(double zoomFactor, wxMouseEvent &event) {
+void panel_viewer::Zoom(double zoomFactor, wxMouseEvent &event) {
 	for (LayerControl::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
 		if ((*it)->IsTransformable()) {
 			(*it)->TranslationX((*it)->TranslationX() + event.m_x * (*it)->ZoomFactor() * (zoomFactor - 1));
@@ -725,7 +725,7 @@ void PanelViewer::Zoom(double zoomFactor, wxMouseEvent &event) {
  }
  */
 
-void PanelViewer::AddLayer(const Layer::ptrLayerType &layer) {
+void panel_viewer::AddLayer(const Layer::ptrLayerType &layer) {
 	try {
 		m_layerControl->AddLayer(layer);
 	} catch (const std::exception &e) {
@@ -733,7 +733,7 @@ void PanelViewer::AddLayer(const Layer::ptrLayerType &layer) {
 	}
 }
 
-void PanelViewer::ShowLayerControl(bool show) const {
+void panel_viewer::ShowLayerControl(bool show) const {
 	m_layerControl->Show(show);
 }
 
@@ -742,11 +742,11 @@ void PanelViewer::ShowLayerControl(bool show) const {
 //	PopupMenu(m_menuMain, pos.x, pos.y);
 //}
 
-void PanelViewer::OnQuit(wxCommandEvent& event) {
+void panel_viewer::OnQuit(wxCommandEvent& event) {
 	Close();
 }
 
-void PanelViewer::OnSnapshot(wxCommandEvent& event) {
+void panel_viewer::OnSnapshot(wxCommandEvent& event) {
 	wxString wildcard;
 	wildcard << _("All supported files ");
 	wildcard << wxT("(*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|");
@@ -786,7 +786,7 @@ void PanelViewer::OnSnapshot(wxCommandEvent& event) {
 	}
 }
 
-void PanelViewer::executeMode() {
+void panel_viewer::executeMode() {
 	Refresh();
 
 	switch (m_mode) {
@@ -808,19 +808,19 @@ void PanelViewer::executeMode() {
 	}
 }
 
-void PanelViewer::executeModeNavigation() {
+void panel_viewer::executeModeNavigation() {
 
 }
-void PanelViewer::executeModeGeometryMoving() {
+void panel_viewer::executeModeGeometryMoving() {
 
 }
-void PanelViewer::executeModeCapture() {
+void panel_viewer::executeModeCapture() {
 
 }
-void PanelViewer::executeModeEdition() {
+void panel_viewer::executeModeEdition() {
 
 }
-void PanelViewer::executeModeSelection() {
+void panel_viewer::executeModeSelection() {
 
 }
 
@@ -829,7 +829,7 @@ inline double DistancePoints(const wxPoint& pt1, const wxPoint &pt2) {
 	return std::sqrt((double) (diff.x * diff.x + diff.y * diff.y));
 }
 
-void PanelViewer::GeometryAddPoint(const wxPoint & p)
+void panel_viewer::GeometryAddPoint(const wxPoint & p)
 //coord filées par l'event (pas encore image)
 {
 	//	double xi,yi;
@@ -903,7 +903,7 @@ void PanelViewer::GeometryAddPoint(const wxPoint & p)
 	executeMode();
 }
 
-void PanelViewer::GeometryMoveRelative(const wxPoint& translation) {
+void panel_viewer::GeometryMoveRelative(const wxPoint& translation) {
 	switch (m_geometry) {
 	case GEOMETRY_NULL:
 
@@ -930,7 +930,7 @@ void PanelViewer::GeometryMoveRelative(const wxPoint& translation) {
 	executeMode();
 }
 
-void PanelViewer::GeometryMoveAbsolute(const wxPoint& p) {
+void panel_viewer::GeometryMoveAbsolute(const wxPoint& p) {
 	wxPoint pt = m_ghostLayer->ToLocal(p);
 
 	switch (m_geometry) {
@@ -964,7 +964,7 @@ void PanelViewer::GeometryMoveAbsolute(const wxPoint& p) {
 	executeMode();
 }
 
-void PanelViewer::GeometryUpdateAbsolute(const wxPoint & p)
+void panel_viewer::GeometryUpdateAbsolute(const wxPoint & p)
 //coord filées par l'event (pas encore image)
 {
 	wxPoint pt = m_ghostLayer->ToLocal(p);
@@ -1002,7 +1002,7 @@ void PanelViewer::GeometryUpdateAbsolute(const wxPoint & p)
 
 }
 
-void PanelViewer::GeometryUpdateRelative(const wxPoint & translation)
+void panel_viewer::GeometryUpdateRelative(const wxPoint & translation)
 //coord filées par l'event (pas encore image)
 {
 	switch (m_geometry) {
@@ -1033,27 +1033,27 @@ void PanelViewer::GeometryUpdateRelative(const wxPoint & translation)
 
 }
 
-void PanelViewer::GeometryEnd() {
+void panel_viewer::GeometryEnd() {
 	executeMode();
 }
 
-PanelViewer* createPanelViewer(wxFrame* parent) {
-	return new PanelViewer(parent);
+panel_viewer* createPanelViewer(wxFrame* parent) {
+	return new panel_viewer(parent);
 }
 
-void PanelViewer::Register(wxFrame* parent) {
-	PanelManager::Instance()->Register("PanelViewer", boost::bind(createPanelViewer, parent));
+void panel_viewer::Register(wxFrame* parent) {
+	panel_manager::Instance()->Register("PanelViewer", boost::bind(createPanelViewer, parent));
 }
 
 #if wxUSE_DRAG_AND_DROP
-bool GilViewerFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
+bool gilviewer_file_drop_target::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 {
 	// Je ne suis pas certain que ça fonctionne comme ça ...
 	m_panelViewer->GetLayerControl()->AddLayersFromFiles(filenames);
 	return true;
 }
 #endif // wxUSE_DRAG_AND_DROP
-void PanelViewer::Crop() {
+void panel_viewer::Crop() {
 	// On se met en mode capture et on active la selection par rectangle
 	SetModeCapture();
 	SetGeometryRectangle();
