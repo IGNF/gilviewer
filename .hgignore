@@ -9,6 +9,7 @@ bin
 GilViewerConfig.cmake
 install_manifest.txt 
 src/GilViewer/gui/resources/resources.cpp
+src/GilViewer/config/config.hpp
 CMakeLists.txt.user
 GilViewer.cbp
 doc/html/*
