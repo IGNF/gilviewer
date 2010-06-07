@@ -44,16 +44,15 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
 #### ATTENTION : toutes les sources de ces dossiers seront incluses
 #### ATTENTION : si un fichier est ajoute dans un de ces dossiers mais que le CMakeLists.txt n'est pas modifie, il faut relancer le cmake 
 ####  a la main avant de compiler par make (ca, c'est pas vrai sous windows ! en fait je n'en suis pas si sur ...)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/config SRC_CONFIG)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/convenient SRC_CONVENIENT)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui SRC_GUI)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}/vectorutils SRC_VECTOR_UTILS)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}/wrappers SRC_WRAPPERS)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS)
 
 # Une variable regroupant toutes les sources ...
-SET( ALL_VIEWER_SOURCES ${SRC_CALQUES} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_OUTILS} ${SRC_VECTOR_UTILS} ${SRC_IO} ${SRC_WRAPPERS} )
+SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} )
 
 if(WIN32)
     if(MSVC)

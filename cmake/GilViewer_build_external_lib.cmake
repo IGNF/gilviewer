@@ -48,11 +48,3 @@ ADD_LIBRARY( tinyxml ${TINYXML_LIBRARY_TYPE} ${ALL_TINYXML_SRC_FILES} ${ALL_TINY
 ##################
 SET( INC_BOOST extern/boost )
 INCLUDE_DIRECTORIES( BEFORE ${INC_BOOST})
-
-
-
-#add_custom_command(
-#	TARGET install
-#	PRE_BUILD
-#	COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_DIR}/trac
-#)
