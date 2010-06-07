@@ -22,8 +22,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "boost/gil/gil_config.hpp"
-#include "boost/gil/utilities.hpp"
+#include "../../gil_config.hpp"
+#include "../../utilities.hpp"
 #include <cstddef>
 #include <cassert>
 #include <algorithm>
@@ -118,6 +118,9 @@ public:
     template <typename T>       T& _dynamic_cast()         { if (!current_type_is<T>()) throw std::bad_cast(); return *gil_reinterpret_cast  <      T*>(&_bits); }
 
     template <typename T> bool current_type_is()     const { return type_id<T>()==_index; }
+
+    base_t      bits()  const { return _bits;  }
+    std::size_t index() const { return _index; }
 
 private:
     template <typename T> static std::size_t type_id()     { return detail::type_to_index<Types,T>::value; }
