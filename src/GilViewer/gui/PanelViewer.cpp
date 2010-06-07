@@ -642,7 +642,7 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
         if (nb == 0)
             return;
 
-        boost::shared_ptr<orientation_2d> ori;
+        boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
         if (m_layerControl->IsOriented()) {
             ++nb; //on affiche aussi les coord carto dans ce cas
             ori = m_layerControl->GetOrientation();

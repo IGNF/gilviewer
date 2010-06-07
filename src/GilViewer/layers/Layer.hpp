@@ -64,23 +64,7 @@ class layer
 public:
     typedef boost::shared_ptr< layer > ptrLayerType;
 
-    layer(const boost::function<void()> &notifyLayerControl = notify_none, const boost::function<void()> &notifyLayerSettingsControl = notify_none):
-            notifyLayerControl_(notifyLayerControl),
-            notifyLayerSettingsControl_(notifyLayerSettingsControl),
-            m_isVisible(true),
-            m_isTransformable(true),
-            m_hasToBeUpdated(true),
-            m_name("Default layer name"),
-            m_filename(""),
-            m_zoomFactor(1.),
-            m_translationX(0.), m_translationY(0.),
-            m_hasOri(false),
-            m_infos(""),
-            m_point_width(3), m_line_width(3),
-            m_line_style(wxSOLID),
-            m_polygon_border_width(3),
-            m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
-            m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {}
+    layer(const boost::function<void()> &notifyLayerControl = notify_none, const boost::function<void()> &notifyLayerSettingsControl = notify_none);
     static void notify_none() {}
 
     virtual ~layer() {}
