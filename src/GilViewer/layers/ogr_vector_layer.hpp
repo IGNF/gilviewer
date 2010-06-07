@@ -46,7 +46,7 @@ Authors:
 #include <boost/mpl/vector.hpp>
 #include <boost/variant/variant.hpp>
 
-class LayerSettingsControl;
+class layer_settings_control;
 
 class OGRGeometry;
 class OGRFeature;
@@ -90,7 +90,7 @@ public:
 
     void build_infos(OGRSpatialReference *spatial_reference);
 
-    virtual LayerSettingsControl* build_layer_settings_control(unsigned int index, layer_control* parent);
+    virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
     inline virtual double get_center_x() {return m_center_x;}
     inline virtual double get_center_y() {return m_center_y;}

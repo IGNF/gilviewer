@@ -103,29 +103,67 @@ ELSE(NOT GIL_MATIS)
 	ENDFOREACH(FILE ${MATIS_FILES} )
 ENDIF(NOT GIL_MATIS)
 
+# Copy (all) boost::gil base files
+FILE( GLOB GILBASE_FILES ${INC_BOOST}/gil/*.hpp)
+        #MESSAGE(STATUS " GILBASE_FILES " ${GILBASE_FILES} )
+        FOREACH(FILE ${GILBASE_FILES} )
+                #MESSAGE(STATUS " gile base file " ${FILE})
+                GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+                INSTALL(CODE  "
+                        MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/${NAME_FILE} )
+                        execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/${NAME_FILE}\")
+                ")
+ENDFOREACH(FILE ${GILBASE_FILES} )
+
 # extensions io 
 FIND_PATH(GIL_IO dynamic_io.hpp
 		PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/io
 )
 IF(NOT GIL_IO )
-	MESSAGE(STATUS " gil io not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/io)
-	INSTALL(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/io\" \"\${Boost_INCLUDE_DIRS}/boost/gil/extensionio\" )" )
+        MESSAGE(STATUS " gil io not found : copy io to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/io)
+        INSTALL(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/io\" \"\${Boost_INCLUDE_DIRS}/boost/gil/extension/io\" )" )
 ELSE(NOT GIL_IO)
-	MESSAGE(STATUS " gil io found : change file if different " ${INC_BOOST}/boost/gil/extension/io)
-	FILE( GLOB IO_FILES ${INC_BOOST}/gil/extension/io/*.hpp)
-	#MESSAGE(STATUS " IO_FILES " ${IO_FILES} )
-	FOREACH(FILE ${IO_FILES} )
-		#MESSAGE(STATUS " io file " ${FILE})
-		GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
-		INSTALL(CODE  "
-			MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE} )
-			execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE}\") 
-		")
-	ENDFOREACH(FILE ${IO_FILES} )
+        MESSAGE(STATUS " gil io found : change file if different " ${INC_BOOST}/boost/gil/extension/io)
+        FILE( GLOB IO_FILES ${INC_BOOST}/gil/extension/io/*.hpp)
+        #MESSAGE(STATUS " IO_FILES " ${IO_FILES} )
+        FOREACH(FILE ${IO_FILES} )
+                #MESSAGE(STATUS " io file " ${FILE})
+                GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+                INSTALL(CODE  "
+                        MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE} )
+                        execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different \"${FILE}\" \"${Boost_INCLUDE_DIRS}/boost/gil/extension/io/${NAME_FILE}\")
+                ")
+        ENDFOREACH(FILE ${IO_FILES} )
 ENDIF(NOT GIL_IO )
 
+# extensions io_new
+FIND_PATH(GIL_IONEW tiff_io_old.hpp
+                PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/io_new
+)
+IF(NOT GIL_IONEW )
+        MESSAGE(STATUS " gil io_new not found : copy io_new to " ${Boost_INCLUDE_DIRS}/boost/gil/extension/io_new)
+        INSTALL(CODE  "
+                MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/io_new )
+               execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/io_new\"
+                   \"${Boost_INCLUDE_DIRS}/boost/gil/extension/io_new/\")
+        ")
+ELSE(NOT GIL_IONEW)
+        MESSAGE(STATUS " gil io_new found : change file if different " ${INC_BOOST}/boost/gil/extension/io_new)     
+                MESSAGE(STATUS " io_new file " ${FILE})
+                GET_FILENAME_COMPONENT(NAME_FILE  "${FILE}" NAME)
+                INSTALL(CODE  "
+                        MESSAGE(STATUS \"copy if different file : \" ${Boost_INCLUDE_DIRS}/boost/gil/extension/io_new/${NAME_FILE} )
+                       execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           \"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/io_new\"
+                           \"${Boost_INCLUDE_DIRS}/boost/gil/extension/io_new/\")
+                ")
+
+
+ENDIF(NOT GIL_IONEW )
+
 # extensions dynamic_image 
-FIND_PATH(GIL_DYNAMIC_IMAGE any_image.hpp
+FIND_PATH(GIL_DYNAMIC_IMAGE variant.hpp
 		PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/dynamic_image
 )
 IF(NOT GIL_DYNAMIC_IMAGE)
