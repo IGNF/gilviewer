@@ -5,11 +5,11 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#include "new_layer_infos_control.h"
+#include "layer_infos_control.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
-new_layer_infos_control::new_layer_infos_control( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+layer_infos_control::layer_infos_control( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
@@ -38,11 +38,11 @@ new_layer_infos_control::new_layer_infos_control( wxWindow* parent, wxWindowID i
 	this->Layout();
 	
 	// Connect Events
-	m_std_buttons_sizerOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( new_layer_infos_control::OnOKButtonClick ), NULL, this );
+	m_std_buttons_sizerOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( layer_infos_control::OnOKButtonClick ), NULL, this );
 }
 
-new_layer_infos_control::~new_layer_infos_control()
+layer_infos_control::~layer_infos_control()
 {
 	// Disconnect Events
-	m_std_buttons_sizerOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( new_layer_infos_control::OnOKButtonClick ), NULL, this );
+	m_std_buttons_sizerOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( layer_infos_control::OnOKButtonClick ), NULL, this );
 }

@@ -8,11 +8,11 @@
         <property name="encoding">UTF-8</property>
         <property name="event_generation">connect</property>
         <property name="event_handler">impl_virtual</property>
-        <property name="file">new_layer_infos_control</property>
+        <property name="file">layer_infos_control</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
         <property name="internationalize">0</property>
-        <property name="name">new_layer_infos_control</property>
+        <property name="name">layer_infos_control</property>
         <property name="namespace"></property>
         <property name="path">.</property>
         <property name="precompiled_header"></property>
@@ -31,7 +31,7 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">new_layer_infos_control</property>
+            <property name="name">layer_infos_control</property>
             <property name="pos"></property>
             <property name="size">371,337</property>
             <property name="style">wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE|wxMAXIMIZE_BOX</property>
