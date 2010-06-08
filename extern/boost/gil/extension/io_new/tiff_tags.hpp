@@ -154,9 +154,12 @@ struct tiff_copyright : tiff_property_base< std::string, TIFFTAG_COPYRIGHT > {};
 struct tiff_sample_format : tiff_property_base< uint16_t, TIFFTAG_SAMPLEFORMAT > {};
 
 /// Defines type for indexed property.
-struct tiff_indexed : tiff_property_base< uint16_t, TIFFTAG_INDEXED > {};
+struct tiff_indexed : tiff_property_base< bool, TIFFTAG_INDEXED > {};
 
 /// Tile related tags
+
+/// Defines type for a (not) tiled tiff image
+struct tiff_is_tiled : tiff_property_base< bool, false > {};
 
 /// Defines type for tile width
 struct tiff_tile_width : tiff_property_base< uint32_t, TIFFTAG_TILEWIDTH > {};
@@ -197,6 +200,8 @@ struct image_read_info< tiff_tag >
     /// The color space of the image data.
     tiff_photometric_interpretation::type _photometric_interpretation;
 
+    /// Is tiled?
+    tiff_is_tiled::type _is_tiled;
     /// Tile width
     tiff_tile_width::type _tile_width;
     /// Tile length

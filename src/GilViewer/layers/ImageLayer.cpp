@@ -94,12 +94,14 @@ image_layer::image_layer(const image_ptr &image, const std::string &name, const 
 
     m_cLUT = boost::shared_ptr<color_lookup_table>(new color_lookup_table);
 
+    /*
     ostringstream oss;
     oss << "Dimensions: " << m_view->value.width()  << " x " << m_view->value.height() << "\n";
     oss << "Nb channels: " << GetNbComponents() << "\n";
     oss << "Pixels type: " << GetTypeChannel() << "\n";
 
     m_infos = oss.str();
+    */
 
     SetChannels(0,1,2);
     SetAlphaChannel(false,0);
