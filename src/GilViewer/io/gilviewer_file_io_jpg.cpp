@@ -28,8 +28,6 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
     string ext(path.extension());
     to_lower(ext);
 
-    //image_read_info< jpeg_tag > info = read_image_info(filename.string(), jpeg_tag());
-
     ImageLayer::image_ptr image(new ImageLayer::image_t);
 
     try
@@ -49,6 +47,27 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
 
     Layer::ptrLayerType layer(new ImageLayer(image, path.stem(), path.string()));
     layer->add_orientation(filename);
+
+    image_read_info< jpeg_tag > info = read_image_info(filename, jpeg_tag());
+    ostringstream infos_str;
+    infos_str << "Dimensions: " << info._width << "x" << info._height << "\n";
+    infos_str << "Number of components: " << info._num_components << "\n";
+    string colorspace_str;
+    if(info._color_space==JCS_UNKNOWN)
+        colorspace_str="JCS_UNKNOWN";
+    else if(info._color_space==JCS_GRAYSCALE)
+        colorspace_str="JCS_GRAYSCALE";
+    else if(info._color_space==JCS_RGB)
+        colorspace_str="JCS_RGB";
+    else if(info._color_space==JCS_YCbCr)
+        colorspace_str="JCS_YCbCr";
+    else if(info._color_space==JCS_CMYK)
+        colorspace_str="JCS_CMYK";
+    else if(info._color_space==JCS_YCCK)
+        colorspace_str="JCS_YCCK";
+    infos_str << "Color space: " << colorspace_str << "\n";
+    infos_str << "Data precision: " << info._data_precision << "\n";
+    layer->infos(infos_str.str());
 
     return layer;
 }

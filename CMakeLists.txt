@@ -27,18 +27,18 @@ SET(CMAKE_CONFIG_DIR cmake)
 SET(SRC_DIR src/GilViewer)
 FILE( GLOB ALL_CONFIG_HEADER_FILES ${SRC_DIR}/config/*.h ${SRC_DIR}/config/*.hpp  )
 FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.h ${SRC_DIR}/convenient/*.hpp ${SRC_DIR}/convenient/*.hxx ${SRC_DIR}/convenient/*.inl )
-FILE( GLOB ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl )
+FILE( GLOB_RECURSE ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl )
 FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
 # Une variable regroupant tous les headers
-SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
+SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
+                        ${ALL_CONVENIENT_HEADER_FILES}
                         ${ALL_GUI_HEADER_FILES}
                         ${ALL_IO_HEADER_FILES}
                         ${ALL_LAYERS_HEADER_FILES}
                         ${ALL_TOOLS_HEADER_FILES}
-                        ${ALL_VECTORUTILS_HEADER_FILES}
-                        ${ALL_WRAPPERS_HEADER_FILES} )
+                        ${ALL_VECTORUTILS_HEADER_FILES} )
 
 #### Definition des dossiers contenant les sources
 #### ATTENTION : toutes les sources de ces dossiers seront incluses
@@ -47,12 +47,13 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONVENIENT_HEADER_FILES}
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/config SRC_CONFIG)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/convenient SRC_CONVENIENT)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui SRC_GUI)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui/wxfb SRC_GUI_WXFB)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS)
 
 # Une variable regroupant toutes les sources ...
-SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} )
+SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXFB} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} )
 
 if(WIN32)
     if(MSVC)

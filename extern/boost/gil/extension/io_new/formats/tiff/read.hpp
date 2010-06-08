@@ -138,9 +138,12 @@ public:
       io_error_if( _io_dev.template get_property<tiff_photometric_interpretation>( info._photometric_interpretation  ) == false
                  , "cannot read tiff tag." );
 
+      info._is_tiled = false;
+
       // Tile tags
       if(_io_dev.is_tiled())
       {
+          info._is_tiled = true;
           io_error_if( !_io_dev.template get_property<tiff_tile_width>      ( info._tile_width )
                        , "cannot read tiff_tile_width tag." );
           io_error_if( !_io_dev.template get_property<tiff_tile_length>     ( info._tile_length )
