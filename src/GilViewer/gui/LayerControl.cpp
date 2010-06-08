@@ -67,7 +67,7 @@ Authors:
 #include "../gui/VectorLayerSettingsControl.hpp"
 #include "../gui/ImageLayerSettingsControl.hpp"
 #include "../gui/GlobalSettingsControl.hpp"
-#include "../gui/new_layer_infos_control_impl.h"
+#include "../gui/layer_infos_control_impl.h"
 #include "../gui/LayerControlUtils.hpp"
 #include "../gui/PanelViewer.hpp"
 #include "../gui/define_id.hpp"
@@ -250,7 +250,7 @@ void layer_control::OnInfoButton(wxCommandEvent& event)
     wxString title(_("Infos: "));
     title << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
     //layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
-    new_layer_infos_control_impl *lic = new new_layer_infos_control_impl(this);
+    layer_infos_control_impl *lic = new layer_infos_control_impl(this);
     lic->m_text_control->AppendText(wxString(m_layers[id]->GetInfos().c_str(), *wxConvCurrent));
     lic->Show();
 }

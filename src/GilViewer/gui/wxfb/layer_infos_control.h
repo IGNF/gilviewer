@@ -5,8 +5,8 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __new_layer_infos_control__
-#define __new_layer_infos_control__
+#ifndef __layer_infos_control__
+#define __layer_infos_control__
 
 #include <wx/string.h>
 #include <wx/textctrl.h>
@@ -22,9 +22,9 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class new_layer_infos_control
+/// Class layer_infos_control
 ///////////////////////////////////////////////////////////////////////////////
-class new_layer_infos_control : public wxFrame 
+class layer_infos_control : public wxFrame 
 {
 	private:
 	
@@ -39,9 +39,9 @@ class new_layer_infos_control : public wxFrame
 	
 	public:
 		
-		new_layer_infos_control( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,337 ), long style = wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE|wxMAXIMIZE_BOX|wxTAB_TRAVERSAL );
-		~new_layer_infos_control();
+		layer_infos_control( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,337 ), long style = wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE|wxMAXIMIZE_BOX|wxTAB_TRAVERSAL );
+		~layer_infos_control();
 	
 };
 
-#endif //__new_layer_infos_control__
+#endif //__layer_infos_control__
