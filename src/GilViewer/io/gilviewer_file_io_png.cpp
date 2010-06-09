@@ -60,7 +60,7 @@ void gilviewer_file_io_png::save(shared_ptr<layer> layer, const string &filename
         throw invalid_argument("Bad layer type!\n");
 
     write_view( filename
-              , imagelayer->View()->value
+              , imagelayer->view()->value
               , gil::png_tag()
               );
 }

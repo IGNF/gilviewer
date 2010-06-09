@@ -81,7 +81,7 @@ void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename
     try
     {
         write_view( filename
-                    , imagelayer->View()->value
+                    , imagelayer->view()->value
                     , gil::jpeg_tag()
                     );
     }

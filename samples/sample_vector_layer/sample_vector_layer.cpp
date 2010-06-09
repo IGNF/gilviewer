@@ -91,12 +91,12 @@ bool sample_vector_layer_app::OnInit()
         vector_layer->AddPoint(50.,123.);
         vector_layer->AddPoint(5.,12.);
 
-        vector_layer->set_point_width(6);
-        vector_layer->set_point_color(*wxBLUE);
+        vector_layer->point_width(6);
+        vector_layer->point_color(*wxBLUE);
 
-        vector_layer->set_line_color(wxColor(246,123,123));
-        vector_layer->set_line_width(10);
-        vector_layer->set_line_style(wxSHORT_DASH);
+        vector_layer->line_color(wxColor(246,123,123));
+        vector_layer->line_width(10);
+        vector_layer->line_style(wxSHORT_DASH);
 
         vector_layer->AddText(52.3, 65.8, "text in ogr_vector_layer!!");
 #endif // GILVIEWER_USE_GDAL
@@ -104,26 +104,26 @@ bool sample_vector_layer_app::OnInit()
         // We now test the simple_vector_layer_interface
         boost::shared_ptr<layer> my_vector_layer = boost::shared_ptr<layer>(new simple_vector_layer("Simple layer"));
         m_frame->AddLayer(my_vector_layer);
-        my_vector_layer->AddCircle(100.,100.,10.);
-        my_vector_layer->set_polygon_border_color(*wxRED);
-        my_vector_layer->set_polygon_border_width(5);
-        my_vector_layer->set_polygon_inner_color(*wxBLUE);
-        my_vector_layer->AddCircle(123.,198.,2.3654654);
-        my_vector_layer->AddPoint(63.,45.654);
-        my_vector_layer->AddPoint(23.2,5.98);
-        my_vector_layer->set_point_width(8);
-        my_vector_layer->AddLine(0.,0.,10.,10.);
-        my_vector_layer->AddEllipse(-50.,1.,10.,25.,0.987456);
-        my_vector_layer->AddEllipse(10.,-23.,10.,25.);
-        my_vector_layer->set_polygon_inner_color(*wxGREEN);
-        my_vector_layer->set_polygon_inner_style(wxCROSSDIAG_HATCH);
+        my_vector_layer->add_circle(100.,100.,10.);
+        my_vector_layer->polygon_border_color(*wxRED);
+        my_vector_layer->polygon_border_width(5);
+        my_vector_layer->polygon_inner_color(*wxBLUE);
+        my_vector_layer->add_circle(123.,198.,2.3654654);
+        my_vector_layer->add_point(63.,45.654);
+        my_vector_layer->add_point(23.2,5.98);
+        my_vector_layer->point_width(8);
+        my_vector_layer->add_line(0.,0.,10.,10.);
+        my_vector_layer->add_ellipse(-50.,1.,10.,25.,0.987456);
+        my_vector_layer->add_ellipse(10.,-23.,10.,25.);
+        my_vector_layer->polygon_inner_color(*wxGREEN);
+        my_vector_layer->polygon_inner_style(wxCROSSDIAG_HATCH);
         std::vector<double> xp, yp;
         xp.push_back(12.3); xp.push_back(11.8); xp.push_back(-2.9);
         yp.push_back( 2.3); yp.push_back(-1.8); yp.push_back(16.9);
-        my_vector_layer->AddPolyline(xp,yp);
-        my_vector_layer->set_line_style(wxSHORT_DASH);
-        my_vector_layer->set_line_width(1);
-        my_vector_layer->AddText(12., 32., "Youhou!!!");
+        my_vector_layer->add_polyline(xp,yp);
+        my_vector_layer->line_style(wxSHORT_DASH);
+        my_vector_layer->line_width(1);
+        my_vector_layer->add_text(12., 32., "Youhou!!!");
     }
     catch( std::exception &e )
     {

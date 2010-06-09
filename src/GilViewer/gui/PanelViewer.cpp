@@ -98,7 +98,7 @@ BEGIN_EVENT_TABLE(PanelViewer, wxPanel)
 
 void panel_viewer::OnSize(wxSizeEvent &e) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
-        (*it)->HasToBeUpdated(true);
+        (*it)->needs_update(true);
 }
 
 void panel_viewer::SetModeNavigation() {
@@ -359,10 +359,10 @@ void panel_viewer::OnPaint(wxPaintEvent& evt) {
     int dy = static_cast<int> (m_translationDrag.y);
 
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-        if ((*it)->IsVisible()) {
-            if ((*it)->HasToBeUpdated()) {
+        if ((*it)->visible()) {
+            if ((*it)->needs_update()) {
                 try {
-                    (*it)->Update(tailleImage.GetX(), tailleImage.GetY());
+                    (*it)->update(tailleImage.GetX(), tailleImage.GetY());
                 } catch (const std::exception &e) {
                     std::ostringstream oss;
                     oss << "File : " << __FILE__ << "\n";
@@ -372,17 +372,17 @@ void panel_viewer::OnPaint(wxPaintEvent& evt) {
                     wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent), _("Error!"), wxICON_ERROR);
                     return;
                 }
-                (*it)->HasToBeUpdated(false);
+                (*it)->needs_update(false);
             }
 
-            if ((*it)->IsTransformable()) {
-                (*it)->Draw(dc,dx,dy, true);
+            if ((*it)->transformable()) {
+                (*it)->draw(dc,dx,dy, true);
             } else {
-                (*it)->Draw(dc, 0, 0, true);
+                (*it)->draw(dc, 0, 0, true);
             }
         }
     }
-    m_ghostLayer->Draw(dc,dx,dy,false);
+    m_ghostLayer->draw(dc,dx,dy,false);
 }
 
 void panel_viewer::OnLeftDown(wxMouseEvent &event) {
@@ -499,12 +499,12 @@ void panel_viewer::OnMouseWheel(wxMouseEvent& event) {
     pConfig->Read(wxT("/Options/Zoom"), &zoom, 0.5);
     pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
     int deltaMouseWheel = event.GetWheelRotation();
-    double zoomFactor;
+    double zoom_factor;
     if (deltaMouseWheel < 0)
-        zoomFactor = dezoom;
+        zoom_factor = dezoom;
     else
-        zoomFactor = zoom;
-    Zoom(zoomFactor, event);
+        zoom_factor = zoom;
+    Zoom(zoom_factor, event);
     UpdateStatusBar(event.m_x, event.m_y);
 }
 
@@ -577,32 +577,32 @@ void panel_viewer::OnKeydown(wxKeyEvent& event) {
 
 void panel_viewer::UpdateIfTransformable() {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-        if ((*it)->IsTransformable()) {
-            (*it)->HasToBeUpdated(true);
+        if ((*it)->transformable()) {
+            (*it)->needs_update(true);
         }
     }
 }
 
 void panel_viewer::SceneMove(const wxPoint& translation) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-        if ((*it)->IsTransformable()) {
-            (*it)->TranslationX((*it)->TranslationX() + translation.x * (*it)->ZoomFactor());
-            (*it)->TranslationY((*it)->TranslationY() + translation.y * (*it)->ZoomFactor());
+        if ((*it)->transformable()) {
+            (*it)->translation_x((*it)->translation_x() + translation.x * (*it)->zoom_factor());
+            (*it)->translation_y((*it)->translation_y() + translation.y * (*it)->zoom_factor());
         }
     }
-    m_ghostLayer->TranslationX(m_ghostLayer->TranslationX() + translation.x * m_ghostLayer->ZoomFactor());
-    m_ghostLayer->TranslationY(m_ghostLayer->TranslationY() + translation.y * m_ghostLayer->ZoomFactor());
+    m_ghostLayer->translation_x(m_ghostLayer->translation_x() + translation.x * m_ghostLayer->zoom_factor());
+    m_ghostLayer->translation_y(m_ghostLayer->translation_y() + translation.y * m_ghostLayer->zoom_factor());
     Refresh();
 }
 
 bool panel_viewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const {
     bool coordOK = false;
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
-        if ((*it)->IsVisible() && ((*it)->GetPixelValue(i, j).length() != 0)) {
+        if ((*it)->visible() && ((*it)->pixel_value(i, j).length() != 0)) {
             coordOK = true;
-            double zoom = (*it)->ZoomFactor();
-            i = static_cast<int> (zoom*mouseX-(*it)->TranslationX());
-            j = static_cast<int> (zoom*mouseY-(*it)->TranslationY());
+            double zoom = (*it)->zoom_factor();
+            i = static_cast<int> (zoom*mouseX-(*it)->translation_x());
+            j = static_cast<int> (zoom*mouseY-(*it)->translation_y());
         }
     }
     return coordOK;
@@ -611,11 +611,11 @@ bool panel_viewer::GetCoordImage(const int mouseX, const int mouseY, int &i, int
 bool panel_viewer::GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double &j) const {
     bool coordOK = false;
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
-        if ((*it)->IsVisible()) {
+        if ((*it)->visible()) {
             coordOK = true;
-            double zoom = (*it)->ZoomFactor();
-            i = static_cast<double> (zoom*mouseX-(*it)->TranslationX()- 0.5);
-            j = static_cast<double> (zoom*mouseY-(*it)->TranslationY()- 0.5);
+            double zoom = (*it)->zoom_factor();
+            i = static_cast<double> (zoom*mouseX-(*it)->translation_x()- 0.5);
+            j = static_cast<double> (zoom*mouseY-(*it)->translation_y()- 0.5);
         }
     }
     return coordOK;
@@ -635,7 +635,7 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
     if (m_parent->GetStatusBar()) {
         unsigned int nb = 0;
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-            if ((*it)->IsVisible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
+            if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
                 nb++;
         }
 
@@ -657,23 +657,23 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
             std::string affichage;
 
-            if ((*it)->IsVisible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
+            if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
             {
                 // TODO : Nettoyer !!!
                 if (!affichagePixelDone) {
                     affichagePixelDone = true;
                     std::ostringstream coordPixel;
                     coordPixel << "Coord image : (";
-                    coordPixel << static_cast<int> (-(*it)->TranslationX() + i * (*it)->ZoomFactor());
+                    coordPixel << static_cast<int> (-(*it)->translation_x() + i * (*it)->zoom_factor());
                     coordPixel << ",";
-                    coordPixel << static_cast<int> (-(*it)->TranslationY() + j * (*it)->ZoomFactor());
+                    coordPixel << static_cast<int> (-(*it)->translation_y() + j * (*it)->zoom_factor());
                     coordPixel << ")";
                     double dx, dy;
                     GetSubPixCoordImage(i, j, dx, dy);
                     coordPixel << (" - ( ");
-                    coordPixel << static_cast<double> (-(*it)->TranslationX() + i * (*it)->ZoomFactor()) - 0.5;
+                    coordPixel << static_cast<double> (-(*it)->translation_x() + i * (*it)->zoom_factor()) - 0.5;
                     coordPixel << ",";
-                    coordPixel << static_cast<double> (-(*it)->TranslationY() + j * (*it)->ZoomFactor()) - 0.5;
+                    coordPixel << static_cast<double> (-(*it)->translation_y() + j * (*it)->zoom_factor()) - 0.5;
                     coordPixel << ")";
                     m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
                     ++count;
@@ -683,18 +683,18 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
                     affichageCartoDone = true;
                     std::ostringstream coordCarto;
                     coordCarto << "Coord carto : (";
-                    coordCarto << static_cast<int> (ori->OriginX() + ori->Step() * (-(*it)->TranslationX() + i * (*it)->ZoomFactor()));
+                    coordCarto << static_cast<int> (ori->OriginX() + ori->Step() * (-(*it)->translation_x() + i * (*it)->zoom_factor()));
                     coordCarto << ",";
-                    coordCarto << static_cast<int> (ori->OriginY() + ori->Step() * ((*it)->TranslationY() - j * (*it)->ZoomFactor()));
+                    coordCarto << static_cast<int> (ori->OriginY() + ori->Step() * ((*it)->translation_y() - j * (*it)->zoom_factor()));
                     coordCarto << ")";
                     m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
                     ++count;
                 }
 
-                affichage += boost::filesystem::basename((*it)->Name()) + " : ";
-                affichage += (*it)->GetPixelValue(i, j);
+                affichage += boost::filesystem::basename((*it)->name()) + " : ";
+                affichage += (*it)->pixel_value(i, j);
                 std::ostringstream oss;
-                oss << 100. / (*it)->ZoomFactor();
+                oss << 100. / (*it)->zoom_factor();
                 affichage += "-" + oss.str() + "%";
                 m_parent->SetStatusText(wxString(affichage.c_str(), *wxConvCurrent), count);
                 ++count;
@@ -703,18 +703,18 @@ void panel_viewer::UpdateStatusBar(const int i, const int j) {
     }
 }
 
-void panel_viewer::Zoom(double zoomFactor, wxMouseEvent &event) {
+void panel_viewer::Zoom(double zoom_factor, wxMouseEvent &event) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-        if ((*it)->IsTransformable()) {
-            (*it)->TranslationX((*it)->TranslationX() + event.m_x * (*it)->ZoomFactor() * (zoomFactor - 1));
-            (*it)->TranslationY((*it)->TranslationY() + event.m_y * (*it)->ZoomFactor() * (zoomFactor - 1));
-            (*it)->ZoomFactor((*it)->ZoomFactor() * zoomFactor);
-            (*it)->HasToBeUpdated(true);
+        if ((*it)->transformable()) {
+            (*it)->translation_x((*it)->translation_x() + event.m_x * (*it)->zoom_factor() * (zoom_factor - 1));
+            (*it)->translation_y((*it)->translation_y() + event.m_y * (*it)->zoom_factor() * (zoom_factor - 1));
+            (*it)->zoom_factor((*it)->zoom_factor() * zoom_factor);
+            (*it)->needs_update(true);
         }
     }
-    m_ghostLayer->TranslationX(m_ghostLayer->TranslationX() + event.m_x * m_ghostLayer->ZoomFactor() * (zoomFactor - 1));
-    m_ghostLayer->TranslationY(m_ghostLayer->TranslationY() + event.m_y * m_ghostLayer->ZoomFactor() * (zoomFactor - 1));
-    m_ghostLayer->ZoomFactor(m_ghostLayer->ZoomFactor() * zoomFactor);
+    m_ghostLayer->translation_x(m_ghostLayer->translation_x() + event.m_x * m_ghostLayer->zoom_factor() * (zoom_factor - 1));
+    m_ghostLayer->translation_y(m_ghostLayer->translation_y() + event.m_y * m_ghostLayer->zoom_factor() * (zoom_factor - 1));
+    m_ghostLayer->zoom_factor(m_ghostLayer->zoom_factor() * zoom_factor);
     Refresh();
 }
 
@@ -835,7 +835,7 @@ void panel_viewer::GeometryAddPoint(const wxPoint & p)
 {
     //	double xi,yi;
     //	GetSubPixCoordImage( x, y, xi, yi );
-    wxPoint pt = m_ghostLayer->ToLocal(p);
+    wxPoint pt = m_ghostLayer->to_local(p);
 
     m_ghostLayer->m_drawPointPosition = false;
     m_ghostLayer->m_drawCircle = false;
@@ -932,7 +932,7 @@ void panel_viewer::GeometryMoveRelative(const wxPoint& translation) {
 }
 
 void panel_viewer::GeometryMoveAbsolute(const wxPoint& p) {
-    wxPoint pt = m_ghostLayer->ToLocal(p);
+    wxPoint pt = m_ghostLayer->to_local(p);
 
     switch (m_geometry) {
     case GEOMETRY_NULL:
@@ -968,7 +968,7 @@ void panel_viewer::GeometryMoveAbsolute(const wxPoint& p) {
 void panel_viewer::GeometryUpdateAbsolute(const wxPoint & p)
         //coord filées par l'event (pas encore image)
 {
-    wxPoint pt = m_ghostLayer->ToLocal(p);
+    wxPoint pt = m_ghostLayer->to_local(p);
 
     switch (m_geometry) {
     case GEOMETRY_NULL:
@@ -1069,17 +1069,17 @@ void panel_viewer::Crop() {
     }
 
     for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
-        wxRect  r  = m_ghostLayer->GetRectangle();
-        wxPoint p0 = (*it)->ToLocal(r.GetTopLeft());
-        wxPoint p1 = (*it)->ToLocal(r.GetBottomRight());
+        wxRect  r  = m_ghostLayer->rectangle();
+        wxPoint p0 = (*it)->to_local(r.GetTopLeft());
+        wxPoint p1 = (*it)->to_local(r.GetBottomRight());
         try {
             layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
             if(!layer) continue; // todo : warn the user ??
             m_layerControl->AddLayer(layer);
             // now that the layer is added, we can set its geometry
-            layer->TranslationX(p0.x+(*it)->TranslationX());
-            layer->TranslationY(p0.y+(*it)->TranslationY());
-            layer->ZoomFactor  (     (*it)->ZoomFactor  ());
+            layer->translation_x(p0.x+(*it)->translation_x());
+            layer->translation_y(p0.y+(*it)->translation_y());
+            layer->zoom_factor  (     (*it)->zoom_factor  ());
             // todo : handle Orientation2D of *it if it exists ... ??
 
         } catch (std::exception &err) {

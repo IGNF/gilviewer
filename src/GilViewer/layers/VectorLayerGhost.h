@@ -54,20 +54,20 @@ class vector_layer_ghost
 public:
     vector_layer_ghost( bool isCarto = false );
 
-    void ZoomFactor(double zoomFactor) { m_zoomFactor = zoomFactor; }
-    inline double ZoomFactor() const { return m_zoomFactor; }
-    void TranslationX(double dx) { m_translationX = dx; }
-    inline double TranslationX() const { return m_translationX; }
-    void TranslationY(double dy) { m_translationY = dy; }
-    inline double TranslationY() const { return m_translationY; }
+    void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
+    inline double zoom_factor() const { return m_zoomFactor; }
+    void translation_x(double dx) { m_translationX = dx; }
+    inline double translation_x() const { return m_translationX; }
+    void translation_y(double dy) { m_translationY = dy; }
+    inline double translation_y() const { return m_translationY; }
 
     // local<->global transforms. Default: pixel-centered
-    wxPoint ToLocal  (const wxPoint &p, double delta =0.5) const;
-    wxPoint FromLocal(const wxPoint &p, double delta =0.5) const;
+    wxPoint to_local  (const wxPoint &p, double delta =0.5) const;
+    wxPoint from_local(const wxPoint &p, double delta =0.5) const;
 
-    wxRect GetRectangle() const;
+    wxRect rectangle() const;
 
-    void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
+    void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
 
     wxPoint m_pointPosition;
     std::pair<wxPoint,wxPoint>  m_rectangleSelection;

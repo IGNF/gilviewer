@@ -244,7 +244,7 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
     }
 }
 
-string ogr_vector_layer::get_available_formats_wildcard() const
+string ogr_vector_layer::available_formats_wildcard() const
 {
     ostringstream wildcard;
     wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.kml|";

@@ -75,8 +75,8 @@ public:
     // Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
     virtual void update();
 
-    virtual std::string get_info_button_name() const {return "APPLICATIONS-GRAPHICS_16x16";}
-    virtual const char** get_icon_xpm() const;
+    virtual std::string info_button_name() const {return "APPLICATIONS-GRAPHICS_16x16";}
+    virtual const char** icon_xpm() const;
 
     //private:
     //wxSlider *m_minimumSlider;

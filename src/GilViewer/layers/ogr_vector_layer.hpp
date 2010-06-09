@@ -83,35 +83,35 @@ public:
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~ogr_vector_layer();
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
-    virtual void Update(int, int) {}
+    virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
+    virtual void update(int, int) {}
 
-    virtual std::string get_available_formats_wildcard() const;
+    virtual std::string available_formats_wildcard() const;
 
     void build_infos(OGRSpatialReference *spatial_reference);
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
-    inline virtual double get_center_x() {return m_center_x;}
-    inline virtual double get_center_y() {return m_center_y;}
+    inline virtual double center_x() {return m_center_x;}
+    inline virtual double center_y() {return m_center_y;}
 
     const std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features() const;
     std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features();
 
-    static wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
-    inline void set_coordinates(int c) {m_coordinates=c;}
+    static wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
+    inline void coordinates(int c) {m_coordinates=c;}
 
-    virtual void AddPoint( double x , double y );
-    virtual void AddText( double x , double y , const std::string &text , const wxColour &color = *wxRED );
-    virtual void AddLine( double x1 , double y1 , double x2 , double y2 );
-    virtual void AddPolyline( const std::vector<double> &x , const std::vector<double> &y );
-    virtual void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
-    virtual void AddCircle( double x , double y , double radius );
-    virtual void AddSpline( std::vector<std::pair<double, double> > points );
-    virtual void AddEllipse(double x_center, double y_center, double a, double b);
-    virtual void AddEllipse(double x_center, double y_center, double a, double b, double theta);
+    virtual void add_point( double x , double y );
+    virtual void add_text( double x , double y , const std::string &text , const wxColour &color = *wxRED );
+    virtual void add_line( double x1 , double y1 , double x2 , double y2 );
+    virtual void add_polyline( const std::vector<double> &x , const std::vector<double> &y );
+    virtual void add_polygon( const std::vector<double> &x , const std::vector<double> &y );
+    virtual void add_circle( double x , double y , double radius );
+    virtual void add_spline( std::vector<std::pair<double, double> > points );
+    virtual void add_ellipse(double x_center, double y_center, double a, double b);
+    virtual void add_ellipse(double x_center, double y_center, double a, double b, double theta);
 
-    virtual void Clear();
+    virtual void clear();
 
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;

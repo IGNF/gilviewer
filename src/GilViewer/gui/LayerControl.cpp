@@ -209,13 +209,13 @@ void layer_control::AddRow(const std::string &name, layer_settings_control *laye
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
     m_sizer->Add(m_rows.back()->m_visibilityCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
-    m_rows.back()->m_visibilityCheckBox->SetValue(m_layers.back()->IsVisible());
+    m_rows.back()->m_visibilityCheckBox->SetValue(m_layers.back()->visible());
 
 
     m_sizer->Add(m_rows.back()->m_transformationCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
-    m_rows.back()->m_transformationCheckBox->SetValue(m_layers.back()->IsTransformable());
+    m_rows.back()->m_transformationCheckBox->SetValue(m_layers.back()->transformable());
 
-    m_rows.back()->m_saveButton->Enable( m_layers.back()->is_saveable() );
+    m_rows.back()->m_saveButton->Enable( m_layers.back()->saveable() );
 
     m_sizer->Add(m_rows.back()->m_boxSizer, wxGROW);
     m_sizer->Fit(m_scroll);
@@ -237,8 +237,8 @@ void layer_control::update()
 {
     for (unsigned int id = 0;id<m_layers.size();++id)
     {
-        m_rows[id]->m_transformationCheckBox->SetValue( m_layers[id]->IsTransformable() );
-        m_rows[id]->m_visibilityCheckBox->SetValue( m_layers[id]->IsVisible() );
+        m_rows[id]->m_transformationCheckBox->SetValue( m_layers[id]->transformable() );
+        m_rows[id]->m_visibilityCheckBox->SetValue( m_layers[id]->visible() );
     }
 }
 
@@ -248,7 +248,7 @@ void layer_control::OnInfoButton(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_INFO);
 
     wxString title(_("Infos: "));
-    title << wxString(m_layers[id]->Name().c_str(), *wxConvCurrent);
+    title << wxString(m_layers[id]->name().c_str(), *wxConvCurrent);
     //layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
     layer_infos_control_impl *lic = new layer_infos_control_impl(this);
     lic->m_text_control->AppendText(wxString(m_layers[id]->GetInfos().c_str(), *wxConvCurrent));
@@ -259,8 +259,8 @@ void layer_control::OnSaveButton(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
-    wxString wildcard(m_layers[id]->get_available_formats_wildcard().c_str(), *wxConvCurrent);
-    std::string file = m_layers[id]->Filename();
+    wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
+    std::string file = m_layers[id]->filename();
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
     if (fileDialog->ShowModal() == wxID_OK)
     {
@@ -340,9 +340,9 @@ void layer_control::OnCenterButton(wxCommandEvent& event)
     for (layer_control::iterator it = begin(); it != end(); ++it)
     {
         // TODO: handle cartographic or image coordinates
-        (*it)->TranslationX((*it)->TranslationX()-m_layers[id]->get_center_x());
-        (*it)->TranslationY((*it)->TranslationY()+m_layers[id]->get_center_y());
-        (*it)->HasToBeUpdated(true);
+        (*it)->translation_x((*it)->translation_x()-m_layers[id]->center_x());
+        (*it)->translation_y((*it)->translation_y()+m_layers[id]->center_y());
+        (*it)->needs_update(true);
     }
     m_basicDrawPane->Refresh();
     * */
@@ -353,9 +353,9 @@ void layer_control::OnCheckVisibility(wxCommandEvent& event)
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_VISIBILITY);
     // On inverse ...
-    m_layers[id]->IsVisible(m_rows[id]->m_visibilityCheckBox->GetValue());
+    m_layers[id]->visible(m_rows[id]->m_visibilityCheckBox->GetValue());
     // ... et on refresh
-    m_layers[id]->HasToBeUpdated(true);
+    m_layers[id]->needs_update(true);
     m_basicDrawPane->Refresh();
 }
 
@@ -364,7 +364,7 @@ void layer_control::OnCheckTransformable(wxCommandEvent& event)
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_TRANSFORMATION);
     // On inverse ...
-    m_layers[id]->IsTransformable(m_rows[id]->m_transformationCheckBox->GetValue());
+    m_layers[id]->transformable(m_rows[id]->m_transformationCheckBox->GetValue());
     // ... et on refresh
     m_basicDrawPane->Refresh();
 }
@@ -374,12 +374,12 @@ void layer_control::OnReset(wxCommandEvent& event)
     // Pour chaque calque, on reinitialise
     for (layer_control::iterator it = begin(); it != end(); ++it)
     {
-        (*it)->ZoomFactor(1.);
-        (*it)->TranslationX(0.);
-        (*it)->TranslationY(0.);
-        (*it)->HasToBeUpdated(true);
-        (*it)->IsTransformable(true);
-        (*it)->IsVisible(true);
+        (*it)->zoom_factor(1.);
+        (*it)->translation_x(0.);
+        (*it)->translation_y(0.);
+        (*it)->needs_update(true);
+        (*it)->transformable(true);
+        (*it)->visible(true);
     }
 
     // Et on remet les checkbox en place (true)
@@ -494,75 +494,75 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     if (!layer) return;
 
     // On ajoute le calque dans le conteneur
-    layer->SetNotifyLayerControl( bind( &layer_control::update, this ) );
+    layer->notify_layer_control( bind( &layer_control::update, this ) );
     m_layers.push_back(layer);
 
     // On construit le SettingsControl en fonction du type de calque ajoute
     layer_settings_control *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    layer->SetNotifyLayerSettingsControl( bind( &layer_settings_control::update, settingscontrol ) );
+    layer->notify_layer_settings_control( bind( &layer_settings_control::update, settingscontrol ) );
     // On ajoute la ligne correspondante
-    AddRow(layer->Name(), settingscontrol, layer->Filename());
+    AddRow(layer->name(), settingscontrol, layer->filename());
 
     //Si c'est un calque image avec ori et que c'est le premier on met en place l'orientation generale du viewer
-    if (!m_isOrientationSet && m_layers.size() == 1 && layer->HasOri())
+    if (!m_isOrientationSet && m_layers.size() == 1 && layer->has_ori())
     {
-        m_ori = layer->Orientation();
+        m_ori = layer->orientation();
         m_isOrientationSet = true;
         ::wxLogMessage(_("Viewer orientation has been set!"));
     }
-    else if (!m_isOrientationSet && m_layers.size() > 1 && layer->HasOri())
+    else if (!m_isOrientationSet && m_layers.size() > 1 && layer->has_ori())
     {
         ::wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
     }
-    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->HasOri())
+    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori())
     {
         ::wxLogMessage(_("Image layer position initialised with respect to first image!"));
-        layer->ZoomFactor(m_ghostLayer->ZoomFactor());
-        layer->TranslationX(m_ghostLayer->TranslationX());
-        layer->TranslationY(m_ghostLayer->TranslationY());
+        layer->zoom_factor(m_ghostLayer->zoom_factor());
+        layer->translation_x(m_ghostLayer->translation_x());
+        layer->translation_y(m_ghostLayer->translation_y());
 
     }
 
     //Si il y a une orientation definie pour le viewer et pour le nouveau calque image on initialise correctement
     //sa position initiale et son zoom
-    if (m_isOrientationSet && layer->HasOri())
+    if (m_isOrientationSet && layer->has_ori())
     {
         ::wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
 
-        const boost::shared_ptr<orientation_2d> &oriLayer = layer->Orientation();
+        const boost::shared_ptr<orientation_2d> &oriLayer = layer->orientation();
 
-        double newZoomFactor = m_ori->Step() / oriLayer->Step();
-        double translationInitX = (oriLayer->OriginX() - m_ori->OriginX()) / oriLayer->Step();//+ m_layers[0]->TranslationX()/m_layers[0]->ZoomFactor();
-        double translationInitY = -(oriLayer->OriginY() - m_ori->OriginY()) / oriLayer->Step();//+ m_layers[0]->TranslationY()/m_layers[0]->ZoomFactor();
+        double newzoom_factor = m_ori->Step() / oriLayer->Step();
+        double translationInitX = (oriLayer->OriginX() - m_ori->OriginX()) / oriLayer->Step();//+ m_layers[0]->translation_x()/m_layers[0]->zoom_factor();
+        double translationInitY = -(oriLayer->OriginY() - m_ori->OriginY()) / oriLayer->Step();//+ m_layers[0]->translation_y()/m_layers[0]->zoom_factor();
 
-        layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
-        layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);//* layer->ZoomFactor());
-        layer->TranslationY(translationInitY + m_layers[0]->TranslationY() * newZoomFactor);//* layer->ZoomFactor());
+        layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
+        layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);//* layer->zoom_factor());
+        layer->translation_y(translationInitY + m_layers[0]->translation_y() * newzoom_factor);//* layer->zoom_factor());
     }
 
     //Si il y a une orientation definie pour le viewer et et qu'on a affaire a une couche vecteur :
-    if (m_isOrientationSet && layer->get_layer_type_as_string() == "Vector")
+    if (m_isOrientationSet && layer->layer_type_as_string() == "Vector")
     {
         ::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
 
         double translationInitX =-m_ori->OriginX();
         double translationInitY = m_ori->OriginY();
 
-        double newZoomFactor = m_ori->Step();
-        //layer->ZoomFactor(newZoomFactor * m_layers[0]->ZoomFactor());
-        layer->ZoomFactor(m_layers[0]->ZoomFactor());
-        layer->TranslationX(translationInitX + m_layers[0]->TranslationX() * newZoomFactor);
-        layer->TranslationY(translationInitY + m_layers[0]->TranslationY() * newZoomFactor);
+        double newzoom_factor = m_ori->Step();
+        //layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
+        layer->zoom_factor(m_layers[0]->zoom_factor());
+        layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);
+        layer->translation_y(translationInitY + m_layers[0]->translation_y() * newzoom_factor);
     }
-    layer->SetDefaultDisplayParameters();
+    layer->default_display_parameters();
     layer->notifyLayerSettingsControl_();
 
 
     if(m_isOrientationSet)
-        layer->Resolution(m_ori->Step());
+        layer->resolution(m_ori->Step());
     else
     {
-        layer->Resolution(1.);
+        layer->resolution(1.);
     }
 
     Refresh();
@@ -653,14 +653,14 @@ void layer_control::SwapRows(const unsigned int firstRow, const unsigned int sec
 
     // Finalement, si necessaire, il faut changer le bitmap associe au bouton d'infos
     {
-        m_rows[firstRow]->m_infoButton->SetBitmapLabel(wxBitmap(m_rows[firstRow]->m_layerSettingsControl->get_icon_xpm()));
-        m_rows[secondRow]->m_infoButton->SetBitmapLabel(wxBitmap(m_rows[secondRow]->m_layerSettingsControl->get_icon_xpm()));
+        m_rows[firstRow]->m_infoButton->SetBitmapLabel(wxBitmap(m_rows[firstRow]->m_layerSettingsControl->icon_xpm()));
+        m_rows[secondRow]->m_infoButton->SetBitmapLabel(wxBitmap(m_rows[secondRow]->m_layerSettingsControl->icon_xpm()));
     }
 
     // Ticket #9 : bouton sauvegarde ne bouge pas ...
     {
-        m_rows[firstRow]->m_saveButton->Enable( m_layers[firstRow]->is_saveable() );
-        m_rows[secondRow]->m_saveButton->Enable( m_layers[secondRow]->is_saveable() );
+        m_rows[firstRow]->m_saveButton->Enable( m_layers[firstRow]->saveable() );
+        m_rows[secondRow]->m_saveButton->Enable( m_layers[secondRow]->saveable() );
     }
 }
 
@@ -703,7 +703,7 @@ void layer_control::OnVisibilityButton(wxCommandEvent& event)
         if (m_rows[i]->m_nameStaticText->IsSelected() == true)
         {
             m_rows[i]->m_visibilityCheckBox->SetValue(!m_rows[i]->m_visibilityCheckBox->GetValue());
-            m_layers[i]->IsVisible(m_rows[i]->m_visibilityCheckBox->GetValue());
+            m_layers[i]->visible(m_rows[i]->m_visibilityCheckBox->GetValue());
         }
     }
 
@@ -719,7 +719,7 @@ void layer_control::OnTransformationButton(wxCommandEvent& event)
         if (m_rows[i]->m_nameStaticText->IsSelected() == true)
         {
             m_rows[i]->m_transformationCheckBox->SetValue(!m_rows[i]->m_transformationCheckBox->GetValue());
-            m_layers[i]->IsTransformable(m_rows[i]->m_transformationCheckBox->GetValue());
+            m_layers[i]->transformable(m_rows[i]->m_transformationCheckBox->GetValue());
         }
     }
 
@@ -795,19 +795,19 @@ void layer_control::CreateNewImageLayerWithParameters(const ImageLayerParameters
         AddLayer(ptr);
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
-        this->m_layers.back()->IsVisible(parameters.isVisible);
-        this->m_layers.back()->IsTransformable(parameters.isTransformable);
-        this->m_layers.back()->Alpha(parameters.alpha);
-        this->m_layers.back()->Gamma(parameters.gamma);
-        this->m_layers.back()->IntensityMin(parameters.intensityMin);
-        this->m_layers.back()->IntensityMax(parameters.intensityMax);
-        this->m_layers.back()->IsTransparent(parameters.isTransparent);
-        this->m_layers.back()->TransparencyMin(parameters.transparencyMin);
-        this->m_layers.back()->TransparencyMax(parameters.transparencyMax);
-        this->m_layers.back()->ZoomFactor(parameters.zoomFactor);
-        this->m_layers.back()->TranslationX(parameters.translationX);
-        this->m_layers.back()->TranslationY(parameters.translationY);
-        this->m_layers.back()->SetAlphaChannel(parameters.useAlphaChannel,parameters.alphaChannel);
+        this->m_layers.back()->visible(parameters.visible);
+        this->m_layers.back()->transformable(parameters.transformable);
+        this->m_layers.back()->alpha(parameters.alpha);
+        this->m_layers.back()->gamma(parameters.gamma);
+        this->m_layers.back()->intensity_min(parameters.intensity_min);
+        this->m_layers.back()->intensity_max(parameters.intensity_max);
+        this->m_layers.back()->transparent(parameters.transparent);
+        this->m_layers.back()->transparency_min(parameters.transparency_min);
+        this->m_layers.back()->transparency_max(parameters.transparency_max);
+        this->m_layers.back()->zoom_factor(parameters.zoom_factor);
+        this->m_layers.back()->translation_x(parameters.translation_x);
+        this->m_layers.back()->translation_y(parameters.translation_y);
+        this->m_layers.back()->alpha_channel(parameters.useAlphaChannel,parameters.alphaChannel);
 
         // MAJ de l'interface
         this->m_layers.back()->notifyLayerControl_();
@@ -835,8 +835,8 @@ void layer_control::CreateNewVectorLayerWithParameters(const VectorLayerParamete
         AddLayer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
-        this->m_layers.back()->IsVisible(parameters.isVisible);
-        this->m_layers.back()->IsTransformable(parameters.isTransformable);
+        this->m_layers.back()->visible(parameters.visible);
+        this->m_layers.back()->transformable(parameters.transformable);
         /*
         this->m_layers.back()->SetPointsStyle(parameters.pointsColor, parameters.pointsWidth);
         this->m_layers.back()->SetLinesStyle(parameters.linesColor, parameters.linesWidth, parameters.linesStyle);
@@ -846,24 +846,24 @@ void layer_control::CreateNewVectorLayerWithParameters(const VectorLayerParamete
         this->m_layers.back()->PolygonsRingsStyle(parameters.polygonsRingsStyle);
         this->m_layers.back()->PolygonsInsideStyle(parameters.polygonsInsideStyle);
         */
-        //this->m_layers.back()->set_style(parameters.polygonsInsideColor,parameters.polygonsRingsColor,parameters.polygonsInsideStyle,parameters.polygonsRingsStyle,parameters.polygonsRingsWidth);
+        //this->m_layers.back()->style(parameters.polygonsInsideColor,parameters.polygonsRingsColor,parameters.polygonsInsideStyle,parameters.polygonsRingsStyle,parameters.polygonsRingsWidth);
 
-        this->m_layers.back()->set_point_color(parameters.pointsColor);
-        this->m_layers.back()->set_point_width(parameters.pointsWidth);
+        this->m_layers.back()->point_color(parameters.pointsColor);
+        this->m_layers.back()->point_width(parameters.pointsWidth);
 
-        this->m_layers.back()->set_line_color(parameters.linesColor);
-        this->m_layers.back()->set_line_width(parameters.linesWidth);
-        this->m_layers.back()->set_line_style(parameters.linesStyle);
+        this->m_layers.back()->line_color(parameters.linesColor);
+        this->m_layers.back()->line_width(parameters.linesWidth);
+        this->m_layers.back()->line_style(parameters.linesStyle);
 
-        this->m_layers.back()->set_polygon_border_color(parameters.polygonsRingsColor);
-        this->m_layers.back()->set_polygon_inner_color(parameters.polygonsInsideColor);
-        this->m_layers.back()->set_polygon_border_width(parameters.polygonsRingsWidth);
-        this->m_layers.back()->set_polygon_border_style(parameters.polygonsRingsStyle);
-        this->m_layers.back()->set_polygon_inner_style(parameters.polygonsInsideStyle);
+        this->m_layers.back()->polygon_border_color(parameters.polygonsRingsColor);
+        this->m_layers.back()->polygon_inner_color(parameters.polygonsInsideColor);
+        this->m_layers.back()->polygon_border_width(parameters.polygonsRingsWidth);
+        this->m_layers.back()->polygon_border_style(parameters.polygonsRingsStyle);
+        this->m_layers.back()->polygon_inner_style(parameters.polygonsInsideStyle);
 
-        this->m_layers.back()->ZoomFactor(parameters.zoomFactor);
-        this->m_layers.back()->TranslationX(parameters.translationX);
-        this->m_layers.back()->TranslationY(parameters.translationY);
+        this->m_layers.back()->zoom_factor(parameters.zoom_factor);
+        this->m_layers.back()->translation_x(parameters.translation_x);
+        this->m_layers.back()->translation_y(parameters.translation_y);
 
         // MAJ de l'interface
         this->m_layers.back()->notifyLayerControl_();

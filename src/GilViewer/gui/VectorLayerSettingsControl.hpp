@@ -76,7 +76,7 @@ public:
     static unsigned int FromWxStyleToSelectionIndex( unsigned int style );
 
     virtual std::string get_info_button_name() const {return "APPLICATIONS-OTHERS_16x16";}
-    virtual const char** get_icon_xpm() const;
+    virtual const char** icon_xpm() const;
 
     //private:
     layer_control *m_parent;

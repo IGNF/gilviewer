@@ -126,25 +126,25 @@ public:
     simple_vector_layer(const std::string& layer_name="default layer name");
     virtual ~simple_vector_layer() {}
 
-    wxPoint FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates=1/*IMAGE_COORDINATES*/) const;
+    wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates=1/*IMAGE_COORDINATES*/) const;
 
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
-    virtual void Update(int, int) {}
+    virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
+    virtual void update(int, int) {}
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
     virtual std::string GetInfos();
 
-    virtual std::string get_available_formats_wildcard() const;
+    virtual std::string available_formats_wildcard() const;
 
-    void AddCircle( double x , double y , double radius );
-    void AddLine( double x1 , double y1 , double x2 , double y2 );
-    void AddPolyline( const std::vector<double> &x , const std::vector<double> &y );
-    void AddPoint( double x , double y );
-    void AddSpline( std::vector<PointType> points );
-    void AddEllipse(double x_center, double y_center, double a, double b);
-    void AddEllipse(double x_center, double y_center, double a, double b, double theta);
-    void AddPolygon( const std::vector<double> &x , const std::vector<double> &y );
-    void AddText( double x , double y , const std::string &text , const wxColour &color = *wxRED );
+    void add_circle( double x , double y , double radius );
+    void add_line( double x1 , double y1 , double x2 , double y2 );
+    void add_polyline( const std::vector<double> &x , const std::vector<double> &y );
+    void add_point( double x , double y );
+    void add_spline( std::vector<PointType> points );
+    void add_ellipse(double x_center, double y_center, double a, double b);
+    void add_ellipse(double x_center, double y_center, double a, double b, double theta);
+    void add_polygon( const std::vector<double> &x , const std::vector<double> &y );
+    void add_text( double x , double y , const std::string &text , const wxColour &color = *wxRED );
 
     virtual void Clear();
 
