@@ -108,22 +108,22 @@ private:
 struct param_base
 {
 	std::string path;
-	bool isVisible;
-	bool isTransformable;
-	double zoomFactor;
-	double translationX;
-	double translationY;
+        bool visible;
+        bool transformable;
+        double zoom_factor;
+        double translation_x;
+        double translation_y;
 };
 
 typedef struct param_image_layer : param_base
 {
 	unsigned char alpha;
 	double gamma;
-	double intensityMin;
-	double intensityMax;
-	bool isTransparent;
-	double transparencyMin;
-	double transparencyMax;
+        double intensity_min;
+        double intensity_max;
+        bool transparent;
+        double transparency_min;
+        double transparency_max;
 	unsigned int red;
 	unsigned int green;
 	unsigned int blue;

@@ -443,18 +443,18 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
 
                     ImageLayerParameters parameters;
                     parameters.path = path;
-                    parameters.isVisible = is_visible;
-                    parameters.isTransformable = is_transformable;
+                    parameters.visible = is_visible;
+                    parameters.transformable = is_transformable;
                     parameters.alpha = alpha;
                     parameters.gamma = gamma;
-                    parameters.intensityMin = min_intensities;
-                    parameters.intensityMax = max_intensities;
-                    parameters.isTransparent = is_transparent;
-                    parameters.transparencyMin = min_transparency;
-                    parameters.transparencyMax = max_transparency;
-                    parameters.zoomFactor = zoom_factor;
-                    parameters.translationX = translation_x;
-                    parameters.translationY = translation_y;
+                    parameters.intensity_min = min_intensities;
+                    parameters.intensity_max = max_intensities;
+                    parameters.transparent = is_transparent;
+                    parameters.transparency_min = min_transparency;
+                    parameters.transparency_max = max_transparency;
+                    parameters.zoom_factor = zoom_factor;
+                    parameters.translation_x = translation_x;
+                    parameters.translation_y = translation_y;
                     parameters.red = red;
                     parameters.green = green;
                     parameters.blue = blue;
@@ -487,8 +487,8 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
 
                     VectorLayerParameters parameters;
                     parameters.path = path;
-                    parameters.isVisible = is_visible;
-                    parameters.isTransformable = is_transformable;
+                    parameters.visible = is_visible;
+                    parameters.transformable = is_transformable;
                     parameters.pointsColor = wxColour(points_red,points_green,points_blue,points_alpha);
                     parameters.pointsWidth = points_width;
                     parameters.linesWidth = lines_width;
@@ -499,9 +499,9 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                     parameters.polygonsInsideStyle = polygons_inside_style;
                     parameters.polygonsRingsStyle = polygons_rings_style;
                     parameters.polygonsRingsWidth = polygons_rings_width;
-                    parameters.zoomFactor = zoom_factor;
-                    parameters.translationX = translation_x;
-                    parameters.translationY = translation_y;
+                    parameters.zoom_factor = zoom_factor;
+                    parameters.translation_x = translation_x;
+                    parameters.translation_y = translation_y;
 
                     layerControl->CreateNewVectorLayerWithParameters( parameters );
                 }
@@ -620,7 +620,7 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
     unsigned int i = 0;
     for (;it!=layerControl->end();++it,++i)
     {
-        if ( (*it)->Filename() == "" )
+        if ( (*it)->filename() == "" )
             continue;
         bool is_image = false;
         std::ostringstream oss;
@@ -633,7 +633,7 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
         // Type
         TiXmlElement *elemType = new TiXmlElement( "Type" );
         elementLayer->LinkEndChild( elemType );
-        if ( (*it)->get_layer_type_as_string() == "Vector" )
+        if ( (*it)->layer_type_as_string() == "Vector" )
             elemType->SetAttribute("value","Vector");
         else
         {
@@ -644,7 +644,7 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
         // Chemin
         TiXmlElement *elemPath = new TiXmlElement( "Path" );
         elementLayer->LinkEndChild( elemPath );
-        elemPath->SetAttribute("value",(*it)->Filename().c_str());
+        elemPath->SetAttribute("value",(*it)->filename().c_str());
 
         // Tout ce qui concerne les aspects de visualisation
         TiXmlElement *elemAppearance = new TiXmlElement( "Appearance" );
@@ -653,25 +653,25 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
         // Visibilite
         TiXmlElement *elemVisibility = new TiXmlElement( "Visibility" );
         elemAppearance->LinkEndChild( elemVisibility );
-        elemVisibility->SetAttribute("value",(*it)->IsVisible());
+        elemVisibility->SetAttribute("value",(*it)->visible());
 
         // Transformabilite
         TiXmlElement *elemTransformability = new TiXmlElement( "Transformability" );
         elemAppearance->LinkEndChild( elemTransformability );
-        elemTransformability->SetAttribute("value",(*it)->IsTransformable());
+        elemTransformability->SetAttribute("value",(*it)->transformable());
 
         // Zoom
         TiXmlElement *elemZoom = new TiXmlElement( "ZoomFactor" );
         elemAppearance->LinkEndChild( elemZoom );
-        elemZoom->SetDoubleAttribute("value",(*it)->ZoomFactor());
+        elemZoom->SetDoubleAttribute("value",(*it)->zoom_factor());
 
         // Translations
         TiXmlElement *elemTranslationX = new TiXmlElement( "TranslationX" );
         elemAppearance->LinkEndChild( elemTranslationX );
-        elemTranslationX->SetDoubleAttribute("value",(*it)->TranslationX());
+        elemTranslationX->SetDoubleAttribute("value",(*it)->translation_x());
         TiXmlElement *elemTranslationY = new TiXmlElement( "TranslationY" );
         elemAppearance->LinkEndChild( elemTranslationY );
-        elemTranslationY->SetDoubleAttribute("value",(*it)->TranslationY());
+        elemTranslationY->SetDoubleAttribute("value",(*it)->translation_y());
 
         // Ca, ca n'est valable que si le calque est une image
         if (is_image)
@@ -679,31 +679,31 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             // Alpha
             TiXmlElement *elemAlpha = new TiXmlElement( "Alpha" );
             elemAppearance->LinkEndChild( elemAlpha );
-            elemAlpha->SetAttribute("value",(*it)->Alpha());
+            elemAlpha->SetAttribute("value",(*it)->alpha());
 
             // Gamma
             TiXmlElement *elemGamma = new TiXmlElement( "Gamma" );
             elemAppearance->LinkEndChild( elemGamma );
-            elemGamma->SetDoubleAttribute("value",(*it)->Gamma());
+            elemGamma->SetDoubleAttribute("value",(*it)->gamma());
 
             // Intensities
             TiXmlElement *elemIntensity = new TiXmlElement( "Intensities" );
             elemAppearance->LinkEndChild( elemIntensity );
-            elemIntensity->SetDoubleAttribute("min",(*it)->IntensityMin());
-            elemIntensity->SetDoubleAttribute("max",(*it)->IntensityMax());
+            elemIntensity->SetDoubleAttribute("min",(*it)->intensity_min());
+            elemIntensity->SetDoubleAttribute("max",(*it)->intensity_max());
 
             // Transparency
             TiXmlElement *elemTransparency = new TiXmlElement( "Transparency" );
             elemAppearance->LinkEndChild( elemTransparency );
-            elemTransparency->SetAttribute("value",(*it)->IsTransparent());
-            elemTransparency->SetDoubleAttribute("min",(*it)->TransparencyMin());
-            elemTransparency->SetDoubleAttribute("max",(*it)->TransparencyMax());
+            elemTransparency->SetAttribute("value",(*it)->transparent());
+            elemTransparency->SetDoubleAttribute("min",(*it)->transparency_min());
+            elemTransparency->SetDoubleAttribute("max",(*it)->transparency_max());
 
             // Channels
             TiXmlElement *elemChannels = new TiXmlElement( "Channels" );
             elemAppearance->LinkEndChild( elemChannels );
             unsigned int red, green, blue;
-            (*it)->GetChannels(red,green,blue);
+            (*it)->channels(red,green,blue);
             elemChannels->SetAttribute("red",red);
             elemChannels->SetAttribute("green",green);
             elemChannels->SetAttribute("blue",blue);
@@ -713,7 +713,7 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             elemAppearance->LinkEndChild( elemAlphaChannel );
             bool isUsed;
             unsigned int channelIndex;
-            (*it)->GetAlphaChannel(isUsed,channelIndex);
+            (*it)->alpha_channel(isUsed,channelIndex);
             elemAlphaChannel->SetAttribute("value",isUsed);
             elemAlphaChannel->SetAttribute("channel",channelIndex);
         }
@@ -725,7 +725,7 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             TiXmlElement *elemPoints = new TiXmlElement( "Points" );
             elemAppearance->LinkEndChild( elemPoints );
             TiXmlElement *elemPointsColour = new TiXmlElement( "Colour" );
-            colour = (*it)->get_point_color();
+            colour = (*it)->point_color();
             elemPoints->LinkEndChild( elemPointsColour );
             elemPointsColour->SetAttribute("red",colour.Red());
             elemPointsColour->SetAttribute("green",colour.Green());
@@ -733,13 +733,13 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             elemPointsColour->SetAttribute("alpha",colour.Alpha());
             TiXmlElement *elemPointsWidth = new TiXmlElement( "Width" );
             elemPoints->LinkEndChild( elemPointsWidth );
-            elemPointsWidth->SetAttribute("value",(*it)->get_point_width());
+            elemPointsWidth->SetAttribute("value",(*it)->point_width());
 
             // Lines
             TiXmlElement *elemLines = new TiXmlElement( "Lines" );
             elemAppearance->LinkEndChild( elemLines );
             TiXmlElement *elemLinesColour = new TiXmlElement( "Colour" );
-            colour = (*it)->get_line_color();
+            colour = (*it)->line_color();
             elemLines->LinkEndChild( elemLinesColour );
             elemLinesColour->SetAttribute("red",colour.Red());
             elemLinesColour->SetAttribute("green",colour.Green());
@@ -747,10 +747,10 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             elemLinesColour->SetAttribute("alpha",colour.Alpha());
             TiXmlElement *elemLinesWidth = new TiXmlElement( "Width" );
             elemLines->LinkEndChild( elemLinesWidth );
-            elemLinesWidth->SetAttribute("value",(*it)->get_line_width());
+            elemLinesWidth->SetAttribute("value",(*it)->line_width());
             TiXmlElement *elemLinesPenStyle = new TiXmlElement( "Style" );
             elemLines->LinkEndChild( elemLinesPenStyle );
-            elemLinesPenStyle->SetAttribute("value",(*it)->get_line_style());
+            elemLinesPenStyle->SetAttribute("value",(*it)->line_style());
 
             // Polygons
             TiXmlElement *elemPolygons = new TiXmlElement( "Polygons" );
@@ -759,29 +759,29 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             elemPolygons->LinkEndChild( elemPolygonsRings );
             TiXmlElement *elemPolygonsRingsColour = new TiXmlElement( "Colour" );
             elemPolygonsRings->LinkEndChild( elemPolygonsRingsColour );
-            colour = (*it)->get_polygon_border_color();
+            colour = (*it)->polygon_border_color();
             elemPolygonsRingsColour->SetAttribute("red",colour.Red());
             elemPolygonsRingsColour->SetAttribute("green",colour.Green());
             elemPolygonsRingsColour->SetAttribute("blue",colour.Blue());
             elemPolygonsRingsColour->SetAttribute("alpha",colour.Alpha());
             TiXmlElement *elemPolygonsRingsWidth = new TiXmlElement( "Width" );
             elemPolygonsRings->LinkEndChild( elemPolygonsRingsWidth );
-            elemPolygonsRingsWidth->SetAttribute("value",(*it)->get_polygon_border_width());
+            elemPolygonsRingsWidth->SetAttribute("value",(*it)->polygon_border_width());
             TiXmlElement *elemPolygonsRingsStyle = new TiXmlElement( "Style" );
             elemPolygonsRings->LinkEndChild( elemPolygonsRingsStyle );
-            elemPolygonsRingsStyle->SetAttribute("value",(*it)->get_polygon_border_style());
+            elemPolygonsRingsStyle->SetAttribute("value",(*it)->polygon_border_style());
             TiXmlElement *elemPolygonsInside = new TiXmlElement( "Inside" );
             elemPolygons->LinkEndChild( elemPolygonsInside );
             TiXmlElement *elemPolygonsInsideColour = new TiXmlElement( "Colour" );
             elemPolygonsInside->LinkEndChild( elemPolygonsInsideColour );
-            colour = (*it)->get_polygon_inner_color();
+            colour = (*it)->polygon_inner_color();
             elemPolygonsInsideColour->SetAttribute("red",colour.Red());
             elemPolygonsInsideColour->SetAttribute("green",colour.Green());
             elemPolygonsInsideColour->SetAttribute("blue",colour.Blue());
             elemPolygonsInsideColour->SetAttribute("alpha",colour.Alpha());
             TiXmlElement *elemPolygonsInsideStyle = new TiXmlElement( "Style" );
             elemPolygonsInside->LinkEndChild( elemPolygonsInsideStyle );
-            elemPolygonsInsideStyle->SetAttribute("value",(*it)->get_polygon_inner_style());
+            elemPolygonsInsideStyle->SetAttribute("value",(*it)->polygon_inner_style());
         }
     }
 

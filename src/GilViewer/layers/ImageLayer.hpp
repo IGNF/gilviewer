@@ -63,74 +63,74 @@ public:
 
     virtual ~image_layer() {}
 
-    static ptrLayerType CreateImageLayer(const image_ptr &image, const std::string &name ="Image Layer");
+    static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer");
     ///ATTENTION ici l'image est recopiée dans une any_image !!
     template<class ImageType>
-    static ptrLayerType CreateImageLayer(const ImageType &image, const std::string &name ="Image Layer");
+    static ptrLayerType create_image_layer(const ImageType &image, const std::string &name ="Image Layer");
 
-    virtual void Update(int width, int height);
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
+    virtual void update(int width, int height);
+    virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
 
-    virtual unsigned int GetNbComponents() const ;
-    std::string GetTypeChannel() const;
-    virtual void Histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const;
-    virtual std::string GetPixelValue(int i, int j) const;
+    virtual unsigned int nb_components() const ;
+    std::string type_channel() const;
+    virtual void histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const;
+    virtual std::string pixel_value(int i, int j) const;
 
     virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable();
 
-    virtual void Orientation(const boost::shared_ptr<orientation_2d> &orientation);
-    virtual void SetChannels(unsigned int red, unsigned int green, unsigned int blue)
+    virtual void orientation(const boost::shared_ptr<orientation_2d> &orientation);
+    virtual void channels(unsigned int red, unsigned int green, unsigned int blue)
     {
         m_red   = red;
         m_green = green;
         m_blue  = blue;
     }
-    virtual void GetChannels(unsigned int &red, unsigned int &green, unsigned int &blue) const
+    virtual void channels(unsigned int &red, unsigned int &green, unsigned int &blue) const
     {
         red   = m_red;
         green = m_green;
         blue  = m_blue;
     }
-    virtual void SetAlphaChannel(bool useAlphaChannel, unsigned int alphaChannel)
+    virtual void alpha_channel(bool useAlphaChannel, unsigned int alphaChannel)
     {
         m_useAlphaChannel = useAlphaChannel;
         m_alphaChannel = alphaChannel;
     }
-    virtual void GetAlphaChannel(bool &useAlphaChannel, unsigned int &alphaChannel) const
+    virtual void alpha_channel(bool &useAlphaChannel, unsigned int &alphaChannel) const
     {
         useAlphaChannel = m_useAlphaChannel;
         alphaChannel = m_alphaChannel;
     }
 
-    virtual void Alpha(unsigned char alpha) { m_alpha=alpha; }
-    virtual inline unsigned char Alpha() const { return m_alpha; }
-    virtual void IntensityMin(double intensity) { m_intensityMin=intensity; }
-    virtual double IntensityMin() const { return m_intensityMin; }
-    virtual void IntensityMax(double intensity) { m_intensityMax=intensity; }
-    virtual double IntensityMax() const { return m_intensityMax; }
-    virtual void Gamma(double gamma) { m_gamma=gamma; }
-    virtual double Gamma() const { return m_gamma; }
-    virtual void TransparencyMin(double t) { m_transparencyMin=t; }
-    virtual double TransparencyMin() const { return m_transparencyMin; }
-    virtual void TransparencyMax(double t) { m_transparencyMax=t; }
-    virtual double TransparencyMax() const { return m_transparencyMax; }
-    virtual void IsTransparent(bool t) { m_isTransparent=t; }
-    virtual bool IsTransparent() const { return m_isTransparent; }
+    virtual void alpha(unsigned char alpha) { m_alpha=alpha; }
+    virtual inline unsigned char alpha() const { return m_alpha; }
+    virtual void intensity_min(double intensity) { m_intensityMin=intensity; }
+    virtual double intensity_min() const { return m_intensityMin; }
+    virtual void intensity_max(double intensity) { m_intensityMax=intensity; }
+    virtual double intensity_max() const { return m_intensityMax; }
+    virtual void gamma(double gamma) { m_gamma=gamma; }
+    virtual double gamma() const { return m_gamma; }
+    virtual void transparency_min(double t) { m_transparencyMin=t; }
+    virtual double transparency_min() const { return m_transparencyMin; }
+    virtual void transparency_max(double t) { m_transparencyMax=t; }
+    virtual double transparency_max() const { return m_transparencyMax; }
+    virtual void transparent(bool t) { m_isTransparent=t; }
+    virtual bool transparent() const { return m_isTransparent; }
 
     virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
 
-    virtual image_ptr Image() const { return m_img; };
-    virtual view_ptr  View() const { return m_view; };
+    virtual image_ptr image() const { return m_img; };
+    virtual view_ptr  view() const { return m_view; };
 
     virtual std::vector<std::string> get_available_formats_extensions() const;
-    virtual std::string get_available_formats_wildcard() const;
-    virtual bool is_saveable() const {return true;}
+    virtual std::string available_formats_wildcard() const;
+    virtual bool saveable() const {return true;}
     virtual std::string get_layer_type_as_string() const {return "Image";}
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
-    inline virtual double get_center_x();
-    inline virtual double get_center_y();
+    inline virtual double center_x();
+    inline virtual double center_y();
 
     image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
 

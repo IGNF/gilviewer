@@ -48,21 +48,21 @@ class vector_layer : public layer
 public:
     virtual ~vector_layer() {}
     /// Cette methode recupere les donnees d'affichage par defaut dans les parametres et les affecte au nouveau calque
-    virtual void set_default_display_parameters();
+    virtual void default_display_parameters();
 
     // Abstract interface
-    virtual void Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
-    virtual void Update(int width, int height) {};
+    virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
+    virtual void update(int width, int height) {};
 
     // Accessors
-    virtual std::string get_layer_type_as_string() const {return "Vector";}
-    virtual bool is_saveable() const {return true;}
+    virtual std::string layer_type_as_string() const {return "Vector";}
+    virtual bool saveable() const {return true;}
 
     // TODO
     virtual void text_visibility( bool value , bool update = true ) { m_is_text_visible = value; if (update) notifyLayerSettingsControl_(); }
     virtual bool text_visibility() const { return m_is_text_visible; }
 
-    virtual void Clear();
+    virtual void clear();
 
 private:
     // Textx display

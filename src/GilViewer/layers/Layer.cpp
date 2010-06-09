@@ -26,7 +26,7 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
         m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {}
 
-const boost::shared_ptr<orientation_2d> &layer::Orientation() const
+const boost::shared_ptr<orientation_2d> &layer::orientation() const
 {
     return m_ori;
 }
@@ -47,14 +47,14 @@ void layer::add_orientation( const std::string &image_filename )
     {
         boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
         ori->ReadOriFromImageFile(image_filename);
-        this->Orientation(ori);
-        this->HasOri(true);
+        this->orientation(ori);
+        this->has_ori(true);
     }
     catch (const std::exception &e)
     {
         std::ostringstream oss;
         oss << "No orientation for image " << image_filename << "\n" << e.what();
         error_logger::log_wx_log_message(oss.str());
-        this->HasOri(false);
+        this->has_ori(false);
     }
 }

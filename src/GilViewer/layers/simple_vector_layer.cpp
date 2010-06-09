@@ -59,15 +59,15 @@ simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_
 {
     m_name=layer_name;
 
-    Filename( "" );
-    SetDefaultDisplayParameters();
+    filename( "" );
+    default_display_parameters();
     notifyLayerSettingsControl_();
 }
 
 //void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
-void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
+void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
-    const double delta = 0.5 * Resolution();
+    const double delta = 0.5 * resolution();
 
     wxPen pen;
     wxBrush brush;
@@ -82,21 +82,21 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetBrush(brush);
     for (unsigned int i = 0; i < m_circles.size(); i++)
     {
-        wxPoint p = simple_vector_layer::FromLocal(
-                ZoomFactor(),TranslationX(),TranslationY(),delta,
+        wxPoint p = simple_vector_layer::from_local(
+                zoom_factor(),translation_x(),translation_y(),delta,
                 m_circles[i].x,m_circles[i].y);
-        wxCoord r = static_cast<wxCoord>(m_circles[i].radius / ZoomFactor());
+        wxCoord r = static_cast<wxCoord>(m_circles[i].radius / zoom_factor());
         dc.DrawCircle(p, r);
     }
     // Ellipses alignees
     for (unsigned int i=0;i<m_ellipses.size();++i)
     {
-        wxPoint p = simple_vector_layer::FromLocal(
-                ZoomFactor(),TranslationX(),TranslationY(),delta,
+        wxPoint p = simple_vector_layer::from_local(
+                zoom_factor(),translation_x(),translation_y(),delta,
                 m_ellipses[i].x,m_ellipses[i].y);
         wxSize  s(
-                static_cast<wxCoord>(2*m_ellipses[i].a/ZoomFactor()),
-                static_cast<wxCoord>(2*m_ellipses[i].b/ZoomFactor())
+                static_cast<wxCoord>(2*m_ellipses[i].a/zoom_factor()),
+                static_cast<wxCoord>(2*m_ellipses[i].b/zoom_factor())
                 );
         dc.DrawEllipse(p,s);
         //dc.DrawEllipticArc(p,s,0.,90.);
@@ -108,8 +108,8 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         points.reserve( m_rotatedellipses[i].controlPoints.size() );
         for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
-            points.push_back( simple_vector_layer::FromLocal(
-                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+            points.push_back( simple_vector_layer::from_local(
+                    zoom_factor(),translation_x(),translation_y(),delta,
                     m_rotatedellipses[i].controlPoints[j].x,
                     m_rotatedellipses[i].controlPoints[j].y ));
         dc.DrawSpline(points.size(),&points.front());
@@ -119,8 +119,8 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         points.reserve( m_polygons[i].size() );
         for (unsigned int j=0;j<m_polygons[i].size();++j)
-            points.push_back(simple_vector_layer::FromLocal(
-                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+            points.push_back(simple_vector_layer::from_local(
+                    zoom_factor(),translation_x(),translation_y(),delta,
                     m_polygons[i][j].x,m_polygons[i][j].y ));
         dc.DrawPolygon( points.size() , &(points.front()) );
     }
@@ -135,11 +135,11 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         const ArcType &local_tab = m_arcs[i];
         for (unsigned int j = 0; j < local_tab.arc_points.size() - 1; ++j)
         {
-            wxPoint p = simple_vector_layer::FromLocal(
-                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+            wxPoint p = simple_vector_layer::from_local(
+                    zoom_factor(),translation_x(),translation_y(),delta,
                     local_tab.arc_points[j  ].x,local_tab.arc_points[j  ].y);
-            wxPoint q = simple_vector_layer::FromLocal(
-                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+            wxPoint q = simple_vector_layer::from_local(
+                    zoom_factor(),translation_x(),translation_y(),delta,
                     local_tab.arc_points[j+1].x,local_tab.arc_points[j+1].y);
             dc.DrawLine(p,q);
         }
@@ -152,8 +152,8 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         for (int j=0;j<n;++j)
         {
-            wxPoint p = simple_vector_layer::FromLocal(
-                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+            wxPoint p = simple_vector_layer::from_local(
+                    zoom_factor(),translation_x(),translation_y(),delta,
                     spline[j].x,spline[j].y);
             points.push_back(p);
         }
@@ -166,8 +166,8 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetPen(pen);
     for (unsigned int i = 0; i < m_points.size(); i++)
     {
-        wxPoint p = simple_vector_layer::FromLocal(
-                ZoomFactor(),TranslationX(),TranslationY(),delta,
+        wxPoint p = simple_vector_layer::from_local(
+                zoom_factor(),translation_x(),translation_y(),delta,
                 m_points[i].x,m_points[i].y);
         //dc.DrawLine(p);
         dc.DrawPoint(p);
@@ -180,8 +180,8 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         dc.SetPen(pen);
         for (unsigned int i = 0; i < m_texts.size(); i++)
         {
-            wxPoint p = simple_vector_layer::FromLocal(
-                    ZoomFactor(),TranslationX(),TranslationY(),delta,
+            wxPoint p = simple_vector_layer::from_local(
+                    zoom_factor(),translation_x(),translation_y(),delta,
                     m_texts[i].first.x,m_texts[i].first.y);
             //dc.DrawLine(p);
             dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
@@ -189,7 +189,7 @@ void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     }
 }
 
-void simple_vector_layer::AddCircle(double x, double y, double radius)
+void simple_vector_layer::add_circle(double x, double y, double radius)
 {
     CircleType ct;
     ct.x = x;
@@ -198,7 +198,7 @@ void simple_vector_layer::AddCircle(double x, double y, double radius)
     m_circles.push_back(ct);
 }
 
-void simple_vector_layer::AddLine(double x1, double y1, double x2, double y2)
+void simple_vector_layer::add_line(double x1, double y1, double x2, double y2)
 {
     ArcType unArc;
     PointType unPoint;
@@ -209,26 +209,26 @@ void simple_vector_layer::AddLine(double x1, double y1, double x2, double y2)
     m_arcs.push_back(unArc);
 }
 
-void simple_vector_layer::AddPolyline( const std::vector<double> &x , const std::vector<double> &y )
+void simple_vector_layer::add_polyline( const std::vector<double> &x , const std::vector<double> &y )
 {
     assert(x.size()==y.size());
     for(unsigned int i=0;i<x.size()-1;++i)
-        AddLine(x[i  ],y[i  ],
+        add_line(x[i  ],y[i  ],
                 x[i+1],y[i+1]);
 }
 
-void simple_vector_layer::AddPoint( double x , double y )
+void simple_vector_layer::add_point( double x , double y )
 {
     PointType pt;
     pt.x=x; pt.y=y;
     m_points.push_back(pt);
 }
 
-void simple_vector_layer::AddSpline( std::vector<PointType> points )
+void simple_vector_layer::add_spline( std::vector<PointType> points )
 {
     m_splines.push_back( points );
 }
-void simple_vector_layer::AddPolygon( const std::vector<double> &x , const std::vector<double> &y )
+void simple_vector_layer::add_polygon( const std::vector<double> &x , const std::vector<double> &y )
 {
     if (x.size() != y.size())
         return;
@@ -242,7 +242,7 @@ void simple_vector_layer::AddPolygon( const std::vector<double> &x , const std::
 }
 
 
-void simple_vector_layer::AddEllipse(double x_center, double y_center, double a, double b)
+void simple_vector_layer::add_ellipse(double x_center, double y_center, double a, double b)
 {
     EllipseType et;
     et.x = x_center-a;
@@ -252,7 +252,7 @@ void simple_vector_layer::AddEllipse(double x_center, double y_center, double a,
     m_ellipses.push_back(et);
 }
 
-void simple_vector_layer::AddEllipse(double dx_center, double dy_center, double da, double db, double theta)
+void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double da, double db, double theta)
 {
     RotatedEllipseType et;
     et.x = dx_center;
@@ -285,7 +285,7 @@ void simple_vector_layer::AddEllipse(double dx_center, double dy_center, double 
     m_rotatedellipses.push_back(et);
 }
 
-void simple_vector_layer::AddText( double x , double y , const std::string &text , const wxColour &color )
+void simple_vector_layer::add_text( double x , double y , const std::string &text , const wxColour &color )
 {
     PointType pt;
     pt.x=x; pt.y=y;
@@ -313,14 +313,14 @@ void simple_vector_layer::Clear()
     vector< pair<PointType,string> >().swap(m_texts);
 }
 
-wxPoint simple_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates) const {
+wxPoint simple_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates) const {
         return wxPoint(
                 static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
                 static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor)
         );
     }
 
-string simple_vector_layer::get_available_formats_wildcard() const
+string simple_vector_layer::available_formats_wildcard() const
 {
     ostringstream wildcard;
     wildcard << "All available serialization (*.txt;*.xml;*.bin)|*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN|";

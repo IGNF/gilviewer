@@ -164,7 +164,7 @@ void gilviewer_file_io_tiff::save(shared_ptr<layer> layer, const string &filenam
         throw invalid_argument("Bad layer type!\n");
 
     write_view( filename
-              , imagelayer->View()->value
+              , imagelayer->view()->value
               , gil::tiff_tag()
               );
 }

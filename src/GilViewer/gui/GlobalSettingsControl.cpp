@@ -98,9 +98,9 @@ BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
 
     for (layer_control::LayerContainerType::iterator it = m_parent->begin(); it != m_parent->end(); ++it)
     {
-        (*it)->IntensityMin(MinDouble);
-        (*it)->IntensityMax(MaxDouble);
-        (*it)->HasToBeUpdated(true);
+        (*it)->intensity_min(MinDouble);
+        (*it)->intensity_max(MaxDouble);
+        (*it)->needs_update(true);
 
         // MAJ de l'interface
         (*it)->notifyLayerSettingsControl_();

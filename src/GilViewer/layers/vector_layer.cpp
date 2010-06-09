@@ -38,25 +38,25 @@ Authors:
 
 #include "vector_layer.hpp"
 
-void vector_layer::set_default_display_parameters()
+void vector_layer::default_display_parameters()
 {
     m_is_text_visible = true;
 
-    set_point_color(*wxRED);
-    set_point_width(3);
+    point_color(*wxRED);
+    point_width(3);
 
-    set_line_color(*wxGREEN);
-    set_line_width(3);
-    set_line_style(wxSOLID);
+    line_color(*wxGREEN);
+    line_width(3);
+    line_style(wxSOLID);
 
-    set_polygon_border_color(wxColour(255,0,255));
-    set_polygon_inner_color(*wxBLUE);
-    set_polygon_border_width(3);
-    set_polygon_border_style(wxSOLID);
-    set_polygon_inner_style(wxSOLID);
+    polygon_border_color(wxColour(255,0,255));
+    polygon_inner_color(*wxBLUE);
+    polygon_border_width(3);
+    polygon_border_style(wxSOLID);
+    polygon_inner_style(wxSOLID);
 }
 
-void vector_layer::Clear()
+void vector_layer::clear()
 {
     using namespace std;
 
