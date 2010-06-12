@@ -158,7 +158,7 @@ Authors:
 	} \
         void classname::on_geometry_polygone(wxCommandEvent& event) \
 	{ \
-                variablePanelViewer->geometry_polygone(); \
+                variablePanelViewer->geometry_polygon(); \
 		wxLogMessage( _("Geometry Polygon!") ); \
 	} \
         void classname::on_crop(wxCommandEvent& event) \

@@ -166,7 +166,7 @@ void panel_viewer::geometry_line() {
     //	m_menuMain->Check(ID_GEOMETRY_LINE, true);
 }
 
-void panel_viewer::geometry_polygone() {
+void panel_viewer::geometry_polygon() {
     m_geometry = GEOMETRY_POLYGONE;
     //m_toolBar->ToggleTool(ID_GEOMETRY_POLYGONE, true);
     //	m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
