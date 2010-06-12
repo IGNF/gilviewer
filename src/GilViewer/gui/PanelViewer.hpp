@@ -100,7 +100,7 @@ public:
     void geometry_circle();
     void geometry_rectangle();
     void geometry_line();
-    void geometry_polygone();
+    void geometry_polygon();
 
     void on_snapshot(wxCommandEvent& event);
 
