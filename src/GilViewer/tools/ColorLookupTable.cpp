@@ -51,7 +51,7 @@ color_lookup_table::color_lookup_table():m_clut(3*256)
 	}
 }
 
-void color_lookup_table::LoadFromBinaryFile(const std::string &fileCLUT)
+void color_lookup_table::load_from_binary_file(const std::string &fileCLUT)
 {
 
 	std::ifstream ficCLUT(fileCLUT.c_str());
@@ -88,7 +88,7 @@ void color_lookup_table::LoadFromBinaryFile(const std::string &fileCLUT)
 
 #include <iostream>
 
-void color_lookup_table::createRandom()
+void color_lookup_table::create_random()
 {
 	std::srand( clock() );
 
@@ -96,7 +96,7 @@ void color_lookup_table::createRandom()
 		m_clut[i] = (unsigned char)( (double(std::rand()) / RAND_MAX) * 255 + 1 );
 }
 
-void color_lookup_table::LoadFromTextFile(const std::string &fileCLUT)
+void color_lookup_table::load_from_text_file(const std::string &fileCLUT)
 {
 
 //	std::ifstream ficCLUT("/home/achauve/Logiciels/ImageJ/luts/sepia.lut");//(fileCLUT.c_str());

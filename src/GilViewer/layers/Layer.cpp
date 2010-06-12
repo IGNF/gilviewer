@@ -46,7 +46,7 @@ void layer::add_orientation( const std::string &image_filename )
     try
     {
         boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
-        ori->ReadOriFromImageFile(image_filename);
+        ori->read_ori_from_image_file(image_filename);
         this->orientation(ori);
         this->has_ori(true);
     }

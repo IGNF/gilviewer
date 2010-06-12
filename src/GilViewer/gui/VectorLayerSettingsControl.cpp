@@ -76,16 +76,16 @@ int vector_layer_settings_control::style_inside_polygons[] =
 { wxSOLID, wxTRANSPARENT, wxBDIAGONAL_HATCH, wxFDIAGONAL_HATCH, wxCROSSDIAG_HATCH, wxHORIZONTAL_HATCH, wxVERTICAL_HATCH, wxCROSS_HATCH };
 
 BEGIN_EVENT_TABLE(vector_layer_settings_control, wxDialog)
-        EVT_CLOSE(vector_layer_settings_control::OnCloseWindow)
-        EVT_BUTTON(wxID_OK,vector_layer_settings_control::OnOKButton)
-        EVT_BUTTON(wxID_CANCEL,vector_layer_settings_control::OnCancelButton)
-        EVT_BUTTON(wxID_APPLY,vector_layer_settings_control::OnApplyButton)
-        END_EVENT_TABLE()
+        EVT_BUTTON(wxID_OK,vector_layer_settings_control::on_ok_button)
+        EVT_BUTTON(wxID_CANCEL,vector_layer_settings_control::on_cancel_button)
+        EVT_BUTTON(wxID_APPLY,vector_layer_settings_control::on_apply_button)
+        EVT_CLOSE(vector_layer_settings_control::on_close_window)
+END_EVENT_TABLE()
 
-        vector_layer_settings_control::vector_layer_settings_control(unsigned int index, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-        layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
+vector_layer_settings_control::vector_layer_settings_control(unsigned int index_, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
 {
-    Index(index);
+    index(index_);
     m_colourPickerPoints = NULL;
     m_colourPickerRingsPolygons = NULL;
     m_colourPickerInsidePolygons = NULL;
@@ -253,59 +253,59 @@ BEGIN_EVENT_TABLE(vector_layer_settings_control, wxDialog)
 
 void vector_layer_settings_control::update()
 {
-    m_colourPickerPoints->SetColour(m_parent->Layers()[m_index]->point_color());
-    m_sliderWidthPoints->SetValue(m_parent->Layers()[m_index]->point_width());
+    m_colourPickerPoints->SetColour(m_parent->layers()[m_index]->point_color());
+    m_sliderWidthPoints->SetValue(m_parent->layers()[m_index]->point_width());
 
-    m_colourPickerLines->SetColour(m_parent->Layers()[m_index]->line_color());
-    m_sliderWidthLines->SetValue(m_parent->Layers()[m_index]->line_width());
-    m_choiceLines->SetSelection( wxhelper::from_wx_style_to_selection_index(m_parent->Layers()[m_index]->line_style()) );
+    m_colourPickerLines->SetColour(m_parent->layers()[m_index]->line_color());
+    m_sliderWidthLines->SetValue(m_parent->layers()[m_index]->line_width());
+    m_choiceLines->SetSelection( wxhelper::from_wx_style_to_selection_index(m_parent->layers()[m_index]->line_style()) );
 
-    m_colourPickerRingsPolygons->SetColour(m_parent->Layers()[m_index]->polygon_border_color());
-    m_colourPickerInsidePolygons->SetColour(m_parent->Layers()[m_index]->polygon_inner_color());
-    m_sliderWidthRings->SetValue(m_parent->Layers()[m_index]->polygon_border_width());
-    m_choicePolygons->SetSelection( wxhelper::from_wx_style_to_selection_index(m_parent->Layers()[m_index]->polygon_inner_style()) );
+    m_colourPickerRingsPolygons->SetColour(m_parent->layers()[m_index]->polygon_border_color());
+    m_colourPickerInsidePolygons->SetColour(m_parent->layers()[m_index]->polygon_inner_color());
+    m_sliderWidthRings->SetValue(m_parent->layers()[m_index]->polygon_border_width());
+    m_choicePolygons->SetSelection( wxhelper::from_wx_style_to_selection_index(m_parent->layers()[m_index]->polygon_inner_style()) );
 
     // Text visibility
-    m_checkShowTexts->SetValue(m_parent->Layers()[m_index]->text_visibility());
-    m_colourPickerTexts->SetColour(m_parent->Layers()[m_index]->text_color());
+    m_checkShowTexts->SetValue(m_parent->layers()[m_index]->text_visibility());
+    m_colourPickerTexts->SetColour(m_parent->layers()[m_index]->text_color());
 }
 
-void vector_layer_settings_control::OnOKButton(wxCommandEvent &event)
+void vector_layer_settings_control::on_ok_button(wxCommandEvent &event)
 {
-    OnApplyButton(event);
+    on_apply_button(event);
     Hide();
 }
 
-void vector_layer_settings_control::OnCancelButton(wxCommandEvent &event)
+void vector_layer_settings_control::on_cancel_button(wxCommandEvent &event)
 {
     Hide();
 }
 
-void vector_layer_settings_control::OnApplyButton(wxCommandEvent &event)
+void vector_layer_settings_control::on_apply_button(wxCommandEvent &event)
 {
     // Texts
     // La, on appelle l'update (via le callback notifier ...) !
-    m_parent->Layers()[m_index]->text_visibility(m_checkShowTexts->GetValue(),    false);
-    m_parent->Layers()[m_index]->text_color(m_colourPickerTexts->GetColour(), false);
+    m_parent->layers()[m_index]->text_visibility(m_checkShowTexts->GetValue(),    false);
+    m_parent->layers()[m_index]->text_color(m_colourPickerTexts->GetColour(), false);
 
-    m_parent->Layers()[m_index]->point_color(m_colourPickerPoints->GetColour(), false);
-    m_parent->Layers()[m_index]->point_width(m_sliderWidthPoints->GetValue(),   false);
+    m_parent->layers()[m_index]->point_color(m_colourPickerPoints->GetColour(), false);
+    m_parent->layers()[m_index]->point_width(m_sliderWidthPoints->GetValue(),   false);
 
-    m_parent->Layers()[m_index]->line_color(m_colourPickerLines->GetColour(),          false);
-    m_parent->Layers()[m_index]->line_width(m_sliderWidthLines->GetValue(),            false);
-    m_parent->Layers()[m_index]->line_style(style_lines[m_choiceLines->GetSelection()],false);
+    m_parent->layers()[m_index]->line_color(m_colourPickerLines->GetColour(),          false);
+    m_parent->layers()[m_index]->line_width(m_sliderWidthLines->GetValue(),            false);
+    m_parent->layers()[m_index]->line_style(style_lines[m_choiceLines->GetSelection()],false);
 
-    m_parent->Layers()[m_index]->polygon_border_color(m_colourPickerRingsPolygons->GetColour(),              false);
-    m_parent->Layers()[m_index]->polygon_inner_color(m_colourPickerInsidePolygons->GetColour(),              false);
-    m_parent->Layers()[m_index]->polygon_border_width(m_sliderWidthRings->GetValue(),                        false);
-    m_parent->Layers()[m_index]->polygon_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
+    m_parent->layers()[m_index]->polygon_border_color(m_colourPickerRingsPolygons->GetColour(),              false);
+    m_parent->layers()[m_index]->polygon_inner_color(m_colourPickerInsidePolygons->GetColour(),              false);
+    m_parent->layers()[m_index]->polygon_border_width(m_sliderWidthRings->GetValue(),                        false);
+    m_parent->layers()[m_index]->polygon_inner_style(style_inside_polygons[m_choicePolygons->GetSelection()],false);
 
     // On refresh ...
-    m_parent->Layers()[m_index]->needs_update(true);
-    m_parent->GetPanelViewer()->Refresh();
+    m_parent->layers()[m_index]->needs_update(true);
+    m_parent->panelviewer()->Refresh();
 }
 
-void vector_layer_settings_control::OnCloseWindow(wxCloseEvent& event)
+void vector_layer_settings_control::on_close_window(wxCloseEvent& event)
 {
     Hide();
 }

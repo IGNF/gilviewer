@@ -53,7 +53,7 @@ struct channel_converter_functor
             m_min_src(min),
             m_max_src(max),
             m_255_over_delta( 255 / (m_max_src - m_min_src) ),
-            m_lut(&lut.getData().front()),
+            m_lut(&lut.get_data().front()),
             m_red_index(red_index),
             m_green_index(green_index),
             m_blue_index(blue_index)

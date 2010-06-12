@@ -50,15 +50,15 @@ panel_manager_model::~panel_manager_model()
 {
 }
 
-const panel_manager_model::ArrayOfPanels & panel_manager_model::GetPanelsList()
+const panel_manager_model::ArrayOfPanels & panel_manager_model::panels_list()
 {
     return m_panels;
 }
 
 
-panel_viewer* panel_manager_model::createObject(const std::string& id)
+panel_viewer* panel_manager_model::create_object(const std::string& id)
 {
-	panel_viewer* panel = PatternFactory<panel_viewer>::createObject(id);
+	panel_viewer* panel = PatternFactory<panel_viewer>::create_object(id);
 	m_panels.push_back(panel);
 	return panel;
 }

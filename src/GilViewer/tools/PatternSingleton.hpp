@@ -86,7 +86,7 @@ public:
 //        return (static_cast< boost::shared_ptr<T> > (m_singleton));
 //    }
 
-    static T* Instance ()
+    static T* instance ()
     {
         if ( !m_singleton )
         {

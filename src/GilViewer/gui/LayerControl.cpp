@@ -85,22 +85,20 @@ using namespace boost;
 using namespace std;
 
 BEGIN_EVENT_TABLE(layer_control, wxFrame)
-    EVT_CLOSE(layer_control::OnCloseWindow)
-    EVT_BUTTON(ID_INFO,layer_control::OnInfoButton)
-    EVT_BUTTON(ID_SAVE,layer_control::OnSaveButton)
-    EVT_BUTTON(ID_DELETE,layer_control::OnDeleteButton)
-    // Gestion des evenements de la toolbar
-    EVT_TOOL(wxID_RESET,layer_control::OnReset)
-    EVT_TOOL(wxID_OPEN,layer_control::OnOpenLayer)
-    // Gestion des evenements "globaux" du layer_control
-    EVT_BUTTON(wxID_UP,layer_control::OnLayerUp)
-    EVT_BUTTON(wxID_DOWN,layer_control::OnLayerDown)
-    EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::OnVisibilityButton)
-    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::OnTransformationButton)
-    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::OnGlobalSettingsButton)
-    EVT_BUTTON(wxID_SAVE,layer_control::OnSaveDisplayConfigButton)
-    EVT_BUTTON(wxID_OPEN,layer_control::OnLoadDisplayConfigButton)
-    EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::OnDeleteAllRowsButton)
+    EVT_TOOL(wxID_OPEN,layer_control::on_open_layer)
+    EVT_CLOSE(layer_control::on_close_window)
+    EVT_BUTTON(ID_INFO,layer_control::on_info_button)
+    EVT_BUTTON(ID_SAVE,layer_control::on_save_button)
+    EVT_BUTTON(ID_DELETE,layer_control::on_delete_button)
+    EVT_TOOL(wxID_RESET,layer_control::on_reset)
+    EVT_BUTTON(wxID_UP,layer_control::on_layer_up)
+    EVT_BUTTON(wxID_DOWN,layer_control::on_layer_down)
+    EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::on_visibility_button)
+    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::on_transformation_button)
+    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::on_global_settings_button)
+    EVT_BUTTON(wxID_SAVE,layer_control::on_save_display_config_button)
+    EVT_BUTTON(wxID_OPEN,layer_control::on_load_display_config_button)
+    EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
 END_EVENT_TABLE()
 
 layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
@@ -115,7 +113,7 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghos
 
     // Ajout de la barre d'outils
     this->CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL, 500);
-    InitToolbar(this->GetToolBar());
+    init_toolbar(this->GetToolBar());
 
     wxBoxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -189,13 +187,13 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghos
     SetSizer(main_sizer);
 }
 
-void layer_control::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
+void layer_control::on_close_window(wxCloseEvent& WXUNUSED(event))
 {
     // On ne fait que cacher la fenetre. Ca permet de garder les settings courants et de ne pas recalculer tout a chaque fois ...
     Hide();
 }
 
-void layer_control::AddRow(const std::string &name, layer_settings_control *layersettings, const std::string &tooltip)
+void layer_control::add_row(const std::string &name, layer_settings_control *layersettings, const std::string &tooltip)
 {
     // Le nom du layer a une longueur maximale de 20 caracteres
     wxString layerName(name.substr(0, 50).c_str(), *wxConvCurrent);
@@ -205,7 +203,7 @@ void layer_control::AddRow(const std::string &name, layer_settings_control *laye
     unsigned int nb = m_rows.size();
     m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, nb, layersettings, tooltip)));
     // On ajoute a proprement parler les controles de la ligne dans le layer_control
-    m_rows.back()->m_nameStaticText->IsSelected(true);
+    m_rows.back()->m_nameStaticText->selected(true);
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
 
     m_sizer->Add(m_rows.back()->m_visibilityCheckBox, 0, wxALL | wxALIGN_CENTRE, 5);
@@ -222,7 +220,7 @@ void layer_control::AddRow(const std::string &name, layer_settings_control *laye
     m_scroll->Layout();
 }
 
-void layer_control::InitToolbar(wxToolBar* toolBar)
+void layer_control::init_toolbar(wxToolBar* toolBar)
 {
     if ( !toolBar )
         toolBar = new wxToolBar(m_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
@@ -242,7 +240,7 @@ void layer_control::update()
     }
 }
 
-void layer_control::OnInfoButton(wxCommandEvent& event)
+void layer_control::on_info_button(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_INFO);
@@ -255,7 +253,7 @@ void layer_control::OnInfoButton(wxCommandEvent& event)
     lic->Show();
 }
 
-void layer_control::OnSaveButton(wxCommandEvent& event)
+void layer_control::on_save_button(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
@@ -269,8 +267,8 @@ void layer_control::OnSaveButton(wxCommandEvent& event)
             string filename(fileDialog->GetFilename().To8BitData());
             string extension(filesystem::extension(filename));
             to_lower(extension);
-            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
-            file_out->save(Layers()[id],filename);
+            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+            file_out->save(layers()[id],filename);
         }
         catch( std::exception &err )
         {
@@ -284,7 +282,7 @@ void layer_control::OnSaveButton(wxCommandEvent& event)
     }
 }
 
-void layer_control::OnDeleteButton(wxCommandEvent& event)
+void layer_control::on_delete_button(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_DELETE);
@@ -292,7 +290,7 @@ void layer_control::OnDeleteButton(wxCommandEvent& event)
     //Swap
     for (unsigned int i = id; i < m_rows.size() - 1; ++i)
     {
-        SwapRows(i, i + 1);
+        swap_rows(i, i + 1);
     }
 
     //Destroy de la row
@@ -325,14 +323,14 @@ void layer_control::OnDeleteButton(wxCommandEvent& event)
 
 }
 
-void layer_control::OnSettingsButton(wxCommandEvent& event)
+void layer_control::on_settings_button(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SETTINGS);
     m_rows[id]->m_layerSettingsControl->Show(!m_rows[id]->m_layerSettingsControl->IsVisible());
 }
 
-void layer_control::OnCenterButton(wxCommandEvent& event)
+void layer_control::on_center_button(wxCommandEvent& event)
 {
     /*
     // Get layer index
@@ -348,7 +346,7 @@ void layer_control::OnCenterButton(wxCommandEvent& event)
     * */
 }
 
-void layer_control::OnCheckVisibility(wxCommandEvent& event)
+void layer_control::on_check_visibility(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_VISIBILITY);
@@ -359,7 +357,7 @@ void layer_control::OnCheckVisibility(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void layer_control::OnCheckTransformable(wxCommandEvent& event)
+void layer_control::on_check_transformable(wxCommandEvent& event)
 {
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_TRANSFORMATION);
@@ -369,7 +367,7 @@ void layer_control::OnCheckTransformable(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void layer_control::OnReset(wxCommandEvent& event)
+void layer_control::on_reset(wxCommandEvent& event)
 {
     // Pour chaque calque, on reinitialise
     for (layer_control::iterator it = begin(); it != end(); ++it)
@@ -393,7 +391,7 @@ void layer_control::OnReset(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void layer_control::OnOpenLayer(wxCommandEvent& event)
+void layer_control::on_open_layer(wxCommandEvent& event)
 {
     wxString wildcard;
     wildcard << _("All supported files ");
@@ -419,7 +417,7 @@ void layer_control::OnOpenLayer(wxCommandEvent& event)
     {
         wxArrayString names;
         fileDialog->GetPaths(names);
-        AddLayersFromFiles(names);
+        add_layers_from_files(names);
     }
     //fileDialog->Destroy();
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
@@ -428,7 +426,7 @@ void layer_control::OnOpenLayer(wxCommandEvent& event)
     Refresh();
 }
 
-void layer_control::AddLayersFromFiles(const wxArrayString &names)
+void layer_control::add_layers_from_files(const wxArrayString &names)
 {
     unsigned int i;
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_WAIT));
@@ -462,8 +460,8 @@ void layer_control::AddLayersFromFiles(const wxArrayString &names)
         to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
-            AddLayer( file->load(filename) );
+            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+            add_layer( file->load(filename) );
         }
         catch (const std::exception &err)
         {
@@ -489,7 +487,7 @@ void layer_control::AddLayersFromFiles(const wxArrayString &names)
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 }
 
-void layer_control::AddLayer(const layer::ptrLayerType &layer)
+void layer_control::add_layer(const layer::ptrLayerType &layer)
 {
     if (!layer) return;
 
@@ -501,7 +499,7 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     layer_settings_control *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
     layer->notify_layer_settings_control( bind( &layer_settings_control::update, settingscontrol ) );
     // On ajoute la ligne correspondante
-    AddRow(layer->name(), settingscontrol, layer->filename());
+    add_row(layer->name(), settingscontrol, layer->filename());
 
     //Si c'est un calque image avec ori et que c'est le premier on met en place l'orientation generale du viewer
     if (!m_isOrientationSet && m_layers.size() == 1 && layer->has_ori())
@@ -531,9 +529,9 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
 
         const boost::shared_ptr<orientation_2d> &oriLayer = layer->orientation();
 
-        double newzoom_factor = m_ori->Step() / oriLayer->Step();
-        double translationInitX = (oriLayer->OriginX() - m_ori->OriginX()) / oriLayer->Step();//+ m_layers[0]->translation_x()/m_layers[0]->zoom_factor();
-        double translationInitY = -(oriLayer->OriginY() - m_ori->OriginY()) / oriLayer->Step();//+ m_layers[0]->translation_y()/m_layers[0]->zoom_factor();
+        double newzoom_factor = m_ori->step() / oriLayer->step();
+        double translationInitX = (oriLayer->origin_x() - m_ori->origin_x()) / oriLayer->step();//+ m_layers[0]->translation_x()/m_layers[0]->zoom_factor();
+        double translationInitY = -(oriLayer->origin_y() - m_ori->origin_y()) / oriLayer->step();//+ m_layers[0]->translation_y()/m_layers[0]->zoom_factor();
 
         layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
         layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);//* layer->zoom_factor());
@@ -545,10 +543,10 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     {
         ::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
 
-        double translationInitX =-m_ori->OriginX();
-        double translationInitY = m_ori->OriginY();
+        double translationInitX =-m_ori->origin_x();
+        double translationInitY = m_ori->origin_y();
 
-        double newzoom_factor = m_ori->Step();
+        double newzoom_factor = m_ori->step();
         //layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
         layer->zoom_factor(m_layers[0]->zoom_factor());
         layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);
@@ -559,7 +557,7 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
 
 
     if(m_isOrientationSet)
-        layer->resolution(m_ori->Step());
+        layer->resolution(m_ori->step());
     else
     {
         layer->resolution(1.);
@@ -570,12 +568,12 @@ void layer_control::AddLayer(const layer::ptrLayerType &layer)
     m_basicDrawPane->Refresh();
 }
 
-boost::shared_ptr<orientation_2d> layer_control::GetOrientation() const
+boost::shared_ptr<orientation_2d> layer_control::orientation() const
 {
     return m_ori;
 }
 
-void layer_control::SwapRows(const unsigned int firstRow, const unsigned int secondRow)
+void layer_control::swap_rows(const unsigned int firstRow, const unsigned int secondRow)
 {
     if (firstRow < 0 || secondRow < 0)
     {
@@ -615,8 +613,8 @@ void layer_control::SwapRows(const unsigned int firstRow, const unsigned int sec
         m_rows[firstRow]->m_nameStaticText->GetToolTip()->SetTip(m_rows[secondRow]->m_nameStaticText->GetToolTip()->GetTip());
         m_rows[secondRow]->m_nameStaticText->SetLabel(temp);
         m_rows[secondRow]->m_nameStaticText->GetToolTip()->SetTip(strTooltip);
-        m_rows[firstRow]->m_nameStaticText->IsSelected(false);
-        m_rows[secondRow]->m_nameStaticText->IsSelected(true);
+        m_rows[firstRow]->m_nameStaticText->selected(false);
+        m_rows[secondRow]->m_nameStaticText->selected(true);
     }
 
     //visibility
@@ -647,8 +645,8 @@ void layer_control::SwapRows(const unsigned int firstRow, const unsigned int sec
         m_rows[firstRow]->m_layerSettingsControl = m_rows[secondRow]->m_layerSettingsControl;
         m_rows[secondRow]->m_layerSettingsControl = temp;
 
-        m_rows[firstRow]->m_layerSettingsControl->Index(firstRow);
-        m_rows[secondRow]->m_layerSettingsControl->Index(secondRow);
+        m_rows[firstRow]->m_layerSettingsControl->index(firstRow);
+        m_rows[secondRow]->m_layerSettingsControl->index(secondRow);
     }
 
     // Finalement, si necessaire, il faut changer le bitmap associe au bouton d'infos
@@ -664,13 +662,13 @@ void layer_control::SwapRows(const unsigned int firstRow, const unsigned int sec
     }
 }
 
-void layer_control::OnLayerUp(wxCommandEvent& WXUNUSED(event))
+void layer_control::on_layer_up(wxCommandEvent& WXUNUSED(event))
 {
     for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
-        if (m_rows[i]->m_nameStaticText->IsSelected())
+        if (m_rows[i]->m_nameStaticText->selected())
         {
-            SwapRows(i, i - 1);
+            swap_rows(i, i - 1);
             break;
         }
     }
@@ -680,13 +678,13 @@ void layer_control::OnLayerUp(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void layer_control::OnLayerDown(wxCommandEvent& WXUNUSED(event))
+void layer_control::on_layer_down(wxCommandEvent& WXUNUSED(event))
 {
     for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
-        if (m_rows[i]->m_nameStaticText->IsSelected())
+        if (m_rows[i]->m_nameStaticText->selected())
         {
-            SwapRows(i, i + 1);
+            swap_rows(i, i + 1);
             break;
         }
     }
@@ -695,12 +693,12 @@ void layer_control::OnLayerDown(wxCommandEvent& WXUNUSED(event))
     m_basicDrawPane->Refresh();
 }
 
-void layer_control::OnVisibilityButton(wxCommandEvent& event)
+void layer_control::on_visibility_button(wxCommandEvent& event)
 {
     // On parcourt tous les calques et on inverse la visibilite si la selection est a true
     for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
-        if (m_rows[i]->m_nameStaticText->IsSelected() == true)
+        if (m_rows[i]->m_nameStaticText->selected() == true)
         {
             m_rows[i]->m_visibilityCheckBox->SetValue(!m_rows[i]->m_visibilityCheckBox->GetValue());
             m_layers[i]->visible(m_rows[i]->m_visibilityCheckBox->GetValue());
@@ -711,12 +709,12 @@ void layer_control::OnVisibilityButton(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void layer_control::OnTransformationButton(wxCommandEvent& event)
+void layer_control::on_transformation_button(wxCommandEvent& event)
 {
     // On parcourt tous les calques et on inverse la transformabilite (!!!) si la section est a true
     for (unsigned int i = 0; i < m_rows.size(); ++i)
     {
-        if (m_rows[i]->m_nameStaticText->IsSelected() == true)
+        if (m_rows[i]->m_nameStaticText->selected() == true)
         {
             m_rows[i]->m_transformationCheckBox->SetValue(!m_rows[i]->m_transformationCheckBox->GetValue());
             m_layers[i]->transformable(m_rows[i]->m_transformationCheckBox->GetValue());
@@ -727,12 +725,12 @@ void layer_control::OnTransformationButton(wxCommandEvent& event)
     m_basicDrawPane->Refresh();
 }
 
-void layer_control::OnGlobalSettingsButton(wxCommandEvent& event)
+void layer_control::on_global_settings_button(wxCommandEvent& event)
 {
     m_globalSettingsControl->Show();
 }
 
-void layer_control::OnSaveDisplayConfigButton(wxCommandEvent& event)
+void layer_control::on_save_display_config_button(wxCommandEvent& event)
 {
     // Choix du fichier de sauvegarde
     wxFileDialog* fd = new wxFileDialog(this, _("Save display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
@@ -747,7 +745,7 @@ void layer_control::OnSaveDisplayConfigButton(wxCommandEvent& event)
     delete fd;
 }
 
-void layer_control::OnLoadDisplayConfigButton(wxCommandEvent& event)
+void layer_control::on_load_display_config_button(wxCommandEvent& event)
 {
     // Choix du fichier de sauvegarde
     wxFileDialog* fd = new wxFileDialog(this, _("Load display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
@@ -771,28 +769,28 @@ void layer_control::OnLoadDisplayConfigButton(wxCommandEvent& event)
     delete fd;
 }
 
-void layer_control::OnDeleteAllRowsButton(wxCommandEvent& event)
+void layer_control::on_delete_all_rows_button(wxCommandEvent& event)
 {
     while( m_rows.size() > 0 )
     {
         wxCommandEvent event;
         event.SetInt(m_rows.size());
-        OnDeleteButton(event);
+        on_delete_button(event);
     }
 }
 
-void layer_control::CreateNewImageLayerWithParameters(const ImageLayerParameters &parameters)
+void layer_control::create_new_image_layer_with_parameters(const ImageLayerParameters &parameters)
 {
     try
     {
         std::string filename(parameters.path.c_str());
         string extension(filesystem::extension(filename));
         to_lower(extension);
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
         layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
-        AddLayer(ptr);
+        add_layer(ptr);
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
         this->m_layers.back()->visible(parameters.visible);
@@ -824,15 +822,15 @@ void layer_control::CreateNewImageLayerWithParameters(const ImageLayerParameters
     }
 }
 
-void layer_control::CreateNewVectorLayerWithParameters(const VectorLayerParameters &parameters)
+void layer_control::create_new_vector_layer_with_parameters(const VectorLayerParameters &parameters)
 {
     try
     {
         std::string filename(parameters.path.c_str());
         string extension(filesystem::extension(filename));
         to_lower(extension);
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::Instance()->createObject(extension.substr(1,3));
-        AddLayer(file->load(filename) );
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+        add_layer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
         this->m_layers.back()->visible(parameters.visible);

@@ -47,6 +47,13 @@ Authors:
 #include "../gui/PanelViewer.hpp"
 #include "../gui/LayerControl.hpp"
 
+BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
+        EVT_BUTTON(wxID_OK,global_settings_control::on_ok_button)
+        EVT_BUTTON(wxID_CANCEL,global_settings_control::on_cancel_button)
+        EVT_BUTTON(wxID_APPLY,global_settings_control::on_apply_button)
+        EVT_CLOSE(global_settings_control::on_close_window)
+        END_EVENT_TABLE()
+
 global_settings_control::global_settings_control(layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	wxDialog( (wxWindow*)parent, id, title, pos, size, style), m_parent(parent)
 {
@@ -76,14 +83,18 @@ global_settings_control::global_settings_control(layer_control* parent, wxWindow
     Centre();
 }
 
-BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
-        EVT_CLOSE(global_settings_control::OnCloseWindow)
-        EVT_BUTTON(wxID_OK,global_settings_control::OnOKButton)
-        EVT_BUTTON(wxID_CANCEL,global_settings_control::OnCancelButton)
-        EVT_BUTTON(wxID_APPLY,global_settings_control::OnApplyButton)
-        END_EVENT_TABLE()
+void global_settings_control::on_ok_button(wxCommandEvent &event)
+{
+    on_apply_button(event);
+    Hide();
+}
 
-        void global_settings_control::OnApplyButton(wxCommandEvent &event)
+void global_settings_control::on_cancel_button(wxCommandEvent &event)
+{
+    Hide();
+}
+
+void global_settings_control::on_apply_button(wxCommandEvent &event)
 {
     if ( !Validate() )
         ::wxMessageBox(_("Incorrect entry!"));
@@ -106,26 +117,15 @@ BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
         (*it)->notifyLayerSettingsControl_();
     }
 
-    m_parent->GetPanelViewer()->Refresh();
+    m_parent->panelviewer()->Refresh();
 }
 
-void global_settings_control::OnOKButton(wxCommandEvent &event)
-{
-    OnApplyButton(event);
-    Hide();
-}
-
-void global_settings_control::OnCancelButton(wxCommandEvent &event)
+void global_settings_control::on_close_window(wxCloseEvent& event)
 {
     Hide();
 }
 
-void global_settings_control::OnCloseWindow(wxCloseEvent& event)
-{
-    Hide();
-}
-
-bool global_settings_control::Validate()
+bool global_settings_control::validate()
 {
     bool checkTest = wxDialog::Validate();
     return checkTest;

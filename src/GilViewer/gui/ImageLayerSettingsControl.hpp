@@ -57,20 +57,18 @@ public:
     image_layer_settings_control(unsigned int index, layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Image layer settings"),
                                  long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
-    void OnScroll(wxScrollEvent &event);
-    void OnOKButton(wxCommandEvent &event);
-    void OnCancelButton(wxCommandEvent &event);
-    void OnApplyButton(wxCommandEvent &event);
-    void OnSize(wxSizeEvent &event);
-    void OnCloseWindow(wxCloseEvent& event);
-    void OnCheckAlphaRange(wxCommandEvent &event);
-    void OnCheckAlphaChannel(wxCommandEvent &event);
-    void OnGetFocus(wxFocusEvent &event);
+    void on_ok_button(wxCommandEvent &event);
+    void on_cancel_button(wxCommandEvent &event);
+    void on_apply_button(wxCommandEvent &event);
+    void on_close_window(wxCloseEvent& event);
+    void on_check_alpha_range(wxCommandEvent &event);
+    void on_check_alpha_channel(wxCommandEvent &event);
+    void on_get_focus(wxFocusEvent &event);
 
-    wxSlider* AlphaSlider() const {return m_alphaSlider;}
+    wxSlider* alpha_slider() const {return m_alphaSlider;}
 
-    layer_control* GetLayerControl() { return m_parent; }
-    histogram_plotter* GetHistogramPlotter() { return m_histogramPanel; }
+    layer_control* layercontrol() { return m_parent; }
+    histogram_plotter* histogramplotter() { return m_histogramPanel; }
 
     // Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
     virtual void update();
@@ -127,12 +125,13 @@ public:
     double &Min(){ return m_min; }
     double &Max(){ return m_max; }
 
-    void OnPaint(wxPaintEvent &event);
-    void OnSize(wxSizeEvent &event);
-    void OnMouseMove(wxMouseEvent &event);
-    bool IsInit() { return m_isInit; }
-    void IsInit(const bool init) {m_isInit=init;}
-    void SetChannels(const unsigned int red, const unsigned int green, const unsigned int blue) { m_redChannel=red; m_greenChannel=green; m_blueChannel=blue; }
+    void on_paint(wxPaintEvent &event);
+    void on_size(wxSizeEvent &event);
+    void on_mouse_move(wxMouseEvent &event);
+
+    bool init() { return m_isInit; }
+    void init(const bool init) {m_isInit=init;}
+    void channels(const unsigned int red, const unsigned int green, const unsigned int blue) { m_redChannel=red; m_greenChannel=green; m_blueChannel=blue; }
 
     DECLARE_EVENT_TABLE();
 

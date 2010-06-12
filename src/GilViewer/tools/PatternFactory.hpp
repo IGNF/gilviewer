@@ -78,7 +78,7 @@ template
         return associations_.erase(id) == 1;
     }
 
-    virtual ReturnType createObject(const TIdentifierType& id)
+    virtual ReturnType create_object(const TIdentifierType& id)
     {
         typename AssocMapType::const_iterator i = associations_.find(id);
         if(i != associations_.end())

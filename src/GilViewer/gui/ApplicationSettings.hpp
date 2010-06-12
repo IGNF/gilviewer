@@ -57,55 +57,55 @@ class wxChoice;
 class application_settings: public wxDialog
 {
 public:
-        application_settings(wxWindow *parent = (wxWindow *) NULL, wxWindowID id = wxID_ANY, const wxString& title = _("Application settings"), long style = wxDEFAULT_FRAME_STYLE, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-        virtual ~application_settings();
+    application_settings(wxWindow *parent = (wxWindow *) NULL, wxWindowID id = wxID_ANY, const wxString& title = _("Application settings"), long style = wxDEFAULT_FRAME_STYLE, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
+    virtual ~application_settings();
 
-	void OnCloseWindow(wxCloseEvent& event);
-	void OnApplyButton(wxCommandEvent &event);
+    void on_close_window(wxCloseEvent& event);
+    void on_apply_button(wxCommandEvent &event);
 
-	void WriteConfig();
+    void write_config();
 
-	DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
 private:
-	wxPanel *m_panel;
-	wxBoxSizer *m_sizerFrame;
-	wxBookCtrlBase *m_bookCtrl;
+    wxPanel *m_panel;
+    wxBoxSizer *m_sizerFrame;
+    wxBookCtrlBase *m_bookCtrl;
 
-	wxImageList *m_imageList;
+    wxImageList *m_imageList;
 
-	wxDirPickerCtrl *dirPickerLUT;
-	wxDirPickerCtrl *dirPickerWD;
-	wxDirPickerCtrl *dirPickerPlugins;
+    wxDirPickerCtrl *dirPickerLUT;
+    wxDirPickerCtrl *dirPickerWD;
+    wxDirPickerCtrl *dirPickerPlugins;
 
-	wxCheckBox *m_checkBoxLoadWholeImage;
-	wxCheckBox *m_checkBoxBilinearZoom;
-	bool m_loadWholeImage;
-	bool m_bilinearZoom;
+    wxCheckBox *m_checkBoxLoadWholeImage;
+    wxCheckBox *m_checkBoxBilinearZoom;
+    bool m_loadWholeImage;
+    bool m_bilinearZoom;
 
-	wxTextCtrl* m_textZoom;
-	wxTextCtrl* m_textDezoom;
-	double zoom_;
-	double deZoom_;
-	wxTextCtrl* m_textFontSize;
-	double fontSize_;
+    wxTextCtrl* m_textZoom;
+    wxTextCtrl* m_textDezoom;
+    double zoom_;
+    double deZoom_;
+    wxTextCtrl* m_textFontSize;
+    double fontSize_;
 
-	wxPanel* CreatePathsSettingsPanel();
-	wxPanel* CreateOptionsSettingsPanel();
-	wxPanel* CreateVetorLayerSettingsPanel();
+    wxPanel* create_paths_settings_panel();
+    wxPanel* create_options_settings_panel();
+    wxPanel* createvector_layer_settings_panel();
 
-	wxFlexGridSizer *m_main_sizer;
+    wxFlexGridSizer *m_main_sizer;
     wxColourPickerCtrl* m_colourPickerPoints;
     wxColourPickerCtrl* m_colourPickerRingsPolygons;
-	wxColourPickerCtrl* m_colourPickerInsidePolygons;
+    wxColourPickerCtrl* m_colourPickerInsidePolygons;
     wxColourPickerCtrl* m_colourPickerLines;
     wxSlider* m_sliderWidthPoints;
     wxSlider* m_sliderWidthLines;
     wxSlider* m_sliderWidthRings;
-	wxChoice* m_choicePoints;
-	wxChoice* m_choicePolygons;
-	wxChoice* m_choiceLines;
-	wxChoice* m_choiceLabels;
+    wxChoice* m_choicePoints;
+    wxChoice* m_choicePolygons;
+    wxChoice* m_choiceLines;
+    wxChoice* m_choiceLabels;
 };
 
 typedef application_settings ApplicationSettings;

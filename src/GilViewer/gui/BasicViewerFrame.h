@@ -63,13 +63,13 @@ protected:
 
     wxToolBar* m_baseToolBar;
 
-    virtual wxAboutDialogInfo getAboutInfo() const;
-    virtual wxDialog* getHelp() const;
+    virtual wxAboutDialogInfo about_info() const;
+    virtual wxDialog* help() const;
 
-    void OnAbout(wxCommandEvent& event);
-    void OnHelp(wxCommandEvent& event);
-    void OnShowHideLogWindow(wxCommandEvent& event);
-    void OnApplicationSettings(wxCommandEvent& event);
+    void on_about(wxCommandEvent& event);
+    void on_help(wxCommandEvent& event);
+    void on_show_hide_log_window(wxCommandEvent& event);
+    void on_application_settings(wxCommandEvent& event);
 
     DECLARE_EVENT_TABLE();
 };

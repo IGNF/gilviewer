@@ -56,34 +56,34 @@ public:
         orientation_2d(const double origineX, const double origineY, const double step,const unsigned int zoneCarto, const unsigned int tailleX, const unsigned int tailleY);
 
 	///Accesseurs/Setteurs
-	double OriginX() const { return m_originX; }
-	void OriginX( const double x) { m_originX = x; }
-	double OriginY() const { return m_originY; }
-	void OriginY( const double y) { m_originY = y; }
+        double origin_x() const { return m_originX; }
+        void origin_x( const double x) { m_originX = x; }
+        double origin_y() const { return m_originY; }
+        void origin_y( const double y) { m_originY = y; }
 
-	double Step() const { return m_step; }
-	void Step( const double s) { m_step = s; }
+        double step() const { return m_step; }
+        void step( const double s) { m_step = s; }
 
-	unsigned int ZoneCarto() const { return m_zoneCarto; }
-	void ZoneCarto( const unsigned int zone) { m_zoneCarto = zone; }
+        unsigned int zone_carto() const { return m_zoneCarto; }
+        void zone_carto( const unsigned int zone) { m_zoneCarto = zone; }
 
-	unsigned int SizeX() const { return m_sizeX; }
-	void SizeX( const unsigned int size) { m_sizeX = size; }
-	unsigned int SizeY() const { return m_sizeY; }
-	void SizeY( const unsigned int size) { m_sizeY = size; }
+        unsigned int size_x() const { return m_sizeX; }
+        void size_x( const unsigned int size) { m_sizeX = size; }
+        unsigned int size_y() const { return m_sizeY; }
+        void size_y( const unsigned int size) { m_sizeY = size; }
 
 	///Passage de pixel a image et inversement
-	inline void ImageToMap(const int col, const int lig, double &x, double &y) const;
-	inline void MapToImage(const double x, const double y, int &col, int &lig) const;
+        inline void image_to_map(const int col, const int lig, double &x, double &y) const;
+        inline void map_to_image(const double x, const double y, int &col, int &lig) const;
 
 	///IO : renvoit des exceptions si mauvais format ou pbs en lecture
-	void ReadOriFromOriFile(const std::string &filename);
-	void ReadOriFromTFWFile(const std::string &filename);
-	void ReadOriFromImageFile(const std::string &filename);
+        void read_ori_from_ori_file(const std::string &filename);
+        void read_ori_from_tfw_file(const std::string &filename);
+        void read_ori_from_image_file(const std::string &filename);
 
-	void SaveOriToFile(const std::string &filename);
+        void save_ori_to_file(const std::string &filename);
 
-	std::string Affiche() const;
+        std::string display() const;
 
 private:
 
@@ -97,13 +97,13 @@ private:
 
 };
 
-inline void orientation_2d::ImageToMap(const int col, const int lig, double &x, double &y) const
+inline void orientation_2d::image_to_map(const int col, const int lig, double &x, double &y) const
 {
 	x = m_originX + col * m_step;
 	y = m_originY - lig * m_step;
 }
 
-inline void orientation_2d::MapToImage(const double x, const double y, int &col, int &lig) const
+inline void orientation_2d::map_to_image(const double x, const double y, int &col, int &lig) const
 {
 	col = static_cast<int>( std::floor((x - m_originX ) / m_step + 0.5)); //0.5 pour le round
 	lig = -static_cast<int>( std::floor((y - m_originY ) / m_step + 0.5));

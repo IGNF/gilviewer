@@ -72,7 +72,7 @@ boost::shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
 
 bool gilviewer_file_io_png::Register()
 {
-    gilviewer_io_factory::Instance()->Register("png", create_gilviewer_file_io_png);
+    gilviewer_io_factory::instance()->Register("png", create_gilviewer_file_io_png);
     return true;
 }
 

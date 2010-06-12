@@ -62,7 +62,7 @@
 
 BEGIN_EVENT_TABLE(FrameViewer,basic_viewer_frame)
 ADD_GILVIEWER_EVENTS_TO_TABLE(FrameViewer)
-EVT_TOOL(wxID_HELP, FrameViewer::OnHelp)
+EVT_TOOL(wxID_HELP, FrameViewer::on_help)
 END_EVENT_TABLE()
 
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(FrameViewer,m_drawPane)
@@ -79,7 +79,7 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 #endif
 
 	panel_viewer::Register(this);
-	m_drawPane = panel_manager::Instance()->createObject("PanelViewer");
+        m_drawPane = panel_manager::instance()->create_object("PanelViewer");
 
 	m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
@@ -101,7 +101,7 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 	toolbarInfo.Resizable(false);
 	toolbarInfo.CloseButton(false);
 	toolbarInfo.CaptionVisible(false);
-	m_dockManager.AddPane( m_drawPane->GetMainToolBar(this), toolbarInfo );
+        m_dockManager.AddPane( m_drawPane->main_toolbar(this), toolbarInfo );
 
 	wxAuiPaneInfo modeAndGeometryToolbarInfo;
 	modeAndGeometryToolbarInfo.ToolbarPane();
@@ -112,18 +112,18 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 	modeAndGeometryToolbarInfo.Resizable(false);
 	modeAndGeometryToolbarInfo.CloseButton(false);
 	modeAndGeometryToolbarInfo.CaptionVisible(false);
-	m_dockManager.AddPane( m_drawPane->GetModeAndGeometryToolBar(this), modeAndGeometryToolbarInfo );
+        m_dockManager.AddPane( m_drawPane->mode_and_geometry_toolbar(this), modeAndGeometryToolbarInfo );
 
 	m_dockManager.Update();
 
 	// Menu bar
-	SetMenuBar( m_drawPane->GetMenuBar() );
+        SetMenuBar( m_drawPane->menubar() );
 }
 
 void FrameViewer::AddLayer(const layer::ptrLayerType &layer) {
-	m_drawPane->AddLayer(layer);
+        m_drawPane->add_layer(layer);
 }
 
 void FrameViewer::AddLayersFromFiles(const wxArrayString &names) {
-	m_drawPane->GetLayerControl()->AddLayersFromFiles(names);
+        m_drawPane->layercontrol()->add_layers_from_files(names);
 }

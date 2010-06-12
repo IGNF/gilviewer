@@ -52,8 +52,8 @@ public:
     // Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
     virtual void update() {}
 
-    unsigned int Index() { return m_index; }
-    void Index(const unsigned int index){  m_index = index; }
+    unsigned int index() { return m_index; }
+    void index(const unsigned int index){  m_index = index; }
 
     virtual std::string get_info_button_name() const {return "";}
     virtual const char** icon_xpm() const {return NULL;}
