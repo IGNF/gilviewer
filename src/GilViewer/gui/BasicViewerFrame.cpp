@@ -54,9 +54,9 @@ extern void InitXmlResource();
 
 
 BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
-        EVT_TOOL(wxID_ABOUT, basic_viewer_frame::OnAbout)
-        EVT_TOOL(wxID_HELP, basic_viewer_frame::OnHelp)
-        EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, basic_viewer_frame::OnShowHideLogWindow)
+        EVT_TOOL(wxID_ABOUT, basic_viewer_frame::on_about)
+        EVT_TOOL(wxID_HELP, basic_viewer_frame::on_help)
+        EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, basic_viewer_frame::on_show_hide_log_window)
         //EVT_TOOL(wxID_PREFERENCES, basic_viewer_frame::OnApplicationSettings)
         END_EVENT_TABLE()
 
@@ -118,20 +118,20 @@ basic_viewer_frame::~basic_viewer_frame()
 }
 
 
-void basic_viewer_frame::OnShowHideLogWindow(wxCommandEvent& event)
+void basic_viewer_frame::on_show_hide_log_window(wxCommandEvent& event)
 {
     m_isLogWindowVisible = !m_isLogWindowVisible;
     m_logWindow->Show(m_isLogWindowVisible);
 }
 
-void basic_viewer_frame::OnAbout(wxCommandEvent& event)
+void basic_viewer_frame::on_about(wxCommandEvent& event)
 {
-    wxAboutBox(getAboutInfo());
+    wxAboutBox(about_info());
 }
 
-void basic_viewer_frame::OnHelp(wxCommandEvent& event)
+void basic_viewer_frame::on_help(wxCommandEvent& event)
 {
-    getHelp()->Show(true);
+    help()->Show(true);
 }
 
 //void BasicViewerFrame::OnApplicationSettings(wxCommandEvent& event)
@@ -140,7 +140,7 @@ void basic_viewer_frame::OnHelp(wxCommandEvent& event)
 //}
 
 
-wxAboutDialogInfo basic_viewer_frame::getAboutInfo() const
+wxAboutDialogInfo basic_viewer_frame::about_info() const
 {
     wxAboutDialogInfo info;
     info.AddDeveloper(_("Authors:"));
@@ -157,7 +157,7 @@ wxAboutDialogInfo basic_viewer_frame::getAboutInfo() const
     return info;
 }
 
-wxDialog* basic_viewer_frame::getHelp() const
+wxDialog* basic_viewer_frame::help() const
 {
     wxDialog* helpDialog = new wxDialog(NULL, wxID_ANY, wxString(_("Help")));
     wxHtmlWindow* helpWindow = new wxHtmlWindow(helpDialog, wxID_ANY, wxDefaultPosition, wxSize(380, 400), wxHW_SCROLLBAR_AUTO);

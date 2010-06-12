@@ -59,10 +59,10 @@ public:
     vector_layer_settings_control(unsigned int index, layer_control *parent , wxWindowID id = wxID_ANY, const wxString& title = _("Vector layer settings"),
                                   long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
-    void OnOKButton(wxCommandEvent &event);
-    void OnCancelButton(wxCommandEvent &event);
-    void OnApplyButton(wxCommandEvent &event);
-    void OnCloseWindow(wxCloseEvent& event);
+    void on_ok_button(wxCommandEvent &event);
+    void on_cancel_button(wxCommandEvent &event);
+    void on_apply_button(wxCommandEvent &event);
+    void on_close_window(wxCloseEvent& event);
 
     // Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)
     virtual void update();

@@ -69,43 +69,42 @@ public:
 
     virtual ~panel_viewer() {}
 
-    void AddLayer( const layer::ptrLayerType &layer );
+    void add_layer( const layer::ptrLayerType &layer );
 
-    layer_control* GetLayerControl() const;
-    application_settings* GetApplicationSettings() const;
+    layer_control* layercontrol() const;
+    application_settings* applicationsettings() const;
 
     // On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
     DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
-    void OnMouseWheel(wxMouseEvent& event);
 
-    wxToolBar* GetMainToolBar(wxWindow* parent);
-    wxToolBar* GetModeAndGeometryToolBar(wxWindow* parent);
-    wxMenuBar* GetMenuBar();
-    bool InitToolbar();
+    wxToolBar* main_toolbar(wxWindow* parent);
+    wxToolBar* mode_and_geometry_toolbar(wxWindow* parent);
+    wxMenuBar* menubar();
+    bool init_toolbar();
 
 
 
     // Drag and Drop
     //virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 
-    virtual void OpenCustomFormat(const std::string &filename);
+    virtual void open_custom_format(const std::string &filename);
 
-    void SetModeNavigation();
-    void SetModeGeometryMoving();
-    void SetModeEdition();
-    void SetModeCapture();
-    void SetModeSelection();
+    void mode_navigation();
+    void mode_geometry_moving();
+    void mode_edition();
+    void mode_capture();
+    void mode_selection();
 
-    void SetGeometryNull();
-    void SetGeometryPoint();
-    void SetGeometryCircle();
-    void SetGeometryRectangle();
-    void SetGeometryLine();
-    void SetGeometryPolygone();
+    void geometry_null();
+    void geometry_point();
+    void geometry_circle();
+    void geometry_rectangle();
+    void geometry_line();
+    void geometry_polygone();
 
-    void OnSnapshot(wxCommandEvent& event);
+    void on_snapshot(wxCommandEvent& event);
 
-    void Crop();
+    void crop();
 
     // TODO : tout passer en minuscule (ou en majuscule)
     enum eMode //mode de gestion des événements
@@ -127,20 +126,20 @@ public:
         GEOMETRY_POLYGONE
     };
 
-    inline eMode GetCurrentMode() { return m_mode; }
-    inline eGEOMETRY GetCurrentGeometry() { return m_geometry; }
-    inline boost::shared_ptr<vector_layer_ghost> GetVectorLayerGhost() { return m_ghostLayer; }
+    inline eMode mode() { return m_mode; }
+    inline eGEOMETRY geometry() { return m_geometry; }
+    inline boost::shared_ptr<vector_layer_ghost> vectorlayerghost() { return m_ghostLayer; }
 
     DECLARE_EVENT_TABLE();
 
 protected:
     wxFrame* m_parent;
 
-    void ShowLayerControl(bool show) const;
+    void show_layer_control(bool show) const;
 
     ///Recuperer les coord images du pointeur souris par rapport a la premiere couche image
-    bool GetCoordImage(const int mouseX, const int mouseY, int &i, int &j) const;
-    bool GetSubPixCoordImage(const int mouseX, const int mouseY, double &i, double&j) const;
+    bool coord_image(const int mouseX, const int mouseY, int &i, int &j) const;
+    bool subpix_coord_image(const int mouseX, const int mouseY, double &i, double&j) const;
 
     wxToolBar* m_mainToolbar;
     wxToolBar* m_modeAndGeometryToolbar;
@@ -164,12 +163,12 @@ protected:
     //ref sur le ghostLayer du LayerControl
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
 
-    void executeMode();
-    virtual void executeModeNavigation();
-    virtual void executeModeGeometryMoving();
-    virtual void executeModeCapture();
-    virtual void executeModeEdition();
-    virtual void executeModeSelection();
+    void execute_mode();
+    virtual void execute_mode_navigation();
+    virtual void execute_mode_geometry_moving();
+    virtual void execute_mode_capture();
+    virtual void execute_mode_edition();
+    virtual void execute_mode_selection();
 
     /// Flag indiquant le mode navigation, saisie, ...)
     eMode m_mode;
@@ -177,47 +176,44 @@ protected:
     eGEOMETRY m_geometry;
 
     ///Ajoute un point à la géométrie courante
-    void GeometryAddPoint(const wxPoint& pt);
+    void geometry_add_point(const wxPoint& pt);
     ///Mets à jour la géométrie avec le point sous la souris lors d'un MouseMove, sans le sélectionner définitivement
-    void GeometryUpdateAbsolute(const wxPoint& pt);
-    void GeometryUpdateRelative(const wxPoint& translation);
+    void geometry_update_absolute(const wxPoint& pt);
+    void geometry_update_relative(const wxPoint& translation);
     ///Fin du clic, on ferme (ou pas ?) la géométrie et on exécute les traitements
-    void GeometryEnd();
+    void geometry_end();
 
     ///Déplacement de la géométrie
-    void GeometryMoveAbsolute(const wxPoint& pt);
-    void GeometryMoveRelative(const wxPoint& translation);
+    void geometry_move_absolute(const wxPoint& pt);
+    void geometry_move_relative(const wxPoint& translation);
 
     ///Déplacement de la scene
-    void SceneMove(const wxPoint& translation);
+    void scene_move(const wxPoint& translation);
 
-    void OnPaint(wxPaintEvent& evt);
-    void UpdateStatusBar(const int i, const int j);
-    void OnSize( wxSizeEvent &e );
+    void on_paint(wxPaintEvent& evt);
+    void update_statusbar(const int i, const int j);
+    void on_size( wxSizeEvent &e );
 
     // Mouse events
-    void OnLeftDown(wxMouseEvent &event);
-    void OnLeftUp(wxMouseEvent &event);
-    void OnMouseMove(wxMouseEvent &event);
-    void OnMiddleDown(wxMouseEvent &event);
-    void OnRightDown(wxMouseEvent &event);
-    void OnLeftDClick(wxMouseEvent &event);
-    void OnRightDClick(wxMouseEvent &event);
+    void on_mouse_move(wxMouseEvent &event);
+    void on_left_down(wxMouseEvent &event);
+    void on_left_up(wxMouseEvent &event);
+    void on_middle_down(wxMouseEvent &event);
+    void on_right_down(wxMouseEvent &event);
+    void on_left_double_click(wxMouseEvent &event);
+    void on_right_double_click(wxMouseEvent &event);
+    void on_keydown(wxKeyEvent& event);
+    void on_mouse_wheel(wxMouseEvent& event);
 
-    void OnKeydown(wxKeyEvent& event);
+    void on_quit(wxCommandEvent& event);
 
-    //	void ShowPopUpMenu(const wxPoint& pos);
-    void OnPopUpMenu(wxCommandEvent& event);
+    void zoom(double zoomFactor, wxMouseEvent &event);
 
-    void OnQuit(wxCommandEvent& event);
-
-    void Zoom(double zoomFactor, wxMouseEvent &event);
-
-    void UpdateIfTransformable();
+    void update_if_transformable();
 
     ///pour ne créer des panels qu'à partir de la factory (PanelManager)
     panel_viewer(wxFrame* parent);
-    friend panel_viewer* createPanelViewer(wxFrame* parent);
+    friend panel_viewer* create_panel_viewer(wxFrame* parent);
 
 };
 

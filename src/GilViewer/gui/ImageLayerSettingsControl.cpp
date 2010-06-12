@@ -62,16 +62,16 @@ Authors:
 #include "../tools/ColorLookupTable.h"
 
 BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
-        EVT_CLOSE(image_layer_settings_control::OnCloseWindow)
-        EVT_BUTTON(wxID_OK,image_layer_settings_control::OnOKButton)
-        EVT_BUTTON(wxID_CANCEL,image_layer_settings_control::OnCancelButton)
-        EVT_BUTTON(wxID_APPLY,image_layer_settings_control::OnApplyButton)
-        EVT_CHECKBOX(ID_ALPHA_RANGE_CHECK, image_layer_settings_control::OnCheckAlphaRange)
-        EVT_CHECKBOX(ID_ALPHA_CHANNEL_CHECK, image_layer_settings_control::OnCheckAlphaChannel)
-        EVT_SET_FOCUS(image_layer_settings_control::OnGetFocus)
-        END_EVENT_TABLE()
+        EVT_BUTTON(wxID_OK,image_layer_settings_control::on_ok_button)
+        EVT_BUTTON(wxID_CANCEL,image_layer_settings_control::on_cancel_button)
+        EVT_BUTTON(wxID_APPLY,image_layer_settings_control::on_apply_button)
+        EVT_CLOSE(image_layer_settings_control::on_close_window)
+        EVT_CHECKBOX(ID_ALPHA_RANGE_CHECK, image_layer_settings_control::on_check_alpha_range)
+        EVT_CHECKBOX(ID_ALPHA_CHANNEL_CHECK, image_layer_settings_control::on_check_alpha_channel)
+        EVT_SET_FOCUS(image_layer_settings_control::on_get_focus)
+END_EVENT_TABLE()
 
-        image_layer_settings_control::image_layer_settings_control(unsigned int index, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+image_layer_settings_control::image_layer_settings_control(unsigned int index, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
 	layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
 {
     m_index = index;
@@ -91,17 +91,17 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
     main_sizer->Add(m_histogramPanel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
     // L'interface dépend du nombre de composantes
-    m_nbComponents = m_parent->Layers()[index]->nb_components();
+    m_nbComponents = m_parent->layers()[index]->nb_components();
     if (m_nbComponents == 1)
     {
         wxStaticBoxSizer *red_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Channel"));
         wxString redMin;
-        redMin << GetLayerControl()->Layers()[index]->intensity_min();
+        redMin << layercontrol()->layers()[index]->intensity_min();
         m_textRedMinimumIntensity = new wxTextCtrl(this,wxID_ANY,redMin);
         m_textRedMinimumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         red_sizer->Add(m_textRedMinimumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
         wxString redMax;
-        redMax << GetLayerControl()->Layers()[index]->intensity_max();
+        redMax << layercontrol()->layers()[index]->intensity_max();
         m_textRedMaximumIntensity = new wxTextCtrl(this,wxID_ANY,redMax);
         m_textRedMaximumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         red_sizer->Add(m_textRedMaximumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -129,14 +129,14 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         m_textRedMinimumIntensity = new wxTextCtrl(this,wxID_ANY);
         m_textRedMinimumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         wxString redMin;
-        redMin << GetLayerControl()->Layers()[index]->intensity_min();
+        redMin << layercontrol()->layers()[index]->intensity_min();
         m_textRedMinimumIntensity->SetValue(redMin);
         m_textRedMinimumIntensity->SetToolTip(_("Minimum intensity"));
         red_sizer->Add(m_textRedMinimumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
         m_textRedMaximumIntensity = new wxTextCtrl(this,wxID_ANY);
         m_textRedMaximumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         wxString redMax;
-        redMax << GetLayerControl()->Layers()[index]->intensity_max();
+        redMax << layercontrol()->layers()[index]->intensity_max();
         m_textRedMaximumIntensity->SetValue(redMax);
         m_textRedMaximumIntensity->SetToolTip(_("Maximum intensity"));
         red_sizer->Add(m_textRedMaximumIntensity, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
@@ -156,7 +156,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         m_textGreenMinimumIntensity = new wxTextCtrl(this,wxID_ANY);
         m_textGreenMinimumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         wxString greenMin;
-        greenMin << GetLayerControl()->Layers()[index]->intensity_min();
+        greenMin << layercontrol()->layers()[index]->intensity_min();
         m_textGreenMinimumIntensity->SetValue(greenMin);
         m_textGreenMinimumIntensity->SetToolTip(_("Minimum intensity"));
         m_textGreenMinimumIntensity->Enable(false);
@@ -165,7 +165,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         m_textGreenMaximumIntensity = new wxTextCtrl(this,wxID_ANY);
         m_textGreenMaximumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         wxString greenMax;
-        greenMax << GetLayerControl()->Layers()[index]->intensity_max();
+        greenMax << layercontrol()->layers()[index]->intensity_max();
         m_textGreenMaximumIntensity->SetValue(greenMax);
         m_textGreenMaximumIntensity->SetToolTip(_("Maximum intensity"));
         m_textGreenMaximumIntensity->Enable(false);
@@ -189,7 +189,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         m_textBlueMinimumIntensity = new wxTextCtrl(this,wxID_ANY);
         m_textBlueMinimumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         wxString blueMin;
-        blueMin << GetLayerControl()->Layers()[index]->intensity_min();
+        blueMin << layercontrol()->layers()[index]->intensity_min();
         m_textBlueMinimumIntensity->SetValue(blueMin);
         m_textBlueMinimumIntensity->SetToolTip(_("Minimum intensity"));
         m_textBlueMinimumIntensity->Enable(false);
@@ -198,7 +198,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         m_textBlueMaximumIntensity = new wxTextCtrl(this,wxID_ANY);
         m_textBlueMaximumIntensity->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         wxString blueMax;
-        blueMax << GetLayerControl()->Layers()[index]->intensity_max();
+        blueMax << layercontrol()->layers()[index]->intensity_max();
         m_textBlueMaximumIntensity->SetValue(blueMax);
         m_textBlueMaximumIntensity->SetToolTip(_("Maximum intensity"));
         m_textBlueMaximumIntensity->Enable(false);
@@ -216,7 +216,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
     }
 
     wxStaticBoxSizer *alpha_sizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Alpha"));
-    unsigned int alphaValue = GetLayerControl()->Layers()[index]->alpha();
+    unsigned int alphaValue = layercontrol()->layers()[index]->alpha();
     m_alphaSlider = new wxSlider(this,wxID_ANY,alphaValue,0,255,wxDefaultPosition,wxDefaultSize,wxSL_LABELS);
     alpha_sizer->Add(m_alphaSlider, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
     //
@@ -278,7 +278,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
     Centre();
 }
 
-void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
+void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
 {
     // Pour l'instant, on se concentre sur le canal RED ...
     wxString redMinLabel = m_textRedMinimumIntensity->GetValue();
@@ -333,8 +333,8 @@ void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
             return;
         }
 
-        GetLayerControl()->Layers()[m_index]->channels(redChannel, greenChannel, blueChannel);
-        m_histogramPanel->SetChannels(redChannel, greenChannel, blueChannel);
+        layercontrol()->layers()[m_index]->channels(redChannel, greenChannel, blueChannel);
+        m_histogramPanel->channels(redChannel, greenChannel, blueChannel);
         m_histogramPanel->Refresh();
 
         //alpha channel
@@ -348,10 +348,10 @@ void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
                 return;
             }
 
-            GetLayerControl()->Layers()[m_index]->alpha_channel(true, alphaChannel);
+            layercontrol()->layers()[m_index]->alpha_channel(true, alphaChannel);
         }
         else
-            GetLayerControl()->Layers()[m_index]->alpha_channel(false, 0);
+            layercontrol()->layers()[m_index]->alpha_channel(false, 0);
     }
 
     if (m_checkAlphaRange->IsChecked() )
@@ -403,22 +403,22 @@ void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
     }
 
 
-    GetLayerControl()->Layers()[m_index]->alpha(m_alphaSlider->GetValue() );
+    layercontrol()->layers()[m_index]->alpha(m_alphaSlider->GetValue() );
 
     // Si on est la, tout s'est bien passe ...
-    GetLayerControl()->Layers()[m_index]->intensity_min(redMinDouble);
-    GetLayerControl()->Layers()[m_index]->intensity_max(redMaxDouble);
-    GetLayerControl()->Layers()[m_index]->gamma(redGammaDouble);
+    layercontrol()->layers()[m_index]->intensity_min(redMinDouble);
+    layercontrol()->layers()[m_index]->intensity_max(redMaxDouble);
+    layercontrol()->layers()[m_index]->gamma(redGammaDouble);
 
     // La, il faut brancher le range pour la transparence : alphaRangeMin et alphaRangeMax
     if (m_checkAlphaRange->IsChecked() )
     {
-        GetLayerControl()->Layers()[m_index]->transparent(true);
-        GetLayerControl()->Layers()[m_index]->transparency_min(alphaRangeMin);
-        GetLayerControl()->Layers()[m_index]->transparency_max(alphaRangeMax);
+        layercontrol()->layers()[m_index]->transparent(true);
+        layercontrol()->layers()[m_index]->transparency_min(alphaRangeMin);
+        layercontrol()->layers()[m_index]->transparency_max(alphaRangeMax);
     }
     else
-        GetLayerControl()->Layers()[m_index]->transparent(false);
+        layercontrol()->layers()[m_index]->transparent(false);
 
 
     //Branchement du choix de la CLUT
@@ -428,9 +428,9 @@ void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
         if(boost::filesystem::exists(fileLUT))
         {
             if ( boost::filesystem::basename(fileLUT) == "random" )
-                GetLayerControl()->Layers()[m_index]->GetColorLookupTable()->createRandom();
+                layercontrol()->layers()[m_index]->GetColorLookupTable()->create_random();
             else
-                GetLayerControl()->Layers()[m_index]->GetColorLookupTable()->LoadFromBinaryFile( fileLUT );
+                layercontrol()->layers()[m_index]->GetColorLookupTable()->load_from_binary_file( fileLUT );
         }
         else
         {
@@ -438,13 +438,13 @@ void image_layer_settings_control::OnApplyButton(wxCommandEvent &event)
         }
     }
 
-    m_parent->GetPanelViewer()->GetLayerControl()->Layers()[m_index]->needs_update(true);
-    m_parent->GetPanelViewer()->Refresh();
+    m_parent->panelviewer()->layercontrol()->layers()[m_index]->needs_update(true);
+    m_parent->panelviewer()->Refresh();
 }
 
 void image_layer_settings_control::update()
 {
-    layer::ptrLayerType layer = m_parent->Layers()[m_index];
+    layer::ptrLayerType layer = m_parent->layers()[m_index];
     wxString min, max, gamma;
     // Mise a jour pour le canal rouge (il y en a toujours un)
     min << layer->intensity_min();
@@ -494,7 +494,7 @@ void image_layer_settings_control::update()
     }
 }
 
-void image_layer_settings_control::OnCheckAlphaRange(wxCommandEvent &event)
+void image_layer_settings_control::on_check_alpha_range(wxCommandEvent &event)
 {
     bool chk = event.IsChecked();
 
@@ -504,44 +504,39 @@ void image_layer_settings_control::OnCheckAlphaRange(wxCommandEvent &event)
     m_textAlphaRangeMax->SetEditable(chk);
 }
 
-void image_layer_settings_control::OnCheckAlphaChannel(wxCommandEvent &event)
+void image_layer_settings_control::on_check_alpha_channel(wxCommandEvent &event)
 {
     bool chk = event.IsChecked();
 
     m_textAlphaChannel->Enable(chk);
 }
 
-void image_layer_settings_control::OnOKButton(wxCommandEvent &event)
+void image_layer_settings_control::on_ok_button(wxCommandEvent &event)
 {
     // On ne fait que cacher ...
-    OnApplyButton(event);
+    on_apply_button(event);
     Hide();
 }
 
-void image_layer_settings_control::OnCancelButton(wxCommandEvent &event)
+void image_layer_settings_control::on_cancel_button(wxCommandEvent &event)
 {
     Hide();
 }
 
-void image_layer_settings_control::OnSize(wxSizeEvent &event)
-{
-    m_histogramPanel->Refresh();
-}
-
-void image_layer_settings_control::OnCloseWindow(wxCloseEvent& event)
+void image_layer_settings_control::on_close_window(wxCloseEvent& event)
 {
     Hide();
 }
 
-void image_layer_settings_control::OnGetFocus(wxFocusEvent &event)
+void image_layer_settings_control::on_get_focus(wxFocusEvent &event)
 {
     //Pour recharger les valeurs des parametres quand la fenetre reprend le focus
     wxString valueintensity_min;
-    valueintensity_min<<GetLayerControl()->Layers()[m_index]->intensity_min();
+    valueintensity_min<<layercontrol()->layers()[m_index]->intensity_min();
     m_textRedMinimumIntensity->SetValue(valueintensity_min);
 
     wxString valueintensity_max;
-    valueintensity_min<<GetLayerControl()->Layers()[m_index]->intensity_max();
+    valueintensity_min<<layercontrol()->layers()[m_index]->intensity_max();
     m_textRedMaximumIntensity->SetValue(valueintensity_max);
 
 }
@@ -549,18 +544,18 @@ void image_layer_settings_control::OnGetFocus(wxFocusEvent &event)
 const char** image_layer_settings_control::icon_xpm() const {return image_icon_xpm;}
 
 BEGIN_EVENT_TABLE(histogram_plotter,wxPanel)
-        EVT_PAINT(histogram_plotter::OnPaint)
-        EVT_SIZE(histogram_plotter::OnSize)
-        EVT_MOTION(histogram_plotter::OnMouseMove)
-        END_EVENT_TABLE()
+        EVT_PAINT(histogram_plotter::on_paint)
+        EVT_SIZE(histogram_plotter::on_size)
+        EVT_MOTION(histogram_plotter::on_mouse_move)
+END_EVENT_TABLE()
 
-        histogram_plotter::histogram_plotter(image_layer_settings_control* parent,  const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
+histogram_plotter::histogram_plotter(image_layer_settings_control* parent,  const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
 	wxPanel(parent, id, pos, size, style), m_parent(parent), m_isInit(false)
 {
-    SetChannels(redChannel, greenChannel, blueChannel);
+    channels(redChannel, greenChannel, blueChannel);
 }
 
-void histogram_plotter::OnMouseMove(wxMouseEvent &event)
+void histogram_plotter::on_mouse_move(wxMouseEvent &event)
 {
     if (m_isInit)
     {
@@ -617,7 +612,7 @@ void histogram_plotter::OnMouseMove(wxMouseEvent &event)
     }
 }
 
-void histogram_plotter::OnPaint(wxPaintEvent &event)
+void histogram_plotter::on_paint(wxPaintEvent &event)
 {
     if (m_isInit)
     {
@@ -727,7 +722,7 @@ void histogram_plotter::OnPaint(wxPaintEvent &event)
     }
 }
 
-void histogram_plotter::OnSize(wxSizeEvent &event)
+void histogram_plotter::on_size(wxSizeEvent &event)
 {
     Refresh();
 }
@@ -741,13 +736,13 @@ thread_histogram::thread_histogram(image_layer_settings_control *parent) :
 
 void thread_histogram::OnExit()
 {
-    m_parent->GetHistogramPlotter()->IsInit(true);
-    m_parent->GetHistogramPlotter()->Refresh();
+    m_parent->histogramplotter()->init(true);
+    m_parent->histogramplotter()->Refresh();
 }
 
 void *thread_histogram::Entry()
 {
-    m_parent->GetLayerControl()->Layers()[m_parent->Index()]->histogram(m_parent->GetHistogramPlotter()->Data(), m_parent->GetHistogramPlotter()->Min(), m_parent->GetHistogramPlotter()->Max() );
+    m_parent->layercontrol()->layers()[m_parent->index()]->histogram(m_parent->histogramplotter()->Data(), m_parent->histogramplotter()->Min(), m_parent->histogramplotter()->Max() );
 
     return NULL;
 }

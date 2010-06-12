@@ -50,13 +50,12 @@ public:
     global_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Global settings"), long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
     virtual ~global_settings_control() {};
 
-    void OnScroll(wxScrollEvent &event);
-    void OnOKButton(wxCommandEvent &event);
-    void OnCancelButton(wxCommandEvent &event);
-    void OnApplyButton(wxCommandEvent &event);
-    void OnCloseWindow(wxCloseEvent& event);
+    void on_ok_button(wxCommandEvent &event);
+    void on_cancel_button(wxCommandEvent &event);
+    void on_apply_button(wxCommandEvent &event);
+    void on_close_window(wxCloseEvent& event);
 
-    bool Validate();
+    bool validate();
 
     DECLARE_EVENT_TABLE();
 

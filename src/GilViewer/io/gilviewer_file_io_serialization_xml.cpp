@@ -88,7 +88,7 @@ boost::shared_ptr<gilviewer_file_io_serialization_xml> create_gilviewer_file_io_
 
 bool gilviewer_file_io_serialization_xml::Register()
 {
-    gilviewer_io_factory::Instance()->Register("xml", create_gilviewer_file_io_serialization_xml);
+    gilviewer_io_factory::instance()->Register("xml", create_gilviewer_file_io_serialization_xml);
     return true;
 }
 

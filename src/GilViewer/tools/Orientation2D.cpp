@@ -55,7 +55,7 @@ orientation_2d::orientation_2d(const double origineX, const double origineY, con
 
 }
 
-void orientation_2d::ReadOriFromImageFile(const std::string &filename)
+void orientation_2d::read_ori_from_image_file(const std::string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
@@ -72,17 +72,17 @@ void orientation_2d::ReadOriFromImageFile(const std::string &filename)
 
     try
     {
-        ReadOriFromOriFile(path+"/"+basename+".ori");
+        read_ori_from_ori_file(path+"/"+basename+".ori");
     }
     catch (const std::logic_error &)
     {
         // Si on catche cette erreur, cela signifie que le .ori n'existe pas
         // On essaie de lire un .tfw
-        ReadOriFromTFWFile(path+"/"+basename+".tfw");
+        read_ori_from_tfw_file(path+"/"+basename+".tfw");
     }
 }
 
-void orientation_2d::ReadOriFromOriFile(const std::string &filename)
+void orientation_2d::read_ori_from_ori_file(const std::string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
@@ -145,7 +145,7 @@ void orientation_2d::ReadOriFromOriFile(const std::string &filename)
 
 }
 
-void orientation_2d::ReadOriFromTFWFile(const std::string &filename)
+void orientation_2d::read_ori_from_tfw_file(const std::string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
@@ -201,7 +201,7 @@ void orientation_2d::ReadOriFromTFWFile(const std::string &filename)
 }
 
 
-void orientation_2d::SaveOriToFile(const std::string &filename)
+void orientation_2d::save_ori_to_file(const std::string &filename)
 {
     std::ofstream fileOri(filename.c_str() , std::ofstream::out);
 
@@ -214,7 +214,7 @@ void orientation_2d::SaveOriToFile(const std::string &filename)
     fileOri.close();
 }
 
-std::string orientation_2d::Affiche() const
+std::string orientation_2d::display() const
 {
     std::ostringstream result;
     result << "Orientation : \n";

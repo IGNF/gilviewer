@@ -85,12 +85,12 @@ public:
     virtual ~selectable_static_text() {};
 
     /// Getter for the selection flag
-    bool IsSelected() const { return m_isSelected; }
+    bool selected() const { return m_isSelected; }
     /// Setter for the selection flag
-    void IsSelected(const bool isSelected) { m_isSelected = isSelected; if(m_isSelected) SetForegroundColour( m_selectedColour ); else SetForegroundColour( m_unselectedColour );}
+    void selected(const bool isSelected) { m_isSelected = isSelected; if(m_isSelected) SetForegroundColour( m_selectedColour ); else SetForegroundColour( m_unselectedColour );}
 
     /// This methods enables to select a wxStaticText when the user clicks.
-    void OnClick(wxMouseEvent& event);
+    void on_click(wxMouseEvent& event);
 
 private:
     /// Unselected text color (220,220,220)

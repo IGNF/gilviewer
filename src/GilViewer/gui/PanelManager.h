@@ -56,9 +56,9 @@ public:
 
     // La méthode  qui va nous permettre de récupérer
     // la liste des panels
-    const ArrayOfPanels &GetPanelsList();
+    const ArrayOfPanels &panels_list();
 
-    panel_viewer* createObject(const std::string& id);
+    panel_viewer* create_object(const std::string& id);
 
 
 private:

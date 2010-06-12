@@ -50,21 +50,21 @@ Authors:
  * Voir FrameViewer.cpp pour un exemple d'utilisation
  */
 #define ADD_GILVIEWER_EVENTS_TO_TABLE(classname) \
-	EVT_TOOL(wxID_OPEN, classname::OnOpenLayer) \
-	EVT_TOOL(ID_BASIC_SNAPSHOT, classname::OnSnapShot) \
-	EVT_TOOL(ID_SHOW_HIDE_LAYER_CONTROL, classname::OnShowHideLayerControl) \
-	EVT_TOOL(ID_MODE_NAVIGATION, classname::OnModeNavigation) \
-	EVT_TOOL(ID_MODE_GEOMETRY_MOVING, classname::OnModeGeometryMoving) \
-	EVT_TOOL(ID_MODE_EDITION, classname::OnModeEdition) \
-	EVT_TOOL(ID_MODE_CAPTURE, classname::OnModeCapture) \
-	EVT_TOOL(ID_MODE_SELECTION, classname::OnModeSelection) \
-	EVT_TOOL(ID_GEOMETRY_NULL, classname::OnGeometryNull) \
-	EVT_TOOL(ID_GEOMETRY_POINT, classname::OnGeometryPoint) \
-	EVT_TOOL(ID_GEOMETRY_CIRCLE, classname::OnGeometryCircle) \
-	EVT_TOOL(ID_GEOMETRY_RECTANGLE, classname::OnGeometryRectangle) \
-	EVT_TOOL(ID_GEOMETRY_LINE, classname::OnGeometryLine) \
-	EVT_TOOL(ID_GEOMETRY_POLYGONE, classname::OnGeometryPolygone) \
-	EVT_TOOL(ID_CROP, classname::OnCrop)
+        EVT_TOOL(wxID_OPEN, classname::on_open_layer) \
+        EVT_TOOL(ID_BASIC_SNAPSHOT, classname::on_snap_shot) \
+        EVT_TOOL(ID_SHOW_HIDE_LAYER_CONTROL, classname::on_show_hide_layer_control) \
+        EVT_TOOL(ID_MODE_NAVIGATION, classname::on_mode_navigation) \
+        EVT_TOOL(ID_MODE_GEOMETRY_MOVING, classname::on_mode_geometry_moving) \
+        EVT_TOOL(ID_MODE_EDITION, classname::on_mode_edition) \
+        EVT_TOOL(ID_MODE_CAPTURE, classname::on_mode_capture) \
+        EVT_TOOL(ID_MODE_SELECTION, classname::on_mode_selection) \
+        EVT_TOOL(ID_GEOMETRY_NULL, classname::on_geometry_null) \
+        EVT_TOOL(ID_GEOMETRY_POINT, classname::on_geometry_point) \
+        EVT_TOOL(ID_GEOMETRY_CIRCLE, classname::on_geometry_circle) \
+        EVT_TOOL(ID_GEOMETRY_RECTANGLE, classname::on_geometry_rectangle) \
+        EVT_TOOL(ID_GEOMETRY_LINE, classname::on_geometry_line) \
+        EVT_TOOL(ID_GEOMETRY_POLYGONE, classname::on_geometry_polygone) \
+        EVT_TOOL(ID_CROP, classname::on_crop)
 
 
 
@@ -73,97 +73,97 @@ Authors:
  * Voir FrameViewer.hpp pour un exemple d'utilisation
  */
 #define DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE() \
-        void OnOpenLayer(wxCommandEvent& event); \
-	void OnSnapShot(wxCommandEvent& event); \
-	void OnShowHideLayerControl(wxCommandEvent& event); \
-	void OnModeNavigation(wxCommandEvent& event); \
-	void OnModeGeometryMoving(wxCommandEvent& event); \
-	void OnModeEdition(wxCommandEvent& event); \
-	void OnModeCapture(wxCommandEvent& event); \
-	void OnModeSelection(wxCommandEvent& event); \
-	void OnGeometryNull(wxCommandEvent& event); \
-	void OnGeometryPoint(wxCommandEvent& event); \
-	void OnGeometryCircle(wxCommandEvent& event); \
-	void OnGeometryRectangle(wxCommandEvent& event); \
-	void OnGeometryLine(wxCommandEvent& event); \
-	void OnGeometryPolygone(wxCommandEvent& event); \
-	void OnCrop(wxCommandEvent& event);
+        void on_open_layer(wxCommandEvent& event); \
+        void on_snap_shot(wxCommandEvent& event); \
+        void on_show_hide_layer_control(wxCommandEvent& event); \
+        void on_mode_navigation(wxCommandEvent& event); \
+        void on_mode_geometry_moving(wxCommandEvent& event); \
+        void on_mode_edition(wxCommandEvent& event); \
+        void on_mode_capture(wxCommandEvent& event); \
+        void on_mode_selection(wxCommandEvent& event); \
+        void on_geometry_null(wxCommandEvent& event); \
+        void on_geometry_point(wxCommandEvent& event); \
+        void on_geometry_circle(wxCommandEvent& event); \
+        void on_geometry_rectangle(wxCommandEvent& event); \
+        void on_geometry_line(wxCommandEvent& event); \
+        void on_geometry_polygone(wxCommandEvent& event); \
+        void on_crop(wxCommandEvent& event);
 
 /**
  * Comme son nom l'indique, cette macro permet d'implementer les evenements "classiques" de la table d'evenements.
  * Voir FrameViewer.cpp pour un exemple d'utilisation
  */
 #define IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(classname,variablePanelViewer) \
-	void classname::OnOpenLayer(wxCommandEvent& event) \
+        void classname::on_open_layer(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->GetLayerControl()->OnOpenLayer(event); \
+                variablePanelViewer->layercontrol()->on_open_layer(event); \
         } \
-	void classname::OnSnapShot(wxCommandEvent& event) \
+        void classname::on_snap_shot(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->OnSnapshot(event); \
+                variablePanelViewer->on_snap_shot(event); \
 	} \
-	void classname::OnShowHideLayerControl(wxCommandEvent& event) \
+        void classname::on_show_hide_layer_control(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->GetLayerControl()->Show(!variablePanelViewer->GetLayerControl()->IsVisible()); \
+                variablePanelViewer->layercontrol()->Show(!variablePanelViewer->layercontrol()->IsVisible()); \
 	} \
-	void classname::OnModeNavigation(wxCommandEvent& event) \
+        void classname::on_mode_navigation(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetModeNavigation(); \
+                variablePanelViewer->mode_navigation(); \
 		wxLogMessage( _("Navigation mode!") ); \
 	} \
-	void classname::OnModeGeometryMoving(wxCommandEvent& event) \
+        void classname::on_mode_geometry_moving(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetModeGeometryMoving(); \
+                variablePanelViewer->mode_geometry_moving(); \
 		wxLogMessage( _("Geometry Moving mode!") ); \
 	} \
-	void classname::OnModeEdition(wxCommandEvent& event) \
+        void classname::on_mode_edition(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetModeEdition(); \
+                variablePanelViewer->mode_edition(); \
 		wxLogMessage( _("Editing mode!") ); \
 	} \
-	void classname::OnModeCapture(wxCommandEvent& event) \
+        void classname::on_mode_capture(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetModeCapture(); \
+                variablePanelViewer->mode_capture(); \
 		wxLogMessage( _("Capture mode!") ); \
 	} \
-	void classname::OnModeSelection(wxCommandEvent& event) \
+        void classname::on_mode_selection(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetModeSelection(); \
+                variablePanelViewer->mode_selection(); \
 		wxLogMessage( _("Selection mode!") ); \
 	} \
-	void classname::OnGeometryNull(wxCommandEvent& event) \
+        void classname::on_geometry_null(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetGeometryNull(); \
+                variablePanelViewer->geometry_null(); \
 		wxLogMessage( _("NULL Geometry!") ); \
 	} \
-	void classname::OnGeometryPoint(wxCommandEvent& event) \
+        void classname::on_geometry_point(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetGeometryPoint(); \
+                variablePanelViewer->geometry_point(); \
 		wxLogMessage( _("Geometry Point!") ); \
 	} \
-	void classname::OnGeometryCircle(wxCommandEvent& event) \
+        void classname::on_geometry_circle(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetGeometryCircle(); \
+                variablePanelViewer->geometry_circle(); \
 		wxLogMessage( _("Geometry Circle!") ); \
 	} \
-	void classname::OnGeometryRectangle(wxCommandEvent& event) \
+        void classname::on_geometry_rectangle(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetGeometryRectangle(); \
+                variablePanelViewer->geometry_rectangle(); \
 		wxLogMessage( _("Geometry Rectangle!") ); \
 	} \
-	void classname::OnGeometryLine(wxCommandEvent& event) \
+        void classname::on_geometry_line(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetGeometryLine(); \
+                variablePanelViewer->geometry_line(); \
 		wxLogMessage( _("Geometry Line!") ); \
 	} \
-	void classname::OnGeometryPolygone(wxCommandEvent& event) \
+        void classname::on_geometry_polygone(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->SetGeometryPolygone(); \
+                variablePanelViewer->geometry_polygone(); \
 		wxLogMessage( _("Geometry Polygon!") ); \
 	} \
-	void classname::OnCrop(wxCommandEvent& event) \
+        void classname::on_crop(wxCommandEvent& event) \
 	{ \
-		variablePanelViewer->Crop(); \
+                variablePanelViewer->crop(); \
 	}
 
 

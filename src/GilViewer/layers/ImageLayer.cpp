@@ -200,12 +200,12 @@ boost::shared_ptr<color_lookup_table> image_layer::GetColorLookupTable()
 
 void image_layer::orientation(const boost::shared_ptr<orientation_2d> &orientation)
 {
-    m_ori->OriginX( orientation->OriginX() );
-    m_ori->OriginY( orientation->OriginY() );
-    m_ori->Step( orientation->Step() );
-    m_ori->ZoneCarto( orientation->ZoneCarto() );
-    m_ori->SizeX( orientation->SizeX() );
-    m_ori->SizeY( orientation->SizeY() );
+    m_ori->origin_x( orientation->origin_x() );
+    m_ori->origin_y( orientation->origin_y() );
+    m_ori->step( orientation->step() );
+    m_ori->zone_carto( orientation->zone_carto() );
+    m_ori->size_x( orientation->size_x() );
+    m_ori->size_y( orientation->size_y() );
 }
 
 layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const

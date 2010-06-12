@@ -59,13 +59,13 @@ public:
         virtual ~color_lookup_table(){}
 
 	///Charge une CLUT depuis un fichier binaire (de taille 768 octets = 256 * 3)
-	void LoadFromBinaryFile(const std::string &fileCLUT);
+        void load_from_binary_file(const std::string &fileCLUT);
 	///Charge une CLUT depuis un fichier ASCII (3 colonnes RGB, 256 lignes)
-	void LoadFromTextFile(const std::string &fileCLUT);
+        void load_from_text_file(const std::string &fileCLUT);
 	/// Cree une LUT aleatoire
-        void createRandom();
+        void create_random();
 
-	const std::vector<unsigned char>& getData() const { return m_clut; }
+        const std::vector<unsigned char>& get_data() const { return m_clut; }
 
 private:
 	///Tableau de taille 768

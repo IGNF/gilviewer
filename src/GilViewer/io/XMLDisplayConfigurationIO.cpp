@@ -461,7 +461,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                     parameters.useAlphaChannel = use_alpha_channel;
                     parameters.alphaChannel = alpha_channel;
 
-                    layerControl->CreateNewImageLayerWithParameters(parameters);
+                    layerControl->create_new_image_layer_with_parameters(parameters);
                 }
                 else
                 {
@@ -503,7 +503,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                     parameters.translation_x = translation_x;
                     parameters.translation_y = translation_y;
 
-                    layerControl->CreateNewVectorLayerWithParameters( parameters );
+                    layerControl->create_new_vector_layer_with_parameters( parameters );
                 }
 
                 is_image = false;
@@ -540,19 +540,19 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                     mes << _("Node 'ViewerOrientation' : \n");
                     // OriginX
                     childOrientation->ToElement()->Attribute( "originX" , &d );
-                    layerControl->m_ori->OriginX(d);
+                    layerControl->m_ori->origin_x(d);
                     mes << _("   Attribute 'originX' : ") << d << wxT("\n");
                     // OriginY
                     childOrientation->ToElement()->Attribute( "originY" , &d );
-                    layerControl->m_ori->OriginY(d);
+                    layerControl->m_ori->origin_y(d);
                     mes << _("   Attribute 'originY' : ") << d << wxT("\n");
                     // SizeX
                     childOrientation->ToElement()->Attribute( "sizeX" , &i );
-                    layerControl->m_ori->SizeX(i);
+                    layerControl->m_ori->size_x(i);
                     mes << _("   Attribute 'sizeX' : ") << i << wxT("\n");
                     //SizeY
                     childOrientation->ToElement()->Attribute( "sizeY" , &i );
-                    layerControl->m_ori->SizeY(i);
+                    layerControl->m_ori->size_y(i);
                     mes << _("   Attribute 'sizeY' : ") << i << wxT("\n");
                     // Step
                     childOrientation->ToElement()->Attribute( "step" , &d );
@@ -561,11 +561,11 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                         ::wxLogMessage( _("[Node Orientation - ViewerOrientation] Error while reading attribute 'step' !") );
                         return;
                     }
-                    layerControl->m_ori->Step(d);
+                    layerControl->m_ori->step(d);
                     mes << _("   Attribute 'Step' : ") << d << wxT("\n");
                     // Zone carto
                     childOrientation->ToElement()->Attribute( "ZoneCarto" , &i );
-                    layerControl->m_ori->ZoneCarto(i);
+                    layerControl->m_ori->zone_carto(i);
                     mes << _("   Attribute 'ZoneCarto' : ") << i << wxT("\n");
 
                     ::wxLogMessage( mes );
@@ -595,7 +595,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
 
 void xml_display_configuration_io::write( const layer_control* layerControl , const std::string filename )
 {
-    if ( layerControl->GetRows().size() == 0 )
+    if ( layerControl->rows().size() == 0 )
     {
         ::wxMessageBox(_("There is no layer to save!"),_("Error!"));
         return;
@@ -702,7 +702,8 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             // Channels
             TiXmlElement *elemChannels = new TiXmlElement( "Channels" );
             elemAppearance->LinkEndChild( elemChannels );
-            unsigned int red, green, blue;
+            // Useless initialization to avoid compiler warning ...
+            unsigned int red=0, green=0, blue=0;
             (*it)->channels(red,green,blue);
             elemChannels->SetAttribute("red",red);
             elemChannels->SetAttribute("green",green);
@@ -711,8 +712,9 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             // Alpha channel
             TiXmlElement *elemAlphaChannel = new TiXmlElement( "AlphaChannel" );
             elemAppearance->LinkEndChild( elemAlphaChannel );
-            bool isUsed;
-            unsigned int channelIndex;
+            // Useless initialization to avoid compiler warning ...
+            bool isUsed=true;
+            unsigned int channelIndex=0;
             (*it)->alpha_channel(isUsed,channelIndex);
             elemAlphaChannel->SetAttribute("value",isUsed);
             elemAlphaChannel->SetAttribute("channel",channelIndex);
@@ -793,12 +795,12 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
     elemOrientationSet->SetAttribute("value",layerControl->m_isOrientationSet);
     TiXmlElement *elemOrientationViewer = new TiXmlElement( "ViewerOrientation" );
     elementOrientation->LinkEndChild( elemOrientationViewer );
-    elemOrientationViewer->SetDoubleAttribute("originX",layerControl->m_ori->OriginX());
-    elemOrientationViewer->SetDoubleAttribute("originY",layerControl->m_ori->OriginY());
-    elemOrientationViewer->SetAttribute("sizeX",layerControl->m_ori->SizeX());
-    elemOrientationViewer->SetAttribute("sizeY",layerControl->m_ori->SizeY());
-    elemOrientationViewer->SetDoubleAttribute("step",layerControl->m_ori->Step());
-    elemOrientationViewer->SetAttribute("ZoneCarto",layerControl->m_ori->ZoneCarto());
+    elemOrientationViewer->SetDoubleAttribute("originX",layerControl->m_ori->origin_x());
+    elemOrientationViewer->SetDoubleAttribute("originY",layerControl->m_ori->origin_y());
+    elemOrientationViewer->SetAttribute("sizeX",layerControl->m_ori->size_x());
+    elemOrientationViewer->SetAttribute("sizeY",layerControl->m_ori->size_y());
+    elemOrientationViewer->SetDoubleAttribute("step",layerControl->m_ori->step());
+    elemOrientationViewer->SetAttribute("ZoneCarto",layerControl->m_ori->zone_carto());
     /*
 	if ( &max_transparency == NULL )
 	{
