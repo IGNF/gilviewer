@@ -101,6 +101,10 @@ enum
 
         MULTI_GEOMETRIES_TYPE,
 
+        // Plugins IDs
+        FIRST_GILVIEWER_PLUGIN,
+        LAST_GILVIEWER_PLUGIN = FIRST_GILVIEWER_PLUGIN + 100,
+
         LAST_GILVIEWER_ID
 };
 

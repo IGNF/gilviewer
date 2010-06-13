@@ -1,5 +1,5 @@
 ####
-#### Creation d'un eecutable d'exemple linaknt sur la libITKViewer
+#### Creation d'un executable d'exemple linkant sur la libGilViewer
 ####
 if(UNIX)
         if(APPLE)
