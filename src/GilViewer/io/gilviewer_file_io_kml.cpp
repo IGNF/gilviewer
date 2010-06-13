@@ -163,7 +163,7 @@ boost::shared_ptr<gilviewer_file_io_kml> create_gilviewer_file_io_kml()
 
 bool gilviewer_file_io_kml::Register()
 {
-    gilviewer_io_factory::Instance()->Register("kml", create_gilviewer_file_io_kml);
+    gilviewer_io_factory::instance()->Register("kml", create_gilviewer_file_io_kml);
     return true;
 }
 

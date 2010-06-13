@@ -87,9 +87,9 @@ bool sample_vector_layer_app::OnInit()
         // Here, we first create an ogr_vector_layer
         boost::shared_ptr<layer> vector_layer = boost::shared_ptr<layer>(new ogr_vector_layer("Hand made layer"));
         m_frame->AddLayer(vector_layer);
-        vector_layer->AddCircle(50.,123.,65.);
-        vector_layer->AddPoint(50.,123.);
-        vector_layer->AddPoint(5.,12.);
+        vector_layer->add_circle(50.,123.,65.);
+        vector_layer->add_point(50.,123.);
+        vector_layer->add_point(5.,12.);
 
         vector_layer->point_width(6);
         vector_layer->point_color(*wxBLUE);
@@ -98,7 +98,7 @@ bool sample_vector_layer_app::OnInit()
         vector_layer->line_width(10);
         vector_layer->line_style(wxSHORT_DASH);
 
-        vector_layer->AddText(52.3, 65.8, "text in ogr_vector_layer!!");
+        vector_layer->add_text(52.3, 65.8, "text in ogr_vector_layer!!");
 #endif // GILVIEWER_USE_GDAL
 
         // We now test the simple_vector_layer_interface
