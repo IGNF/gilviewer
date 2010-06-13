@@ -292,7 +292,7 @@ void simple_vector_layer::add_text( double x , double y , const std::string &tex
     m_texts.push_back( make_pair<PointType,string>(pt,text) );
 }
 
-void simple_vector_layer::Clear()
+void simple_vector_layer::clear()
 {
     m_circles.clear();
     m_ellipses.clear();
@@ -335,7 +335,7 @@ layer_settings_control* simple_vector_layer::build_layer_settings_control(unsign
     return new vector_layer_settings_control(index, parent);
 }
 
-std::string simple_vector_layer::GetInfos()
+std::string simple_vector_layer::infos()
 {
     ostringstream oss;
     oss << m_circles.size() << " circles\n";

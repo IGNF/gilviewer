@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,20 +33,25 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef __WXHELPER_HPP__
 #define __WXHELPER_HPP__
 
+#include <wx/string.h>
+
+#include <vector>
+#include <string>
+
 namespace wxhelper
 {
-	/// Cette fonction permet de retourner l'indice dans la liste a partir d'un style WX
-        int from_wx_style_to_selection_index( unsigned int style );
-	// Meme fonction que la precedente pour les lignes, mais dans l'autre sens ...
-        int from_polygon_selection_index_to_wx_style( unsigned int selection );
-	// Meme fonction que la precedente pour les polygones, mais dans l'autre sens ...
-        int from_line_selection_index_to_wx_style( unsigned int selection );
+    /// Cette fonction permet de retourner l'indice dans la liste a partir d'un style WX
+    int from_wx_style_to_selection_index( unsigned int style );
+    // Meme fonction que la precedente pour les lignes, mais dans l'autre sens ...
+    int from_polygon_selection_index_to_wx_style( unsigned int selection );
+    // Meme fonction que la precedente pour les polygones, mais dans l'autre sens ...
+    int from_line_selection_index_to_wx_style( unsigned int selection );
 }
 
 #endif // __WXHELPER_HPP__

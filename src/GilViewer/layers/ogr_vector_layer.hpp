@@ -95,8 +95,8 @@ public:
     inline virtual double center_x() {return m_center_x;}
     inline virtual double center_y() {return m_center_y;}
 
-    const std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features() const;
-    std::vector<std::pair<geometry_types,OGRFeature*> >& get_geometries_features();
+    const std::vector<std::pair<geometry_types,OGRFeature*> >& geometries_features() const;
+    std::vector<std::pair<geometry_types,OGRFeature*> >& geometries_features();
 
     static wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
     inline void coordinates(int c) {m_coordinates=c;}

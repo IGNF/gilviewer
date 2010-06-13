@@ -77,6 +77,8 @@ Authors:
 #include "../io/gilviewer_io_factory.hpp"
 #include "../tools/Orientation2D.h"
 
+#include "../config/config.hpp"
+
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
 #endif
@@ -249,7 +251,7 @@ void layer_control::on_info_button(wxCommandEvent& event)
     title << wxString(m_layers[id]->name().c_str(), *wxConvCurrent);
     //layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
     layer_infos_control_impl *lic = new layer_infos_control_impl(this);
-    lic->m_text_control->AppendText(wxString(m_layers[id]->GetInfos().c_str(), *wxConvCurrent));
+    lic->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
     lic->Show();
 }
 
@@ -266,8 +268,7 @@ void layer_control::on_save_button(wxCommandEvent& event)
         {
             string filename(fileDialog->GetFilename().To8BitData());
             string extension(filesystem::extension(filename));
-            to_lower(extension);
-            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
             file_out->save(layers()[id],filename);
         }
         catch( std::exception &err )
@@ -395,18 +396,38 @@ void layer_control::on_open_layer(wxCommandEvent& event)
 {
     wxString wildcard;
     wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin;*.shp;*.kml)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN;*.shp;*.SHP;*.kml;*.KML|");
+    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin");
+#   if GILVIEWER_USE_GDAL
+        wildcard << wxT("*.shp;*.kml)");
+#   endif // GILVIEWER_USE_GDAL
+    wildcard << wxT("|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN");
+#   if GILVIEWER_USE_GDAL
+        wildcard << wxT(";*.shp;*.SHP;*.kml;*.KML");
+#   endif // GILVIEWER_USE_GDAL
+    wildcard << wxT("|");
     wildcard << _("Image files ");
     wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
-    wildcard << wxT("TIFF (*.tif;*.tiff;*.TIF;*.TIFF)|*.tif;*.tiff;*.TIF;*.TIFF|");
-    wildcard << wxT("PNG (*.png;*.PNG)|*.png;*.PNG|");
-    wildcard << wxT("JPEG (*.jpg;*.jpeg;*.JPG;*.JPEG)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
+    wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff;*.TIF;*.TIFF|");
+    wildcard << wxT("PNG (*.png)|*.png;*.PNG|");
+    wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
     wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
+    wildcard << _("Vector files ");
+    wildcard << wxT("(*.txt;*.xml;*.bin");
+#   if GILVIEWER_USE_GDAL
+        wildcard << wxT(";*.shp;*.kml");
+#   endif // GILVIEWER_USE_GDAL
+    wildcard << wxT(")|*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN");
+#   if GILVIEWER_USE_GDAL
+        wildcard << wxT(";*.shp;*.SHP;*.kml;*.KML");
+#   endif // GILVIEWER_USE_GDAL
+    wildcard << wxT("|");
     wildcard << wxT("Serialization text (*.txt)|*.txt;*.TXT|");
     wildcard << wxT("Serialization xml (*.xml)|*.xml;*.XML|");
     wildcard << wxT("Serialization binary (*.bin)|*.bin;*.BIN|");
-    wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
-    wildcard << wxT("KML (*.kml)|*.kml;*.KML|");
+#   if GILVIEWER_USE_GDAL
+        wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
+        wildcard << wxT("KML (*.kml)|*.kml;*.KML|");
+#   endif // GILVIEWER_USE_GDAL
     wildcard << _("Custom format ");
     wildcard << wxT("(*)|*");
     wxString str;
@@ -457,10 +478,9 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
 
         string filename(names[i].fn_str());
         string extension(filesystem::extension(filename));
-        to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
             add_layer( file->load(filename) );
         }
         catch (const std::exception &err)
@@ -785,8 +805,7 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
     {
         std::string filename(parameters.path.c_str());
         string extension(filesystem::extension(filename));
-        to_lower(extension);
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
         layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
@@ -828,8 +847,7 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
     {
         std::string filename(parameters.path.c_str());
         string extension(filesystem::extension(filename));
-        to_lower(extension);
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,3));
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
         add_layer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...

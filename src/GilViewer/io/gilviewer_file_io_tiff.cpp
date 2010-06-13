@@ -26,7 +26,6 @@ shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
 
     path path(system_complete(filename));
     string ext(path.extension());
-    to_lower(ext);
 
     //image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
 
@@ -177,7 +176,9 @@ boost::shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff()
 bool gilviewer_file_io_tiff::Register()
 {
     gilviewer_io_factory::instance()->Register("tif", create_gilviewer_file_io_tiff);
+    gilviewer_io_factory::instance()->Register("TIF", create_gilviewer_file_io_tiff);
     gilviewer_io_factory::instance()->Register("tiff", create_gilviewer_file_io_tiff);
+    gilviewer_io_factory::instance()->Register("TIFF", create_gilviewer_file_io_tiff);
     return true;
 }
 
