@@ -31,7 +31,7 @@ const boost::shared_ptr<orientation_2d> &layer::orientation() const
     return m_ori;
 }
 
-boost::shared_ptr<color_lookup_table> layer::GetColorLookupTable()
+boost::shared_ptr<color_lookup_table> layer::colorlookuptable()
 {
     return boost::shared_ptr<color_lookup_table>();
 }

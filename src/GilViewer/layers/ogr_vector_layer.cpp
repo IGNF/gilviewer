@@ -247,15 +247,15 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
 string ogr_vector_layer::available_formats_wildcard() const
 {
     ostringstream wildcard;
-    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.kml|";
-    wildcard << "SHP (*.shp)|*.shp";
-    wildcard << "KML (*.kml)|*.kml";
+    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.SHP;*.kml;*.KML|";
+    wildcard << "SHP (*.shp)|*.shp;*.SHP|";
+    wildcard << "KML (*.kml)|*.kml;*.KML";
     return wildcard.str();
 }
 
-const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() const {return m_geometries_features;}
+const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::geometries_features() const {return m_geometries_features;}
 
-std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() {return m_geometries_features;}
+std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::geometries_features() {return m_geometries_features;}
 
 wxPoint ogr_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates = 1 /*IMAGE_COORDINATES*/)
 {
@@ -348,7 +348,6 @@ void ogr_vector_layer::clear()
     vector<pair<geometry_types,OGRFeature*> >().swap(m_geometries_features);
     vector< pair< internal_point_type , string > >().swap(m_texts);
 }
-
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...
 

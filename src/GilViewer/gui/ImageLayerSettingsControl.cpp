@@ -428,9 +428,9 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
         if(boost::filesystem::exists(fileLUT))
         {
             if ( boost::filesystem::basename(fileLUT) == "random" )
-                layercontrol()->layers()[m_index]->GetColorLookupTable()->create_random();
+                layercontrol()->layers()[m_index]->colorlookuptable()->create_random();
             else
-                layercontrol()->layers()[m_index]->GetColorLookupTable()->load_from_binary_file( fileLUT );
+                layercontrol()->layers()[m_index]->colorlookuptable()->load_from_binary_file( fileLUT );
         }
         else
         {

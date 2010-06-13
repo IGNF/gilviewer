@@ -76,7 +76,7 @@ public:
     virtual void histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const;
     virtual std::string pixel_value(int i, int j) const;
 
-    virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable();
+    virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 
     virtual void orientation(const boost::shared_ptr<orientation_2d> &orientation);
     virtual void channels(unsigned int red, unsigned int green, unsigned int blue)
@@ -122,7 +122,7 @@ public:
     virtual image_ptr image() const { return m_img; };
     virtual view_ptr  view() const { return m_view; };
 
-    virtual std::vector<std::string> get_available_formats_extensions() const;
+    virtual std::vector<std::string> available_formats_extensions() const;
     virtual std::string available_formats_wildcard() const;
     virtual bool saveable() const {return true;}
     virtual std::string get_layer_type_as_string() const {return "Image";}

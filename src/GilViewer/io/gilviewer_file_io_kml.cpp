@@ -41,7 +41,7 @@ void gilviewer_file_io_kml::save(shared_ptr<layer> layer, const string &filename
     if( poLayer == NULL )
         throw ios_base::failure("Creation of layer failed.\n");
 
-    std::vector<std::pair<geometry_types,OGRFeature*> > geometries = ogr_layer->get_geometries_features();
+    std::vector<std::pair<geometry_types,OGRFeature*> > geometries = ogr_layer->geometries_features();
     typedef std::vector<std::pair<geometry_types,OGRFeature*> >::const_iterator const_iterator;
     const_iterator itb=geometries.begin(), ite=geometries.end();
     for(;itb!=ite;++itb)
@@ -164,6 +164,7 @@ boost::shared_ptr<gilviewer_file_io_kml> create_gilviewer_file_io_kml()
 bool gilviewer_file_io_kml::Register()
 {
     gilviewer_io_factory::instance()->Register("kml", create_gilviewer_file_io_kml);
+    gilviewer_io_factory::instance()->Register("KML", create_gilviewer_file_io_kml);
     return true;
 }
 

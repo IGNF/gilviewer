@@ -26,7 +26,6 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
 
     path path(system_complete(filename));
     string ext(path.extension());
-    to_lower(ext);
 
     ImageLayer::image_ptr image(new ImageLayer::image_t);
 
@@ -101,7 +100,9 @@ boost::shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg()
 bool gilviewer_file_io_jpg::Register()
 {
     gilviewer_io_factory::instance()->Register("jpg", create_gilviewer_file_io_jpg);
+    gilviewer_io_factory::instance()->Register("JPG", create_gilviewer_file_io_jpg);
     gilviewer_io_factory::instance()->Register("jpeg", create_gilviewer_file_io_jpg);
+    gilviewer_io_factory::instance()->Register("JPEG", create_gilviewer_file_io_jpg);
     return true;
 }
 

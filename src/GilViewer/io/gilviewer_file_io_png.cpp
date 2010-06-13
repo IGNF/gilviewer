@@ -26,7 +26,6 @@ shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
 
     path path(system_complete(filename));
     string ext(path.extension());
-    to_lower(ext);
 
     //image_read_info< png_tag > info = read_image_info(filename.string(), png_tag());
 
@@ -73,6 +72,7 @@ boost::shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
 bool gilviewer_file_io_png::Register()
 {
     gilviewer_io_factory::instance()->Register("png", create_gilviewer_file_io_png);
+    gilviewer_io_factory::instance()->Register("PNG", create_gilviewer_file_io_png);
     return true;
 }
 

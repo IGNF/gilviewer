@@ -94,7 +94,7 @@ public:
     virtual void filename(const std::string &filename) {m_filename=filename;}
 
     virtual void infos(const std::string &infos) {m_infos=infos;}
-    virtual std::string GetInfos() {return m_infos;}
+    virtual std::string infos() {return m_infos;}
     virtual std::string layer_type_as_string() const {return "unknow type";}
     virtual void save(const std::string &name) const {}
 
@@ -156,7 +156,7 @@ public:
     virtual void channels(unsigned int &red, unsigned int &green, unsigned int &blue) const {}
     virtual void alpha_channel(bool useAlphaChannel, unsigned int alphaChannel) {}
     virtual void alpha_channel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
-    virtual boost::shared_ptr<color_lookup_table> GetColorLookupTable();
+    virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 
     virtual unsigned int nb_components() const { return 0; }
     virtual void histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}

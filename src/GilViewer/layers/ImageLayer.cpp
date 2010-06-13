@@ -193,7 +193,7 @@ string image_layer::pixel_value(int i, int j) const
     return oss.str();
 }
 
-boost::shared_ptr<color_lookup_table> image_layer::GetColorLookupTable()
+boost::shared_ptr<color_lookup_table> image_layer::colorlookuptable()
 {
     return m_cLUT;
 }
@@ -225,18 +225,29 @@ layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
     return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
 }
 
-vector<string> image_layer::get_available_formats_extensions() const
+vector<string> image_layer::available_formats_extensions() const
 {
-    return vector<string>();
+    vector<string> extensions;
+    extensions.push_back("tif");
+    extensions.push_back("TIF");
+    extensions.push_back("tiff");
+    extensions.push_back("TIFF");
+    extensions.push_back("jpg");
+    extensions.push_back("JPG");
+    extensions.push_back("jpeg");
+    extensions.push_back("JPEG");
+    extensions.push_back("png");
+    extensions.push_back("PNG");
+    return extensions;
 }
 
 string image_layer::available_formats_wildcard() const
 {
     ostringstream wildcard;
-    wildcard << "All supported image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg|";
-    wildcard << "TIFF (*.tif;*.tiff)|*.tif;*.tiff|";
-    wildcard << "PNG (*.png)|*.png|";
-    wildcard << "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|";
+    wildcard << "All supported image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG|";
+    wildcard << "TIFF (*.tif;*.tiff)|*.tif;*.tiff;*.TIF;*.TIFF|";
+    wildcard << "PNG (*.png)|*.png;*.PNG|";
+    wildcard << "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg;*.JPG;*.JPEG|";
     return wildcard.str();
 }
 

@@ -132,7 +132,7 @@ public:
     virtual void update(int, int) {}
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
-    virtual std::string GetInfos();
+    virtual std::string infos();
 
     virtual std::string available_formats_wildcard() const;
 
@@ -146,7 +146,7 @@ public:
     void add_polygon( const std::vector<double> &x , const std::vector<double> &y );
     void add_text( double x , double y , const std::string &text , const wxColour &color = *wxRED );
 
-    virtual void Clear();
+    virtual void clear();
 
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
