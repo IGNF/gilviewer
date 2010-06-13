@@ -37,6 +37,7 @@ Authors:
 ***********************************************************************/
 
 #include "vector_layer.hpp"
+#include "../convenient/utils.hpp"
 
 #include "../config/config.hpp"
 

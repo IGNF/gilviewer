@@ -31,6 +31,7 @@ FILE( GLOB_RECURSE ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp 
 FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
+FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/*.h ${SRC_DIR}/plugins/*.hpp ${SRC_DIR}/plugins/*.hxx ${SRC_DIR}/plugins/*.inl )
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
                         ${ALL_CONVENIENT_HEADER_FILES}
@@ -38,7 +39,7 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
                         ${ALL_IO_HEADER_FILES}
                         ${ALL_LAYERS_HEADER_FILES}
                         ${ALL_TOOLS_HEADER_FILES}
-                        ${ALL_VECTORUTILS_HEADER_FILES} )
+                        ${ALL_PLUGINS_HEADER_FILES} )
 
 #### Definition des dossiers contenant les sources
 #### ATTENTION : toutes les sources de ces dossiers seront incluses
@@ -51,9 +52,10 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui/wxfb SRC_GUI_WXFB)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
 
 # Une variable regroupant toutes les sources ...
-SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXFB} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} )
+SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXFB} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} ${SRC_PLUGINS} )
 
 if(WIN32)
     if(MSVC)
@@ -144,6 +146,11 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_library.cmake )
 #### Construction du sample
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
+
+####
+#### Construction des plugins
+####
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
 
 # Ajout du repertoire d'include des lib externes (pour l'instant,  tinyxml)
 INCLUDE_DIRECTORIES( BEFORE "extern/" )

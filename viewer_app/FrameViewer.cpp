@@ -60,6 +60,8 @@
 #include "../src/GilViewer/gui/PanelManager.h"
 #include "FrameViewer.hpp"
 
+#include "../src/GilViewer/plugins/plugin_manager.hpp"
+
 BEGIN_EVENT_TABLE(FrameViewer,basic_viewer_frame)
 ADD_GILVIEWER_EVENTS_TO_TABLE(FrameViewer)
 EVT_TOOL(wxID_HELP, FrameViewer::on_help)
@@ -118,6 +120,16 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 
 	// Menu bar
         SetMenuBar( m_drawPane->menubar() );
+
+        /*
+        wxMenuBar* menus = m_drawPane->menubar();
+        wxMenu* test = new wxMenu;
+        test->Append(wxID_ANY, _("Test menu entry"));
+
+        menus->Insert(menus->GetMenuCount(), test, _("Test menu ..."));
+        */
+
+        plugin_manager::instance()->register_plugins("/home/olivier/work/dev/lib/gilviewer-googlecode/gilviewer-unstable/lib/");
 }
 
 void FrameViewer::AddLayer(const layer::ptrLayerType &layer) {
