@@ -164,7 +164,7 @@ boost::shared_ptr<gilviewer_file_io_shp> create_gilviewer_file_io_shp()
 
 bool gilviewer_file_io_shp::Register()
 {
-    gilviewer_io_factory::Instance()->Register("shp", create_gilviewer_file_io_shp);
+    gilviewer_io_factory::instance()->Register("shp", create_gilviewer_file_io_shp);
     return true;
 }
 

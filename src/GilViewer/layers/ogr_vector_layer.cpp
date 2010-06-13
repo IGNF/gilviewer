@@ -56,7 +56,7 @@ Authors:
 using namespace std;
 using namespace boost::filesystem;
 
-ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename): vector_layer(),
+ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename_): vector_layer(),
         m_nb_geometries(0),
         m_coordinates(1)
 {
@@ -64,7 +64,7 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     {
         OGRDataSource *poDS;
 
-        poDS = OGRSFDriverRegistrar::Open(filename.c_str(), FALSE);
+        poDS = OGRSFDriverRegistrar::Open(filename_.c_str(), FALSE);
         if( poDS == NULL )
         {
             string error_message("Open failed. Did you registered OGR formats (you MUST call OGRRegisterAll() ...)?\n");
@@ -162,9 +162,9 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         throw logic_error(oss.str());
     }
 
-    Name(layer_name);
-    Filename( system_complete(filename).string() );
-    SetDefaultDisplayParameters();
+    name(layer_name);
+    filename( system_complete(filename_).string() );
+    default_display_parameters();
     notifyLayerSettingsControl_();
 }
 
@@ -174,7 +174,7 @@ ogr_vector_layer::~ogr_vector_layer()
         OGRFeature::DestroyFeature(m_geometries_features[i].second);
 }
 
-void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
+void ogr_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
     wxPen point_pen(m_point_color,m_point_width);
     wxPen line_pen(m_line_color,m_line_width,m_line_style);
@@ -182,7 +182,7 @@ void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
     wxBrush polygon_brush(m_polygon_inner_color,m_polygon_inner_style);
 
     /// Geometries
-    draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,Resolution(),ZoomFactor(),TranslationX(),TranslationY(),m_coordinates);
+    draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,resolution(),zoom_factor(),translation_x(),translation_y(),m_coordinates);
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );
 
@@ -192,10 +192,10 @@ void ogr_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
         wxPen text_pen;
         text_pen.SetColour(m_text_color);
         dc.SetPen(text_pen);
-        double delta=0.5*Resolution();
+        double delta=0.5*resolution();
         for(unsigned int i=0;i<m_texts.size();++i)
         {
-            wxPoint p = ogr_vector_layer::FromLocal(ZoomFactor(), TranslationX(), TranslationY(), delta, m_texts[i].first.x, m_texts[i].first.y, m_coordinates);
+            wxPoint p = ogr_vector_layer::from_local(zoom_factor(), translation_x(), translation_y(), delta, m_texts[i].first.x, m_texts[i].first.y, m_coordinates);
             //dc.DrawLine(p);
             dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
         }
@@ -257,13 +257,13 @@ const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get
 
 std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::get_geometries_features() {return m_geometries_features;}
 
-wxPoint ogr_vector_layer::FromLocal(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates = 1 /*IMAGE_COORDINATES*/)
+wxPoint ogr_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates = 1 /*IMAGE_COORDINATES*/)
 {
     return wxPoint( static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
                     static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor) );
 }
 
-void ogr_vector_layer::AddPoint( double x , double y )
+void ogr_vector_layer::add_point( double x , double y )
 {
     OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
     OGRPoint* p= new OGRPoint(x,y);
@@ -272,14 +272,14 @@ void ogr_vector_layer::AddPoint( double x , double y )
     ++m_nb_geometries;
 }
 
-void ogr_vector_layer::AddText( double x , double y , const std::string &text , const wxColour &color)
+void ogr_vector_layer::add_text( double x , double y , const std::string &text , const wxColour &color)
 {
     internal_point_type pt;
     pt.x=x; pt.y=y;
     m_texts.push_back( make_pair<internal_point_type,string>(pt,text) );
 }
 
-void ogr_vector_layer::AddLine( double x1 , double y1 , double x2 , double y2 )
+void ogr_vector_layer::add_line( double x1 , double y1 , double x2 , double y2 )
 {
     OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
     OGRLineString* l= new OGRLineString();
@@ -290,7 +290,7 @@ void ogr_vector_layer::AddLine( double x1 , double y1 , double x2 , double y2 )
     m_nb_geometries+=2;
 }
 
-void ogr_vector_layer::AddPolyline( const std::vector<double> &x , const std::vector<double> &y )
+void ogr_vector_layer::add_polyline( const std::vector<double> &x , const std::vector<double> &y )
 {
     OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
     OGRLineString* l= new OGRLineString();
@@ -301,7 +301,7 @@ void ogr_vector_layer::AddPolyline( const std::vector<double> &x , const std::ve
     m_nb_geometries+=x.size();
 }
 
-void ogr_vector_layer::AddPolygon( const std::vector<double> &x , const std::vector<double> &y )
+void ogr_vector_layer::add_polygon( const std::vector<double> &x , const std::vector<double> &y )
 {
     OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
     OGRPolygon* p= new OGRPolygon();
@@ -315,7 +315,7 @@ void ogr_vector_layer::AddPolygon( const std::vector<double> &x , const std::vec
     m_nb_geometries+=x.size();
 }
 
-void ogr_vector_layer::AddCircle( double x , double y , double radius )
+void ogr_vector_layer::add_circle( double x , double y , double radius )
 {
     OGRFeature *poFeature = new OGRFeature(new OGRFeatureDefn);
     OGRLineString* l= new OGRLineString();
@@ -326,22 +326,22 @@ void ogr_vector_layer::AddCircle( double x , double y , double radius )
     m_nb_geometries+=l->getNumPoints();
 }
 
-void ogr_vector_layer::AddSpline( std::vector<std::pair<double, double> > points )
+void ogr_vector_layer::add_spline( std::vector<std::pair<double, double> > points )
 {
     cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
 }
 
-void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, double b)
+void ogr_vector_layer::add_ellipse(double x_center, double y_center, double a, double b)
 {
     cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
 }
 
-void ogr_vector_layer::AddEllipse(double x_center, double y_center, double a, double b, double theta)
+void ogr_vector_layer::add_ellipse(double x_center, double y_center, double a, double b, double theta)
 {
     cout << "Not implemented!!! (" << __FUNCTION__ << ")" << endl;
 }
 
-void ogr_vector_layer::Clear()
+void ogr_vector_layer::clear()
 {
     m_geometries_features.clear();
     m_texts.clear();
