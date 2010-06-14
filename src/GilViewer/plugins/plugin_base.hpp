@@ -10,7 +10,7 @@
 
 //the plugin interface (a.k.a. abstract class)
 //our plugin will contain GUI in itself - therefore we need to make it extend wxEvtHandler (or wxDialog for that matter)
-class plugin_base : public wxWindow
+class plugin_base : public wxFrame
 {
 public:
     plugin_base();

@@ -121,14 +121,6 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 	// Menu bar
         SetMenuBar( m_drawPane->menubar() );
 
-        /*
-        wxMenuBar* menus = m_drawPane->menubar();
-        wxMenu* test = new wxMenu;
-        test->Append(wxID_ANY, _("Test menu entry"));
-
-        menus->Insert(menus->GetMenuCount(), test, _("Test menu ..."));
-        */
-
         plugin_manager::instance()->register_plugins("/home/olivier/work/dev/lib/gilviewer-googlecode/gilviewer-unstable/lib/");
 }
 

@@ -75,7 +75,7 @@ public:
     static int style_lines[6];
     static unsigned int FromWxStyleToSelectionIndex( unsigned int style );
 
-    virtual std::string get_info_button_name() const {return "APPLICATIONS-OTHERS_16x16";}
+    virtual std::string info_button_name() const {return "APPLICATIONS-OTHERS_16x16";}
     virtual const char** icon_xpm() const;
 
     //private:

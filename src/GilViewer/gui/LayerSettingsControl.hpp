@@ -55,7 +55,7 @@ public:
     unsigned int index() { return m_index; }
     void index(const unsigned int index){  m_index = index; }
 
-    virtual std::string get_info_button_name() const {return "";}
+    virtual std::string info_button_name() const {return "";}
     virtual const char** icon_xpm() const {return NULL;}
 
 protected:
