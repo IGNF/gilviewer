@@ -48,6 +48,7 @@ void plugin_manager_model::register_plugins(const std::string &path)
             if(p)
             {
                 p->process();
+                cout << "dflkjdflkgjfdlgkjfd" << endl;
                 plugins_menu->Append(FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins, wxString(p->menuentry_name().c_str(), *wxConvCurrent));
                 menus->GetParent()->Connect(FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&plugin_base::gui, NULL, p );
                 ++nb_of_successfully_loaded_plugins;

@@ -31,7 +31,7 @@ FILE( GLOB_RECURSE ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp 
 FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
-FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/*.h ${SRC_DIR}/plugins/*.hpp ${SRC_DIR}/plugins/*.hxx ${SRC_DIR}/plugins/*.inl )
+FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/plugin_*.h ${SRC_DIR}/plugins/*.hpp ${SRC_DIR}/plugins/*.hxx ${SRC_DIR}/plugins/*.inl )
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
                         ${ALL_CONVENIENT_HEADER_FILES}
@@ -52,7 +52,7 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui/wxfb SRC_GUI_WXFB)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS)
-AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
+set(SRC_PLUGINS ${SRC_DIR}/plugins/plugin_base.cpp ${SRC_DIR}/plugins/plugin_manager.cpp)
 
 # Une variable regroupant toutes les sources ...
 SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXFB} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} ${SRC_PLUGINS} )
@@ -126,7 +126,7 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 
 ### Generation du fichier de resources
 if( WIN32 )
-	add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
+        add_custom_command( OUTPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
 		                COMMAND ${wxWidgets_wxrc_EXECUTABLE} ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc -c -o ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.cpp
 			            DEPENDS ${CMAKE_SOURCE_DIR}/${SRC_DIR}/gui/resources/resources.xrc )
 else()
@@ -150,7 +150,7 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 ####
 #### Construction des plugins
 ####
-#INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
 
 # Ajout du repertoire d'include des lib externes (pour l'instant,  tinyxml)
 INCLUDE_DIRECTORIES( BEFORE "extern/" )

@@ -70,7 +70,7 @@ layer_control_row::layer_control_row(layer_control* parent, const std::string &n
     const wxSize imageSize(16,16);
 
     // L'icone du bouton  info depend du type : vecteur ou image
-    m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxXmlResource::Get()->LoadBitmap(wxString(layersettings->get_info_button_name().c_str(), *wxConvCurrent)));
+    m_infoButton = new wxBitmapButton(m_parent->m_scroll, ID_INFO + m_index, wxXmlResource::Get()->LoadBitmap(wxString(layersettings->info_button_name().c_str(), *wxConvCurrent)));
     m_infoButton->SetToolTip(_("Display layer informations"));
     m_boxSizer->Add(m_infoButton, 0, wxALL | wxALIGN_CENTRE, 5);
     m_infoButton->Connect(ID_INFO + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(layer_control::on_info_button), NULL, m_parent);

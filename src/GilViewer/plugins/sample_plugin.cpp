@@ -1,22 +1,67 @@
 #include "sample_plugin.hpp"
 #include "plugin_base.hpp"
 
+#include "../gui/LayerControl.hpp"
+#include "../gui/PanelManager.h"
+#include "../layers/ImageLayer.hpp"
+#include "../layers/image_types.hpp"
+
+#include <boost/gil/gil_all.hpp>
+
 #include <iostream>
 
 using namespace std;
 
 IMPLEMENT_PLUGIN(sample_plugin)
 
-sample_plugin::sample_plugin() : plugin_base() {}
+sample_plugin::sample_plugin() : plugin_base()
+{
+}
 
 void sample_plugin::process()
 {
+    layer_control *lc = panel_manager::instance()->panels_list()[0]->layercontrol();
+    layer_control::iterator itb=lc->begin(), ite=lc->end();
+    unsigned int i=0;
+    for(;itb!=ite;++itb,++i)
+    {
+        bool selected = lc->rows()[i]->m_nameStaticText->selected();
+        if(selected)
+            cout << "Layer " << (*itb)->filename() << " is selected" << endl;
+        else
+            cout << "Layer " << (*itb)->filename() << " is not selected" << endl;
+
+        boost::shared_ptr<image_layer> imagelayer = boost::dynamic_pointer_cast<image_layer>((*itb));
+        {
+            //image_layer::view_t v = *(il->view());
+            //image_layer::view_ptr v = il->view();
+            imagelayer->view()->value;
+            //boost::gil::view(imagelayer->image()->value);
+            boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), sample_plugin::rotate_functor());
+            //boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), type_channel_functor());
+        }
+    }
     cout << "sample_plugin::process()" << endl;
 }
 
 wxWindow* sample_plugin::gui()
 {
-    return NULL;
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer( wxVERTICAL );
+
+    wxButton* m_button1 = new wxButton( this, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer1->Add( m_button1, 0, wxALL, 5 );
+
+    this->SetSizer( bSizer1 );
+    this->Layout();
+
+    m_button1->Connect( wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(sample_plugin::OnButton), NULL, this);
+
+    Show(true);
+
+    return this;
 }
 
 void sample_plugin::OnButton(wxCommandEvent& e)
