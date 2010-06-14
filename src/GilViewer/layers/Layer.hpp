@@ -95,7 +95,7 @@ public:
 
     virtual void infos(const std::string &infos) {m_infos=infos;}
     virtual std::string infos() {return m_infos;}
-    virtual std::string layer_type_as_string() const {return "unknow type";}
+    virtual std::string layer_type_as_string() const {return "unknown type";}
     virtual void save(const std::string &name) const {}
 
     virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
@@ -207,7 +207,7 @@ public:
     virtual void text_visibility( bool value , bool update = true ) {}
     virtual bool text_visibility() const { return true; } // ???!!!???
 
-    virtual void Clear() {}
+    virtual void clear() {}
     // Methodes specifiques VectorLayer
 
     /// Callback to notify the LayerControl from changes
