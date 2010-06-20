@@ -36,6 +36,9 @@ Authors:
 
 ***********************************************************************/
 
+#ifndef __HISTOGRAM_FUNCTOR__
+#define __HISTOGRAM_FUNCTOR__
+
 #include <boost/gil/pixel.hpp>
 
 struct histogram_functor
@@ -77,3 +80,5 @@ struct histogram_functor
     double m_scale;
     double m_offset;
 };
+
+#endif // __HISTOGRAM_FUNCTOR__

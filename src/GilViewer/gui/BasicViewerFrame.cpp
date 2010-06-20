@@ -62,7 +62,7 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
 
         basic_viewer_frame::basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
 	wxFrame(parent, id, title, pos, size, style, name),
-	m_isLogWindowVisible(false)
+        m_isLogWindowVisible(true)
 {
     wxInitAllImageHandlers();
 
@@ -116,7 +116,6 @@ basic_viewer_frame::~basic_viewer_frame()
 {
     m_dockManager.UnInit();
 }
-
 
 void basic_viewer_frame::on_show_hide_log_window(wxCommandEvent& event)
 {

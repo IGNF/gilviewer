@@ -36,6 +36,9 @@ Authors:
 
 ***********************************************************************/
 
+#ifndef __CHANNEL_CONVERTER_FUNCTOR_HPP__
+#define __CHANNEL_CONVERTER_FUNCTOR_HPP__
+
 #include <boost/gil/pixel.hpp>
 
 struct channel_converter_functor
@@ -148,3 +151,5 @@ struct channel_converter_functor
             at_c<2>(dst) = (unsigned char) (m_255_over_delta*(src[m_blue_index] - m_min_src));
     }
 };
+
+#endif // __CHANNEL_CONVERTER_FUNCTOR_HPP__
