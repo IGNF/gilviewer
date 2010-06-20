@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+        http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+        Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+        Olivier Tournaire, Adrien Chauve
 
 
 
@@ -36,22 +36,25 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef __GET_ANY_IMAGE_FUNCTOR__
-#define __GET_ANY_IMAGE_FUNCTOR__
+#ifndef SAMPLE_PLUGIN_FUNCTOR
+#define SAMPLE_PLUGIN_FUNCTOR
 
-#include "../layers/ImageLayer.hpp"
+#ifdef _WINDOWS
+#	undef min
+#	undef max
+#endif // _WINDOWS
 
-struct get_any_image_functor
+#include <boost/gil/image_view_factory.hpp>
+
+struct sample_plugin_functor
 {
-    typedef boost::shared_ptr< image_layer::image_t > result_type;
-    
-    template <typename ViewT>
-    result_type operator()(const ViewT& src) const
+    typedef void result_type;
+
+    template <typename ViewType>
+    result_type operator()(ViewType& v) const
     {
-    	boost::gil::image<typename ViewT::value_type,false,std::allocator<unsigned char> > dst( src.dimensions() );
-    	boost::gil::copy_pixels( src , view(dst) );
-    	return result_type(new image_layer::image_t(dst));
-    }    
+        boost::gil::rotated90cw_view(v);
+    }
 };
 
-#endif // __GET_ANY_IMAGE_FUNCTOR__
+#endif // SAMPLE_PLUGIN_FUNCTOR

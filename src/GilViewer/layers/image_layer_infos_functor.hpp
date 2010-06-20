@@ -36,6 +36,9 @@ Authors:
 
 ***********************************************************************/
 
+#ifndef __LAYER_INFOS_FUNCTOR__
+#define __LAYER_INFOS_FUNCTOR__
+
 struct nb_components_functor
 {
 	typedef std::size_t result_type;
@@ -80,3 +83,5 @@ struct type_channel_functor
 		return custom_typename()( typename channel_type<ViewT>::type ());
 	}
 };
+
+#endif // __LAYER_INFOS_FUNCTOR__

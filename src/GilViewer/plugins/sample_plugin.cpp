@@ -3,20 +3,18 @@
 
 #include "../gui/LayerControl.hpp"
 #include "../gui/PanelManager.h"
-#include "../layers/ImageLayer.hpp"
+
+#include "sample_plugin_functor.hpp"
 #include "../layers/image_types.hpp"
+#include "../layers/ImageLayer.hpp"
 
-#include <boost/gil/gil_all.hpp>
-
-#include <iostream>
+#include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 
 using namespace std;
 
 IMPLEMENT_PLUGIN(sample_plugin)
 
-sample_plugin::sample_plugin() : plugin_base()
-{
-}
+sample_plugin::sample_plugin() : plugin_base() {}
 
 void sample_plugin::process()
 {
@@ -32,12 +30,19 @@ void sample_plugin::process()
             cout << "Layer " << (*itb)->filename() << " is not selected" << endl;
 
         boost::shared_ptr<image_layer> imagelayer = boost::dynamic_pointer_cast<image_layer>((*itb));
+
         {
             //image_layer::view_t v = *(il->view());
             //image_layer::view_ptr v = il->view();
-            imagelayer->view()->value;
+            //imagelayer->view()->value;
             //boost::gil::view(imagelayer->image()->value);
-            boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), sample_plugin::rotate_functor());
+           // boost::gil::gray8_image_t i;
+            //boost::gil::rotated180_view(boost::gil::view(i));
+            //rotate_functor()(boost::gil::view(i));
+
+            using namespace boost::gil;
+            //apply_operation(imagelayer->view()->value, rotate_functor());
+            boost::gil::apply_operation(imagelayer->view()->value, sample_plugin_functor());
             //boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), type_channel_functor());
         }
     }

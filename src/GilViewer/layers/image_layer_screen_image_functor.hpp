@@ -35,6 +35,9 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
+#ifndef SCREEN_IMAGE_FUNCTOR
+#define SCREEN_IMAGE_FUNCTOR
+
 #include "image_layer_channel_converter_functor.hpp"
 #include "image_layer_transparency_functor.hpp"
 
@@ -107,3 +110,5 @@ struct screen_image_functor
     transparency_functor m_transparencyFonctor;
     bool m_isTransparent;
 };
+
+#endif // SCREEN_IMAGE_FUNCTOR

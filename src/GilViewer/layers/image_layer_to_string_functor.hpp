@@ -36,6 +36,9 @@ Authors:
 
 ***********************************************************************/
 
+#ifndef TOSTRING_FUNCTOR
+#define TOSTRING_FUNCTOR
+
 #include <boost/gil/pixel.hpp>
 
 template<typename ViewType, typename CoordType>
@@ -80,3 +83,5 @@ struct any_view_image_position_to_string_functor
     const int i_, j_;
     std::ostringstream& oss_;
 };
+
+#endif // TOSTRING_FUNCTOR

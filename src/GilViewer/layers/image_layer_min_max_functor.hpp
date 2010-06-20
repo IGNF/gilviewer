@@ -36,6 +36,9 @@ Authors:
 
 ***********************************************************************/
 
+#ifndef ANY_VIEW_MIN_MAX
+#define ANY_VIEW_MIN_MAX
+
 #ifdef _WINDOWS
 #	undef min
 #	undef max
@@ -99,3 +102,5 @@ struct any_view_min_max
         return std::make_pair( *(min_and_max.first) , *(min_and_max.second) );
     }
 };
+
+#endif // ANY_VIEW_MIN_MAX

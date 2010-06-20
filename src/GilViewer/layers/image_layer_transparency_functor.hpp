@@ -36,6 +36,9 @@ Authors:
 
 ***********************************************************************/
 
+#ifndef TRANSPARENCY_FUNCTOR
+#define TRANSPARENCY_FUNCTOR
+
 #include <boost/gil/pixel.hpp>
 
 struct transparency_functor
@@ -79,3 +82,5 @@ struct transparency_functor
 
     const double m_min_alpha, m_max_alpha;
 };
+
+#endif // TRANSPARENCY_FUNCTOR
