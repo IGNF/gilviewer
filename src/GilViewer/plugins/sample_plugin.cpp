@@ -14,6 +14,14 @@ using namespace std;
 
 IMPLEMENT_PLUGIN(sample_plugin)
 
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
+struct sample_plugin_visitor : public boost::static_visitor<>
+{
+    template <typename ViewType>
+            result_type operator()(ViewType& v) const { boost::gil::apply_operation(boost::ref(v), sample_plugin_functor()); }
+};
+
 sample_plugin::sample_plugin() : plugin_base() {}
 
 void sample_plugin::process()
@@ -41,9 +49,11 @@ void sample_plugin::process()
             //rotate_functor()(boost::gil::view(i));
 
             using namespace boost::gil;
+
             //apply_operation(imagelayer->view()->value, rotate_functor());
-            boost::gil::apply_operation(imagelayer->view()->value, sample_plugin_functor());
+            //boost::gil::apply_operation(imagelayer->variant_view()->value, sample_plugin_functor());
             //boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), type_channel_functor());
+            //boost::apply_visitor( sample_plugin_visitor(), boost::ref(imagelayer->variant_view()->value) );
         }
     }
     cout << "sample_plugin::process()" << endl;

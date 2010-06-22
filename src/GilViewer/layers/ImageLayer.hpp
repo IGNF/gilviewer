@@ -49,6 +49,7 @@ class color_lookup_table;
 // forward declaration of image types
 class image_type;
 class view_type;
+class variant_view_type;
 class alpha_image_type;
 
 class image_layer : public layer
@@ -56,11 +57,15 @@ class image_layer : public layer
 public:
     typedef image_type       image_t;
     typedef view_type        view_t;
+    typedef variant_view_type variant_view_t;
     typedef alpha_image_type alpha_image_t;
     typedef boost::shared_ptr<image_t      > image_ptr;
     typedef boost::shared_ptr<view_t       > view_ptr;
+    typedef boost::shared_ptr<variant_view_t       > variant_view_ptr;
     typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
+    //image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
+    image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr() );
     virtual ~image_layer() {}
 
     static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer");
@@ -120,7 +125,7 @@ public:
     virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
 
     virtual image_ptr image() const { return m_img; };
-    virtual view_ptr  view() const { return m_view; };
+    virtual variant_view_ptr  variant_view() const { return m_variant_view; };
 
     virtual std::vector<std::string> available_formats_extensions() const;
     virtual std::string available_formats_wildcard() const;
@@ -132,14 +137,13 @@ public:
     inline virtual double center_x();
     inline virtual double center_y();
 
-    image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
-
         private:
 
     image_ptr       m_img;
-    view_ptr        m_view;
+    variant_view_ptr        m_variant_view;
     alpha_image_ptr m_alpha_img;
 
+    // TODO: remove
     int m_startInput[2];
     double m_startfInput[2];
     int m_sizeInput[2];

@@ -14,6 +14,20 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
+
+struct write_view_tiff_visitor : public static_visitor<>
+{
+    write_view_tiff_visitor(const string& filename) : m_filename(filename) {}
+
+    template <typename ViewType>
+    result_type operator()(const ViewType& v) const { write_view( m_filename , v, tiff_tag() ); }
+
+private:
+    string m_filename;
+};
+
 shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
 {
     if ( !exists(filename) )
@@ -162,10 +176,17 @@ void gilviewer_file_io_tiff::save(shared_ptr<layer> layer, const string &filenam
     if(!imagelayer)
         throw invalid_argument("Bad layer type!\n");
 
-    write_view( filename
-              , imagelayer->view()->value
-              , gil::tiff_tag()
-              );
+    write_view_tiff_visitor writer(filename);
+    try
+    {
+        apply_visitor( writer, imagelayer->variant_view()->value );
+    }
+    catch( const std::exception &e )
+    {
+        ostringstream oss;
+        oss << "JPEG write error: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
+        error_logger::log_wx_log_message(oss.str());
+    }
 }
 
 boost::shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff()
