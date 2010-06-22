@@ -56,11 +56,9 @@ class image_layer : public layer
 {
 public:
     typedef image_type       image_t;
-    typedef view_type        view_t;
     typedef variant_view_type variant_view_t;
     typedef alpha_image_type alpha_image_t;
     typedef boost::shared_ptr<image_t      > image_ptr;
-    typedef boost::shared_ptr<view_t       > view_ptr;
     typedef boost::shared_ptr<variant_view_t       > variant_view_ptr;
     typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
@@ -143,10 +141,6 @@ public:
     variant_view_ptr        m_variant_view;
     alpha_image_ptr m_alpha_img;
 
-    // TODO: remove
-    int m_startInput[2];
-    double m_startfInput[2];
-    int m_sizeInput[2];
     double m_dx, m_dy;
 
     std::pair<float, float> m_minmaxResult;

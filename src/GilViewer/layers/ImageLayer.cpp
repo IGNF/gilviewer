@@ -216,10 +216,6 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
         m_variant_view.reset( new variant_view_t( boost::gil::view(m_img->value) ) );
     }
 
-    // TODO: remove
-    m_startInput[0] = m_startInput[1] = 0;
-    m_sizeInput[0] = m_sizeInput[1] = 0;
-
     //m_minmaxResult = apply_operation(m_view->value, any_view_min_max());
     m_minmaxResult = apply_visitor( min_max_visitor(), m_variant_view->value );
 
