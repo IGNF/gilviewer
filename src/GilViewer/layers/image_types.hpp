@@ -40,16 +40,32 @@ typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
 typedef boost::gil::any_image<all_image_types> any_image_type;
 typedef any_image_type::view_t any_view_type;
 
+#include <boost/variant/variant.hpp>
+typedef boost::variant< any_view_type
+                      , boost::gil::dynamic_x_step_type<any_view_type>::type
+                      , boost::gil::dynamic_y_step_type<any_view_type>::type
+                      , boost::gil::dynamic_xy_step_type<any_view_type>::type
+                      , boost::gil::dynamic_xy_step_transposed_type<any_view_type>::type
+                      //, boost::gil::nth_channel_view_type<any_view_type>::type
+                      > any_variant_view_type;
+
 struct image_type {
   typedef any_image_type type;
   type value;
   image_type(const type& v) : value(v) {}
   image_type() {}
 };
+
 struct view_type {
   typedef any_view_type type;
   type value;
   view_type(const type& v) : value(v) {}
+};
+
+struct variant_view_type {
+    typedef any_variant_view_type type;
+    type value;
+    variant_view_type(const type& v) : value(v) {}
 };
 
 #endif // __IMAGE_TYPES_HPP__

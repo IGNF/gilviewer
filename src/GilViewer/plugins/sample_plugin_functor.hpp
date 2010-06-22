@@ -39,11 +39,6 @@ Authors:
 #ifndef SAMPLE_PLUGIN_FUNCTOR
 #define SAMPLE_PLUGIN_FUNCTOR
 
-#ifdef _WINDOWS
-#	undef min
-#	undef max
-#endif // _WINDOWS
-
 #include <boost/gil/image_view_factory.hpp>
 
 struct sample_plugin_functor
@@ -53,7 +48,7 @@ struct sample_plugin_functor
     template <typename ViewType>
     result_type operator()(ViewType& v) const
     {
-        boost::gil::rotated90cw_view(v);
+        v = boost::gil::rotated90cw_view(v);
     }
 };
 
