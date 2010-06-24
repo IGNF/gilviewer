@@ -16,10 +16,11 @@ IMPLEMENT_PLUGIN(sample_plugin)
 
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
-struct sample_plugin_visitor : public boost::static_visitor<>
+struct sample_plugin_visitor// : public boost::static_visitor<>
 {
+    typedef void result_type;
     template <typename ViewType>
-            result_type operator()(ViewType& v) const { boost::gil::apply_operation(boost::ref(v), sample_plugin_functor()); }
+            result_type operator()(ViewType& v) const { boost::gil::apply_operation(v, sample_plugin_functor()); }
 };
 
 sample_plugin::sample_plugin() : plugin_base() {}
@@ -54,6 +55,9 @@ void sample_plugin::process()
             //boost::gil::apply_operation(imagelayer->variant_view()->value, sample_plugin_functor());
             //boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), type_channel_functor());
             //boost::apply_visitor( sample_plugin_visitor(), boost::ref(imagelayer->variant_view()->value) );
+            //boost::apply_visitor( sample_plugin_visitor(), boost::ref(imagelayer->variant_view()->value) );
+            sample_plugin_visitor spv;
+            //imagelayer->variant_view()->value.apply_visitor( spv );
         }
     }
     cout << "sample_plugin::process()" << endl;
