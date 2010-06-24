@@ -135,7 +135,7 @@ public:
     inline virtual double center_x();
     inline virtual double center_y();
 
-        private:
+        protected:
 
     image_ptr       m_img;
     variant_view_ptr        m_variant_view;
