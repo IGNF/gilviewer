@@ -39,35 +39,32 @@ Authors:
 #ifndef __FRAME_VIEWER_HPP__
 #define __FRAME_VIEWER_HPP__
 
-
 #include "../src/GilViewer/layers/Layer.hpp"
 
 #include "../src/GilViewer/gui/BasicViewerFrame.h"
 #include "../src/GilViewer/convenient/MacrosGilViewer.hpp"
 
-#include "GilViewer.h"
+#include "gilviewer_app.hpp"
 
 class panel_viewer;
 class wxStatusBar;
 class wxDialog;
 class wxMenuBar;
 
-class FrameViewer : public basic_viewer_frame
+class gilviewer_frame : public basic_viewer_frame
 {
 public:
-	FrameViewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
-	virtual ~FrameViewer() { wxGetApp().ExitMainLoop(); };
+    gilviewer_frame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
+    virtual ~gilviewer_frame() { wxGetApp().ExitMainLoop(); }
 
-	void AddLayer( const layer::ptrLayerType &layer);
-	void AddLayersFromFiles(const wxArrayString &names);
+    void AddLayer( const layer::ptrLayerType &layer);
+    void AddLayersFromFiles(const wxArrayString &names);
 
 private:
-	panel_viewer* m_drawPane;
-	wxMenu* m_menuOptions;
-	wxMenu* m_submenuLangage;
+    panel_viewer* m_panelviewer;
 
-	DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
-	DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
+    DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 };
 
 #endif // __FRAME_VIEWER_HPP__

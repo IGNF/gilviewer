@@ -35,10 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-
-#include <stdexcept>
-#include <iostream>
-
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/cmdline.h>
@@ -46,8 +42,12 @@ Authors:
 #include <wx/log.h>
 
 #include "../src/GilViewer/io/gilviewer_io_factory.hpp"
-#include "FrameViewer.hpp"
-#include "GilViewer.h"
+#include "gilviewer_frame.hpp"
+#include "gilviewer_app.hpp"
+
+#ifdef __LINUX__
+#	include <locale.h>
+#endif
 
 #include "GilViewer/config/config.hpp"
 #if GILVIEWER_USE_GDAL
@@ -59,13 +59,9 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 { wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 { wxCMD_LINE_NONE } };
 
-#ifdef __LINUX__
-#	include <locale.h>
-#endif
+IMPLEMENT_APP(gilviewer_app);
 
-IMPLEMENT_APP(GilViewerApp);
-
-bool GilViewerApp::OnInit()
+bool gilviewer_app::OnInit()
 {
 #ifdef __LINUX__
     setlocale(LC_ALL, "POSIX");
@@ -98,9 +94,9 @@ bool GilViewerApp::OnInit()
         }
     }
 
-    try{
-
-	m_frame = new FrameViewer((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
+    try
+    {
+        m_frame = new gilviewer_frame((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
 	m_frame->AddLayersFromFiles( cmdFiles );
 	m_frame->Show();
     }
@@ -118,7 +114,7 @@ bool GilViewerApp::OnInit()
     return true;
 }
 
-void GilViewerApp::set_langage(unsigned int language_id)
+void gilviewer_app::set_langage(unsigned int language_id)
 {
     wxLocale* locale;
     long language;

@@ -40,16 +40,22 @@ Authors:
 #define SAMPLE_PLUGIN_FUNCTOR
 
 #include <boost/gil/image_view_factory.hpp>
+#include "../layers/ImageLayer.hpp"
+#include "../layers/image_types.hpp"
 
 struct sample_plugin_functor
 {
     typedef void result_type;
 
+    sample_plugin_functor(const image_layer::variant_view_t::type& dest) : m_dest(dest) {}
+
     template <typename ViewType>
-    result_type operator()(ViewType& v) const
+    result_type operator()(const ViewType& v)
     {
-        v = boost::gil::rotated90cw_view(v);
+        m_dest = boost::gil::rotated90cw_view(v);
     }
+
+    image_layer::variant_view_t::type m_dest;
 };
 
 #endif // SAMPLE_PLUGIN_FUNCTOR
