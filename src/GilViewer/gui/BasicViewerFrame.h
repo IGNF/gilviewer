@@ -46,6 +46,7 @@ Authors:
 class wxLogWindow;
 class wxStatusBar;
 class wxToolBar;
+class wxDialog;
 
 class basic_viewer_frame : public wxFrame
 {

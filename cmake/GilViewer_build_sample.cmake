@@ -3,12 +3,15 @@
 ####
 if(UNIX)
         if(APPLE)
-                add_executable( GilViewerApp MACOSX_BUNDLE ./viewer_app/GilViewer.cpp
-		                                              ./viewer_app/GilViewer.h
-                                                      ./viewer_app/FrameViewer.cpp
-                                                      ./viewer_app/FrameViewer.hpp )
+                add_executable( GilViewerApp MACOSX_BUNDLE ./viewer_app/gilviewer_app.cpp
+                                                           ./viewer_app/gilviewer_app.hpp
+                                                           ./viewer_app/gilviewer_frame.cpp
+                                                           ./viewer_app/gilviewer_frame.hpp )
         else()
-                add_executable( GilViewerApp ./viewer_app/GilViewer.cpp ./viewer_app/FrameViewer.cpp )
+                add_executable( GilViewerApp ./viewer_app/gilviewer_app.cpp
+                                             ./viewer_app/gilviewer_app.hpp
+                                             ./viewer_app/gilviewer_frame.cpp
+                                             ./viewer_app/gilviewer_frame.hpp )
                 add_executable( sample_vector_layer ./samples/sample_vector_layer/sample_vector_layer_viewer.cpp ./samples/sample_vector_layer/sample_vector_layer.cpp )
         endif()
         add_definitions(-Wall)
@@ -21,11 +24,11 @@ endif()
 if(WIN32)
 	# J'en peux plus de ces warnings ...
         add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-        add_executable( GilViewerApp WIN32 ./viewer_app/GilViewer.cpp
-	                                      ./viewer_app/GilViewer.h
-                                          ./viewer_app/FrameViewer.cpp
-                                          ./viewer_app/FrameViewer.hpp
-                                          ./viewer_app/GilViewer.rc )
+        add_executable( GilViewerApp WIN32 ./viewer_app/gilviewer_app.cpp
+                                           ./viewer_app/gilviewer_app.hpp
+                                           ./viewer_app/gilviewer_frame.cpp
+                                           ./viewer_app/gilviewer_frame.hpp
+                                           ./viewer_app/GilViewer.rc )
     # Comme c'est sous visual (a priori ...), il y a l'auto link de Boost, donc pas besoin d'ajouter les libs ...
         target_link_libraries( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer tinyxml ${GDAL_LIBRARY} )
 endif()
