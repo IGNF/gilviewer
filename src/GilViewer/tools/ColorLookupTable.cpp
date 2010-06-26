@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #include <fstream>
@@ -44,88 +44,43 @@ Authors:
 
 color_lookup_table::color_lookup_table():m_clut(3*256)
 {
-	//Initialisation par défaut à une LUT en niveaux de gris
-	for (unsigned int i = 0; i < m_clut.size(); ++i)
-	{
-		m_clut[i]=i%256;
-	}
+    // Default LUT in gray levels
+    for (unsigned int i = 0; i < m_clut.size(); ++i)
+        m_clut[i]=i%256;
 }
 
 void color_lookup_table::load_from_binary_file(const std::string &fileCLUT)
 {
-
-	std::ifstream ficCLUT(fileCLUT.c_str());
-
-	for (unsigned int i=0; i<m_clut.size(); ++i)
-	{
-		//ficCLUT>>m_clut[i]; // ne marche pas ... pourquoi ?!
-		ficCLUT.read( (char*) &(m_clut[i]), sizeof(unsigned char));
-	}
-
-	ficCLUT.close();
-//	for (unsigned int i=0; i<256; ++i)
-//	{
-//		ficCLUT>>m_clut[3*i+1];
-//	}
-//	for (unsigned int i=0; i<256; ++i)
-//	{
-//		ficCLUT>>m_clut[3*i+2];
-//	}
-
-//	//fabriquer la LUt gray
-//	std::ofstream ficCLUTout("gray.lut", std::ios_base::out | std::ios_base::binary);//(fileCLUT.c_str());
-//
-//	for (unsigned int i=0; i<256; ++i) ficCLUTout<<(unsigned char)i;
-//	for (unsigned int i=0; i<256; ++i) ficCLUTout<<(unsigned char)i;
-//	for (unsigned int i=0; i<256; ++i) ficCLUTout<<(unsigned char)i;
-//
-//
-//	ficCLUTout.close();
-
-	//A nettoyer tout ça ! en verifiant que le fichier fait 768 octets, et en utilisant directement un foreach pour remplir le tableau depuis le fichier
-
+    std::ifstream ficCLUT(fileCLUT.c_str(), std::ios::binary);
+    for (unsigned int i=0; i<m_clut.size(); ++i)
+        ficCLUT.read( (char*) &(m_clut[i]), sizeof(unsigned char));
+    ficCLUT.close();
 }
-
-#include <iostream>
 
 void color_lookup_table::create_random()
 {
-	std::srand( clock() );
-
-	for (unsigned int i=0;i<3*256;++i)
-		m_clut[i] = (unsigned char)( (double(std::rand()) / RAND_MAX) * 255 + 1 );
+    std::srand( clock() );
+    for (unsigned int i=0;i<3*256;++i)
+        m_clut[i] = (unsigned char)( (double(std::rand()) / RAND_MAX) * 255 + 1 );
 }
 
 void color_lookup_table::load_from_text_file(const std::string &fileCLUT)
 {
+    //	std::ifstream ficCLUT("/home/achauve/Logiciels/ImageJ/luts/sepia.lut");//(fileCLUT.c_str());
+    //
+    //	unsigned int i = 0;
+    //	int temp;
+    //	while (ficCLUT.good() && i<m_clut.size())
+    //	{
+    //
+    //		ficCLUT>>temp;
+    //		m_clut[i]=static_cast<unsigned char>(temp);
+    //		++i;
+    //	}
+    //
+    //	ficCLUT.close();
 
-//	std::ifstream ficCLUT("/home/achauve/Logiciels/ImageJ/luts/sepia.lut");//(fileCLUT.c_str());
-//
-//	unsigned int i = 0;
-//	int temp;
-//	while (ficCLUT.good() && i<m_clut.size())
-//	{
-//
-//		ficCLUT>>temp;
-//		m_clut[i]=static_cast<unsigned char>(temp);
-//		++i;
-//	}
-//
-//	ficCLUT.close();
-
-	//A nettoyer tout ça ! en verifiant que le fichier fait 768 octets, et en utilisant directement un foreach pour remplir le tableau depuis le fichier
+    //A nettoyer tout ça ! en verifiant que le fichier fait 768 octets, et en utilisant directement un foreach pour remplir le tableau depuis le fichier
 
 }
-
-//itk::RGBPixel<unsigned char> ColorLookupTable::GetColor(unsigned int index) const
-//{
-//	if(index<0 || index>=m_clut.size())
-//		std::cout<<"Erreur LUT !\n";
-//	itk::RGBPixel<unsigned char> result;
-//	result.SetRed(m_clut[index]);
-//	result.SetGreen(m_clut[256+index]);
-//	result.SetBlue(m_clut[2*256 +index]);
-//
-//	return result;
-//}
 
