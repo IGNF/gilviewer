@@ -40,6 +40,7 @@ Authors:
 #define TOSTRING_FUNCTOR
 
 #include <boost/gil/pixel.hpp>
+#include <boost/gil/extension/io_new/detail/gil_extensions.hpp>
 
 template<typename ViewType, typename CoordType>
 inline bool isInside(const ViewType& v, const CoordType i, const CoordType j)
@@ -59,8 +60,10 @@ struct any_view_image_position_to_string_functor
       result_type >::type
     operator()(const ViewType& v)
     {
+        typedef typename boost::gil::get_pixel_type<ViewType>::type g_pixel_t;
+        typedef typename boost::gil::kth_element_type<g_pixel_t,0>::type element_0_t;
         if (isInside(v, i_,j_))
-            oss_ << (int) boost::gil::at_c<0>( v(i_,j_) );
+            oss_ << (element_0_t) boost::gil::at_c<0>( v(i_,j_) );
         else
             oss_ << "outside";
     }
@@ -73,9 +76,13 @@ struct any_view_image_position_to_string_functor
     operator()(const ViewType& v)
     {
         using namespace boost::gil;
+        typedef typename get_pixel_type<ViewType>::type g_pixel_t;
+        typedef typename kth_element_type<g_pixel_t,0>::type element_0_t;
+        typedef typename kth_element_type<g_pixel_t,1>::type element_1_t;
+        typedef typename kth_element_type<g_pixel_t,3>::type element_2_t;
 
         if (isInside(v, i_,j_))
-            oss_ << (int)at_c<0>(v(i_,j_)) << "," << (int)at_c<1>(v(i_,j_)) << "," << (int)at_c<2>(v(i_,j_));
+            oss_ << (element_0_t)at_c<0>(v(i_,j_)) << "," << (element_1_t)at_c<1>(v(i_,j_)) << "," << (element_2_t)at_c<2>(v(i_,j_));
         else
             oss_ << "outside";
     }
