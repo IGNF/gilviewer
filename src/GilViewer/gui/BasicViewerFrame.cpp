@@ -35,7 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-
 #include <wx/statusbr.h>
 #include <wx/log.h>
 #include <wx/toolbar.h>
@@ -47,11 +46,13 @@ Authors:
 #include <wx/html/htmlwin.h>
 
 #include "../gui/define_id.hpp"
+#include "../io/gilviewer_io_factory.hpp"
 
 #include "BasicViewerFrame.h"
 
 extern void InitXmlResource();
 
+using namespace std;
 
 BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
         EVT_TOOL(wxID_ABOUT, basic_viewer_frame::on_about)
@@ -88,6 +89,15 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
     wxLog::SetActiveTarget(NULL);
     m_logWindow = new wxLogWindow(this, _("Log window"));
     m_logWindow->Show(m_isLogWindowVisible);
+
+    // Log all available formats ...
+    vector<string> ids = gilviewer_io_factory::instance()->available_identifiers();
+    ::wxLogMessage(_("Available file formats:"));
+    for(vector<string>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
+    {
+        wxString mes(it->c_str(), *wxConvCurrent);
+        ::wxLogMessage(mes);
+    }
 
     //ToolBar
     m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);

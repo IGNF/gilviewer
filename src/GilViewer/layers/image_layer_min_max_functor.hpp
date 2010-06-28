@@ -48,6 +48,8 @@ Authors:
 #include <boost/algorithm/minmax_element.hpp>
 #include <boost/gil/pixel.hpp>
 
+#include <vector>
+
 struct pixel_compare_less
 {
     template <typename PixelType>

@@ -41,6 +41,7 @@ Authors:
 
 #include <map>
 #include <string>
+#include <vector>
 #include <stdexcept>
 
 #include <boost/function.hpp>
@@ -86,6 +87,14 @@ template
             return (i->second)();
         }
         throw std::logic_error("Unknown object type passed to factory !\n");
+    }
+
+    std::vector<TIdentifierType> available_identifiers()
+    {
+        std::vector<TIdentifierType> ids;
+        for(typename AssocMapType::const_iterator it=associations_.begin(); it!=associations_.end(); ++it)
+            ids.push_back(it->first);
+        return ids;
     }
 
 	private:

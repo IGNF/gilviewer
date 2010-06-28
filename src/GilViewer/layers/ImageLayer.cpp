@@ -207,25 +207,14 @@ private:
     int m_xmin, m_ymin, m_width, m_height;
 };
 
-image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const variant_view_ptr& v):
-        m_img(image), m_variant_view(v)
+void image_layer::init()
 {
-    if(!v)
-    {
-        //m_variant_view.reset(new variant_view_t( view(m_img->value) ));
-        m_variant_view.reset( new variant_view_t( boost::gil::view(m_img->value) ) );
-    }
-
-    //m_minmaxResult = apply_operation(m_view->value, any_view_min_max());
-    m_minmaxResult = apply_visitor( min_max_visitor(), m_variant_view->value );
-
-    name(name_);
-    filename(filename_);
-
     alpha(255);
-    //TODO
+    m_minmaxResult = apply_visitor( min_max_visitor(), m_variant_view->value );
     intensity_min(m_minmaxResult.first);
     intensity_max(m_minmaxResult.second);
+    intensity_min(0);
+    intensity_max(50);
     transparent(false);
     transparency_max(0.);
     transparency_min(0.);
@@ -235,6 +224,20 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
 
     channels(0,1,2);
     alpha_channel(false,0);
+}
+
+image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const variant_view_ptr& v):
+        m_img(image), m_variant_view(v)
+{
+    if(!v)
+    {
+        m_variant_view.reset( new variant_view_t( boost::gil::view(m_img->value) ) );
+    }
+
+    name(name_);
+    filename(filename_);
+
+    init();
 }
 
 layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const string &name)
