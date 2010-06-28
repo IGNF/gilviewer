@@ -39,17 +39,15 @@ Authors:
 #ifndef GILVIEWER_IO_FACTORY_HPP
 #define GILVIEWER_IO_FACTORY_HPP
 
-//#include <boost/thread/detail/singleton.hpp>
-
 #include "../tools/PatternSingleton.hpp"
 #include "../tools/PatternFactory.hpp"
 #include "gilviewer_file_io.hpp"
 
-//typedef boost::detail::thread::singleton<PatternFactory<boost::shared_ptr<gilviewer_file_io> > > gilviewer_io_factory;
 typedef PatternSingleton< PatternFactory< gilviewer_file_io,
                                           std::string,
                                           boost::function< boost::shared_ptr<gilviewer_file_io> () >,
-                                          boost::shared_ptr<gilviewer_file_io>
+                                          boost::shared_ptr<gilviewer_file_io>,
+                                          std::multimap<std::string, std::pair<std::string, std::string> >
                                         >
                         > gilviewer_io_factory;
 
