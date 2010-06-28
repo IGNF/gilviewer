@@ -98,6 +98,4 @@ private:
 
 };
 
-typedef vector_layer_ghost VectorLayerGhost;
-
 #endif /*VECTORLAYERGENERIC_H_*/

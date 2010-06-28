@@ -108,6 +108,4 @@ private:
     wxChoice* m_choiceLabels;
 };
 
-typedef application_settings ApplicationSettings;
-
 #endif /* APPLICATIONSETTINGS_HPP_ */

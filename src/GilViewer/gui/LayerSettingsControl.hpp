@@ -62,6 +62,4 @@ protected:
     unsigned int m_index;
 };
 
-typedef layer_settings_control LayerSettingsControl;
-
 #endif // __LAYER_SETTINGS_CONTROL_HPP__

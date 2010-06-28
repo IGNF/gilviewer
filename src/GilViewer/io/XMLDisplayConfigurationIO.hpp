@@ -50,6 +50,4 @@ public:
     static void write( const layer_control* layerControl , const std::string filename );
 };
 
-typedef xml_display_configuration_io XMLDisplayConfigurationIO;
-
 #endif // __XML_DISPLAY_CONFIGURATION_IO_HPP__

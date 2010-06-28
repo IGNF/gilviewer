@@ -169,6 +169,4 @@ public:
     double m_oldZoomFactor;
 };
 
-typedef image_layer ImageLayer;
-
 #endif // __IMAGE_LAYER_HPP__

@@ -102,6 +102,4 @@ public:
     DECLARE_EVENT_TABLE()
         };
 
-typedef vector_layer_settings_control VectorLayerSettingsControl;
-
 #endif // __VECTOR_LAYER_SETTINGS_CONTROL_HPP__

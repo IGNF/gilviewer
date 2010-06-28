@@ -217,9 +217,6 @@ protected:
 
 };
 
-// Only for compatibility purposes
-typedef panel_viewer PanelViewer;
-
 #if wxUSE_DRAG_AND_DROP
 class gilviewer_file_drop_target : public wxFileDropTarget
 {

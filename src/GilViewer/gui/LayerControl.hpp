@@ -173,6 +173,4 @@ protected:
     DECLARE_EVENT_TABLE();
 };
 
-typedef layer_control LayerControl;
-
 #endif // __LAYER_CONTROL_HPP__

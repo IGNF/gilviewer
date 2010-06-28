@@ -202,7 +202,7 @@ void ogr_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
     }
 }
 
-LayerSettingsControl* ogr_vector_layer::build_layer_settings_control(unsigned int index, layer_control* parent)
+layer_settings_control* ogr_vector_layer::build_layer_settings_control(unsigned int index, layer_control* parent)
 {
     return new vector_layer_settings_control(index, parent);
 }

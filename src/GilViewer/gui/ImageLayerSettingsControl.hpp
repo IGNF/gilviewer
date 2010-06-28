@@ -162,8 +162,4 @@ public:
     image_layer_settings_control *m_parent;
 };
 
-typedef image_layer_settings_control ImageLayerSettingsControl;
-typedef histogram_plotter histogram_plotter;
-typedef thread_histogram thread_histogram;
-
 #endif // __IMAGE_LAYER_SETTINGS_CONTROL_HPP__

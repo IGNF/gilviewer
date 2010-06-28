@@ -67,6 +67,4 @@ private:
     layer_control *m_parent;
 };
 
-typedef global_settings_control GlobalSettingsControl;
-
 #endif //__GLOBAL_SETTINGS_CONTROL_HPP__
