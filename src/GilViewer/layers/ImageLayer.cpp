@@ -213,8 +213,6 @@ void image_layer::init()
     m_minmaxResult = apply_visitor( min_max_visitor(), m_variant_view->value );
     intensity_min(m_minmaxResult.first);
     intensity_max(m_minmaxResult.second);
-    intensity_min(0);
-    intensity_max(50);
     transparent(false);
     transparency_max(0.);
     transparency_min(0.);
