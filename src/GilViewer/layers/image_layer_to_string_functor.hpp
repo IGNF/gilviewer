@@ -79,7 +79,7 @@ struct any_view_image_position_to_string_functor
         typedef typename get_pixel_type<ViewType>::type g_pixel_t;
         typedef typename kth_element_type<g_pixel_t,0>::type element_0_t;
         typedef typename kth_element_type<g_pixel_t,1>::type element_1_t;
-        typedef typename kth_element_type<g_pixel_t,3>::type element_2_t;
+        typedef typename kth_element_type<g_pixel_t,2>::type element_2_t;
 
         if (isInside(v, i_,j_))
             oss_ << (element_0_t)at_c<0>(v(i_,j_)) << "," << (element_1_t)at_c<1>(v(i_,j_)) << "," << (element_2_t)at_c<2>(v(i_,j_));
