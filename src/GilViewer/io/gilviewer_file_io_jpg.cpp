@@ -115,6 +115,7 @@ bool gilviewer_file_io_jpg::Register()
     gilviewer_io_factory::instance()->Register("JPG", create_gilviewer_file_io_jpg);
     gilviewer_io_factory::instance()->Register("jpeg", create_gilviewer_file_io_jpg);
     gilviewer_io_factory::instance()->Register("JPEG", create_gilviewer_file_io_jpg);
+    // Metadata to associate
     return true;
 }
 
