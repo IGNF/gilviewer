@@ -75,6 +75,4 @@ protected:
     DECLARE_EVENT_TABLE();
 };
 
-typedef basic_viewer_frame BasicViewerFrame;
-
 #endif /* BASICVIEWERFRAME_H_ */

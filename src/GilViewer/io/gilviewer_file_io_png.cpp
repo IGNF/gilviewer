@@ -35,7 +35,7 @@ shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
         ostringstream oss;
         oss << "File does not exist: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
         error_logger::log_wx_log_message(oss.str());
-        return Layer::ptrLayerType();
+        return layer::ptrLayerType();
     }
 
     path path(system_complete(filename));
@@ -43,7 +43,7 @@ shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
 
     //image_read_info< png_tag > info = read_image_info(filename.string(), png_tag());
 
-    ImageLayer::image_ptr image(new ImageLayer::image_t);
+    image_layer::image_ptr image(new image_layer::image_t);
 
     try
     {
@@ -57,10 +57,10 @@ shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
         oss << "Read error: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
         oss << e.what() << endl;
         error_logger::log_wx_log_message(oss.str());
-        return Layer::ptrLayerType();
+        return layer::ptrLayerType();
     }
 
-    Layer::ptrLayerType layer(new ImageLayer(image, path.stem(), path.string()));
+    layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
     layer->add_orientation(filename);
 
     return layer;

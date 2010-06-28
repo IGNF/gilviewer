@@ -70,8 +70,6 @@ private:
 };
 
 typedef PatternSingleton<panel_manager_model> panel_manager;
-// Only for compatibility purposes
-typedef panel_manager PanelManager;
 
 #endif /* PANELMANAGER_H_ */
 

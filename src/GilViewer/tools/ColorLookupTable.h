@@ -74,6 +74,4 @@ private:
 
 };
 
-typedef color_lookup_table ColorLookupTable;
-
 #endif /*COLORLOOKUPTABLE_H_*/

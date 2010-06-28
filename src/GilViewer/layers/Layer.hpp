@@ -241,6 +241,4 @@ protected:
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
 };
 
-typedef layer Layer;
-
 #endif // __LAYER_HPP__

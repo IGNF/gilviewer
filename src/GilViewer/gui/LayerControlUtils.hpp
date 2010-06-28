@@ -165,10 +165,4 @@ public:
 	unsigned int			m_index;
 };
 
-typedef selectable_static_text SelectableStaticText;
-typedef param_base paramBase;
-typedef param_image_layer paramImageLayer;
-typedef param_vector_layer paramVectorLayer;
-typedef layer_control_row LayerControlRow;
-
 #endif // __LAYER_CONTROL_UTILS_HPP__

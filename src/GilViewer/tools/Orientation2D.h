@@ -109,6 +109,4 @@ inline void orientation_2d::map_to_image(const double x, const double y, int &co
 	lig = -static_cast<int>( std::floor((y - m_originY ) / m_step + 0.5));
 }
 
-typedef orientation_2d Orientation2D;
-
 #endif /*VIEWERORIENTATION2D_H_*/
