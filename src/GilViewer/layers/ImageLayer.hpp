@@ -63,7 +63,6 @@ public:
     typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
     //image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
-    image_layer() { init(); }
     image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr() );
     virtual ~image_layer() {}
 

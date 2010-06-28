@@ -80,15 +80,15 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
     SetBackgroundColour(bgcolor);
     ClearBackground();
 
-    wxFlexGridSizer *main_sizer = new wxFlexGridSizer(4,1,0,0);
-    main_sizer->AddGrowableCol(0);
-    main_sizer->AddGrowableRow(0);
+    m_main_sizer = new wxFlexGridSizer(4,1,0,0);
+    m_main_sizer->AddGrowableCol(0);
+    m_main_sizer->AddGrowableRow(0);
 
     m_histogramPanel = new histogram_plotter(this, 0, 1, 2, wxID_ANY,wxDefaultPosition,wxSize(300,150));
     wxColour bgcolorpanel(*wxWHITE);
     m_histogramPanel->SetBackgroundColour(bgcolorpanel);
     m_histogramPanel->ClearBackground();
-    main_sizer->Add(m_histogramPanel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+    m_main_sizer->Add(m_histogramPanel, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
     // L'interface dépend du nombre de composantes
     m_nbComponents = m_parent->layers()[index]->nb_components();
@@ -108,7 +108,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
         m_textRedGamma = new wxTextCtrl(this,wxID_ANY,wxT("1"));
         m_textRedGamma->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         red_sizer->Add(m_textRedGamma, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
-        main_sizer->Add(red_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+        m_main_sizer->Add(red_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
         //Choix de la LUT
         wxStaticBoxSizer *fileLUT_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Choose LUT"));
@@ -116,7 +116,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
         wxConfigBase::Get()->Read(wxT("/Paths/LUT"), &str, ::wxGetCwd());
         m_filePicker_CLUT = new wxFilePickerCtrl(this, wxID_ANY, str, _("Select a CLUT file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE);
         fileLUT_sizer->Add(m_filePicker_CLUT, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
-        main_sizer->Add(fileLUT_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+        m_main_sizer->Add(fileLUT_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
     }
     else
     {
@@ -145,7 +145,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
         m_textRedGamma->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
         m_textRedGamma->SetToolTip(_("Gamma"));
         red_sizer->Add(m_textRedGamma, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
-        main_sizer->Add(red_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+        m_main_sizer->Add(red_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
         wxStaticBoxSizer *green_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Green"));
         m_textGreenChannel = new wxTextCtrl(this,wxID_ANY);
@@ -178,7 +178,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
         m_textGreenGamma->Enable(false);
         m_textGreenGamma->SetEditable(false);
         green_sizer->Add(m_textGreenGamma, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
-        main_sizer->Add(green_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+        m_main_sizer->Add(green_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
         wxStaticBoxSizer *blue_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Blue"));
         m_textBlueChannel = new wxTextCtrl(this,wxID_ANY);
@@ -211,7 +211,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
         m_textBlueGamma->Enable(false);
         m_textBlueGamma->SetEditable(false);
         blue_sizer->Add(m_textBlueGamma, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
-        main_sizer->Add(blue_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+        m_main_sizer->Add(blue_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
     }
 
@@ -260,20 +260,20 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
 
 
     // On rajoute tout ce qui concerne la transparence dans le sizer principal
-    main_sizer->Add(alpha_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+    m_main_sizer->Add(alpha_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
     wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
     buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
     buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, wxT("Apply")));
     buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, wxT("Cancel")));
     buttons_sizer->Realize();
-    main_sizer->Add(buttons_sizer, 0, wxALIGN_RIGHT|wxALL, 5);
+    m_main_sizer->Add(buttons_sizer, 0, wxALIGN_RIGHT|wxALL, 5);
 
     //CreateStatusBar();
     //GetStatusBar()->SetStatusText(wxString(_("Status :")));
 
-    main_sizer->SetSizeHints(this);
-    SetSizer(main_sizer);
+    m_main_sizer->SetSizeHints(this);
+    SetSizer(m_main_sizer);
     Layout();
     Centre();
 }
