@@ -39,6 +39,7 @@ Authors:
 #define GILVIEWER_FILE_IO_HPP
 
 #include <boost/shared_ptr.hpp>
+#include <string>
 
 class layer;
 
@@ -47,11 +48,15 @@ class gilviewer_file_io
 public:
     virtual ~gilviewer_file_io() {}
 
-    virtual boost::shared_ptr<layer> load(const std::string &filename);
+    virtual boost::shared_ptr<layer> load(const std::string &filename)=0;
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename)=0;
 
 protected:
-    gilviewer_file_io() {}
+    gilviewer_file_io() : m_familly(""), m_description("") {}
+    /// This attribute describes the main familly of the reader (e.g. vector, image, ...)
+    std::string m_familly;
+    /// This attribute gives the individual description of the reader (e.g. TIFF images, SHP files ...)
+    std::string m_description;
 };
 
 #endif // GILVIEWER_FILE_IO_HPP

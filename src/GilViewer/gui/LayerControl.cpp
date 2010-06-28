@@ -394,6 +394,7 @@ void layer_control::on_reset(wxCommandEvent& event)
 
 void layer_control::on_open_layer(wxCommandEvent& event)
 {
+    // TODO: use extensions registered in the factory
     wxString wildcard;
     wildcard << _("All supported files ");
     wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin");
