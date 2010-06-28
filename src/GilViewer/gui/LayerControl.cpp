@@ -264,11 +264,13 @@ void layer_control::on_save_button(wxCommandEvent& event)
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
     if (fileDialog->ShowModal() == wxID_OK)
     {
+        string filename(fileDialog->GetFilename().To8BitData());
+        string extension(filesystem::extension(filename));
+        extension = extension.substr(1,extension.size()-1);
+        to_lower(extension);
         try
         {
-            string filename(fileDialog->GetFilename().To8BitData());
-            string extension(filesystem::extension(filename));
-            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
+            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension);
             file_out->save(layers()[id],filename);
         }
         catch( std::exception &err )
@@ -478,9 +480,11 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
 
         string filename(names[i].fn_str());
         string extension(filesystem::extension(filename));
+        extension = extension.substr(1,extension.size()-1);
+        to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
+            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
             add_layer( file->load(filename) );
         }
         catch (const std::exception &err)
@@ -801,11 +805,13 @@ void layer_control::on_delete_all_rows_button(wxCommandEvent& event)
 
 void layer_control::create_new_image_layer_with_parameters(const ImageLayerParameters &parameters)
 {
+    std::string filename(parameters.path.c_str());
+    string extension(filesystem::extension(filename));
+    extension = extension.substr(1,extension.size()-1);
+    to_lower(extension);
     try
     {
-        std::string filename(parameters.path.c_str());
-        string extension(filesystem::extension(filename));
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
         layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
@@ -843,11 +849,13 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
 
 void layer_control::create_new_vector_layer_with_parameters(const VectorLayerParameters &parameters)
 {
+    std::string filename(parameters.path.c_str());
+    string extension(filesystem::extension(filename));
+    extension = extension.substr(1,extension.size()-1);
+    to_lower(extension);
     try
     {
-        std::string filename(parameters.path.c_str());
-        string extension(filesystem::extension(filename));
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension.substr(1,extension.size()-1));
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
         add_layer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
