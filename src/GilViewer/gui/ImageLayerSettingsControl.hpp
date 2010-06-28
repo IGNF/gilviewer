@@ -50,6 +50,7 @@ class wxSlider;
 class wxTextCtrl;
 class wxCheckBox;
 class wxFilePickerCtrl;
+class wxFlexGridSizer;
 
 class image_layer_settings_control : public layer_settings_control
 {
@@ -76,7 +77,8 @@ public:
     virtual std::string info_button_name() const {return "APPLICATIONS-GRAPHICS_16x16";}
     virtual const char** icon_xpm() const;
 
-    //private:
+protected:
+    wxFlexGridSizer *m_main_sizer;
     //wxSlider *m_minimumSlider;
     //wxSlider *m_maximumSlider;
     wxSlider *m_alphaSlider;
@@ -107,11 +109,10 @@ public:
     unsigned int m_nbComponents;
 
     DECLARE_EVENT_TABLE();
-private:
+
+protected:
     histogram_plotter *m_histogramPanel;
-
     layer_control *m_parent;
-
     bool IsNumeric( const std::string& value );
 };
 
