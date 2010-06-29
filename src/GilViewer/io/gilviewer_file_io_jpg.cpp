@@ -112,9 +112,12 @@ boost::shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg()
 bool gilviewer_file_io_jpg::Register()
 {
     gilviewer_io_factory::instance()->Register("jpg", create_gilviewer_file_io_jpg);
-    gilviewer_io_factory::instance()->Register("JPG", create_gilviewer_file_io_jpg);
     gilviewer_io_factory::instance()->Register("jpeg", create_gilviewer_file_io_jpg);
-    gilviewer_io_factory::instance()->Register("JPEG", create_gilviewer_file_io_jpg);
+    pair<string,string> familly_description = make_pair<string,string>("Image files","JPEG images");
+    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "jpg", familly_description );
+    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    to_insert = make_pair< string, pair<string,string> >( "jpeg", familly_description );
+    gilviewer_io_factory::instance()->metadata().insert( to_insert );
     return true;
 }
 

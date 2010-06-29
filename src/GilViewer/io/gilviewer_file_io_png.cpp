@@ -93,7 +93,9 @@ boost::shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
 bool gilviewer_file_io_png::Register()
 {
     gilviewer_io_factory::instance()->Register("png", create_gilviewer_file_io_png);
-    gilviewer_io_factory::instance()->Register("PNG", create_gilviewer_file_io_png);
+    pair<string,string> familly_description = make_pair<string,string>("Image files","PNG images");
+    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "png", familly_description );
+    gilviewer_io_factory::instance()->metadata().insert( to_insert );
     return true;
 }
 

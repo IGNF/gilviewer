@@ -56,17 +56,13 @@ Authors:
 *
 */
 
-template
-        <
-	class TAbstractProduct,
-	typename TIdentifierType = std::string,
-        typename TProductCreator = boost::function<TAbstractProduct* ()>,
-        typename ReturnType = TAbstractProduct*
-                                   >
-                                   class PatternFactory
-                                   {
-
-                                   public:
+template < class TAbstractProduct,
+           typename TIdentifierType   = std::string,
+           typename TProductCreator   = boost::function<TAbstractProduct* ()>,
+           typename ReturnType        = TAbstractProduct*,
+           typename MetadataContainer = std::map<std::string, std::string> > class PatternFactory
+{
+public:
     virtual ~PatternFactory() {}
 
     bool Register(const TIdentifierType& id, TProductCreator creator)
@@ -97,10 +93,13 @@ template
         return ids;
     }
 
-	private:
+    const MetadataContainer& metadata() const { return m_metadata; }
+    MetadataContainer& metadata() { return m_metadata; }
+
+private:
     typedef std::map<TIdentifierType, TProductCreator> AssocMapType;
     AssocMapType associations_;
-
+    MetadataContainer m_metadata;
 };
 
 #endif /* PATTERNFACTORY_HPP_ */

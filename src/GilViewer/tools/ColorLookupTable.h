@@ -9,9 +9,9 @@ GIL and wxWidgets.
 Homepage: 
 
 	http://code.google.com/p/gilviewer
-	
+
 Copyright:
-	
+
 	Institut Geographique National (2009)
 
 Authors: 
@@ -33,7 +33,7 @@ Authors:
 
     You should have received a copy of the GNU Lesser General Public 
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
 #ifndef COLORLOOKUPTABLE_H_
@@ -42,36 +42,33 @@ Authors:
 #include <vector>
 #include <string>
 
-
-
-/*
- * \class ColorLookupTable
- * \brief Classe de gestion des LUT
+/**
+ * @brief LUT (Look Up Table) handling
  *
- * Classe qui crée par défaut une lut en niveaux de gris, et charge des LUTs au format dérivé d'ImageJ.
+ * Creates by default a gray levels LUT. Can load LUT in the same format as ImageJ.<br>
+ * Stored in a binary file, the LUT must contain 768 octets: <b>256</b> values for each of the <b>3</b> channels.<br>
+ * Stored in a text file, the LUT must have <b>3 columns</b> (R, G and B) and <b>256</b> lines.<br>
  *
- */
-
+ **/
 class color_lookup_table
 {
 public:
-        color_lookup_table();
-        virtual ~color_lookup_table(){}
+    color_lookup_table();
+    virtual ~color_lookup_table(){}
 
-	///Charge une CLUT depuis un fichier binaire (de taille 768 octets = 256 * 3)
-        void load_from_binary_file(const std::string &fileCLUT);
-	///Charge une CLUT depuis un fichier ASCII (3 colonnes RGB, 256 lignes)
-        void load_from_text_file(const std::string &fileCLUT);
-	/// Cree une LUT aleatoire
-        void create_random();
+    /// Loads a LUT from a binary file (the file must contain 768 octets = 256 * 3)
+    void load_from_binary_file(const std::string &fileCLUT);
+    /// Loads a LUT from a text file (the file must 3 columns RGB and 256 lines)
+    void load_from_text_file(const std::string &fileCLUT);
+    /// Creates a random LUT
+    void create_random();
 
-        const std::vector<unsigned char>& get_data() const { return m_clut; }
+    /// Returns the LUT data container
+    const std::vector<unsigned char>& get_data() const { return m_clut; }
 
 private:
-	///Tableau de taille 768
-	std::vector<unsigned char> m_clut;
-
-
+    /// The LUT data container
+    std::vector<unsigned char> m_clut;
 };
 
 #endif /*COLORLOOKUPTABLE_H_*/
