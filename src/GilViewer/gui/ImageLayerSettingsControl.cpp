@@ -72,7 +72,7 @@ BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
 END_EVENT_TABLE()
 
 image_layer_settings_control::image_layer_settings_control(unsigned int index, layer_control* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-	layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
+        layer_settings_control(parent, id, title, pos, size, style), m_filePicker_CLUT(NULL), m_parent(parent)
 {
     m_index = index;
 
@@ -491,6 +491,12 @@ void image_layer_settings_control::update()
         m_checkAlphaChannel->SetValue(true);
         m_textAlphaChannel->Enable(true);
         m_textAlphaChannel->SetValue(alpha);
+    }
+
+    // LUT file
+    if(m_filePicker_CLUT)
+    {
+        m_filePicker_CLUT->SetPath(wxString(layer->colorlookuptable()->lut_file().c_str(), *wxConvCurrent));
     }
 }
 

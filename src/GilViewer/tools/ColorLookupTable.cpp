@@ -42,7 +42,7 @@ Authors:
 
 #include "ColorLookupTable.h"
 
-color_lookup_table::color_lookup_table():m_clut(3*256)
+color_lookup_table::color_lookup_table():m_clut(3*256), m_lut_file("")
 {
     // Default LUT in gray levels
     for (unsigned int i = 0; i < m_clut.size(); ++i)
@@ -52,6 +52,12 @@ color_lookup_table::color_lookup_table():m_clut(3*256)
 void color_lookup_table::load_from_binary_file(const std::string &fileCLUT)
 {
     std::ifstream ficCLUT(fileCLUT.c_str(), std::ios::binary);
+    if(!ficCLUT.good())
+    {
+        m_lut_file = "";
+        return;
+    }
+    m_lut_file = fileCLUT;
     for (unsigned int i=0; i<m_clut.size(); ++i)
         ficCLUT.read( (char*) &(m_clut[i]), sizeof(unsigned char));
     ficCLUT.close();

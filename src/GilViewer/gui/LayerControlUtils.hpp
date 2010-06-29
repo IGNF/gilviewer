@@ -129,6 +129,7 @@ typedef struct param_image_layer : param_base
 	unsigned int blue;
 	bool useAlphaChannel;
 	unsigned int alphaChannel;
+        std::string lut_file;
 } ImageLayerParameters;
 
 typedef struct param_vector_layer : param_base

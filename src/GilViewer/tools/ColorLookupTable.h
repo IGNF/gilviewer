@@ -65,10 +65,13 @@ public:
 
     /// Returns the LUT data container
     const std::vector<unsigned char>& get_data() const { return m_clut; }
+    const std::string& lut_file() const { return m_lut_file; }
 
 private:
     /// The LUT data container
     std::vector<unsigned char> m_clut;
+    /// The current LUT file (if any)
+    std::string m_lut_file;
 };
 
 #endif /*COLORLOOKUPTABLE_H_*/
