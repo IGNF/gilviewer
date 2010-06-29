@@ -75,7 +75,10 @@ Authors:
 #include "../io/XMLDisplayConfigurationIO.hpp"
 #include "../io/gilviewer_file_io.hpp"
 #include "../io/gilviewer_io_factory.hpp"
+
 #include "../tools/Orientation2D.h"
+
+#include "../convenient/utils.hpp"
 
 #include "../config/config.hpp"
 
@@ -397,6 +400,7 @@ void layer_control::on_reset(wxCommandEvent& event)
 void layer_control::on_open_layer(wxCommandEvent& event)
 {
     // TODO: use extensions registered in the factory
+    /*
     wxString wildcard;
     wildcard << _("All supported files ");
     wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin");
@@ -433,7 +437,10 @@ void layer_control::on_open_layer(wxCommandEvent& event)
 #   endif // GILVIEWER_USE_GDAL
     wildcard << _("Custom format ");
     wildcard << wxT("(*)|*");
-    wxString str;
+    */
+    string wild = gilviewer_utils::build_wx_wildcard_from_io_factory();
+    wxString wildcard(wild.c_str(), *wxConvCurrent);
+    //wxString str;
     //wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
     wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
 

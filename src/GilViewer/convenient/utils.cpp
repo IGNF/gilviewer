@@ -65,3 +65,36 @@ vector<string> filesystem_utils::all_files_from_path(const string &dir_path, con
 
     return all_files;
 }
+
+#include "../io/gilviewer_io_factory.hpp"
+
+namespace gilviewer_utils
+{
+    string build_wx_wildcard_from_io_factory()
+    {
+        /*
+        typedef multimap<string, pair<string, string> > metadata_type;
+        typedef metadata_type::const_iterator metadata_iterator;
+        const multimap<string, pair<string, string> > &metadata = gilviewer_io_factory::instance()->metadata();
+        // First, fecth all available families
+        map<string,vector<string> > families;
+        metadata_iterator it=metadata.begin();
+        for(;it!=metadata.end();++it)
+            families.insert()
+            */
+        // Currently simple version without descriptions
+        vector<string> ext = gilviewer_io_factory::instance()->available_identifiers();
+        vector<string>::iterator it = ext.begin();
+        ostringstream wildcard;
+        wildcard << "All available formats |";
+        for(;it!=ext.end();++it)
+        {
+            string current_ext = *it;
+            wildcard << "*." << current_ext << ";";
+            to_upper(current_ext);
+            wildcard << "*." << current_ext << ";";
+        }
+        wildcard << "|" << "Custom format |*.*";
+        return wildcard.str();
+    }
+}
