@@ -49,6 +49,7 @@ Authors:
 #include "../gui/LayerControl.hpp"
 #include "../gui/PanelViewer.hpp"
 #include "../tools/Orientation2D.h"
+#include "../tools/ColorLookupTable.h"
 
 void xml_display_configuration_io::read( layer_control* layerControl , const std::string filename )
 {
@@ -76,6 +77,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
     double zoom_factor = -1., translation_x = -1., translation_y = -1.;
     int alpha_channel = -1;
     int use_alpha_channel = 0;
+    std::string lut_path;
     int red = 0, green = 0, blue = 0;
     std::string path;
     int points_red, points_green, points_blue, points_alpha;
@@ -242,6 +244,11 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                         use_alpha_channel = i;
                                         childAppearance->ToElement()->Attribute( "channel" , &i );
                                         alpha_channel = i;
+                                    }
+                                    // LUT
+                                    else if ( std::string(childAppearance->Value()) == "LUT" )
+                                    {
+                                        lut_path = childAppearance->ToElement()->Attribute( "path" );
                                     }
                                 }
                                 else
@@ -460,6 +467,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                     parameters.blue = blue;
                     parameters.useAlphaChannel = use_alpha_channel;
                     parameters.alphaChannel = alpha_channel;
+                    parameters.lut_file = lut_path;
 
                     layerControl->create_new_image_layer_with_parameters(parameters);
                 }
@@ -718,6 +726,11 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
             (*it)->alpha_channel(isUsed,channelIndex);
             elemAlphaChannel->SetAttribute("value",isUsed);
             elemAlphaChannel->SetAttribute("channel",channelIndex);
+
+             // LUT
+            TiXmlElement *elemLUT = new TiXmlElement( "LUT" );
+            elemAppearance->LinkEndChild( elemLUT );
+            elemLUT->SetAttribute("path",(*it)->colorlookuptable()->lut_file());
         }
         else
         {

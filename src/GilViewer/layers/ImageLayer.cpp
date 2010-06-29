@@ -225,7 +225,7 @@ void image_layer::init()
 }
 
 image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const variant_view_ptr& v):
-        m_img(image), m_variant_view(v)
+        layer(), m_img(image), m_variant_view(v)
 {
     if(!v)
     {

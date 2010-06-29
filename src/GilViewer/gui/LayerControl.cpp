@@ -77,6 +77,7 @@ Authors:
 #include "../io/gilviewer_io_factory.hpp"
 
 #include "../tools/Orientation2D.h"
+#include "../tools/ColorLookupTable.h"
 
 #include "../convenient/utils.hpp"
 
@@ -107,7 +108,7 @@ BEGIN_EVENT_TABLE(layer_control, wxFrame)
 END_EVENT_TABLE()
 
 layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_isOrientationSet(false)
+wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
 {
 
     SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));
@@ -839,6 +840,8 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
         this->m_layers.back()->translation_x(parameters.translation_x);
         this->m_layers.back()->translation_y(parameters.translation_y);
         this->m_layers.back()->alpha_channel(parameters.useAlphaChannel,parameters.alphaChannel);
+        // TODO: binary or text?
+        this->m_layers.back()->colorlookuptable()->load_from_binary_file(parameters.lut_file);
 
         // MAJ de l'interface
         this->m_layers.back()->notifyLayerControl_();
