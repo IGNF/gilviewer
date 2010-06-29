@@ -82,7 +82,7 @@ public:
     wxMenuBar* menubar();
     bool init_toolbar();
 
-
+    void snap_shot(wxCommandEvent& event);
 
     // Drag and Drop
     //virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);

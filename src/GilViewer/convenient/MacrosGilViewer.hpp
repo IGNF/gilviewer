@@ -100,7 +100,7 @@ Authors:
         } \
         void classname::on_snap_shot(wxCommandEvent& event) \
 	{ \
-                variablePanelViewer->on_snap_shot(event); \
+                variablePanelViewer->snap_shot(event); \
 	} \
         void classname::on_show_hide_layer_control(wxCommandEvent& event) \
 	{ \

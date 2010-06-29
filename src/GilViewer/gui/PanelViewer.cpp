@@ -70,9 +70,6 @@
 #include "../gui/PanelManager.h"
 #include "../tools/Orientation2D.h"
 
-//#include "resources/geometry_moving_16x16.xpm"
-//#include "resources/icone_move16_16.xpm"
-
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>
 #endif
@@ -747,7 +744,7 @@ void panel_viewer::on_quit(wxCommandEvent& event) {
     Close();
 }
 
-void panel_viewer::on_snapshot(wxCommandEvent& event) {
+void panel_viewer::snap_shot(wxCommandEvent& event) {
     wxString wildcard;
     wildcard << _("All supported files ");
     wildcard << wxT("(*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|");
@@ -756,11 +753,8 @@ void panel_viewer::on_snapshot(wxCommandEvent& event) {
     wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
     wildcard << wxT("BMP (*.bmp)|*.bmp|");
 
-    //	wxFileDialog *fileDialog = new wxFileDialog(this, _("Sauvegarde de la fenetre en  l'etat"), _(""), _(""), wildcard, wxFD_SAVE|wxFD_CHANGE_DIR);
-    //
-    //	if (fileDialog->ShowModal() == wxID_OK)
     {
-        // On recupere le DC, on le met dans un bitmap et on sauve ce bitmap ...
+        // On recupere le DC, on le met dans un bitmap et on copie ce bitmap (pour le coller ensuite) ...
         wxBufferedPaintDC dc(this);
         int width, height;
         this->GetClientSize(&width, &height);
@@ -773,17 +767,10 @@ void panel_viewer::on_snapshot(wxCommandEvent& event) {
 
         wxBitmapDataObject *toto = new wxBitmapDataObject(snap);
 
-        //wxSVGFileDC SVG(wxString("test.svg",*wxConvCurrent),  width, height, 72);
-        //SVG.Blit(0,0,width,height,&dc,0,0);
-
         if (wxTheClipboard->Open()) {
             wxTheClipboard->SetData(toto);
             wxTheClipboard->Close();
         }
-
-        // Si on n'a pas mis d'extension, on en rajoute une ...
-        //		fileDialog->AppendExtension( fileDialog->GetFilename() , _(".tif;.tiff;.png;.jpg;.jpeg;.bmp") );
-        //		im.SaveFile( fileDialog->GetFilename() );
     }
 }
 
