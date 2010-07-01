@@ -85,26 +85,23 @@ struct channel_converter_functor
       result_type >::type
     operator()(const PixelType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
-
-        double magnitude = (src-m_min_src) * m_1_over_delta;
-        if (magnitude<=0)
+        if (src < m_min_src)
         {
             dst = m_min_dst;
             return;
         }
-        else if (magnitude>=1)
+        if (src > m_max_src)
         {
             dst = m_max_dst;
             return;
         }
         else
         {
-            unsigned char index = (unsigned char) (m_255_over_delta*(src - m_min_src));
-            unsigned int index_gamma = magnitude * 1000 /*m_nbelt_tab_gamma*/;
-            boost::gil::at_c<0>(dst) = m_lut[index] * m_gamma_array[index_gamma];
+            unsigned char index = (unsigned char) (m_255_over_delta * (src - m_min_src));
+            unsigned int index_gamma =      1000 * m_1_over_delta   * (src - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
+            boost::gil::at_c<0>(dst) = m_lut[index]     * m_gamma_array[index_gamma];
             boost::gil::at_c<1>(dst) = m_lut[256+index] * m_gamma_array[index_gamma];
             boost::gil::at_c<2>(dst) = m_lut[512+index] * m_gamma_array[index_gamma];
-            //return maxOutputIntensity * m_gamma_array[index_gamma];
         }
     }
 
