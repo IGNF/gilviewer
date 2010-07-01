@@ -118,21 +118,30 @@ struct channel_converter_functor
         else if (src[m_red_index] > m_max_src)
             at_c<0>(dst)  = m_atc0max;
         else
-            at_c<0>(dst) = (unsigned char) (m_255_over_delta*(src[m_red_index] - m_min_src));
+        {
+            unsigned int index_gamma = 1000 * m_1_over_delta * (src[m_red_index] - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
+            at_c<0>(dst) = (unsigned char) (m_255_over_delta*(src[m_red_index] - m_min_src)) * m_gamma_array[index_gamma];
+        }
 
         if (src[m_green_index] < m_min_src)
             at_c<1>(dst)  = m_atc1min;
         else if (src[m_green_index] > m_max_src)
             at_c<1>(dst)  = m_atc1max;
         else
-            at_c<1>(dst) = (unsigned char) (m_255_over_delta*(src[m_green_index] - m_min_src));
+        {
+            unsigned int index_gamma = 1000 * m_1_over_delta * (src[m_green_index] - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
+            at_c<1>(dst) = (unsigned char) (m_255_over_delta*(src[m_green_index] - m_min_src)) * m_gamma_array[index_gamma];
+        }
 
         if (src[m_blue_index] < m_min_src)
             at_c<2>(dst)  = m_atc2min;
         else if (src[m_blue_index] > m_max_src)
             at_c<2>(dst)  = m_atc2max;
         else
-            at_c<2>(dst) = (unsigned char) (m_255_over_delta*(src[m_blue_index] - m_min_src));
+        {
+            unsigned int index_gamma = 1000 * m_1_over_delta * (src[m_blue_index] - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
+            at_c<2>(dst) = (unsigned char) (m_255_over_delta*(src[m_blue_index] - m_min_src)) * m_gamma_array[index_gamma];
+        }
     }
 };
 
