@@ -40,6 +40,7 @@ Authors:
 #define __IMAGE_LAYER_HPP__
 
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 
 #include "../layers/Layer.hpp"
 
@@ -115,7 +116,7 @@ public:
     virtual double intensity_min() const { return m_intensityMin; }
     virtual void intensity_max(double intensity) { m_intensityMax=intensity; }
     virtual double intensity_max() const { return m_intensityMax; }
-    virtual void gamma(double gamma) { m_gamma=gamma; }
+    virtual void gamma(double gamma);
     virtual double gamma() const { return m_gamma; }
     virtual void transparency_min(double t) { m_transparencyMin=t; }
     virtual double transparency_min() const { return m_transparencyMin; }
@@ -167,6 +168,9 @@ public:
     double m_gamma;
 
     double m_oldZoomFactor;
+
+    boost::shared_array<float> m_gamma_array;
+    static unsigned int m_gamma_array_size;
 };
 
 #endif // __IMAGE_LAYER_HPP__

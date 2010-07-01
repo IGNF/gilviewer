@@ -72,6 +72,8 @@ using namespace std;
 using namespace boost::gil;
 using namespace boost;
 
+unsigned int image_layer::m_gamma_array_size = 1000;
+
 /*
 image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const view_ptr& v):
         m_img(image), m_view(v)
@@ -225,7 +227,7 @@ void image_layer::init()
 }
 
 image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const variant_view_ptr& v):
-        layer(), m_img(image), m_variant_view(v)
+        layer(), m_img(image), m_variant_view(v), m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
 {
     if(!v)
     {
@@ -277,7 +279,7 @@ void image_layer::update(int width, int height)
         m_green=nb_channels-1;
     if(m_blue>=nb_channels)
         m_blue=nb_channels-1;
-    channel_converter_functor my_cc(intensity_min(), intensity_max(), *m_cLUT, m_red, m_green, m_blue);
+    channel_converter_functor my_cc(intensity_min(), intensity_max(), m_gamma_array, *m_cLUT, m_red, m_green, m_blue);
     //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
     screen_image_visitor siv(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
     apply_visitor( siv, m_variant_view->value );
@@ -345,6 +347,19 @@ void image_layer::orientation(const boost::shared_ptr<orientation_2d> &orientati
     m_ori->zone_carto( orientation->zone_carto() );
     m_ori->size_x( orientation->size_x() );
     m_ori->size_y( orientation->size_y() );
+}
+
+void image_layer::gamma(double gamma)
+{
+    // Then compute the gamma table (if needed)
+    if (gamma != m_gamma)
+    {
+        m_gamma = 1. / gamma;
+        for (unsigned int i=0; i<= m_gamma_array_size; ++i)
+            m_gamma_array[i] = std::pow(((double) i)/ m_gamma_array_size, m_gamma);
+        m_gamma = gamma;
+    }
+    m_gamma=gamma;
 }
 
 /*
