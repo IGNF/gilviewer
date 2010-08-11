@@ -19,7 +19,7 @@ plugin_base* plugin_manager_model::create_object(const string& id)
 
 void plugin_manager_model::register_plugins(const std::string &path)
 {
-    vector<string> all_so_files = filesystem_utils::all_files_from_path(path, ".so");
+    vector<string> all_so_files = gilviewer_utils::all_files_from_path(path, ".so");
 
     // Add a menu plugin if it does not exist
     panel_viewer* first_panel = panel_manager::instance()->panels_list()[0];
