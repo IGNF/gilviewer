@@ -47,12 +47,20 @@ Authors:
 #include <boost/function.hpp>
 
 /**
-* @brief Classe de Factory.
+* @brief Factory class
 *
-* Implémentation d'une factory très simple à partir de "Modern C++ Design" d'Alexandrescu.
-* (simple = AssocMap non opimisée, pas de gestionnaire d'erreur... à améliorer !)
-* A noter l'utilisation de boost::function pour pouvoir récupérer le résultat d'un bind comme un creator,
-* ce qui n'est pas possible directement avec un <TAbstractProduct* (*) () classique.
+* This implementation is inspired by "Modern C++ Design" (A. Alexandrescu).
+* We however use in this implementation a boost::function to let the ability to use the result of a boost::bind as a creator.
+*
+* Template parameters description:
+* <ul>
+*   <li><i>TIdentifierType</i>  : the identifier type to associate with a <i>creator</i>. Defaults to <i>std::string</i></li>
+*   <li><i>TProductCreator</i>  : the <i>creator</i> function. Defaults to <i>boost::function<TAbstractProduct* ()></i></li>
+*   <li><i>ReturnType</i>       : the return type of the creator. Defaults to <i>TAbstractProduct*</i></li>
+*   <li><i>MetadataContainer</i>: the metadata container type. Defaults to <i>std::map<std::string, std::string></i></li>
+* </ul>
+*
+* @todo Policy based error handling
 *
 */
 
@@ -65,11 +73,14 @@ template < class TAbstractProduct,
 public:
     virtual ~PatternFactory() {}
 
+    /// Register a <i>creator</i> with its <i>identifier</i> in the factory
     bool Register(const TIdentifierType& id, TProductCreator creator)
     {
         return associations_.insert( typename AssocMapType::value_type(id, creator) ).second;
     }
 
+    /// @brief Unregister a <i>creator</i> from the factory
+    /// @param id Identifier associated to the <i>creator</i> to be removed
     bool Unregister(const TIdentifierType& id)
     {
         return associations_.erase(id) == 1;
