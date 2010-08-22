@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <iostream>
 
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>

@@ -1,5 +1,9 @@
 get_filename_component(SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-include(${SELF_DIR}/GilViewer-targets.cmake)
+# TODO
+if(WIN32)
+else()
+	include(${SELF_DIR}/GilViewer-targets.cmake)
+endif()
 
 get_filename_component(GilViewer_INCLUDE_DIR "${SELF_DIR}/@RELATIVE_INCLUDE_PATH@"  ABSOLUTE)
 get_filename_component(tinyxml_INCLUDE_DIR "${SELF_DIR}/@RELATIVE_INCLUDE_PATH_TINYXML@"  ABSOLUTE)

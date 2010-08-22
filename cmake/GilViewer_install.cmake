@@ -55,10 +55,18 @@ INSTALL(FILES ${ALL_IO_HEADER_FILES} DESTINATION ${GilViewer_INCLUDE_PATH}/io )
 INSTALL(FILES ${ALL_LAYERS_HEADER_FILES} DESTINATION ${GilViewer_INCLUDE_PATH}/layers )
 INSTALL(FILES ${ALL_TOOLS_HEADER_FILES} DESTINATION ${GilViewer_INCLUDE_PATH}/tools )
 #install lib and export target
-INSTALL (TARGETS ${export_lib} EXPORT GilViewer-targets DESTINATION ${GilViewer_INSTALL_PATH}/lib COMPONENT library ) 
+# TODO
+if(WIN32)
+else()
+	INSTALL (TARGETS ${export_lib} EXPORT GilViewer-targets DESTINATION ${GilViewer_INSTALL_PATH}/lib COMPONENT library ) 
+endif()
 
 #install config file
-INSTALL (EXPORT GilViewer-targets DESTINATION ${TARGET_CONFIG_INSTALL_PATH} )
+# TODO
+if(WIN32)
+else()
+	INSTALL (EXPORT GilViewer-targets DESTINATION ${TARGET_CONFIG_INSTALL_PATH} )
+endif()
 INSTALL (FILES GilViewerConfig.cmake DESTINATION ${TARGET_CONFIG_INSTALL_PATH})
 
 #install translation files
