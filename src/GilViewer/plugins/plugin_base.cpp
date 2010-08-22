@@ -4,6 +4,7 @@
 #include <boost/bind.hpp>
 
 #include <string>
+#include <iostream>
 
 #include <wx/dynlib.h>
 
