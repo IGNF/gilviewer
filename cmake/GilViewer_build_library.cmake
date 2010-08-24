@@ -1,4 +1,4 @@
-set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} tinyxml )
+set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} tinyxml ${TIFF_LIBRARIES} ${JPEG_LIBRARIES})
 
 # Option to choose to use GDAL/OGR
 option(USE_GDAL_OGR "Build GilVeiwer with GDAL/OGR" OFF)

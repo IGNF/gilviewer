@@ -60,7 +60,7 @@ shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
         return layer::ptrLayerType();
     }
 
-    layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
+	layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
     layer->add_orientation(filename);
 
     return layer;
