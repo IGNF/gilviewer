@@ -48,9 +48,9 @@ class orientation_2d;
 class color_lookup_table;
 
 // forward declaration of image types
-class image_type;
-class view_type;
-class variant_view_type;
+struct image_type;
+struct view_type;
+struct variant_view_type;
 class alpha_image_type;
 
 class image_layer : public layer

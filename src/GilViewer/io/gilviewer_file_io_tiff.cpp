@@ -60,7 +60,8 @@ shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
         return layer::ptrLayerType();
     }
 
-    layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
+	layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
+
     layer->add_orientation(filename);
 
     image_read_info< tiff_tag > info = read_image_info(filename, tiff_tag());
