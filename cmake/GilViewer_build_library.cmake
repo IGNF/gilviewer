@@ -1,4 +1,18 @@
-set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES} tinyxml ${TIFF_LIBRARIES} ${JPEG_LIBRARIES})
+if(WIN32)
+    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
+                                           ${Boost_LIBRARIES}
+		    							   ${TIFF_LIBRARIES}
+			    						   ${JPEG_LIBRARIES}
+						    			   tinyxml)
+else()
+    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
+                                           ${Boost_LIBRARIES}
+		    							   ${TIFF_LIBRARIES}
+			    						   ${JPEG_LIBRARIES}
+		    							   ${PNG_LIBRARIES}
+			    						   ${ZLIB_LIBRARIES}
+						    			   tinyxml)
+endif()
 
 # Option to choose to use GDAL/OGR
 option(USE_GDAL_OGR "Build GilVeiwer with GDAL/OGR" OFF)
