@@ -76,7 +76,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
     double min_transparency, max_transparency;
     double zoom_factor = -1., translation_x = -1., translation_y = -1.;
     int alpha_channel = -1;
-    int use_alpha_channel = 0;
+    bool use_alpha_channel = false;
     std::string lut_path;
     int red = 0, green = 0, blue = 0;
     std::string path;
@@ -241,7 +241,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                     else if ( std::string(childAppearance->Value()) == "AlphaChannel" )
                                     {
                                         childAppearance->ToElement()->Attribute( "value" , &i );
-                                        use_alpha_channel = i;
+										use_alpha_channel = i ? true : false;
                                         childAppearance->ToElement()->Attribute( "channel" , &i );
                                         alpha_channel = i;
                                     }

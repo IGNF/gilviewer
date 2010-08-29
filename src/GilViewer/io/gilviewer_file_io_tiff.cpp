@@ -54,8 +54,11 @@ shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
     catch( const std::exception &e )
     {
         ostringstream oss;
-        oss << "Read error: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
+        oss << "TIFF read error: " << filename << "!" << endl;
         oss << e.what() << endl;
+		oss << "File: " << __FILE__ << endl;
+		oss << "Line: " << __LINE__ << endl;
+		oss << "Function: " << __FUNCTION__ << endl;
         error_logger::log_wx_log_message(oss.str());
         return layer::ptrLayerType();
     }
@@ -185,7 +188,11 @@ void gilviewer_file_io_tiff::save(shared_ptr<layer> layer, const string &filenam
     catch( const std::exception &e )
     {
         ostringstream oss;
-        oss << "JPEG write error: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
+        oss << "TIFF write error: " << filename << endl;
+		oss << e.what() << endl;
+		oss << "File: " << __FILE__ << endl;
+		oss << "Line: " << __LINE__ << endl;
+		oss << "Function: " << __FUNCTION__ << endl;
         error_logger::log_wx_log_message(oss.str());
     }
 }
