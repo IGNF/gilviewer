@@ -22,13 +22,11 @@ endif()
 # On en profite aussi pour ajouter les resources
 # Et les headers ...
 if(WIN32)
-	# J'en peux plus de ces warnings ...
-        add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-        add_executable( GilViewerApp WIN32 ./viewer_app/gilviewer_app.cpp
-                                           ./viewer_app/gilviewer_app.hpp
-                                           ./viewer_app/gilviewer_frame.cpp
-                                           ./viewer_app/gilviewer_frame.hpp
-                                           ./viewer_app/GilViewer.rc )
+    add_executable( GilViewerApp WIN32 ./viewer_app/gilviewer_app.cpp
+                                       ./viewer_app/gilviewer_app.hpp
+                                       ./viewer_app/gilviewer_frame.cpp
+                                       ./viewer_app/gilviewer_frame.hpp
+                                       ./viewer_app/GilViewer.rc )
     # Comme c'est sous visual (a priori ...), il y a l'auto link de Boost, donc pas besoin d'ajouter les libs ...
-        target_link_libraries( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer tinyxml ${GDAL_LIBRARY} )
+    target_link_libraries( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer tinyxml ${GDAL_LIBRARY} )
 endif()
