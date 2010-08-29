@@ -60,6 +60,9 @@ SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXF
 
 if(WIN32)
     if(MSVC)
+		# Remove gil iterator related warnings...
+        add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
+        add_definitions(-D_SCL_SECURE_NO_WARNINGS)
         #message( STATUS "MSVC_VERSION: " ${MSVC_VERSION} )
         #Visual C++, 32-bit, version 6.0         1200
         #Visual C++, 32-bit, version .net 2002   1300
@@ -110,19 +113,17 @@ if(NOT WIN32)
 	endif()
 	#Find wxWidgets
 	set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
-	find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png)
+	find_package(wxWidgets REQUIRED adv base core xml aui xrc html expat)
 	if(wxWidgets_FOUND)
 		add_definitions(${wxWidgets_DEFINITIONS})
 		include(${wxWidgets_USE_FILE})
-		include_directories( ${wxWidgets_ROOT_DIR}/src/png )
-		include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
 	else()
 		message(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
 	endif()
 else()
 	#Find wxWidgets
 	set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
-	find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png)
+	find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png expat)
 	if(wxWidgets_FOUND)
 		add_definitions(${wxWidgets_DEFINITIONS})
 		include(${wxWidgets_USE_FILE})
