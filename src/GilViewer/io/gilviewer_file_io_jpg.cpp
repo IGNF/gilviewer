@@ -8,6 +8,7 @@
 #include "../layers/ImageLayer.hpp"
 #include "../layers/image_types.hpp"
 #include "../tools/error_logger.hpp"
+#include "../convenient/MacrosGilViewer.hpp"
 
 using namespace boost;
 using namespace boost::gil;
@@ -32,9 +33,7 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
 {
     if ( !exists(filename) )
     {
-        ostringstream oss;
-        oss << "File does not exist: "<<filename<< "!\n" << "File: " <<__FILE__ << "\nLine: " << __LINE__ << "\nFunction: " << __FUNCTION__ << endl;
-        error_logger::log_wx_log_message(oss.str());
+        GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
         return layer::ptrLayerType();
     }
 
@@ -51,13 +50,7 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
     }
 	catch( const std::exception &e )
     {
-        ostringstream oss;
-        oss << "JPEG read error: " << filename << "!" << endl;
-        oss << e.what() << endl;
-		oss << "File: " << __FILE__ << endl;
-		oss << "Line: " << __LINE__ << endl;
-		oss << "Function: " << __FUNCTION__ << endl;
-        error_logger::log_wx_log_message(oss.str());
+        GILVIEWER_LOG_EXCEPTION("JPEG read error: " + filename);
         return layer::ptrLayerType();
     }
 
@@ -101,13 +94,7 @@ void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename
     }
     catch( const std::exception &e )
     {
-        ostringstream oss;
-        oss << "JPEG write error: " << filename << endl;
-		oss << e.what() << endl;
-		oss << "File: " << __FILE__ << endl;
-		oss << "Line: " << __LINE__ << endl;
-		oss << "Function: " << __FUNCTION__ << endl;
-        error_logger::log_wx_log_message(oss.str());
+        GILVIEWER_LOG_EXCEPTION("JPEG write error: " + filename);
     }
 }
 

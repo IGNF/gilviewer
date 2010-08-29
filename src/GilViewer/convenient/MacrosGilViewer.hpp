@@ -166,5 +166,21 @@ Authors:
                 variablePanelViewer->crop(); \
 	}
 
+#define GILVIEWER_LOG_EXCEPTION(txt) \
+    ostringstream oss; \
+    oss << txt << endl; \
+    oss << e.what() << endl; \
+	oss << "File: " << __FILE__ << endl; \
+	oss << "Line: " << __LINE__ << endl; \
+	oss << "Function: " << __FUNCTION__ << endl; \
+    error_logger::log_wx_log_message(oss.str());
+
+#define GILVIEWER_LOG_ERROR(txt) \
+    ostringstream oss; \
+    oss << txt << endl; \
+	oss << "File: " << __FILE__ << endl; \
+	oss << "Line: " << __LINE__ << endl; \
+	oss << "Function: " << __FUNCTION__ << endl; \
+    error_logger::log_wx_log_message(oss.str());
 
 #endif /* MACROSGILVIEWER_HPP_ */
