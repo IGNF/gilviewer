@@ -59,7 +59,6 @@ struct jpeg_decompress_mgr : public jpeg_io_base
         _src._jsrc.resync_to_restart = jpeg_resync_to_restart;
         _src._this = this;
 
-
         jpeg_create_decompress( &_cinfo );
 
         _cinfo.src = &_src._jsrc;
@@ -101,22 +100,27 @@ protected:
 
     void raise_error()
     {
+        // we clean up in the destructor
+
         io_error( "jpeg is invalid." );
     }
 
 private:
 
+    // See jdatasrc.c for default implementation for the following static member functions.
+
     static void init_device( jpeg_decompress_struct * cinfo )
     {
-        gil_jpeg_source_mgr * src = reinterpret_cast<gil_jpeg_source_mgr*>(cinfo->src);
+        gil_jpeg_source_mgr* src = reinterpret_cast< gil_jpeg_source_mgr* >( cinfo->src );
         src->_jsrc.bytes_in_buffer = 0;
         src->_jsrc.next_input_byte = src->_this->buffer;
     }
 
     static boolean fill_buffer( jpeg_decompress_struct * cinfo )
     {
-        gil_jpeg_source_mgr * src = reinterpret_cast<gil_jpeg_source_mgr*>(cinfo->src);
+        gil_jpeg_source_mgr* src = reinterpret_cast< gil_jpeg_source_mgr* >( cinfo->src );
         size_t count= src->_this->in.read(src->_this->buffer, sizeof(src->_this->buffer) );
+
         if( count <= 0 )
         {
             // libjpeg does that: adding an EOF marker
@@ -133,16 +137,16 @@ private:
 
     static void skip_input_data( jpeg_decompress_struct * cinfo, long num_bytes  )
     {
-        gil_jpeg_source_mgr * src = reinterpret_cast<gil_jpeg_source_mgr*>(cinfo->src);
+        gil_jpeg_source_mgr* src = reinterpret_cast< gil_jpeg_source_mgr* >( cinfo->src );
 
-        if (num_bytes > 0)
+        if( num_bytes > 0 )
         {
-            if( num_bytes > long(src->_jsrc.bytes_in_buffer) )
+            while( num_bytes > long( src->_jsrc.bytes_in_buffer ))
             {
-                src->_jsrc.bytes_in_buffer = 0;
-                src->_this->in.seek( num_bytes, SEEK_CUR);
-                num_bytes = 0;
+                num_bytes -= (long) src->_jsrc.bytes_in_buffer;
+                fill_buffer( cinfo );
             }
+
             src->_jsrc.next_input_byte += num_bytes;
             src->_jsrc.bytes_in_buffer -= num_bytes;
         }
@@ -164,7 +168,9 @@ private:
     };
 
     gil_jpeg_source_mgr _src;
-    JOCTET buffer[1024];
+
+    // libjpeg default is 4096 - see jdatasrc.c
+    JOCTET buffer[4096];
 };
 
 template< typename Device

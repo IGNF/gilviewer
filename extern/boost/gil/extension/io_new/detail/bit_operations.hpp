@@ -19,6 +19,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/bind.hpp>
+
 namespace boost { namespace gil { namespace detail {
 
 // 1110 1100 -> 0011 0111
@@ -55,9 +57,9 @@ struct mirror_bits< Buffer
    {
         for_each( buf.begin()
                 , buf.end()
-                , bind( &mirror_bits< Buffer
-                                    , mpl::true_
-                                    >::lookup
+                , boost::bind( &mirror_bits< Buffer
+                                           , mpl::true_
+                                           >::lookup
                        , *this
                        , _1
                        )

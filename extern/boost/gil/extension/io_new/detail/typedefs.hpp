@@ -68,8 +68,10 @@ typedef pixel< double, rgb_layout_t        > rgb64f_pixel_t;
 typedef pixel< double, rgba_layout_t       > rgba64f_pixel_t;
 
 typedef image< gray64f_pixel_t      , false > gray64f_image_t;
-typedef image< gray64f_pixel_t      , true  > gray64f_planar_image_t;
+
 #ifdef BOOST_GIL_IO_ENABLE_GRAY_ALPHA
+typedef image< gray_alpha32f_pixel_t, false > gray_alpha32f_image_t;
+typedef image< gray_alpha32f_pixel_t, true  > gray_alpha32f_planar_image_t;
 typedef image< gray_alpha64f_pixel_t, false > gray_alpha64f_image_t;
 typedef image< gray_alpha64f_pixel_t, true  > gray_alpha64f_planar_image_t;
 #endif // BOOST_GIL_IO_ENABLE_GRAY_ALPHA
