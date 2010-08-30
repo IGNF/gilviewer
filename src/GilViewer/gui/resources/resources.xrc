@@ -23,6 +23,8 @@
 	<object class="wxBitmap" name="EDIT-CLEAR_16x16">tango-icon-theme-0.8.90/16x16/actions/edit-clear.png</object>
 	<object class="wxBitmap" name="EDIT-CLEAR_22x22">tango-icon-theme-0.8.90/22x22/actions/edit-clear.png</object>
 
+        <object class="wxBitmap" name="VIEW-REFRESH_16x16">tango-icon-theme-0.8.90/16x16/actions/view-refresh.png</object>
+
 	<object class="wxBitmap" name="PROCESS-STOP_16x16">tango-icon-theme-0.8.90/16x16/actions/process-stop.png</object>
 
 	<object class="wxBitmap" name="USER-TRASH_16x16">tango-icon-theme-0.8.90/16x16/places/user-trash.png</object>

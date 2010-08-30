@@ -90,10 +90,17 @@ layer_control_row::layer_control_row(layer_control* parent, const std::string &n
     m_boxSizer->Add(m_settingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
     m_settingsButton->Connect(ID_SETTINGS + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(layer_control::on_settings_button), NULL, m_parent);
 
+    /*
     m_center_button = new wxBitmapButton(m_parent->m_scroll, ID_CENTER + m_index, wxXmlResource::Get()->LoadBitmap( wxT("VIEW_FULLSCREEN_16x16") ) );
     m_center_button->SetToolTip(_("Center layer"));
     m_boxSizer->Add(m_center_button, 0, wxALL | wxALIGN_CENTRE, 5);
     m_center_button->Connect(ID_CENTER + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(layer_control::on_center_button), NULL, m_parent);
+    */
+
+    m_refresh_button = new wxBitmapButton(m_parent->m_scroll, ID_REFRESH + m_index, wxXmlResource::Get()->LoadBitmap( wxT("VIEW-REFRESH_16x16") ) );
+    m_refresh_button->SetToolTip(_("Refresh layer"));
+    m_boxSizer->Add(m_refresh_button, 0, wxALL | wxALIGN_CENTRE, 5);
+    m_refresh_button->Connect(ID_REFRESH + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(layer_control::on_refresh_button), NULL, m_parent);
 
     // On lie la ligne au LayerSettingsControl
     m_layerSettingsControl = layersettings;
