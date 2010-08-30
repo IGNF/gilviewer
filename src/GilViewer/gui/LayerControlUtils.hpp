@@ -159,7 +159,8 @@ public:
 	wxBitmapButton			*m_saveButton;
 	wxBitmapButton			*m_deleteButton;
 	wxBitmapButton			*m_settingsButton;
-        wxBitmapButton			*m_center_button;
+        //wxBitmapButton			*m_center_button;
+        wxBitmapButton			*m_refresh_button;
 	wxBoxSizer				*m_boxSizer;
 	layer_control			*m_parent;
 	layer_settings_control	*m_layerSettingsControl;

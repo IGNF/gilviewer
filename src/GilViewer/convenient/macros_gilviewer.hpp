@@ -39,7 +39,7 @@ Authors:
 #ifndef MACROSGILVIEWER_HPP_
 #define MACROSGILVIEWER_HPP_
 
-#include <wx/html/htmlwin.h>
+#include "../tools/error_logger.hpp"
 
 /**
  * Un ensemble de macros pour faciliter la vie de l'utilisateur ...
