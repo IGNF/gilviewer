@@ -8,7 +8,7 @@
 #include "../layers/ImageLayer.hpp"
 #include "../layers/image_types.hpp"
 #include "../tools/error_logger.hpp"
-#include "../convenient/MacrosGilViewer.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 using namespace boost;
 using namespace boost::gil;
@@ -159,8 +159,6 @@ shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
     {
         infos_str << "Image is tiled\n";
         infos_str << "Tile dimensions: " << info._tile_width << "x" << info._tile_length << "\n";
-        infos_str << "Tile offsets: " << info._tile_offsets << "\n";
-        infos_str << "Tile byte counts: " << info._tile_byte_counts << "\n";
     }
     layer->infos(infos_str.str());
 

@@ -137,18 +137,21 @@ public:
                   , tsample_t      plane
                   )
     {
-        io_error_if( TIFFReadTile( _tiff_file.get()
-                                 , reinterpret_cast< tdata_t >( &buffer.front() )
-                                 , (uint32) x
-                                 , (uint32) y
-                                 , (uint32) z
-                                 , plane           ) == -1
-                   , "Read tile error."
-                   );
+        if( TIFFReadTile( _tiff_file.get()
+                        , reinterpret_cast< tdata_t >( &buffer.front() )
+                        , (uint32) x
+                        , (uint32) y
+                        , (uint32) z
+                        , plane
+                        ) == -1 )
+        {
+            std::ostringstream oss;
+            oss << "Read tile error (" << x << "," << y << "," << z << "," << plane << ").";
+            io_error(oss.str());
+        }
     }
 
     template< typename Buffer >
-    inline 
     void write_scaline( Buffer&     buffer
                       , uint32      row
                       , tsample_t   plane
@@ -161,6 +164,60 @@ public:
                                      ) == -1
                    , "Write error"
                    );
+    }
+
+    template< typename Buffer >
+    void write_tile( Buffer&     buffer
+                   , uint32      x
+                   , uint32      y
+                   , uint32      z
+                   , tsample_t   plane
+                   )
+    {
+       if( TIFFWriteTile( _tiff_file.get()
+                        , &buffer.front()
+                        , x
+                        , y
+                        , z
+                        , plane
+                        ) == -1 )
+           {
+               std::ostringstream oss;
+               oss << "Write tile error (" << x << "," << y << "," << z << "," << plane << ").";
+               io_error(oss.str());
+           }
+    }
+
+    void set_directory( tdir_t directory )
+    {
+        io_error_if( TIFFSetDirectory( _tiff_file.get()
+                                     , directory
+                                     ) != 1
+                   , "Failing to set directory"
+                   );
+    }
+
+    // return false if the given tile width or height is not TIFF compliant (multiple of 16) or larger than image size, true otherwise
+    bool check_tile_size( uint32& width
+                        , uint32& height )
+    {
+        bool result = true;
+        uint32 tw = width;
+        uint32 th = height;
+        TIFFDefaultTileSize( _tiff_file.get()
+                           , &tw
+                           , &th );
+        if(width==0 || width%16!=0)
+        {
+            width = tw;
+            result = false;
+        }
+        if(height==0 || height%16!=0)
+        {
+            height = th;
+            result = false;
+        }
+        return result;
     }
 
 protected:

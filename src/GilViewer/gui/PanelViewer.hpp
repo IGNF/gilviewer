@@ -44,7 +44,7 @@ Authors:
 
 #include "../layers/Layer.hpp"
 
-#include "../convenient/MacrosGilViewer.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 class application_settings;
 class layer_control;

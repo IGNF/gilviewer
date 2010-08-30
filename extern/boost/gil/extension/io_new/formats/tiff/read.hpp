@@ -103,7 +103,9 @@ public:
                  , ConversionPolicy
                  >( settings )
     , _io_dev( device )
-    {}
+    {
+        init_multipage_read( settings );
+    }
 
     reader( Device&                                                device
           , const typename ConversionPolicy::color_converter_type& cc
@@ -115,7 +117,9 @@ public:
                   , settings
                   )
     , _io_dev( device )
-    {}
+    {
+        init_multipage_read( settings );
+    }
 
    image_read_info<tiff_tag> get_info() const
    {
@@ -141,17 +145,14 @@ public:
       info._is_tiled = false;
 
       // Tile tags
-      if(_io_dev.is_tiled())
+      if( _io_dev.is_tiled() )
       {
           info._is_tiled = true;
-          io_error_if( !_io_dev.template get_property<tiff_tile_width>      ( info._tile_width )
+
+          io_error_if( !_io_dev.template get_property< tiff_tile_width  >( info._tile_width )
                        , "cannot read tiff_tile_width tag." );
-          io_error_if( !_io_dev.template get_property<tiff_tile_length>     ( info._tile_length )
+          io_error_if( !_io_dev.template get_property< tiff_tile_length >( info._tile_length )
                        , "cannot read tiff_tile_length tag." );
-          io_error_if( !_io_dev.template get_property<tiff_tile_offsets>    ( info._tile_offsets )
-                       , "cannot read tiff_tile_offsets tag." );
-          io_error_if( !_io_dev.template get_property<tiff_tile_byte_counts>( info._tile_byte_counts )
-                       , "cannot read tiff_tile_byte_counts tag." );
       }
 
       return info;
@@ -208,7 +209,7 @@ public:
             }
             else if( this->_info._planar_configuration == PLANARCONFIG_CONTIG )
             {
-                if(_io_dev.is_tiled())
+                if( _io_dev.is_tiled() )
                 {
                     read_tiled_data( dst_view, 0 );
                 }
@@ -226,6 +227,14 @@ public:
 
 private:
 
+    void init_multipage_read( const image_read_settings< tiff_tag >& settings )
+    {
+        if( settings._directory > 0 )
+        {
+            _io_dev.set_directory( settings._directory );
+        }
+    } 
+
    template< typename PaletteImage
            , typename View
            >
@@ -234,7 +243,15 @@ private:
       PaletteImage indices( this->_info._width  - this->_settings._top_left.x
                           , this->_info._height - this->_settings._top_left.y );
 
-      read_data( view( indices ), 0 );
+
+      if( _io_dev.is_tiled() )
+      {
+          read_tiled_data( view( indices ), 0 );
+      }
+      else
+      {
+          read_data( view( indices ), 0 );
+      }
 
       read_palette_image( dst_view
                         , view( indices )
@@ -318,17 +335,17 @@ private:
 
    template< typename View >
    void read_tiled_data( const View& dst_view
-                         , int         plane     )
+                       , int         plane
+                       )
    {
-       typedef typename is_bit_aligned< typename View::value_type >::type is_view_bit_aligned_t;
-       typedef row_buffer_helper_view< View > row_buffer_helper_t;
+       typedef row_buffer_helper_view< View >           row_buffer_helper_t;
        typedef typename row_buffer_helper_t::buffer_t   buffer_t;
        typedef typename row_buffer_helper_t::iterator_t it_t;
 
        // TIFFReadTile needs a buffer with enough memory allocated. This size can easily be computed by TIFFTileSize (implemented in device.hpp)
-       std::size_t size_to_allocate = _io_dev.get_tile_size();
-       row_buffer_helper_t row_buffer_helper( size_to_allocate, true );
-       uint32_t plain_tile_size = this->_info._tile_width*this->_info._tile_length;
+       row_buffer_helper_t row_buffer_helper(  _io_dev.get_tile_size(), true );
+
+       uint32_t plain_tile_size = this->_info._tile_width * this->_info._tile_length;
 
        //@todo Is _io_dev.are_bytes_swapped() == true when reading bit_aligned images?
        //      If the following fires then we need to pass a boolean to the constructor.
@@ -340,51 +357,56 @@ private:
                , typename is_bit_aligned< View >::type
                > mirror_bits;
 
-       for (unsigned int y = 0; y < this->_info._height; y += this->_info._tile_length)
+       for( unsigned int y = 0; y < this->_info._height; y += this->_info._tile_length )
        {
-           for (unsigned int x = 0; x < this->_info._width; x += this->_info._tile_width)
+           for( unsigned int x = 0; x < this->_info._width; x += this->_info._tile_width )
            {
-               uint32_t current_tile_width  = (x+this->_info._tile_width<this->_info._width  ) ? this->_info._tile_width  : this->_info._width -x;
-               uint32_t current_tile_length = (y+this->_info._tile_length<this->_info._height) ? this->_info._tile_length : this->_info._height-y;
+               uint32_t current_tile_width  = (x + this->_info._tile_width <  this->_info._width  ) ? this->_info._tile_width  : this->_info._width  - x;
+               uint32_t current_tile_length = (y + this->_info._tile_length < this->_info._height ) ? this->_info._tile_length : this->_info._height - y;
 
                _io_dev.read_tile( row_buffer_helper.buffer()
-                                  , x
-                                  , y
-                                  , 0
-                                  , static_cast< tsample_t >( plane )
-                                  );
+                                , x
+                                , y
+                                , 0
+                                , static_cast< tsample_t >( plane )
+                                );
 
                mirror_bits( row_buffer_helper.buffer() );
 
-               View tile_subimage_view = subimage_view(dst_view, x, y, current_tile_width, current_tile_length);
+               View tile_subimage_view = subimage_view( dst_view
+                                                      , x
+                                                      , y
+                                                      , current_tile_width
+                                                      , current_tile_length
+                                                      );
 
                if ( current_tile_width*current_tile_length == plain_tile_size )
                {
                    it_t first = row_buffer_helper.begin();
-                   it_t last  = first + current_tile_width*current_tile_length;
+                   it_t last  = first + current_tile_width * current_tile_length;
 
                    this->_cc_policy.read( first
-                                          , last
-                                          , tile_subimage_view.begin()
-                                          );
+                                        , last
+                                        , tile_subimage_view.begin()
+                                        );
                }
                else
                {
                    // When the current tile is smaller than a "normal" tile (image borders), we have to iterate over each row
                    // to get the firsts 'current_tile_width' pixels.
-                   for(unsigned int tile_row=0;tile_row<current_tile_length;++tile_row)
+                   for( unsigned int tile_row=0; tile_row < current_tile_length; ++tile_row )
                    {
                        it_t first = row_buffer_helper.begin() + tile_row*this->_info._tile_width;
                        it_t last  = first + current_tile_width;
 
                        this->_cc_policy.read( first
                                               , last
-                                              , tile_subimage_view.begin() + tile_row*current_tile_width
+                                              , tile_subimage_view.begin() + tile_row * current_tile_width
                                               );
-                   }
-               }
-           }
-       }
+                   } // for
+               } // else
+           } // for
+       } // for
    }
 
    template< typename View >

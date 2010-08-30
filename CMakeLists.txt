@@ -13,6 +13,8 @@ PROJECT(GilViewer)
 
 IF(UNIX)
         INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
+        add_definitions(-Wall)
+        #add_definitions(-pedantic)
 ENDIF(UNIX)
 
 SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib )
@@ -113,7 +115,7 @@ if(NOT WIN32)
 	endif()
 	#Find wxWidgets
 	set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
-	find_package(wxWidgets REQUIRED adv base core xml aui xrc html expat)
+        find_package(wxWidgets REQUIRED adv base core xml aui xrc html)
 	if(wxWidgets_FOUND)
 		include(${wxWidgets_USE_FILE})
 	else()
