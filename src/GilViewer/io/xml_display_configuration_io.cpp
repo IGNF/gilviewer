@@ -36,7 +36,7 @@ Authors:
 
 ***********************************************************************/
 
-#include "GilViewer/io/XMLDisplayConfigurationIO.hpp"
+#include "GilViewer/io/xml_display_configuration_io.hpp"
 
 #include <sstream>
 #include <boost/filesystem.hpp>
