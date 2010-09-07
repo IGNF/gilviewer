@@ -42,8 +42,8 @@ Authors:
 
 #include "GilViewer/layers/Layer.hpp"
 
-#include "GilViewer/gui/BasicViewerFrame.h"
-#include "GilViewer/convenient/MacrosGilViewer.hpp"
+#include "GilViewer/gui/basic_viewer_frame.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
 
 #include "sample_vector_layer.h"
 
