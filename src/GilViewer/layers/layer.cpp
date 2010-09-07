@@ -5,7 +5,7 @@
 #include "../tools/error_logger.hpp"
 #include "../tools/orientation_2d.hpp"
 #include "../tools/color_lookup_table.hpp"
-#include "../gui/LayerSettingsControl.hpp"
+#include "../gui/layer_settings_control.hpp"
 
 layer::layer(const boost::function<void()> &notifyLayerControl, const boost::function<void()> &notifyLayerSettingsControl):
         notifyLayerControl_(notifyLayerControl),

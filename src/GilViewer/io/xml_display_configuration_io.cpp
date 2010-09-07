@@ -46,8 +46,8 @@ Authors:
 
 #include "tinyxml/tinyxml.h"
 
-#include "../gui/LayerControl.hpp"
-#include "../gui/PanelViewer.hpp"
+#include "../gui/layer_control.hpp"
+#include "../gui/panel_viewer.hpp"
 #include "../tools/orientation_2d.hpp"
 #include "../tools/color_lookup_table.hpp"
 

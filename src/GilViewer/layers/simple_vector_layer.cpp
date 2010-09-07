@@ -40,7 +40,7 @@ Authors:
 #include <wx/pen.h>
 #include <wx/brush.h>
 
-#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../gui/vector_layer_settings_control.hpp"
 
 #include "simple_vector_layer.hpp"
 

@@ -1,6 +1,6 @@
-#include "LayerControlUtils.hpp"
-#include "../gui/VectorLayerSettingsControl.hpp"
-#include "../gui/LayerControl.hpp"
+#include "layer_control_utils.hpp"
+#include "../gui/vector_layer_settings_control.hpp"
+#include "../gui/layer_control.hpp"
 
 #include "../gui/define_id.hpp"
 

@@ -56,7 +56,7 @@ Authors:
 #include "../tools/orientation_2d.hpp"
 #include "../tools/color_lookup_table.hpp"
 #include "../layers/image_types.hpp"
-#include "../gui/ImageLayerSettingsControl.hpp"
+#include "../gui/image_layer_settings_control.hpp"
 
 #include "image_layer.hpp"
 #include "image_layer_screen_image_functor.hpp"

@@ -1,5 +1,5 @@
 #include "plugin_manager.hpp"
-#include "../gui/PanelManager.h"
+#include "../gui/panel_manager.hpp"
 #include "../gui/define_id.hpp"
 //#include "../plugins/sample_plugin_functor.hpp"
 

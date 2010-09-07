@@ -39,10 +39,10 @@
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
 
-#include "../src/GilViewer/gui/LayerControl.hpp"
-#include "../src/GilViewer/gui/PanelViewer.hpp"
+#include "../src/GilViewer/gui/layer_control.hpp"
+#include "../src/GilViewer/gui/panel_viewer.hpp"
 #include "../src/GilViewer/gui/define_id.hpp"
-#include "../src/GilViewer/gui/PanelManager.h"
+#include "../src/GilViewer/gui/panel_manager.hpp"
 #include "../src/GilViewer/plugins/plugin_manager.hpp"
 
 #include "gilviewer_frame.hpp"

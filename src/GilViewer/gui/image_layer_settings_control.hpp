@@ -42,7 +42,7 @@ Authors:
 #include <vector>
 #include <wx/panel.h>
 
-#include "../gui/LayerSettingsControl.hpp"
+#include "../gui/layer_settings_control.hpp"
 
 class histogram_plotter;
 class layer_control;

@@ -1,8 +1,8 @@
 #include "sample_plugin.hpp"
 #include "plugin_base.hpp"
 
-#include "../gui/LayerControl.hpp"
-#include "../gui/PanelManager.h"
+#include "../gui/layer_control.hpp"
+#include "../gui/panel_manager.hpp"
 
 #include "sample_plugin_functor.hpp"
 #include "../layers/image_types.hpp"

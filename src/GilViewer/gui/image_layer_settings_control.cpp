@@ -54,11 +54,11 @@ Authors:
 #include <wx/filepicker.h>
 #include <wx/valtext.h>
 
-#include "../gui/PanelViewer.hpp"
-#include "../gui/LayerControl.hpp"
+#include "../gui/panel_viewer.hpp"
+#include "../gui/layer_control.hpp"
 #include "../gui/define_id.hpp"
 #include "../gui/resources/image_icon.xpm"
-#include "../gui/ImageLayerSettingsControl.hpp"
+#include "../gui/image_layer_settings_control.hpp"
 #include "../tools/color_lookup_table.hpp"
 
 BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
