@@ -42,7 +42,7 @@ Authors:
 
 #include "../tools/pattern_singleton.hpp"
 #include "../tools/pattern_factory.hpp"
-#include "../gui/PanelViewer.hpp"
+#include "../gui/panel_viewer.hpp"
 
 
 class panel_manager_model : public  PatternFactory<panel_viewer>

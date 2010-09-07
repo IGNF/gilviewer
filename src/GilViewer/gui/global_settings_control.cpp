@@ -36,7 +36,7 @@ Authors:
 
 ***********************************************************************/
 
-#include "GilViewer/gui/GlobalSettingsControl.hpp"
+#include "GilViewer/gui/global_settings_control.hpp"
 
 #include <wx/msgdlg.h>
 #include <wx/textctrl.h>
@@ -44,8 +44,8 @@ Authors:
 #include <wx/button.h>
 #include <wx/valtext.h>
 
-#include "../gui/PanelViewer.hpp"
-#include "../gui/LayerControl.hpp"
+#include "../gui/panel_viewer.hpp"
+#include "../gui/layer_control.hpp"
 
 BEGIN_EVENT_TABLE(global_settings_control, wxDialog)
         EVT_BUTTON(wxID_OK,global_settings_control::on_ok_button)

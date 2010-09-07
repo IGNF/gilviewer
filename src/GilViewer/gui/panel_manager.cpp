@@ -39,7 +39,7 @@ Authors:
 
 #include <algorithm>
 
-#include "PanelManager.h"
+#include "panel_manager.hpp"
 
 panel_manager_model::panel_manager_model()
 {

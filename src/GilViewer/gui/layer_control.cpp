@@ -59,18 +59,18 @@ Authors:
 #include <wx/progdlg.h>
 #include <wx/log.h>
 
-#include "../gui/LayerControl.hpp"
+#include "../gui/layer_control.hpp"
 
 #include "../layers/image_layer.hpp"
 #include "../layers/vector_layer.hpp"
 #include "../layers/vector_layer_ghost.hpp"
 
-#include "../gui/VectorLayerSettingsControl.hpp"
-#include "../gui/ImageLayerSettingsControl.hpp"
-#include "../gui/GlobalSettingsControl.hpp"
+#include "../gui/vector_layer_settings_control.hpp"
+#include "../gui/image_layer_settings_control.hpp"
+#include "../gui/global_settings_control.hpp"
 #include "../gui/layer_infos_control_impl.h"
-#include "../gui/LayerControlUtils.hpp"
-#include "../gui/PanelViewer.hpp"
+#include "../gui/layer_control_utils.hpp"
+#include "../gui/panel_viewer.hpp"
 #include "../gui/define_id.hpp"
 
 #include "../io/xml_display_configuration_io.hpp"

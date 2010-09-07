@@ -64,11 +64,11 @@
 
 #include "../layers/vector_layer_ghost.hpp"
 #include "../layers/vector_layer.hpp"
-#include "../gui/ApplicationSettings.hpp"
-#include "../gui/LayerControlUtils.hpp"
-#include "../gui/LayerControl.hpp"
+#include "../gui/application_settings.hpp"
+#include "../gui/layer_control_utils.hpp"
+#include "../gui/layer_control.hpp"
 #include "../gui/define_id.hpp"
-#include "../gui/PanelManager.h"
+#include "../gui/panel_manager.hpp"
 #include "../tools/orientation_2d.hpp"
 
 #ifdef _WINDOWS

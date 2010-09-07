@@ -48,7 +48,7 @@ Authors:
 #include "../gui/define_id.hpp"
 #include "../io/gilviewer_io_factory.hpp"
 
-#include "BasicViewerFrame.h"
+#include "basic_viewer_frame.hpp"
 
 extern void InitXmlResource();
 

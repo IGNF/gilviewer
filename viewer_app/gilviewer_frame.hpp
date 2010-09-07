@@ -41,7 +41,7 @@ Authors:
 
 #include "../src/GilViewer/layers/layer.hpp"
 
-#include "../src/GilViewer/gui/BasicViewerFrame.h"
+#include "../src/GilViewer/gui/basic_viewer_frame.hpp"
 #include "../src/GilViewer/convenient/macros_gilviewer.hpp"
 
 #include "gilviewer_app.hpp"

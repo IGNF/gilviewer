@@ -36,7 +36,7 @@ Authors:
 
 ***********************************************************************/
 
-#include "VectorLayerSettingsControl.hpp"
+#include "vector_layer_settings_control.hpp"
 #include "../gui/resources/polygon_icon.xpm"
 
 #include <wx/frame.h>
@@ -53,8 +53,8 @@ Authors:
 #include <wx/fontpicker.h>
 #include <wx/clrpicker.h>
 
-#include "../gui/LayerControl.hpp"
-#include "../gui/PanelViewer.hpp"
+#include "../gui/layer_control.hpp"
+#include "../gui/panel_viewer.hpp"
 
 #include "../convenient/wxhelper.hpp"
 

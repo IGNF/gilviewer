@@ -53,8 +53,8 @@ Authors:
 #include <wx/slider.h>
 #include <wx/choice.h>
 
-#include "../gui/ApplicationSettings.hpp"
-#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../gui/application_settings.hpp"
+#include "../gui/vector_layer_settings_control.hpp"
 
 #include "../convenient/wxhelper.hpp"
 
