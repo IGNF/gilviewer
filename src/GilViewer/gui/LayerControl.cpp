@@ -73,7 +73,7 @@ Authors:
 #include "../gui/PanelViewer.hpp"
 #include "../gui/define_id.hpp"
 
-#include "../io/XMLDisplayConfigurationIO.hpp"
+#include "../io/xml_display_configuration_io.hpp"
 #include "../io/gilviewer_file_io.hpp"
 #include "../io/gilviewer_io_factory.hpp"
 
