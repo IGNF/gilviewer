@@ -3,8 +3,8 @@
 #include <sstream>
 
 #include "../tools/error_logger.hpp"
-#include "../tools/Orientation2D.h"
-#include "../tools/ColorLookupTable.h"
+#include "../tools/orientation_2d.hpp"
+#include "../tools/color_lookup_table.hpp"
 #include "../gui/LayerSettingsControl.hpp"
 
 layer::layer(const boost::function<void()> &notifyLayerControl, const boost::function<void()> &notifyLayerSettingsControl):
@@ -54,7 +54,7 @@ void layer::add_orientation( const std::string &image_filename )
     {
         std::ostringstream oss;
         oss << "No orientation for image " << image_filename << "\n" << e.what();
-        error_logger::log_wx_log_message(oss.str());
+        gilviewer_wx_error_logger::log_message(oss.str());
         this->has_ori(false);
     }
 }

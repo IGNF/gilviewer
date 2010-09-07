@@ -53,8 +53,8 @@ Authors:
 #include <wx/log.h>
 #include <wx/config.h>
 
-#include "../tools/Orientation2D.h"
-#include "../tools/ColorLookupTable.h"
+#include "../tools/orientation_2d.hpp"
+#include "../tools/color_lookup_table.hpp"
 #include "../layers/image_types.hpp"
 #include "../gui/ImageLayerSettingsControl.hpp"
 

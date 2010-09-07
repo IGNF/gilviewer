@@ -48,8 +48,8 @@ Authors:
 
 #include "../gui/LayerControl.hpp"
 #include "../gui/PanelViewer.hpp"
-#include "../tools/Orientation2D.h"
-#include "../tools/ColorLookupTable.h"
+#include "../tools/orientation_2d.hpp"
+#include "../tools/color_lookup_table.hpp"
 
 void xml_display_configuration_io::read( layer_control* layerControl , const std::string filename )
 {

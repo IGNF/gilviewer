@@ -69,7 +69,7 @@
 #include "../gui/LayerControl.hpp"
 #include "../gui/define_id.hpp"
 #include "../gui/PanelManager.h"
-#include "../tools/Orientation2D.h"
+#include "../tools/orientation_2d.hpp"
 
 #ifdef _WINDOWS
 #	include <wx/msw/winundef.h>

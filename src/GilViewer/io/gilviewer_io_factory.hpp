@@ -39,8 +39,8 @@ Authors:
 #ifndef GILVIEWER_IO_FACTORY_HPP
 #define GILVIEWER_IO_FACTORY_HPP
 
-#include "../tools/PatternSingleton.hpp"
-#include "../tools/PatternFactory.hpp"
+#include "../tools/pattern_singleton.hpp"
+#include "../tools/pattern_factory.hpp"
 #include "gilviewer_file_io.hpp"
 
 typedef PatternSingleton< PatternFactory< gilviewer_file_io,

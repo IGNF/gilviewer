@@ -36,16 +36,16 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef __ERROR_LOGGER_HPP__
-#define __ERROR_LOGGER_HPP__
+#ifndef __GILVIEWER_WX_ERROR_LOGGER_HPP__
+#define __GILVIEWER_WX_ERROR_LOGGER_HPP__
 
 #include <string>
 
-class error_logger
+class gilviewer_wx_error_logger
 {
 public:
-    error_logger() {}
-    static void log_wx_log_message(const std::string& message);
+    gilviewer_wx_error_logger() {}
+    static void log_message(const std::string& message);
 };
 
-#endif // __ERROR_LOGGER_HPP__
+#endif // __GILVIEWER_WX_ERROR_LOGGER_HPP__

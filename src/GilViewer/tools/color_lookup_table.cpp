@@ -40,7 +40,7 @@ Authors:
 #include <ctime>
 #include <cstdlib>
 
-#include "ColorLookupTable.h"
+#include "color_lookup_table.hpp"
 
 color_lookup_table::color_lookup_table():m_clut(3*256), m_lut_file("")
 {
