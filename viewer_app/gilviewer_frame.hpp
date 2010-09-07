@@ -42,7 +42,7 @@ Authors:
 #include "../src/GilViewer/layers/Layer.hpp"
 
 #include "../src/GilViewer/gui/BasicViewerFrame.h"
-#include "../src/GilViewer/convenient/MacrosGilViewer.hpp"
+#include "../src/GilViewer/convenient/macros_gilviewer.hpp"
 
 #include "gilviewer_app.hpp"
 

@@ -8,7 +8,7 @@
 #include "../layers/ImageLayer.hpp"
 #include "../layers/image_types.hpp"
 #include "../tools/error_logger.hpp"
-#include "../convenient/MacrosGilViewer.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 using namespace boost;
 using namespace boost::gil;

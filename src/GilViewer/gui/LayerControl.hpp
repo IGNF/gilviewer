@@ -126,6 +126,7 @@ private:
     /// Cette methode permet d'acceder aux parametres d'affichage du calque
     void on_settings_button(wxCommandEvent& event);
     void on_center_button(wxCommandEvent& event);
+    void on_refresh_button(wxCommandEvent& event);
     void on_check_visibility(wxCommandEvent& event);
     void on_check_transformable(wxCommandEvent& event);
     /// Cette methode permet de remettre l'ensemble des calques a leur position initiale, de reinitialiser les transformations, de tout rendre visible et transformable

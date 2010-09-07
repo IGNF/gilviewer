@@ -25,7 +25,6 @@ extern "C" {
 }
 
 #include <algorithm>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <boost/static_assert.hpp>
@@ -83,7 +82,6 @@ template<> struct sample_format<bits8>   : public mpl::int_<SAMPLEFORMAT_UINT> {
 template<> struct sample_format<bits16>  : public mpl::int_<SAMPLEFORMAT_UINT> {};
 template<> struct sample_format<bits32>  : public mpl::int_<SAMPLEFORMAT_UINT> {};
 template<> struct sample_format<bits32f> : public mpl::int_<SAMPLEFORMAT_IEEEFP> {};
-template<> struct sample_format<float >  : public mpl::int_<SAMPLEFORMAT_IEEEFP> {};
 template<> struct sample_format<double>  : public mpl::int_<SAMPLEFORMAT_IEEEFP> {};
 template<> struct sample_format<bits8s>  : public mpl::int_<SAMPLEFORMAT_INT> {};
 template<> struct sample_format<bits16s> : public mpl::int_<SAMPLEFORMAT_INT> {};
@@ -185,11 +183,30 @@ private:
         // write rows per strip
         _io_dev.template set_property<tiff_rows_per_strip>( _io_dev.get_default_strip_size() );
 
-        write_data( src_view
-                  , info
-                  , (src_view.width() * samples_per_pixel * bits_per_sample + 7) / 8
-                  , typename is_bit_aligned< pixel_t >::type()
-                  );
+        if(!info._is_tiled)
+        {
+            write_data( src_view
+                      , info
+                      , (src_view.width() * samples_per_pixel * bits_per_sample + 7) / 8
+                      , typename is_bit_aligned< pixel_t >::type()
+                      );
+        }
+        else
+        {
+            uint32 tw = info._tile_width, th = info._tile_length;
+            if(!_io_dev.check_tile_size( tw, th ))
+                ; // @todo: warn the user?
+
+            // tile related tags
+            _io_dev.template set_property<tiff_tile_width> ( tw );
+            _io_dev.template set_property<tiff_tile_length>( th );
+
+            write_tiled_data( src_view
+                            , tw
+                            , th
+                            , typename is_bit_aligned< pixel_t >::type()
+                            );
+        }
     }
 
     template< typename View >
@@ -221,8 +238,23 @@ private:
     }
 
     template< typename View >
+    void write_tiled_data( const View&   src_view
+                         , uint32 tw
+                         , uint32 th
+                         , const mpl::true_&    // bit_aligned
+                         )
+    {
+        byte_vector_t row( _io_dev.get_tile_size() );
+
+        typedef typename View::x_iterator x_it_t;
+        x_it_t row_it = x_it_t( &(*row.begin()));
+
+        internal_write_tiled_data(src_view, tw, th, row, row_it);
+    }
+
+    template< typename View >
     void write_data( const View&   src_view
-                   , const info_t& /* info */
+                   , const info_t& info
                    , std::size_t   row_size_in_bytes
                    , const mpl::false_&    // bit_aligned
                    )
@@ -248,6 +280,91 @@ private:
 
             // @todo: do optional bit swapping here if you need to...
         }
+    }
+
+    template< typename View >
+    void write_tiled_data( const View&   src_view
+                         , uint32 tw
+                         , uint32 th
+                         , const mpl::false_&    // bit_aligned
+                         )
+    {
+        byte_vector_t row( _io_dev.get_tile_size() );
+
+        typedef typename my_interleaved_pixel_iterator_type_from_pixel_reference< typename View::reference
+                                                                                >::type x_iterator;
+        x_iterator row_it = x_iterator( &(*row.begin()));
+
+        internal_write_tiled_data(src_view, tw, th, row, row_it);
+    }
+
+    template< typename View,
+              typename IteratorType >
+    void internal_write_tiled_data( const View&    src_view
+                                  , uint32 tw
+                                  , uint32 th
+                                  , byte_vector_t& row
+                                  , IteratorType   it
+                                  )
+    {
+        uint32 i = 0, j = 0;
+        View tile_subimage_view;
+        while(i<src_view.height())
+        {
+            while(j<src_view.width())
+            {
+                if(j+tw<src_view.width() && i+th<src_view.height())
+                {
+                    // a tile is fully included in the image: just copy values
+                    tile_subimage_view = subimage_view( src_view
+                                                      , j
+                                                      , i
+                                                      , tw
+                                                      , th
+                                                      );
+                    std::copy( tile_subimage_view.begin()
+                             , tile_subimage_view.end()
+                             , it
+                             );
+                }
+                else
+                {
+                    uint32 width  = static_cast< uint32 >( src_view.width()  );
+                    uint32 height = static_cast< uint32 >( src_view.height() );
+
+                    uint32 current_tile_width  = (j+tw<width ) ? tw : width -j;
+                    uint32 current_tile_length = (i+th<height) ? th : height-i;
+
+                    tile_subimage_view = subimage_view( src_view
+                                                      , j
+                                                      , i
+                                                      , current_tile_width
+                                                      , current_tile_length
+                                                      );
+
+                    for( typename View::y_coord_t y = 0; y < tile_subimage_view.height(); ++y )
+                    {
+                        std::copy( tile_subimage_view.row_begin( y )
+                                 , tile_subimage_view.row_end( y )
+                                 , it
+                                 );
+                        std::advance(it, tw);
+                    }
+                    it = IteratorType( &(*row.begin()));
+                }
+
+                _io_dev.write_tile( row
+                                  , j
+                                  , i
+                                  , 0
+                                  , 0
+                                  );
+                j += tw;
+            }
+            j = 0;
+            i += th;
+        }
+        // @todo: do optional bit swapping here if you need to...
     }
 
     Device& _io_dev;
