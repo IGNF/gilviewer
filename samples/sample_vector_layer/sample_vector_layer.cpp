@@ -48,6 +48,7 @@ Authors:
 #include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
 #include "sample_vector_layer_viewer.hpp"
 #include "sample_vector_layer.h"
 
@@ -55,6 +56,9 @@ Authors:
 #if GILVIEWER_USE_GDAL
 #   include <gdal/ogrsf_frmts.h>
 #endif // GILVIEWER_USE_GDAL
+
+#include <sstream>
+using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
@@ -127,13 +131,9 @@ bool sample_vector_layer_app::OnInit()
     }
     catch( std::exception &e )
     {
-	wxString message;
-	message << wxString(e.what(), *wxConvCurrent);
+        GILVIEWER_LOG_EXCEPTION("Exception")
+        wxString message(oss.str().c_str(), *wxConvCurrent);
 	::wxMessageBox( message );
-    }
-    catch( ... )
-    {
-	::wxMessageBox( _("Unhandled exception ...") );
     }
 
     return true;

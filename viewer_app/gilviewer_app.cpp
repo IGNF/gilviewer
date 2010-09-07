@@ -54,6 +54,9 @@ Authors:
 #   include <gdal/ogrsf_frmts.h>
 #endif // GILVIEWER_USE_GDAL
 
+#include <sstream>
+using namespace std;
+
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
 { wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
@@ -102,13 +105,9 @@ bool gilviewer_app::OnInit()
     }
     catch( std::exception &e )
     {
-	wxString message;
-	message << wxString(e.what(), *wxConvCurrent);
+        GILVIEWER_LOG_EXCEPTION("Exception")
+        wxString message(e.what(), *wxConvCurrent);
 	::wxMessageBox( message );
-    }
-    catch( ... )
-    {
-	::wxMessageBox( _("Unhandled exception ...") );
     }
 
     return true;
