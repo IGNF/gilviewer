@@ -5,7 +5,7 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/gil/extension/io_new/tiff_all.hpp>
 
-#include "../layers/ImageLayer.hpp"
+#include "../layers/image_layer.hpp"
 #include "../layers/image_types.hpp"
 #include "../tools/error_logger.hpp"
 #include "../convenient/macros_gilviewer.hpp"

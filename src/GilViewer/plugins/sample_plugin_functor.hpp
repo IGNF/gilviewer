@@ -40,7 +40,7 @@ Authors:
 #define SAMPLE_PLUGIN_FUNCTOR
 
 #include <boost/gil/image_view_factory.hpp>
-#include "../layers/ImageLayer.hpp"
+#include "../layers/image_layer.hpp"
 #include "../layers/image_types.hpp"
 
 struct sample_plugin_functor

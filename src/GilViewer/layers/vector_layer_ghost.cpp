@@ -38,7 +38,7 @@ Authors:
 
 #include <wx/dc.h>
 
-#include "VectorLayerGhost.h"
+#include "vector_layer_ghost.hpp"
 
 wxPoint vector_layer_ghost::from_local(const wxPoint &p, double delta) const
 {

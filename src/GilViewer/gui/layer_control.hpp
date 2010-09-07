@@ -43,7 +43,7 @@ Authors:
 #include <wx/frame.h>
 
 #include "../gui/LayerControlUtils.hpp"
-#include "../layers/Layer.hpp"
+#include "../layers/layer.hpp"
 
 class wxFlexGridSizer;
 class wxToolBar;

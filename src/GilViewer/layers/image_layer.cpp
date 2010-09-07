@@ -58,7 +58,7 @@ Authors:
 #include "../layers/image_types.hpp"
 #include "../gui/ImageLayerSettingsControl.hpp"
 
-#include "ImageLayer.hpp"
+#include "image_layer.hpp"
 #include "image_layer_screen_image_functor.hpp"
 #include "image_layer_min_max_functor.hpp"
 #include "image_layer_histogram_functor.hpp"
