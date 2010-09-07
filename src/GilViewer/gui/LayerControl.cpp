@@ -42,6 +42,7 @@ Authors:
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
 #include <boost/bind.hpp>
 
 #include <wx/scrolwin.h>
@@ -80,6 +81,7 @@ Authors:
 #include "../tools/ColorLookupTable.h"
 
 #include "../convenient/utils.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 #include "../config/config.hpp"
 
@@ -88,6 +90,7 @@ Authors:
 #endif
 
 using namespace boost;
+using namespace boost::filesystem;
 using namespace std;
 
 BEGIN_EVENT_TABLE(layer_control, wxFrame)
@@ -277,14 +280,9 @@ void layer_control::on_save_button(wxCommandEvent& event)
             shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension);
             file_out->save(layers()[id],filename);
         }
-        catch( std::exception &err )
+        catch( std::exception &e )
         {
-            std::ostringstream oss;
-            oss << "File : " << __FILE__ << "\n";
-            oss << "Function : " << __FUNCTION__ << "\n";
-            oss << "Line : " << __LINE__ << "\n";
-            oss << err.what();
-            wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+            GILVIEWER_LOG_EXCEPTION("")
         }
     }
 }
@@ -308,7 +306,8 @@ void layer_control::on_delete_button(wxCommandEvent& event)
     m_rows.back()->m_saveButton->Destroy();
     m_rows.back()->m_deleteButton->Destroy();
     m_rows.back()->m_settingsButton->Destroy();
-    m_rows.back()->m_center_button->Destroy();
+    //m_rows.back()->m_center_button->Destroy();
+    m_rows.back()->m_refresh_button->Destroy();
     m_rows.back()->m_layerSettingsControl->Destroy();
     m_sizer->Remove(m_rows.back()->m_boxSizer);
 
@@ -351,6 +350,28 @@ void layer_control::on_center_button(wxCommandEvent& event)
     }
     m_basicDrawPane->Refresh();
     * */
+}
+
+void layer_control::on_refresh_button(wxCommandEvent& event)
+{
+    unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_REFRESH);
+
+    string ext(extension(m_layers[id]->filename()));
+    ext = ext.substr(1,ext.size()-1);
+    to_lower(ext);
+    try
+    {
+        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(ext);
+        m_layers[id] = file->load(m_layers[id]->filename());
+    }
+    catch(const std::exception &e)
+    {
+        GILVIEWER_LOG_EXCEPTION("Unable to refresh layer!")
+        return;
+    }
+
+    m_layers[id]->needs_update(true);
+    m_basicDrawPane->Refresh();
 }
 
 void layer_control::on_check_visibility(wxCommandEvent& event)
@@ -496,16 +517,11 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
             shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
             add_layer( file->load(filename) );
         }
-        catch (const std::exception &err)
+        catch (const std::exception &e)
         {
             if (progress)
                 progress->Destroy();
-            ostringstream oss;
-            oss << "File : " << __FILE__ << "\n";
-            oss << "Function : " << __FUNCTION__ << "\n";
-            oss << "Line : " << __LINE__ << "\n";
-            oss << err.what();
-            wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+            GILVIEWER_LOG_EXCEPTION("")
         }
         //else
         //{
@@ -847,14 +863,9 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
         this->m_layers.back()->notifyLayerControl_();
         this->m_layers.back()->notifyLayerSettingsControl_();
     }
-    catch (std::exception &err)
+    catch (std::exception &e)
     {
-        std::ostringstream oss;
-        oss << "File : " << __FILE__ << "\n";
-        oss << "Function : " << __FUNCTION__ << "\n";
-        oss << "Line : " << __LINE__ << "\n";
-        oss << err.what();
-        ::wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+        GILVIEWER_LOG_EXCEPTION("")
     }
 }
 
@@ -904,13 +915,8 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
         this->m_layers.back()->notifyLayerControl_();
         this->m_layers.back()->notifyLayerSettingsControl_();
     }
-    catch (std::exception &err)
+    catch (std::exception &e)
     {
-        std::ostringstream oss;
-        oss << "File : " << __FILE__ << "\n";
-        oss << "Function : " << __FUNCTION__ << "\n";
-        oss << "Line : " << __LINE__ << "\n";
-        oss << err.what();
-        ::wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+        GILVIEWER_LOG_EXCEPTION("")
     }
 }

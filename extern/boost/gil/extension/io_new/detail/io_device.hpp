@@ -440,9 +440,9 @@ template< typename FormatTag
         >
 struct is_adaptable_input_device< FormatTag
                                 , T
-                                , typename enable_if< is_base_and_derived< std::istream
-                                                                         , T
-                                                                         >
+                                , typename enable_if< mpl::or_< is_base_and_derived< std::istream, T >
+                                                              , is_same            < std::istream, T >
+                                                              >
                                                     >::type
                                 > : mpl::true_
 {
@@ -480,10 +480,10 @@ template< typename FormatTag
         , typename T
         > struct is_adaptable_output_device< FormatTag
                                            , T
-                                           , typename enable_if< is_base_and_derived< std::ostream
-                                                                                    , T
-                                                                                    >
-                                                               >::type
+                                           , typename enable_if< mpl::or_< is_base_and_derived< std::ostream, T >
+                                                                         , is_same            < std::ostream, T >
+                                                                         >
+                                           >::type
         > : mpl::true_
 {
     typedef ostream_device< FormatTag > device_type;
