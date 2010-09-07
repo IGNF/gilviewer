@@ -41,47 +41,38 @@ Authors:
 
 #include <boost/filesystem.hpp>
 #include "orientation_2d.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 using namespace std;
 
-void orientation_2d::read_ori_from_image_file(const string &filename)
+bool orientation_2d::read_ori_from_image_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        ostringstream oss;
-        oss << "Image file does not exist: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
+        GILVIEWER_LOG_ERROR("File " + filename + " does not exist")
+        return false;
     }
 
     string basename = boost::filesystem::basename(filename);
     string path = boost::filesystem::path(filename).branch_path().string();
 
-    // TODO! return false instead of throwing an exception
-    try
+    if( !read_ori_from_ori_file(path+"/"+basename+".ori") )
     {
-        read_ori_from_ori_file(path+"/"+basename+".ori");
+        if( !read_ori_from_tfw_file(path+"/"+basename+".tfw") )
+            return false;
+        return true;
     }
-    catch (const logic_error &)
-    {
-        // Si on catche cette erreur, cela signifie que le .ori n'existe pas
-        // On essaie de lire un .tfw
-        read_ori_from_tfw_file(path+"/"+basename+".tfw");
-    }
+    else
+        return true;
+
 }
 
-void orientation_2d::read_ori_from_ori_file(const string &filename)
+bool orientation_2d::read_ori_from_ori_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        ostringstream oss;
-        oss << "Image file does not exist: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
+        GILVIEWER_LOG_ERROR("File " + filename + " does not exist")
+        return false;
     }
 
     ifstream fileOri(filename.c_str() , ifstream::in );
@@ -105,12 +96,8 @@ void orientation_2d::read_ori_from_ori_file(const string &filename)
 
     if (carto != "CARTO")
     {
-        ostringstream oss;
-        oss << "Bad ORI format!" << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
+        GILVIEWER_LOG_ERROR("Bad ORI format (not CARTO)")
+        return false;
     }
 
     fileOri >> m_originX >> m_originY;
@@ -121,30 +108,22 @@ void orientation_2d::read_ori_from_ori_file(const string &filename)
 
     if(pasX != pasY)
     {
-        ostringstream oss;
-        oss << "Unsupported orientaton: X and Y steps are different!" << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
+        GILVIEWER_LOG_ERROR("Unsupported orientaton: X and Y steps are different")
+        return false;
     }
     else
 	m_step = pasX;
 
     fileOri.close();
-
+    return true;
 }
 
-void orientation_2d::read_ori_from_tfw_file(const string &filename)
+bool orientation_2d::read_ori_from_tfw_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        ostringstream oss;
-        oss << "TFW file does not exist: "<<filename<< " ! " << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
+        GILVIEWER_LOG_ERROR("File " + filename + " does not exist")
+        return false;
     }
 
     ifstream fileTFW(filename.c_str() , ifstream::in );
@@ -177,17 +156,14 @@ void orientation_2d::read_ori_from_tfw_file(const string &filename)
 
     if(pasX != pasY)
     {
-        ostringstream oss;
-        oss << "Unsupported orientaton: X and Y steps are different!" << endl;
-        oss << "File : " <<__FILE__ << endl;
-        oss << "Line : " << __LINE__ << endl;
-        oss << "Function : " << __FUNCTION__ << endl;
-        throw logic_error( oss.str() );
+        GILVIEWER_LOG_ERROR("Unsupported orientaton: X and Y steps are different")
+        return false;
     }
     else
         m_step = pasX;
 
     fileTFW.close();
+    return true;
 }
 
 ostream& operator<< (ostream &o, const orientation_2d &ori)
