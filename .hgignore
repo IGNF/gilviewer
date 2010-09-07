@@ -7,7 +7,7 @@ Makefile
 cmake_install.cmake
 bin
 GilViewerConfig.cmake
-install_manifest.txt 
+install_manifest.txt
 src/GilViewer/gui/resources/resources.cpp
 src/GilViewer/config/config.hpp
 CMakeLists.txt.user
@@ -18,3 +18,4 @@ syntax: glob
 
 *~
 *.kdev*
+glob:build/
