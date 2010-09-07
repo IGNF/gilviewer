@@ -53,11 +53,11 @@
 #endif
 
 #include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
-#include "GilViewer/gui/ApplicationSettings.hpp"
-#include "GilViewer/gui/LayerControl.hpp"
-#include "GilViewer/gui/PanelViewer.hpp"
+#include "GilViewer/gui/application_settings.hpp"
+#include "GilViewer/gui/layer_control.hpp"
+#include "GilViewer/gui/panel_viewer.hpp"
 #include "GilViewer/gui/define_id.hpp"
-#include "GilViewer/gui/PanelManager.h"
+#include "GilViewer/gui/panel_manager.hpp"
 #include "sample_vector_layer_viewer.hpp"
 
 BEGIN_EVENT_TABLE(sample_vector_layer_viewer,basic_viewer_frame)
