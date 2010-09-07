@@ -43,16 +43,12 @@ layer_settings_control* layer::build_layer_settings_control(unsigned int index, 
 
 void layer::add_orientation( const std::string &image_filename )
 {
-    // TODO: return false instead of throwing an exception
-    try
+    boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
+    if( ori->read_ori_from_image_file(image_filename) )
     {
-        boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
-        ori->read_ori_from_image_file(image_filename);
         this->orientation(ori);
         this->has_ori(true);
     }
-    catch (const std::exception &e)
-    {
+    else
         this->has_ori(false);
-    }
 }

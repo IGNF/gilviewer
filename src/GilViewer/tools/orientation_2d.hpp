@@ -87,12 +87,12 @@ public:
       */
     //@{
     /// Reads an image orientation from a .ori file
-    void read_ori_from_ori_file(const std::string &filename);
+    bool read_ori_from_ori_file(const std::string &filename);
     /// Reads an image orientation from a .tfw file
-    void read_ori_from_tfw_file(const std::string &filename);
+    bool read_ori_from_tfw_file(const std::string &filename);
     /// @brief Reads an image orientation associated to an image file (.ori or .tfw)
     /// @param filename The full image path. The orientation file name must be the same (with a .ori or .tfw extension)
-    void read_ori_from_image_file(const std::string &filename);
+    bool read_ori_from_image_file(const std::string &filename);
     //@}
 
 private:
