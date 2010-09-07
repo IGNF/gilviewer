@@ -190,13 +190,9 @@ DECLARE_APP(gilviewer_app);
  *      }
  *      catch( std::exception &e )
  *      {
- *          wxString message;
- *          message << wxString(e.what(), *wxConvCurrent);
+ *          GILVIEWER_LOG_EXCEPTION("Exception")
+ *          wxString message(e.what(), *wxConvCurrent);
  *          ::wxMessageBox( message );
- *      }
- *      catch( ... )
- *      {
- *          ::wxMessageBox( _("Unhandled exception ...") );
  *      }
  *      return true;
  *  }

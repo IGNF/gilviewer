@@ -43,6 +43,7 @@ layer_settings_control* layer::build_layer_settings_control(unsigned int index, 
 
 void layer::add_orientation( const std::string &image_filename )
 {
+    // TODO: return false instead of throwing an exception
     try
     {
         boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
@@ -52,9 +53,6 @@ void layer::add_orientation( const std::string &image_filename )
     }
     catch (const std::exception &e)
     {
-        std::ostringstream oss;
-        oss << "No orientation for image " << image_filename << "\n" << e.what();
-        gilviewer_wx_error_logger::log_message(oss.str());
         this->has_ori(false);
     }
 }

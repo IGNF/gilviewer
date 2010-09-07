@@ -156,9 +156,7 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     }
     catch(const exception &e)
     {
-        ostringstream oss;
-        oss << endl << "Exception propagated from:" << endl;
-        oss << e.what();
+        GILVIEWER_LOG_EXCEPTION("Exception propagated from ")
         throw logic_error(oss.str());
     }
 

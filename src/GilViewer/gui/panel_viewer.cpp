@@ -362,11 +362,7 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
                 try {
                     (*it)->update(tailleImage.GetX(), tailleImage.GetY());
                 } catch (const std::exception &e) {
-                    std::ostringstream oss;
-                    oss << "File : " << __FILE__ << "\n";
-                    oss << "Function : " << __FUNCTION__ << "\n";
-                    oss << "Line : " << __LINE__ << "\n";
-                    oss << e.what();
+                    GILVIEWER_LOG_EXCEPTION("")
                     wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent), _("Error!"), wxICON_ERROR);
                     return;
                 }
@@ -728,7 +724,7 @@ void panel_viewer::add_layer(const layer::ptrLayerType &layer) {
     try {
         m_layerControl->add_layer(layer);
     } catch (const std::exception &e) {
-        std::cout << e.what() << std::endl;
+        GILVIEWER_LOG_EXCEPTION("")
     }
 }
 
@@ -1070,12 +1066,8 @@ void panel_viewer::crop() {
             layer->zoom_factor  (     (*it)->zoom_factor  ());
             // todo : handle Orientation2D of *it if it exists ... ??
 
-        } catch (std::exception &err) {
-            std::ostringstream oss;
-            oss << "File : " << __FILE__ << "\n";
-            oss << "Function : " << __FUNCTION__ << "\n";
-            oss << "Line : " << __LINE__ << "\n";
-            oss << err.what();
+        } catch (std::exception &e) {
+            GILVIEWER_LOG_EXCEPTION("")
             wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
         }
     }

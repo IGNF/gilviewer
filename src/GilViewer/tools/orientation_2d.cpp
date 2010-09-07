@@ -59,6 +59,7 @@ void orientation_2d::read_ori_from_image_file(const string &filename)
     string basename = boost::filesystem::basename(filename);
     string path = boost::filesystem::path(filename).branch_path().string();
 
+    // TODO! return false instead of throwing an exception
     try
     {
         read_ori_from_ori_file(path+"/"+basename+".ori");
