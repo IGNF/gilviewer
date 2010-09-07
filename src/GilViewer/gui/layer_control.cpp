@@ -61,9 +61,9 @@ Authors:
 
 #include "../gui/LayerControl.hpp"
 
-#include "../layers/ImageLayer.hpp"
+#include "../layers/image_layer.hpp"
 #include "../layers/vector_layer.hpp"
-#include "../layers/VectorLayerGhost.h"
+#include "../layers/vector_layer_ghost.hpp"
 
 #include "../gui/VectorLayerSettingsControl.hpp"
 #include "../gui/ImageLayerSettingsControl.hpp"

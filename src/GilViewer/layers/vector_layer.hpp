@@ -41,7 +41,7 @@ Authors:
 
 #include <boost/bind.hpp>
 
-#include "../layers/Layer.hpp"
+#include "../layers/layer.hpp"
 
 class vector_layer : public layer
 {

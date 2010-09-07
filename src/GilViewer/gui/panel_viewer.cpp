@@ -62,7 +62,7 @@
 #include <wx/statusbr.h>
 #include <wx/filedlg.h>
 
-#include "../layers/VectorLayerGhost.h"
+#include "../layers/vector_layer_ghost.hpp"
 #include "../layers/vector_layer.hpp"
 #include "../gui/ApplicationSettings.hpp"
 #include "../gui/LayerControlUtils.hpp"

@@ -6,7 +6,7 @@
 
 #include "sample_plugin_functor.hpp"
 #include "../layers/image_types.hpp"
-#include "../layers/ImageLayer.hpp"
+#include "../layers/image_layer.hpp"
 
 #include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 

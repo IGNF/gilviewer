@@ -42,7 +42,7 @@ Authors:
 #include <wx/dnd.h>
 #include <wx/panel.h>
 
-#include "../layers/Layer.hpp"
+#include "../layers/layer.hpp"
 
 #include "../convenient/macros_gilviewer.hpp"
 
