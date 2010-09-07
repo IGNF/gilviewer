@@ -40,8 +40,8 @@ Authors:
 #define PANELMANAGER_H_
 #include <vector>
 
-#include "../tools/PatternSingleton.hpp"
-#include "../tools/PatternFactory.hpp"
+#include "../tools/pattern_singleton.hpp"
+#include "../tools/pattern_factory.hpp"
 #include "../gui/PanelViewer.hpp"
 
 

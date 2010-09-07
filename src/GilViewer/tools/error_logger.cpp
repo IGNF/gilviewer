@@ -40,7 +40,7 @@ Authors:
 
 #include <wx/log.h>
 
-void error_logger::log_wx_log_message(const std::string& message)
+void gilviewer_wx_error_logger::log_message(const std::string& message)
 {
     wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
 }

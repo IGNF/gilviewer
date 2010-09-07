@@ -77,8 +77,8 @@ Authors:
 #include "../io/gilviewer_file_io.hpp"
 #include "../io/gilviewer_io_factory.hpp"
 
-#include "../tools/Orientation2D.h"
-#include "../tools/ColorLookupTable.h"
+#include "../tools/orientation_2d.hpp"
+#include "../tools/color_lookup_table.hpp"
 
 #include "../convenient/utils.hpp"
 #include "../convenient/macros_gilviewer.hpp"

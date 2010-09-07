@@ -176,12 +176,12 @@ Authors:
     oss << txt << endl; \
     oss << e.what() << endl; \
     INTERNAL_LOG_INFOS() \
-    error_logger::log_wx_log_message(oss.str());
+    gilviewer_wx_error_logger::log_message(oss.str());
 
 #define GILVIEWER_LOG_ERROR(txt) \
     ostringstream oss; \
     oss << txt << endl; \
     INTERNAL_LOG_INFOS() \
-    error_logger::log_wx_log_message(oss.str());
+    gilviewer_wx_error_logger::log_message(oss.str());
 
 #endif /* MACROSGILVIEWER_HPP_ */

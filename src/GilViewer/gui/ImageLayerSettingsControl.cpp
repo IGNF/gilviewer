@@ -59,7 +59,7 @@ Authors:
 #include "../gui/define_id.hpp"
 #include "../gui/resources/image_icon.xpm"
 #include "../gui/ImageLayerSettingsControl.hpp"
-#include "../tools/ColorLookupTable.h"
+#include "../tools/color_lookup_table.hpp"
 
 BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         EVT_BUTTON(wxID_OK,image_layer_settings_control::on_ok_button)

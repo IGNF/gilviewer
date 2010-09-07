@@ -40,7 +40,7 @@ Authors:
 #include <stdexcept>
 
 #include <boost/filesystem.hpp>
-#include "Orientation2D.h"
+#include "orientation_2d.hpp"
 
 using namespace std;
 

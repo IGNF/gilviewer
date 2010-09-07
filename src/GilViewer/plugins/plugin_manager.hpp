@@ -40,8 +40,8 @@ Authors:
 #define __PLUGIN_MANAGER_HPP__
 #include <vector>
 
-#include "../tools/PatternSingleton.hpp"
-#include "../tools/PatternFactory.hpp"
+#include "../tools/pattern_singleton.hpp"
+#include "../tools/pattern_factory.hpp"
 #include "plugin_base.hpp"
 
 class plugin_manager_model : public PatternFactory<plugin_base>
