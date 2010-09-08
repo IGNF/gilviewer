@@ -120,10 +120,10 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
         SetMenuBar( m_drawPane->menubar() );
 }
 
-void sample_vector_layer_viewer::AddLayer(const layer::ptrLayerType &layer) {
+void sample_vector_layer_viewer::add_layer(const layer::ptrLayerType &layer) {
         m_drawPane->add_layer(layer);
 }
 
-void sample_vector_layer_viewer::AddLayersFromFiles(const wxArrayString &names) {
+void sample_vector_layer_viewer::add_layers_from_files(const wxArrayString &names) {
         m_drawPane->layercontrol()->add_layers_from_files(names);
 }

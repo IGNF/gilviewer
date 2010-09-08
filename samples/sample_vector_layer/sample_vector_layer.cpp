@@ -50,7 +50,7 @@ Authors:
 #include "GilViewer/layers/simple_vector_layer.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
 #include "sample_vector_layer_viewer.hpp"
-#include "sample_vector_layer.h"
+#include "sample_vector_layer.hpp"
 
 #include "GilViewer/config/config.hpp"
 #if GILVIEWER_USE_GDAL
@@ -90,7 +90,7 @@ bool sample_vector_layer_app::OnInit()
 #if GILVIEWER_USE_GDAL
         // Here, we first create an ogr_vector_layer
         boost::shared_ptr<layer> vector_layer = boost::shared_ptr<layer>(new ogr_vector_layer("Hand made layer"));
-        m_frame->AddLayer(vector_layer);
+        m_frame->add_layer(vector_layer);
         vector_layer->add_circle(50.,123.,65.);
         vector_layer->add_point(50.,123.);
         vector_layer->add_point(5.,12.);
@@ -107,7 +107,7 @@ bool sample_vector_layer_app::OnInit()
 
         // We now test the simple_vector_layer_interface
         boost::shared_ptr<layer> my_vector_layer = boost::shared_ptr<layer>(new simple_vector_layer("Simple layer"));
-        m_frame->AddLayer(my_vector_layer);
+        m_frame->add_layer(my_vector_layer);
         my_vector_layer->add_circle(100.,100.,10.);
         my_vector_layer->polygon_border_color(*wxRED);
         my_vector_layer->polygon_border_width(5);

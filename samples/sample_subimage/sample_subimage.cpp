@@ -99,9 +99,9 @@ bool sample_subimage_app::OnInit()
     try
     {
         shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object("jpg");
-        m_frame->AddLayer( file->load(filename) );
-        m_frame->AddLayer( file->load(filename, 1200, 200 , 950, 550) );
-        m_frame->AddLayer( file->load(filename, 1000, 650, 450, 250) );
+        m_frame->add_layer( file->load(filename) );
+        m_frame->add_layer( file->load(filename, 1200, 200 , 950, 550) );
+        m_frame->add_layer( file->load(filename, 1000, 650, 450, 250) );
     }
     catch (const std::exception &e)
     {
