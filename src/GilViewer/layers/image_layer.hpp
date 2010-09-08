@@ -72,9 +72,6 @@ protected:
 
 public:
     static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer");
-    ///ATTENTION ici l'image est recopiée dans une any_image !!
-    template<class ImageType>
-    static ptrLayerType create_image_layer(const ImageType &image, const std::string &name ="Image Layer");
 
     virtual void update(int width, int height);
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
