@@ -1,65 +1,23 @@
 #include "gilviewer_file_io_tiff.hpp"
 #include "gilviewer_io_factory.hpp"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/gil/extension/io_new/tiff_all.hpp>
-
-#include "../layers/image_layer.hpp"
-#include "../layers/image_types.hpp"
-#include "../tools/error_logger.hpp"
-#include "../convenient/macros_gilviewer.hpp"
-
 using namespace boost;
 using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/apply_visitor.hpp>
-
-struct write_view_tiff_visitor : public static_visitor<>
-{
-    write_view_tiff_visitor(const string& filename) : m_filename(filename) {}
-
-    template <typename ViewType>
-    result_type operator()(const ViewType& v) const { write_view( m_filename , v, tiff_tag() ); }
-
-private:
-    string m_filename;
-};
-
 shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
 {
-    if ( !exists(filename) )
-    {
-        GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
-        return layer::ptrLayerType();
-    }
+    return load_gil_image<tiff_tag>(filename);
+}
 
-    path path(system_complete(filename));
-    string ext(path.extension());
+void gilviewer_file_io_tiff::save(shared_ptr<layer> layer, const string &filename)
+{
+    save_gil_view<tiff_tag>(layer, filename);
+}
 
-    //image_read_info< tiff_tag > info = read_image_info(filename.string(), tiff_tag());
-
-    image_layer::image_ptr image(new image_layer::image_t);
-
-    try
-    {
-        read_image(filename
-                   , image->value
-                   , tiff_tag());
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("TIFF read error: " + filename);
-        return layer::ptrLayerType();
-    }
-
-	layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
-
-    layer->add_orientation(filename);
-
+string gilviewer_file_io_tiff::build_and_get_infos(const std::string &filename)
+{
     image_read_info< tiff_tag > info = read_image_info(filename, tiff_tag());
     ostringstream infos_str;
     infos_str << "Dimensions: " << info._width << "x" << info._height << "\n";
@@ -160,29 +118,11 @@ shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
         infos_str << "Image is tiled\n";
         infos_str << "Tile dimensions: " << info._tile_width << "x" << info._tile_length << "\n";
     }
-    layer->infos(infos_str.str());
 
-    return layer;
+    return infos_str.str();
 }
 
-void gilviewer_file_io_tiff::save(shared_ptr<layer> layer, const string &filename)
-{
-    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
-    if(!imagelayer)
-        throw invalid_argument("Bad layer type!\n");
-
-    write_view_tiff_visitor writer(filename);
-    try
-    {
-        apply_visitor( writer, imagelayer->variant_view()->value );
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("TIFF write error: " + filename);
-    }
-}
-
-boost::shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff()
+shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff()
 {
     return shared_ptr<gilviewer_file_io_tiff>(new gilviewer_file_io_tiff());
 }

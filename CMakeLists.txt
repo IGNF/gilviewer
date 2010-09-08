@@ -27,13 +27,13 @@ SET(CMAKE_CONFIG_DIR cmake)
 #### On recherche tous les fichiers ".h", ".hpp", ".hxx" et "*.inl"
 ####
 SET(SRC_DIR src/GilViewer)
-FILE( GLOB ALL_CONFIG_HEADER_FILES ${SRC_DIR}/config/*.h ${SRC_DIR}/config/*.hpp  )
-FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.h ${SRC_DIR}/convenient/*.hpp ${SRC_DIR}/convenient/*.hxx ${SRC_DIR}/convenient/*.inl )
-FILE( GLOB_RECURSE ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.h ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.hxx ${SRC_DIR}/gui/*.inl ${SRC_DIR}/gui/*.fbp )
-FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.h ${SRC_DIR}/io/*.hpp ${SRC_DIR}/io/*.hxx ${SRC_DIR}/io/*.inl )
-FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.h ${SRC_DIR}/layers/*.hpp ${SRC_DIR}/layers/*.hxx ${SRC_DIR}/layers/*.inl )
-FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.h ${SRC_DIR}/tools/*.hpp ${SRC_DIR}/tools/*.hxx ${SRC_DIR}/tools/*.inl )
-FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/plugin_*.h ${SRC_DIR}/plugins/*.hpp ${SRC_DIR}/plugins/*.hxx ${SRC_DIR}/plugins/*.inl )
+FILE( GLOB ALL_CONFIG_HEADER_FILES ${SRC_DIR}/config/*.hpp )
+FILE( GLOB ALL_CONVENIENT_HEADER_FILES ${SRC_DIR}/convenient/*.hpp )
+FILE( GLOB_RECURSE ALL_GUI_HEADER_FILES ${SRC_DIR}/gui/*.hpp ${SRC_DIR}/gui/*.fbp )
+FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.hpp )
+FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.hpp )
+FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.hpp )
+FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/*.hpp )
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
                         ${ALL_CONVENIENT_HEADER_FILES}
