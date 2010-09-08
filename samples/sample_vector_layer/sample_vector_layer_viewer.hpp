@@ -40,7 +40,7 @@ Authors:
 #define __FRAME_VIEWER_HPP__
 
 
-#include "GilViewer/layers/Layer.hpp"
+#include "GilViewer/layers/layer.hpp"
 
 #include "GilViewer/gui/basic_viewer_frame.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
