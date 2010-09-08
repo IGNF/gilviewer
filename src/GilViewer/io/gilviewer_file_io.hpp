@@ -38,12 +38,13 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_HPP
 #define GILVIEWER_FILE_IO_HPP
 
+#include <boost/gil/extension/io_new/png_all.hpp>
+#include <boost/gil/extension/io_new/jpeg_all.hpp>
+#include <boost/gil/extension/io_new/tiff_all.hpp>
+
 #include <boost/shared_ptr.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/gil/extension/io_new/jpeg_all.hpp>
-#include <boost/gil/extension/io_new/png_all.hpp>
-#include <boost/gil/extension/io_new/tiff_all.hpp>
 
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
