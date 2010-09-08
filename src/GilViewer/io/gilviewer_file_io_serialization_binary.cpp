@@ -50,7 +50,7 @@ Authors:
 using namespace boost;
 using namespace std;
 
-shared_ptr<layer> gilviewer_file_io_serialization_binary::load(const string &filename)
+shared_ptr<layer> gilviewer_file_io_serialization_binary::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
     simple_vector_layer simple_layer;
     {
