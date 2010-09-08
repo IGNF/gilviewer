@@ -39,7 +39,18 @@ Authors:
 #define GILVIEWER_FILE_IO_HPP
 
 #include <boost/shared_ptr.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/convenience.hpp>
+#include <boost/gil/extension/io_new/jpeg_all.hpp>
+#include <boost/gil/extension/io_new/png_all.hpp>
+#include <boost/gil/extension/io_new/tiff_all.hpp>
+
 #include <string>
+
+#include "../layers/image_layer.hpp"
+#include "../layers/image_types.hpp"
+#include "../tools/error_logger.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 class layer;
 
@@ -48,8 +59,48 @@ class gilviewer_file_io
 public:
     virtual ~gilviewer_file_io() {}
 
-    virtual boost::shared_ptr<layer> load(const std::string &filename) { return boost::shared_ptr<layer>(); };
+    virtual boost::shared_ptr<layer> load(const std::string &filename) { return boost::shared_ptr<layer>(); }
+    template <class TagType> boost::shared_ptr<layer> load_gil_image(const std::string &filename)
+    {
+        using namespace boost;
+        using namespace boost::gil;
+        using namespace boost::filesystem;
+        using namespace std;
+
+        if ( !exists(filename) )
+        {
+            GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
+            return layer::ptrLayerType();
+        }
+
+        path path(system_complete(filename));
+        string ext(path.extension());
+
+        image_layer::image_ptr image(new image_layer::image_t);
+
+        try
+        {
+            read_image(filename
+                       , image->value
+                       , TagType());
+        }
+            catch( const std::exception &e )
+        {
+            GILVIEWER_LOG_EXCEPTION("Image read error: " + filename);
+            return layer::ptrLayerType();
+        }
+
+        layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
+        layer->add_orientation(filename);
+
+        layer->infos( build_and_get_infos(filename) );
+
+        return layer;
+    }
+
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename)=0;
+
+    virtual std::string build_and_get_infos(const std::string &filename) { return ""; }
 
 protected:
     gilviewer_file_io() : m_familly(""), m_description("") {}
