@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+        http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+        Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+        Olivier Tournaire, Adrien Chauve
 
 
 

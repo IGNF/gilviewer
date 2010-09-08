@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+        http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+        Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+        Olivier Tournaire, Adrien Chauve
 
 
 
@@ -556,7 +556,7 @@ BEGIN_EVENT_TABLE(histogram_plotter,wxPanel)
 END_EVENT_TABLE()
 
 histogram_plotter::histogram_plotter(image_layer_settings_control* parent,  const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
-	wxPanel(parent, id, pos, size, style), m_parent(parent), m_isInit(false)
+        wxPanel(parent, id, pos, size, style), m_parent(parent), m_isInit(false)
 {
     channels(redChannel, greenChannel, blueChannel);
 }
@@ -578,13 +578,13 @@ void histogram_plotter::on_mouse_move(wxMouseEvent &event)
         double step_width = window_width / static_cast<double>(m_histogram[0].size()-1.);
 
         /*
-		 // Marche pô !!!
-		 dc.SetPen( *wxBLACK_PEN );
-		 dc.CrossHair(event.m_x,event.m_y);
-		 wxString text;
-		 text << event.m_x << " - " << event.m_y;
-		 m_parent->GetStatusBar()->SetStatusText( text );
-		 */
+                 // Marche pô !!!
+                 dc.SetPen( *wxBLACK_PEN );
+                 dc.CrossHair(event.m_x,event.m_y);
+                 wxString text;
+                 text << event.m_x << " - " << event.m_y;
+                 m_parent->GetStatusBar()->SetStatusText( text );
+                 */
 
         const float nb_bins = static_cast<float>( m_histogram[0].size() - 1. );
 
@@ -730,11 +730,12 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
 
 void histogram_plotter::on_size(wxSizeEvent &event)
 {
-    Refresh();
+    if (m_isInit)
+        Refresh();
 }
 
 thread_histogram::thread_histogram(image_layer_settings_control *parent) :
-	wxThread()
+        wxThread()
 {
     m_count = 0;
     m_parent = parent;
