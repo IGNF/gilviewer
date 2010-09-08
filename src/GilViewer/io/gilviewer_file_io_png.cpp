@@ -6,20 +6,6 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/apply_visitor.hpp>
-
-struct write_view_png_visitor : public static_visitor<>
-{
-    write_view_png_visitor(const string& filename) : m_filename(filename) {}
-
-    template <typename ViewType>
-    result_type operator()(const ViewType& v) const { write_view( m_filename , v, png_tag() ); }
-
-private:
-    string m_filename;
-};
-
 shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
 {
     return load_gil_image<png_tag>(filename);
@@ -36,7 +22,7 @@ string gilviewer_file_io_png::build_and_get_infos(const std::string &filename)
     return "TODO";
 }
 
-boost::shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
+shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
 {
     return shared_ptr<gilviewer_file_io_png>(new gilviewer_file_io_png());
 }
