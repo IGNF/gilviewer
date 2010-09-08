@@ -1,85 +1,28 @@
 #include "gilviewer_file_io_png.hpp"
 #include "gilviewer_io_factory.hpp"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/gil/extension/io_new/png_all.hpp>
-
-#include "../layers/image_layer.hpp"
-#include "../layers/image_types.hpp"
-#include "../tools/error_logger.hpp"
-#include "../convenient/macros_gilviewer.hpp"
-
 using namespace boost;
 using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/apply_visitor.hpp>
-
-struct write_view_png_visitor : public static_visitor<>
-{
-    write_view_png_visitor(const string& filename) : m_filename(filename) {}
-
-    template <typename ViewType>
-    result_type operator()(const ViewType& v) const { write_view( m_filename , v, png_tag() ); }
-
-private:
-    string m_filename;
-};
-
 shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
 {
-    if ( !exists(filename) )
-    {
-        GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
-        return layer::ptrLayerType();
-    }
-
-    path path(system_complete(filename));
-    string ext(path.extension());
-
-    //image_read_info< png_tag > info = read_image_info(filename.string(), png_tag());
-
-    image_layer::image_ptr image(new image_layer::image_t);
-
-    try
-    {
-        read_image(filename
-                   , image->value
-                   , png_tag());
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("PNG read error: " + filename);
-        return layer::ptrLayerType();
-    }
-
-	layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
-    layer->add_orientation(filename);
-
-    return layer;
+    return load_gil_image<png_tag>(filename);
 }
 
 void gilviewer_file_io_png::save(shared_ptr<layer> layer, const string &filename)
 {
-    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
-    if(!imagelayer)
-        throw invalid_argument("Bad layer type!\n");
-
-    write_view_png_visitor writer(filename);
-    try
-    {
-        apply_visitor( writer, imagelayer->variant_view()->value );
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("PNG write error: " + filename);
-    }
+    save_gil_view<png_tag>(layer, filename);
 }
 
-boost::shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
+string gilviewer_file_io_png::build_and_get_infos(const std::string &filename)
+{
+    // TODO
+    return "TODO";
+}
+
+shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
 {
     return shared_ptr<gilviewer_file_io_png>(new gilviewer_file_io_png());
 }

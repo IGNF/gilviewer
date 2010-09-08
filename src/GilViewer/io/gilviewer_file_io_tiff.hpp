@@ -48,6 +48,8 @@ public:
     virtual boost::shared_ptr<layer> load(const std::string &filename);
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
+    virtual std::string build_and_get_infos(const std::string &filename);
+
     static bool Register();
     friend boost::shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff();
 

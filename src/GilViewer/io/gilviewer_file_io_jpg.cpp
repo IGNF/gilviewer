@@ -1,62 +1,23 @@
 #include "gilviewer_file_io_jpg.hpp"
 #include "gilviewer_io_factory.hpp"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/gil/extension/io_new/jpeg_all.hpp>
-
-#include "../layers/image_layer.hpp"
-#include "../layers/image_types.hpp"
-#include "../tools/error_logger.hpp"
-#include "../convenient/macros_gilviewer.hpp"
-
 using namespace boost;
 using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/apply_visitor.hpp>
-
-struct write_view_jpeg_visitor : public static_visitor<>
-{
-    write_view_jpeg_visitor(const string& filename) : m_filename(filename) {}
-
-    template <typename ViewType>
-    result_type operator()(const ViewType& v) const { write_view( m_filename , v, jpeg_tag() ); }
-
-private:
-    string m_filename;
-};
-
 shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
 {
-    if ( !exists(filename) )
-    {
-        GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
-        return layer::ptrLayerType();
-    }
+    return load_gil_image<jpeg_tag>(filename);
+}
 
-    path path(system_complete(filename));
-    string ext(path.extension());
+void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename)
+{
+    save_gil_view<jpeg_tag>(layer, filename);
+}
 
-    image_layer::image_ptr image(new image_layer::image_t);
-
-    try
-    {
-        read_image(filename
-                   , image->value
-                   , jpeg_tag());
-    }
-	catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("JPEG read error: " + filename);
-        return layer::ptrLayerType();
-    }
-
-    layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
-    layer->add_orientation(filename);
-
+string gilviewer_file_io_jpg::build_and_get_infos(const std::string &filename)
+{
     image_read_info< jpeg_tag > info = read_image_info(filename, jpeg_tag());
     ostringstream infos_str;
     infos_str << "Dimensions: " << info._width << "x" << info._height << "\n";
@@ -76,29 +37,10 @@ shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
         colorspace_str="JCS_YCCK";
     infos_str << "Color space: " << colorspace_str << "\n";
     infos_str << "Data precision: " << info._data_precision << "\n";
-    layer->infos(infos_str.str());
-
-    return layer;
+    return infos_str.str();
 }
 
-void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename)
-{
-    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
-    if(!imagelayer)
-        throw invalid_argument("Bad layer type!\n");
-
-    write_view_jpeg_visitor writer(filename);
-    try
-    {
-        apply_visitor( writer, imagelayer->variant_view()->value );
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("JPEG write error: " + filename);
-    }
-}
-
-boost::shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg()
+shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg()
 {
     return shared_ptr<gilviewer_file_io_jpg>(new gilviewer_file_io_jpg());
 }
