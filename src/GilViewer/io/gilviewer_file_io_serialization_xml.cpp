@@ -48,36 +48,30 @@ Authors:
 #include "../layers/simple_vector_layer.hpp"
 
 using namespace boost;
+using namespace boost::archive;
 using namespace std;
 
 shared_ptr<layer> gilviewer_file_io_serialization_xml::load(const string &filename)
 {
     simple_vector_layer simple_layer;
     {
-        // create and open an archive for input
         ifstream ifs(filename.c_str());
-        boost::archive::xml_iarchive ia(ifs);
-        // read class state from archive
+        xml_iarchive ia(ifs);
         ia >> BOOST_SERIALIZATION_NVP(simple_layer);
-        // archive and stream closed when destructors are called
     }
     return shared_ptr<layer>(new simple_vector_layer(simple_layer));
 }
 
 void gilviewer_file_io_serialization_xml::save(shared_ptr<layer> layer, const string &filename)
 {
-    shared_ptr<simple_vector_layer> simple_layer2 = dynamic_pointer_cast<simple_vector_layer>(layer);
-    if(!simple_layer2)
-        throw invalid_argument("Bad layer type!\n");
+    shared_ptr<simple_vector_layer> simple_layer = dynamic_pointer_cast<simple_vector_layer>(layer);
+    if(!simple_layer)
+        throw invalid_argument("Bad layer type (not a simple_vector_layer)!\n");
 
     ofstream ofs(filename.c_str());
-    // save data to archive
     {
-        boost::archive::xml_oarchive oa(ofs);
-        // write class instance to archive
-        simple_vector_layer simple_layer = *simple_layer2;
-        oa << BOOST_SERIALIZATION_NVP(simple_layer);
-        // archive and stream closed when destructors are called
+        xml_oarchive oa(ofs);
+        oa << BOOST_SERIALIZATION_NVP(*simple_layer);
     }
 }
 
