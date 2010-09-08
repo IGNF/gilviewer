@@ -245,13 +245,6 @@ layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, cons
     return ptrLayerType(new image_layer(image, name));
 }
 
-template<class ImageType>
-layer::ptrLayerType image_layer::create_image_layer(const ImageType &image, const std::string &name)
-{
-    image_ptr any_img(new image_t(image));
-    return ptrLayerType(new image_layer(any_img, name));
-}
-
 void image_layer::update(int width, int height)
 {
     // Lecture de la configuration des differentes options ...
