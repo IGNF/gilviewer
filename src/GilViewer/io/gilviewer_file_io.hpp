@@ -45,12 +45,27 @@ Authors:
 #include <boost/gil/extension/io_new/png_all.hpp>
 #include <boost/gil/extension/io_new/tiff_all.hpp>
 
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
+
 #include <string>
 
 #include "../layers/image_layer.hpp"
 #include "../layers/image_types.hpp"
 #include "../tools/error_logger.hpp"
 #include "../convenient/macros_gilviewer.hpp"
+
+template <class TagType> struct write_gil_view_visitor : public boost::static_visitor<>
+{
+    write_gil_view_visitor(const std::string& filename) : m_filename(filename), m_tag(TagType()) {}
+
+    template <typename ViewType>
+    result_type operator()(const ViewType& v) const { write_view( m_filename , v, m_tag ); }
+
+private:
+    std::string m_filename;
+    TagType m_tag;
+};
 
 class layer;
 
@@ -96,6 +111,26 @@ public:
         layer->infos( build_and_get_infos(filename) );
 
         return layer;
+    }
+
+    template <class TagType> void save_gil_view(boost::shared_ptr<layer> layer, const std::string &filename)
+    {
+        using namespace boost;
+        using namespace std;
+
+        shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
+        if(!imagelayer)
+            throw invalid_argument("Bad layer type (not an image layer)!\n");
+
+        write_gil_view_visitor<TagType> writer(filename);
+        try
+        {
+            apply_visitor( writer, imagelayer->variant_view()->value );
+        }
+        catch( const std::exception &e )
+        {
+            GILVIEWER_LOG_EXCEPTION("Image write error: " + filename);
+        }
     }
 
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename)=0;

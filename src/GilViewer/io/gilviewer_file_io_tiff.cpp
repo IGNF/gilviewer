@@ -9,6 +9,7 @@ using namespace std;
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
+/*
 struct write_view_tiff_visitor : public static_visitor<>
 {
     write_view_tiff_visitor(const string& filename) : m_filename(filename) {}
@@ -19,6 +20,7 @@ struct write_view_tiff_visitor : public static_visitor<>
 private:
     string m_filename;
 };
+*/
 
 shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
 {
@@ -27,19 +29,7 @@ shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename)
 
 void gilviewer_file_io_tiff::save(shared_ptr<layer> layer, const string &filename)
 {
-    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
-    if(!imagelayer)
-        throw invalid_argument("Bad layer type!\n");
-
-    write_view_tiff_visitor writer(filename);
-    try
-    {
-        apply_visitor( writer, imagelayer->variant_view()->value );
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("TIFF write error: " + filename);
-    }
+    save_gil_view<tiff_tag>(layer, filename);
 }
 
 string gilviewer_file_io_tiff::build_and_get_infos(const std::string &filename)
