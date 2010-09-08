@@ -27,19 +27,7 @@ shared_ptr<layer> gilviewer_file_io_png::load(const string &filename)
 
 void gilviewer_file_io_png::save(shared_ptr<layer> layer, const string &filename)
 {
-    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
-    if(!imagelayer)
-        throw invalid_argument("Bad layer type!\n");
-
-    write_view_png_visitor writer(filename);
-    try
-    {
-        apply_visitor( writer, imagelayer->variant_view()->value );
-    }
-    catch( const std::exception &e )
-    {
-        GILVIEWER_LOG_EXCEPTION("PNG write error: " + filename);
-    }
+    save_gil_view<png_tag>(layer, filename);
 }
 
 string gilviewer_file_io_png::build_and_get_infos(const std::string &filename)
