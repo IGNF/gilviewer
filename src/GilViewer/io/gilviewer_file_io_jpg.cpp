@@ -6,9 +6,9 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename)
+shared_ptr<layer> gilviewer_file_io_jpg::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
-    return load_gil_image<jpeg_tag>(filename);
+    return load_gil_image<jpeg_tag>(filename, point_t(top_left_x, top_left_y), point_t(dim_x, dim_y));
 }
 
 void gilviewer_file_io_jpg::save(shared_ptr<layer> layer, const string &filename)

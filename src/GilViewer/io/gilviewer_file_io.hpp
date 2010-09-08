@@ -74,8 +74,8 @@ class gilviewer_file_io
 public:
     virtual ~gilviewer_file_io() {}
 
-    virtual boost::shared_ptr<layer> load(const std::string &filename) { return boost::shared_ptr<layer>(); }
-    template <class TagType> boost::shared_ptr<layer> load_gil_image(const std::string &filename)
+    virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0) { return boost::shared_ptr<layer>(); }
+    template <class TagType> boost::shared_ptr<layer> load_gil_image(const std::string &filename, const boost::gil::point_t &top_left, const boost::gil::point_t &dim)
     {
         using namespace boost;
         using namespace boost::gil;
@@ -93,11 +93,18 @@ public:
 
         image_layer::image_ptr image(new image_layer::image_t);
 
+        image_read_info<TagType> info = read_image_info(filename , TagType() );
+        point_t origin( std::max(top_left.x, (ptrdiff_t)0), std::max(top_left.y, (ptrdiff_t)0) );
+        point_t size = dim;
+        if(dim.x==-1 && dim.y==-1)
+            size = point_t(info._width, info._height);
+        image_read_settings<TagType> settings(origin, size );
+
         try
         {
             read_image(filename
                        , image->value
-                       , TagType());
+                       , settings);
         }
             catch( const std::exception &e )
         {
