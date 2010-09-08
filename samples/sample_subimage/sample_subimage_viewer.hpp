@@ -58,8 +58,8 @@ public:
         sample_subimage_viewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
         virtual ~sample_subimage_viewer() { wxGetApp().ExitMainLoop(); };
 
-	void AddLayer( const layer::ptrLayerType &layer);
-	void AddLayersFromFiles(const wxArrayString &names);
+        void add_layer( const layer::ptrLayerType &layer);
+        void add_layers_from_files(const wxArrayString &names);
 
 private:
 	panel_viewer* m_drawPane;

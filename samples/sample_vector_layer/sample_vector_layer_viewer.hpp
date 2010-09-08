@@ -45,7 +45,7 @@ Authors:
 #include "GilViewer/gui/basic_viewer_frame.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
 
-#include "sample_vector_layer.h"
+#include "sample_vector_layer.hpp"
 
 class panel_viewer;
 class wxStatusBar;
@@ -58,8 +58,8 @@ public:
         sample_vector_layer_viewer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
         virtual ~sample_vector_layer_viewer() { wxGetApp().ExitMainLoop(); };
 
-	void AddLayer( const layer::ptrLayerType &layer);
-	void AddLayersFromFiles(const wxArrayString &names);
+        void add_layer( const layer::ptrLayerType &layer);
+        void add_layers_from_files(const wxArrayString &names);
 
 private:
 	panel_viewer* m_drawPane;

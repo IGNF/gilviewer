@@ -205,7 +205,7 @@ IF(${INSTALL_MODE} STREQUAL "Install")
 	set( LANGAGES_SUPPORT_FILES "" )
 	# Currently available langages are: French
 	option( INSTALL_LANGAGE_FRENCH "Install french langage support" ON )
-	set( LANGAGES_FR_SUPPORT_FILES ${CMAKE_SOURCE_DIR}/languages/fr/libGilViewer.mo ${CMAKE_SOURCE_DIR}/languages/fr/GilViewerApp.mo )
+        set( LANGAGES_FR_SUPPORT_FILES ${CMAKE_SOURCE_DIR}/languages/fr/libGilViewer.mo ${CMAKE_SOURCE_DIR}/languages/fr/GilViewerApp.mo )
 	INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_install.cmake )
 	MESSAGE( STATUS " Install file include " )
 ENDIF(${INSTALL_MODE} STREQUAL "Install")

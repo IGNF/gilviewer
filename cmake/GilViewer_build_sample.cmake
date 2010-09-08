@@ -15,7 +15,7 @@ if(UNIX)
                 add_executable( sample_vector_layer ./samples/sample_vector_layer/sample_vector_layer_viewer.cpp
                                                     ./samples/sample_vector_layer/sample_vector_layer_viewer.hpp
                                                     ./samples/sample_vector_layer/sample_vector_layer.cpp
-                                                    ./samples/sample_vector_layer/sample_vector_layer.h )
+                                                    ./samples/sample_vector_layer/sample_vector_layer.hpp )
                 add_executable( sample_subimage ./samples/sample_subimage/sample_subimage_viewer.cpp
                                                 ./samples/sample_subimage/sample_subimage_viewer.hpp
                                                 ./samples/sample_subimage/sample_subimage.cpp
@@ -37,7 +37,7 @@ if(WIN32)
     add_executable( sample_vector_layer WIN32 ./samples/sample_vector_layer/sample_vector_layer_viewer.cpp
                                               ./samples/sample_vector_layer/sample_vector_layer_viewer.hpp
                                               ./samples/sample_vector_layer/sample_vector_layer.cpp
-                                              ./samples/sample_vector_layer/sample_vector_layer.h
+                                              ./samples/sample_vector_layer/sample_vector_layer.hpp
                                               ./samples/sample_vector_layer/sample_vector_layer.rc )
     add_executable( sample_subimage WIN32 ./samples/sample_subimage/sample_subimage_viewer.cpp
                                           ./samples/sample_subimage/sample_subimage_viewer.hpp
