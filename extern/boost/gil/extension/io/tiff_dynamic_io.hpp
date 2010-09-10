@@ -27,7 +27,7 @@
 
 #include <string>
 #include <boost/mpl/bool.hpp>
-#include "boost/gil/extension/dynamic_image/dynamic_image_all.hpp"
+#include "../dynamic_image/dynamic_image_all.hpp"
 #include "io_error.hpp"
 #include "tiff_io.hpp"
 #include "dynamic_io.hpp"

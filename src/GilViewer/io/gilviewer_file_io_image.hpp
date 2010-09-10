@@ -47,6 +47,9 @@ Authors:
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
+#include <boost/gil/extension/io_new/detail/read_image.hpp>
+#include <boost/gil/extension/io_new/detail/read_image_info.hpp>
+
 #include <algorithm>
 #if _WINDOWS
 #   include <boost/config/platform/win32.hpp>
