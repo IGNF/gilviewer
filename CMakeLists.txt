@@ -13,7 +13,8 @@ PROJECT(GilViewer)
 
 IF(UNIX)
         INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
-        add_definitions(-Wall -D_GLIBCXX_DEBUG)
+        add_definitions(-Wall)
+        SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG" CACHE STRING "Flags used by the compiler during debug builds." FORCE)
         #add_definitions(-pedantic)
 ENDIF(UNIX)
 
@@ -45,7 +46,7 @@ SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
 
 #### Definition des dossiers contenant les sources
 #### ATTENTION : toutes les sources de ces dossiers seront incluses
-#### ATTENTION : si un fichier est ajoute dans un de ces dossiers mais que le CMakeLists.txt n'est pas modifie, il faut relancer le cmake 
+#### ATTENTION : si un fichier est ajoute dans un de ces dossiers mais que le CMakeLists.txt n'est pas modifie, il faut relancer le cmake
 ####  a la main avant de compiler par make (ca, c'est pas vrai sous windows ! en fait je n'en suis pas si sur ...)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/config SRC_CONFIG)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/convenient SRC_CONVENIENT)
@@ -78,7 +79,7 @@ if(WIN32)
 			aux_source_directory(${SRC_DIR}/gui/msvc SRC_MSVC)
 			set( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${SRC_MSVC} )
         endif()
-        
+
     endif(MSVC)
 endif(WIN32)
 
@@ -134,7 +135,7 @@ else()
 		message(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
 	endif()
 endif()
-		
+
 # Find BOOST
 set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" "1.41.0" "1.41" "1.42.0" "1.42" "1.43.0" "1.43" "1.44.0" "1.44")
 set(Boost_USE_STATIC_LIBS OFF)
@@ -198,7 +199,7 @@ ADD_DEPENDENCIES( GilViewerApp GilViewer )
 #### Choice for install mode.
 ####     - None : no install target
 ####     - Install : create a install target
-####     - Package : create a packake 
+####     - Package : create a packake
 SET(INSTALL_MODE "Install" CACHE STRING "Choose install mode between : None, Install, Package")
 IF(${INSTALL_MODE} STREQUAL "Install")
 	# If an install target is selected, propose to install langage files
