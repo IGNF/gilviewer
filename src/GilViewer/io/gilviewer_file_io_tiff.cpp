@@ -1,4 +1,7 @@
 #include "gilviewer_file_io_tiff.hpp"
+
+#include <boost/gil/extension/io_new/tiff_all.hpp>
+
 #include "gilviewer_io_factory.hpp"
 
 using namespace boost;
