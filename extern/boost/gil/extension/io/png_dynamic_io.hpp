@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <boost/mpl/bool.hpp>
 #include <boost/shared_ptr.hpp>
-#include "boost/gil/extension/dynamic_image/dynamic_image_all.hpp"
+#include "../dynamic_image/dynamic_image_all.hpp"
 #include "io_error.hpp"
 #include "png_io.hpp"
 #include "png_io_private.hpp"
@@ -88,7 +88,7 @@ public:
         int bit_depth, color_type, interlace_type;
         png_get_IHDR(_png_ptr, _info_ptr,
                      &width, &height,&bit_depth,&color_type,&interlace_type,
-                     int_p_NULL, int_p_NULL);
+                     NULL, NULL);
         if (!construct_matched(im,png_type_format_checker(bit_depth,color_type))) {
             io_error("png_reader_dynamic::read_image(): no matching image type between those of the given any_image and that of the file");
         } else {

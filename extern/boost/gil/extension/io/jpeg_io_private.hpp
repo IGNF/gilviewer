@@ -22,8 +22,9 @@
 #include <stdio.h>
 #include <boost/static_assert.hpp>
 #include <vector>
-#include "boost/gil/gil_all.hpp"
+#include "../../gil_all.hpp"
 #include "io_error.hpp"
+#include <jpeglib.h>
 
 namespace boost { namespace gil {
 
