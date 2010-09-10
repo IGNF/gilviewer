@@ -119,10 +119,12 @@ protected:
 class histogram_plotter : public wxPanel
 {
 public:
-    histogram_plotter(image_layer_settings_control* parent, const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL);
-    virtual ~histogram_plotter() {;}
+    typedef std::vector<std::vector<double> > histogram_type;
 
-    inline std::vector< std::vector< double > > &Data() { return m_histogram; }
+    histogram_plotter(image_layer_settings_control* parent, const unsigned int redChannel, const unsigned int greenChannel, const unsigned int blueChannel, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL);
+
+    void set_histogram(boost::shared_ptr<const histogram_type>& histo) { m_histogram = histo; }
+
     double &Min(){ return m_min; }
     double &Max(){ return m_max; }
 
@@ -138,7 +140,7 @@ public:
 
 private:
     image_layer_settings_control* m_parent;
-    std::vector< std::vector< double > > m_histogram;
+    boost::shared_ptr<const histogram_type> m_histogram;
     double m_min, m_max;
     bool m_isInit;
     unsigned int m_redChannel, m_greenChannel, m_blueChannel;

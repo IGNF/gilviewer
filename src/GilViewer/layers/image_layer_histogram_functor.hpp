@@ -43,12 +43,15 @@ Authors:
 
 struct histogram_functor
 {
-    typedef void result_type;
-    histogram_functor( std::vector< std::vector<double> > &histo , const double mini , const double maxi ) : m_histo(histo)
-    {
-        m_scale = 255. / (maxi-mini);
-        m_offset = -mini * m_scale;
-    }
+    typedef std::vector< std::vector<double> > histogram_type;
+    typedef boost::shared_ptr<const histogram_type> result_type;
+
+    const static std::size_t histogram_size = 256;
+
+    histogram_functor(const double mini, const double maxi):
+        m_scale(255. / (maxi-mini)),
+        m_offset(-mini * m_scale)
+    {}
 
     template <typename ViewType>
     typename boost::enable_if_c<
@@ -56,9 +59,11 @@ struct histogram_functor
       result_type >::type
     operator()(const ViewType& v) const
     {
+        boost::shared_ptr<histogram_type> histo(new histogram_type(1, std::vector<double>(histogram_size)));
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
         for (; it_begin!=it_end; ++it_begin)
-            ++m_histo[0][ (size_t) (boost::gil::at_c<0>(*it_begin)*m_scale+m_offset) ];
+            increment_histo<0, ViewType>(it_begin, *histo);
+        return histo;
     }
 
     template <typename ViewType>
@@ -67,16 +72,29 @@ struct histogram_functor
       result_type >::type
     operator()(const ViewType& v) const
     {
+        boost::shared_ptr<histogram_type> histo(new histogram_type(3, std::vector<double>(histogram_size)));
+
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
         for (; it_begin!=it_end; ++it_begin)
         {
-            ++m_histo[0][ (size_t) (boost::gil::at_c<0>(*it_begin)*m_scale+m_offset)];
-            ++m_histo[1][ (size_t) (boost::gil::at_c<1>(*it_begin)*m_scale+m_offset)];
-            ++m_histo[2][ (size_t) (boost::gil::at_c<2>(*it_begin)*m_scale+m_offset)];
+            increment_histo<0, ViewType>(it_begin, *histo);
+            increment_histo<1, ViewType>(it_begin, *histo);
+            increment_histo<2, ViewType>(it_begin, *histo);
         }
+        return histo;
     }
 
-    std::vector< std::vector<double> >& m_histo;
+private:
+    template<size_t ChannelNb, typename ViewType>
+    void increment_histo(typename ViewType::iterator it, histogram_type& histo) const
+    {
+        const size_t id = static_cast<size_t>(boost::gil::at_c<ChannelNb>(*it)*m_scale + m_offset);
+        assert(id >=0);
+        assert(id < histo[ChannelNb].size());
+        assert(histo.size() == 3);
+        ++histo[ChannelNb][id];
+    }
+
     double m_scale;
     double m_offset;
 };

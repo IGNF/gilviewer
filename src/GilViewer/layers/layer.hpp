@@ -63,12 +63,13 @@ class layer
 {
 public:
     typedef boost::shared_ptr< layer > ptrLayerType;
+    typedef std::vector<std::vector<double> > histogram_type;
 
     layer(const boost::function<void()> &notifyLayerControl = notify_none, const boost::function<void()> &notifyLayerSettingsControl = notify_none);
     static void notify_none() {}
 
     virtual ~layer() {}
-    
+
     /// Set the callback to notify the LayerControl from changes
     void notify_layer_control( const boost::function<void()> &notifier ) { notifyLayerControl_ = notifier; }
     /// Set the callback to notify the LayerSettingsControl from changes
@@ -159,7 +160,7 @@ public:
     virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 
     virtual unsigned int nb_components() const { return 0; }
-    virtual void histogram(std::vector< std::vector<double> > &histo, double &min, double &max) const {}
+    virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const { return boost::shared_ptr<const histogram_type>(); }
     virtual std::string pixel_value(int i, int j) const { return std::string(); }
     // Fin methodes specifiques ImageLayer
 

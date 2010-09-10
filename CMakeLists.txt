@@ -13,7 +13,7 @@ PROJECT(GilViewer)
 
 IF(UNIX)
         INCLUDE_DIRECTORIES( /usr/local/include /usr/include)
-        add_definitions(-Wall)
+        add_definitions(-Wall -D_GLIBCXX_DEBUG)
         #add_definitions(-pedantic)
 ENDIF(UNIX)
 

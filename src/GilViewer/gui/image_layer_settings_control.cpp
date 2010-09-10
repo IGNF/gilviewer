@@ -567,7 +567,7 @@ void histogram_plotter::on_mouse_move(wxMouseEvent &event)
     {
 
         //on teste si l'histogramme a bien été calculé sur le canal 0, sinon on quitte
-        if(m_histogram[0].begin() == m_histogram[0].end())
+        if(!m_histogram)
             return;
 
         int width, height;
@@ -575,7 +575,9 @@ void histogram_plotter::on_mouse_move(wxMouseEvent &event)
 
         unsigned int window_width = static_cast<unsigned int>(width) - static_cast<unsigned int>(HISTOGRAM_LEFT_MARGIN) - static_cast<unsigned int>(HISTOGRAM_RIGHT_MARGIN);
         //unsigned int window_height = static_cast<unsigned int>(height) - static_cast<unsigned int>(HISTOGRAM_UP_MARGIN) - static_cast<unsigned int>(HISTOGRAM_BOTTOM_MARGIN);
-        double step_width = window_width / static_cast<double>(m_histogram[0].size()-1.);
+
+        const histogram_type& histo = *m_histogram;
+        double step_width = window_width / static_cast<double>(histo[0].size()-1.);
 
         /*
                  // Marche pô !!!
@@ -586,7 +588,7 @@ void histogram_plotter::on_mouse_move(wxMouseEvent &event)
                  m_parent->GetStatusBar()->SetStatusText( text );
                  */
 
-        const float nb_bins = static_cast<float>( m_histogram[0].size() - 1. );
+        const float nb_bins = static_cast<float>( histo[0].size() - 1. );
 
         wxString text;
         if (event.m_x < static_cast<int>(HISTOGRAM_LEFT_MARGIN) || event.m_x > width-static_cast<int>(HISTOGRAM_RIGHT_MARGIN) )
@@ -599,15 +601,15 @@ void histogram_plotter::on_mouse_move(wxMouseEvent &event)
             //coordonnee reelle en x dans la courbe d'histo
             float coordX = m_min + (m_max-m_min) / nb_bins * static_cast<float>( coordXInt );
 
-            if (m_histogram.size() == 1)
-                text << coordX << wxT(" - ") << m_histogram[0][ coordXInt ];
+            if (histo.size() == 1)
+                text << coordX << wxT(" - ") << histo[0][ coordXInt ];
             else
             {
                 text << coordX << _(" - Image = (");
-                for(unsigned int channel = 0; channel < m_histogram.size(); ++channel)
+                for(unsigned int channel = 0; channel < histo.size(); ++channel)
                 {
-                    text << channel << wxT(":") << m_histogram[channel][ coordXInt ];
-                    if(channel != m_histogram.size()-1)
+                    text << channel << wxT(":") << histo[channel][ coordXInt ];
+                    if(channel != histo.size()-1)
                         text << wxT(",");
                 }
                 text << wxT(")");
@@ -633,19 +635,21 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
 
 
         //on teste si l'histogramme a bien été calculé sur le canal 0, sinon on quitte
-        if(m_histogram[0].begin() == m_histogram[0].end())
+        if(!m_histogram)
             return;
+
+        const histogram_type& histo = *m_histogram;
 
         unsigned int window_width = static_cast<unsigned int>(width) - static_cast<unsigned int>(HISTOGRAM_LEFT_MARGIN) - static_cast<unsigned int>(HISTOGRAM_RIGHT_MARGIN);
         unsigned int window_height = static_cast<unsigned int>(height) - static_cast<unsigned int>(HISTOGRAM_UP_MARGIN) - static_cast<unsigned int>(HISTOGRAM_BOTTOM_MARGIN);
-        double step_width = window_width / static_cast<double>(m_histogram[0].size()-1.);
+        double step_width = window_width / static_cast<double>(histo[0].size()-1.);
 
         // On distingue les cas 1 et n canaux (on suppose pour l'instant n=3 ...)
-        if (m_histogram.size() == 1)
+        if (histo.size() == 1)
         {
             dc.SetPen( *wxBLACK_PEN);
-            double max_value = *std::max_element(m_histogram[0].begin(), m_histogram[0].end());
-            double min_value = *std::min_element(m_histogram[0].begin(), m_histogram[0].end());
+            double max_value = *std::max_element(histo[0].begin(), histo[0].end());
+            double min_value = *std::min_element(histo[0].begin(), histo[0].end());
             double step_height = window_height / static_cast<double>(max_value-min_value);
 
             wxString min_string, max_string;
@@ -659,13 +663,13 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
                         static_cast<wxCoord>(HISTOGRAM_UP_MARGIN) );
 
             unsigned int i;
-            for (i=0; i<m_histogram[0].size()-1; i++)
+            for (i=0; i<histo[0].size()-1; i++)
                 dc.DrawLine(
                         static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+i*step_width),
                         static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
-                                             -step_height*m_histogram[0][i]),
+                                             -step_height*histo[0][i]),
                         static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width), 						static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
-                                                                                                                                                     -step_height*m_histogram[0][i+1])
+                                                                                                                                                     -step_height*histo[0][i+1])
                         );
         }
         else //nombre de canaux quelconque
@@ -673,10 +677,10 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
             // On calcule l'etendue maximale. On a donc besoin du min des min des n canaux et du max des max des n canaux.
             double	max_value = std::numeric_limits<double>::min();
             double min_value = std::numeric_limits<double>::max();
-            for(unsigned int channel = 0; channel < m_histogram.size(); ++channel)
+            for(unsigned int channel = 0; channel < histo.size(); ++channel)
             {
-                max_value = std::max( max_value, *std::max_element(m_histogram[channel].begin(), m_histogram[channel].end()) );
-                min_value = std::min( min_value, *std::min_element(m_histogram[channel].begin(), m_histogram[channel].end()) );
+                max_value = std::max( max_value, *std::max_element(histo[channel].begin(), histo[channel].end()) );
+                min_value = std::min( min_value, *std::min_element(histo[channel].begin(), histo[channel].end()) );
             }
 
             double step_height = static_cast<double>(window_height) / (max_value - min_value);
@@ -684,7 +688,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
             unsigned int i;
 
             //on affiche en RGB les canaux qui sont respectivement affichés en RGB dans l'image, et en noir les autres
-            for(unsigned int channel = 0; channel < m_histogram.size(); ++channel)
+            for(unsigned int channel = 0; channel < histo.size(); ++channel)
             {
                 //choix de la couleur
                 if(channel == m_redChannel)
@@ -697,13 +701,13 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
                     dc.SetPen( *wxBLACK_PEN );
 
                 //affichage de l'histo
-                for (i=0; i<m_histogram[channel].size()-1; i++)
+                for (i=0; i<histo[channel].size()-1; i++)
                     dc.DrawLine(
                             static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+i*step_width),
                             static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
-                                                 -step_height*m_histogram[channel][i]),
+                                                 -step_height*histo[channel][i]),
                             static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width), 							static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
-                                                                                                                                                                     -step_height*m_histogram[channel][i+1])
+                                                                                                                                                                     -step_height*histo[channel][i+1])
                             );
 
             }
@@ -749,7 +753,12 @@ void thread_histogram::OnExit()
 
 void *thread_histogram::Entry()
 {
-    m_parent->layercontrol()->layers()[m_parent->index()]->histogram(m_parent->histogramplotter()->Data(), m_parent->histogramplotter()->Min(), m_parent->histogramplotter()->Max() );
+    double& mini = m_parent->histogramplotter()->Min();
+    double& maxi = m_parent->histogramplotter()->Max();
+
+    layer::ptrLayerType p_layer = m_parent->layercontrol()->layers()[m_parent->index()];
+    boost::shared_ptr<const histogram_plotter::histogram_type> histo = p_layer->histogram(mini, maxi);
+    m_parent->histogramplotter()->set_histogram(histo);
 
     return NULL;
 }

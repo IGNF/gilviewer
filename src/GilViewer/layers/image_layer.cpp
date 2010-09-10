@@ -127,15 +127,14 @@ struct nb_components_visitor : public boost::static_visitor<unsigned int>
     result_type operator()(const ViewType& v) const { return apply_operation(v, nb_components_functor()); }
 };
 
-struct histogram_visitor : public boost::static_visitor<>
+struct histogram_visitor : public boost::static_visitor<shared_ptr<const histogram_functor::histogram_type> >
 {
-    histogram_visitor(vector< vector<double> > &histo, double &min, double &max) : m_histo(histo), m_min(min), m_max(max) {}
+    histogram_visitor(double &min, double &max) : m_min(min), m_max(max) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, histogram_functor(m_histo, m_min, m_max)); }
+    result_type operator()(const ViewType& v) const { return apply_operation(v, histogram_functor(m_min, m_max)); }
 
 private:
-    vector< vector<double> > &m_histo;
     double m_min, m_max;
 };
 
@@ -300,17 +299,12 @@ string image_layer::type_channel() const
     return apply_visitor( type_channel_visitor(), m_variant_view->value );
 }
 
-void image_layer::histogram(vector< vector<double> > &histo, double &min, double &max) const
+shared_ptr<const layer::histogram_type> image_layer::histogram(double &min, double &max) const
 {
     min = m_minmaxResult.first;
     max = m_minmaxResult.second;
-    histo.clear();
-    histo.resize( nb_components() );
-    for (unsigned int i=0;i<nb_components();++i)
-        histo[i].resize(256);
-    //apply_operation( m_view->value, histogram_functor(histo,min,max) );
-    histogram_visitor hv(histo, min, max);
-    apply_visitor( hv, m_variant_view->value );
+    histogram_visitor hv(min, max);
+    return apply_visitor(hv, m_variant_view->value);
 }
 
 string image_layer::pixel_value(int i, int j) const
