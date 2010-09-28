@@ -100,8 +100,11 @@ bool sample_subimage_app::OnInit()
     {
         shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object("jpg");
         m_frame->add_layer( file->load(filename) );
-        m_frame->add_layer( file->load(filename, 1200, 200 , 950, 550) );
-        m_frame->add_layer( file->load(filename, 1000, 650, 450, 250) );
+        boost::shared_ptr<layer> sublayer = file->load(filename, 1200, 200 , 950, 550);
+        m_frame->add_layer( sublayer );
+        sublayer->translation_x(100);
+        sublayer->translation_y(250);
+        //m_frame->add_layer( file->load(filename, 1000, 650, 450, 250) );
     }
     catch (const std::exception &e)
     {
