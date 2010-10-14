@@ -42,6 +42,24 @@ Authors:
 #include <boost/gil/pixel.hpp>
 #include <boost/gil/extension/io_new/detail/gil_extensions.hpp>
 
+template <typename Type>
+struct get_right_type_for_display
+{
+    typedef Type type;
+};
+
+template <>
+struct get_right_type_for_display<unsigned char>
+{
+    typedef unsigned int type;
+};
+
+template <>
+struct get_right_type_for_display<char>
+{
+    typedef int type;
+};
+
 template<typename ViewType, typename CoordType>
 inline bool isInside(const ViewType& v, const CoordType i, const CoordType j)
 {
@@ -63,7 +81,7 @@ struct any_view_image_position_to_string_functor
         typedef typename boost::gil::get_pixel_type<ViewType>::type g_pixel_t;
         typedef typename boost::gil::kth_element_type<g_pixel_t,0>::type element_0_t;
         if (isInside(v, i_,j_))
-            oss_ << (element_0_t) boost::gil::at_c<0>( v(i_,j_) );
+            oss_ << (typename get_right_type_for_display<element_0_t>::type) boost::gil::at_c<0>( v(i_,j_) );
         else
             oss_ << "outside";
     }
@@ -82,7 +100,9 @@ struct any_view_image_position_to_string_functor
         typedef typename kth_element_type<g_pixel_t,2>::type element_2_t;
 
         if (isInside(v, i_,j_))
-            oss_ << (element_0_t)boost::gil::at_c<0>(v(i_,j_)) << "," << (element_1_t)boost::gil::at_c<1>(v(i_,j_)) << "," << (element_2_t)boost::gil::at_c<2>(v(i_,j_));
+            oss_ << (typename get_right_type_for_display<element_0_t>::type)boost::gil::at_c<0>(v(i_,j_)) << ","
+                 << (typename get_right_type_for_display<element_1_t>::type)boost::gil::at_c<1>(v(i_,j_)) << ","
+                 << (typename get_right_type_for_display<element_2_t>::type)boost::gil::at_c<2>(v(i_,j_));
         else
             oss_ << "outside";
     }
