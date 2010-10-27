@@ -49,7 +49,7 @@ Authors:
 #	include <locale.h>
 #endif
 
-#include "GilViewer/config/config.hpp"
+#include "../src/GilViewer/config/config.hpp"
 #if GILVIEWER_USE_GDAL
 #   include <gdal/ogrsf_frmts.h>
 #endif // GILVIEWER_USE_GDAL
