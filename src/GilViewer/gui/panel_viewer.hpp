@@ -225,7 +225,6 @@ private:
     panel_viewer* m_panelViewer;
 };
 
-typedef gilviewer_file_drop_target GilViewerFileDropTarget;
 #endif // wxUSE_DRAG_AND_DROP
 
 #endif /*PANELVIEWER_HPP_*/
