@@ -49,7 +49,8 @@ Authors:
 #include <gdal/ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
-#include "../gui/VectorLayerSettingsControl.hpp"
+#include "../gui/vector_layer_settings_control.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 #include "draw_geometry_visitor.hpp"
 
