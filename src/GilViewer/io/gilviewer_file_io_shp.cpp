@@ -15,9 +15,13 @@
 using namespace boost;
 using namespace std;
 
+#include <iostream>
+
 shared_ptr<layer> gilviewer_file_io_shp::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
-    return gilviewer_file_io::load(filename);
+    std::cout << __FUNCTION__ << std::endl;
+    return shared_ptr<layer>(new ogr_vector_layer("youhou",filename));
+    //return gilviewer_file_io::load(filename);
 }
 
 void gilviewer_file_io_shp::save(shared_ptr<layer> layer, const string &filename)
