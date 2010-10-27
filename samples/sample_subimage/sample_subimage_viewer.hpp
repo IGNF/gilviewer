@@ -40,10 +40,10 @@ Authors:
 #define __SAMPLE_SUBIMAGE_VIEWER_HPP__
 
 
-#include "GilViewer/layers/layer.hpp"
+#include "../src/GilViewer/layers/layer.hpp"
 
-#include "GilViewer/gui/basic_viewer_frame.hpp"
-#include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "../src/GilViewer/gui/basic_viewer_frame.hpp"
+#include "../src/GilViewer/convenient/macros_gilviewer.hpp"
 
 #include "sample_subimage.hpp"
 
