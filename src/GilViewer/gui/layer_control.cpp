@@ -206,7 +206,7 @@ void layer_control::add_row(const std::string &name, layer_settings_control *lay
 {
     // Le nom du layer a une longueur maximale de 20 caracteres
     wxString layerName(name.substr(0, 50).c_str(), *wxConvCurrent);
-    std::string ln(layerName.fn_str());
+    std::string ln((const char*)(layerName.mb_str()) );
 
     // on ajoute la ligne dans le conteneur
     unsigned int nb = m_rows.size();
@@ -508,7 +508,7 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
             progress->Update(i, m);
         }
 
-        string filename(names[i].fn_str());
+        string filename((const char*) (names[i].mb_str()) );
         string extension(filesystem::extension(filename));
         extension = extension.substr(1,extension.size()-1);
         to_lower(extension);
@@ -785,7 +785,7 @@ void layer_control::on_save_display_config_button(wxCommandEvent& event)
     wxFileDialog* fd = new wxFileDialog(this, _("Save display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (fd->ShowModal() == wxID_OK)
     {
-        std::string savename(fd->GetPath().fn_str());
+        std::string savename((const char*) (fd->GetPath().mb_str()) );
         if (filesystem::extension(savename) != ".xml")
             filesystem::change_extension(savename, ".xml");
 
@@ -804,7 +804,7 @@ void layer_control::on_load_display_config_button(wxCommandEvent& event)
         message << _("Reading a display configuration file: ") << fd->GetPath();
         ::wxLogMessage(message);
 
-        std::string loadname(fd->GetPath().fn_str());
+        std::string loadname((const char*) (fd->GetPath().mb_str()) );
         if (filesystem::extension(loadname) != ".xml")
         {
             wxLogMessage(_("Display configuration file must have the extension .xml !"), _("Error!"));
