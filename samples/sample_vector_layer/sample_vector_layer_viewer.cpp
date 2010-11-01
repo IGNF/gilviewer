@@ -72,7 +72,7 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 {
 #if defined(__WXMSW__)
 	// Sous windows, on va chercher l'image dans les resources
-	wxIcon icon("logo_matis_small");
+	wxIcon icon(wxT("logo_matis_small") );
 	SetIcon (icon);
 #else
 	SetIcon(wxICON(LOGO_MATIS_small));
