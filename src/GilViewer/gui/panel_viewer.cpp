@@ -194,7 +194,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         m_applicationSettings = new application_settings(this, wxID_ANY);
 
 #if wxUSE_DRAG_AND_DROP
-    SetDropTarget(new GilViewerFileDropTarget(this));
+    SetDropTarget(new gilviewer_file_drop_target(this));
 #endif // wxUSE_DRAG_AND_DROP
     // Avoids flickering effect under windows !!!
     //	SetFocus();
