@@ -349,25 +349,6 @@ void image_layer::gamma(double gamma)
     m_gamma=gamma;
 }
 
-/*
-layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
-{
-    if(x0<0) x0=0;
-    if(y0<0) y0=0;
-    if(x1>m_view->value.width ()) x1=m_view->value.width ();
-    if(y1>m_view->value.height()) y1=m_view->value.height();
-    if(x0>=x1 || y0>=y1) return ptrLayerType();
-    view_t::type crop = subimage_view(m_view->value, x0, y0, x1-x0, y1-y0 );
-    view_ptr crop_ptr(new view_t(crop));
-    boost::filesystem::path file(boost::filesystem::system_complete(filename()));
-    std::ostringstream oss;
-    oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
-    file.replace_extension(oss.str() + file.extension());
-    std::string name = name + oss.str();
-    return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
-}
-*/
-
 layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
 {
     if(x0<0) x0=0;
