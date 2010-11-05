@@ -312,6 +312,8 @@ public:
         io_error_if(TIFFSetField(_tp,TIFFTAG_BITSPERSAMPLE, tiff_write_support_private<typename channel_type<View>::type,
                                                                      typename color_space_type<View>::type>::bit_depth)!=1);
         io_error_if(TIFFSetField(_tp,TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(_tp, 0))!=1);
+        // Fix floating point formats writing
+        if (!boost::is_integral<typename channel_type<View>::type>::value) io_error_if(TIFFSetField(_tp, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP) != 1);
         std::vector<pixel<typename channel_type<View>::type,
                           layout<typename color_space_type<View>::type> > > row(view.width());
         for (int y=0;y<view.height();++y) {
