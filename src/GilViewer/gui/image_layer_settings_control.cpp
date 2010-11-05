@@ -424,7 +424,7 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     //Branchement du choix de la CLUT
     if(m_nbComponents == 1)
     {
-        std::string fileLUT(m_filePicker_CLUT->GetPath().fn_str() );
+        std::string fileLUT(m_filePicker_CLUT->GetPath().mb_str() );
         if(boost::filesystem::exists(fileLUT))
         {
             if ( boost::filesystem::basename(fileLUT) == "random" )
