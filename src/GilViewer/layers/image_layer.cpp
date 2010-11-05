@@ -384,7 +384,7 @@ layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
     std::ostringstream oss;
     oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
     file.replace_extension(oss.str() + file.extension());
-    std::string name = name + oss.str();
+    std::string name = file.string();
     return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
 }
 
