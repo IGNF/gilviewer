@@ -69,6 +69,7 @@ endif()
 #install config file
 # TODO
 if(WIN32)
+	INSTALL (EXPORT GilViewer-targets DESTINATION ${TARGET_CONFIG_INSTALL_PATH} )
 else()
 	INSTALL (EXPORT GilViewer-targets DESTINATION ${TARGET_CONFIG_INSTALL_PATH} )
 endif()
