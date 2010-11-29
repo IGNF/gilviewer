@@ -57,7 +57,14 @@ void sample_plugin::process()
             //boost::gil::apply_operation(boost::gil::view(imagelayer->image()->value), type_channel_functor());
             //boost::apply_visitor( sample_plugin_visitor(), boost::ref(imagelayer->variant_view()->value) );
             //boost::apply_visitor( sample_plugin_visitor(), boost::ref(imagelayer->variant_view()->value) );
-            sample_plugin_visitor spv;
+
+
+
+            // Works, but commented to avoid compilation warning
+            //sample_plugin_visitor spv;
+
+
+
             //imagelayer->variant_view()->value.apply_visitor( spv );
         }
     }
