@@ -3,4 +3,4 @@
 
 #define GILVIEWER_USE_GDAL @GILVIEWER_USE_GDAL_OGR@
 
-#endif /*CONFIG_BOOST_H_*/
+#endif /*__CONFIG_GILVIEWER_HPP__*/
