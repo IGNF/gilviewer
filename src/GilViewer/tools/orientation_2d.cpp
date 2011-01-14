@@ -58,8 +58,9 @@ bool orientation_2d::read_ori_from_image_file(const string &filename)
 
     if( !read_ori_from_ori_file(path+"/"+basename+".ori") )
     {
-        if( !read_ori_from_tfw_file(path+"/"+basename+".tfw") )
-            return false;
+        if( !read_ori_from_tfw_file(path+"/"+basename+".tfw") &&
+            !read_ori_from_tfw_file(path+"/"+basename+".jgw") )
+                return false;
         return true;
     }
     else
