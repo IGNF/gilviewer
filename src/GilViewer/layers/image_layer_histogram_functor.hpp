@@ -91,7 +91,7 @@ private:
         const size_t id = static_cast<size_t>(boost::gil::at_c<ChannelNb>(*it)*m_scale + m_offset);
         assert(id >=0);
         assert(id < histo[ChannelNb].size());
-        assert(histo.size() == 3);
+        //assert(histo.size() == 3);
         ++histo[ChannelNb][id];
     }
 

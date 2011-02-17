@@ -97,11 +97,12 @@ struct channel_converter_functor
         }
         else
         {
-            unsigned char index = (unsigned char) (m_255_over_delta * (src - m_min_src));
-            unsigned int index_gamma =      1000 * m_1_over_delta   * (src - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
-            boost::gil::at_c<0>(dst) = m_lut[index]     * m_gamma_array[index_gamma];
-            boost::gil::at_c<1>(dst) = m_lut[256+index] * m_gamma_array[index_gamma];
-            boost::gil::at_c<2>(dst) = m_lut[512+index] * m_gamma_array[index_gamma];
+            // BV: apply gamma BEFORE lut
+            unsigned int index_gamma = 1000 * m_1_over_delta * (src - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
+            unsigned char index = (unsigned char) (255 * m_gamma_array[index_gamma]);
+			boost::gil::at_c<0>(dst) = m_lut[index];
+            boost::gil::at_c<1>(dst) = m_lut[256+index];
+            boost::gil::at_c<2>(dst) = m_lut[512+index];
         }
     }
 
@@ -112,36 +113,23 @@ struct channel_converter_functor
     operator()(const PixelType& src, boost::gil::dev3n8_pixel_t& dst)  const
     {
         using namespace boost::gil;
+		// convert from [m_min_src, m_min_src+delta] to [0,1]
+		int r = 1000 * m_1_over_delta * (src[m_red_index] - m_min_src);
+		int g = 1000 * m_1_over_delta * (src[m_green_index] - m_min_src);
+		int b = 1000 * m_1_over_delta * (src[m_blue_index] - m_min_src);
 
-        if (src[m_red_index] < m_min_src)
-            boost::gil::at_c<0>(dst)  = m_atc0min;
-        else if (src[m_red_index] > m_max_src)
-            boost::gil::at_c<0>(dst)  = m_atc0max;
-        else
-        {
-            unsigned int index_gamma = 1000 * m_1_over_delta * (src[m_red_index] - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
-            boost::gil::at_c<0>(dst) = (unsigned char) (m_255_over_delta*(src[m_red_index] - m_min_src)) * m_gamma_array[index_gamma];
-        }
+		// clamp
+        if (r < 0) r = 0;
+        else if (r > 1000) r = 1000;
+		if (g < 0) g = 0;
+        else if (g > 1000) g = 1000;
+		if (b < 0) b = 0;
+        else if (b > 1000) b = 1000;
 
-        if (src[m_green_index] < m_min_src)
-            boost::gil::at_c<1>(dst)  = m_atc1min;
-        else if (src[m_green_index] > m_max_src)
-            boost::gil::at_c<1>(dst)  = m_atc1max;
-        else
-        {
-            unsigned int index_gamma = 1000 * m_1_over_delta * (src[m_green_index] - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
-            boost::gil::at_c<1>(dst) = (unsigned char) (m_255_over_delta*(src[m_green_index] - m_min_src)) * m_gamma_array[index_gamma];
-        }
-
-        if (src[m_blue_index] < m_min_src)
-            boost::gil::at_c<2>(dst)  = m_atc2min;
-        else if (src[m_blue_index] > m_max_src)
-            boost::gil::at_c<2>(dst)  = m_atc2max;
-        else
-        {
-            unsigned int index_gamma = 1000 * m_1_over_delta * (src[m_blue_index] - m_min_src); // TODO: 1000 = m_nbelt_tab_gamma !!!!
-            boost::gil::at_c<2>(dst) = (unsigned char) (m_255_over_delta*(src[m_blue_index] - m_min_src)) * m_gamma_array[index_gamma];
-        }
+		// switch back to dest type
+		boost::gil::at_c<0>(dst) = (unsigned char)(255*m_gamma_array[r]);
+		boost::gil::at_c<1>(dst) = (unsigned char)(255*m_gamma_array[g]);
+		boost::gil::at_c<2>(dst) = (unsigned char)(255*m_gamma_array[b]);
     }
 };
 

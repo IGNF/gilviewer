@@ -12,6 +12,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT(GilViewer)
 
 #set(${CMAKE_BUILD_TYPE} "Release")
+set(BUILD_SHARED_LIBS ON)
 message( STATUS ${CMAKE_BUILD_TYPE} )
 #string( COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Release" BOOLEAN_BUILD_TYPE_RELEASE )
 #if( ${BOOLEAN_BUILD_TYPE_RELEASE} )
@@ -97,17 +98,25 @@ if(WIN32)
 endif(WIN32)
 
 
-#####################################
+###########################################################
 ### Recherche des packages necessaires a la compilation ###
-#####################################
+###########################################################
+if(WIN32)
+find_package(TIFF NO_MODULE)
+else()
 find_package(TIFF REQUIRED)
+endif()
 if(TIFF_FOUND)
 	include_directories(${TIFF_INCLUDE_DIR})
 else()
 	message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
 endif()
 
+if(WIN32)
+find_package(JPEG NO_MODULE)
+else()
 find_package(JPEG REQUIRED)
+endif()
 if(JPEG_FOUND)
 	include_directories(${JPEG_INCLUDE_DIR})
 else()
@@ -138,6 +147,7 @@ if(NOT WIN32)
 else()
 	#Find wxWidgets
 	set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
+	set(wxWidgets_USE_STATIC OFF)
 	find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png expat)
 	if(wxWidgets_FOUND)
 		message (STATUS "wxWidgets_DEFINITIONS " "${wxWidgets_DEFINITIONS}")

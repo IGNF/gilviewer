@@ -344,9 +344,8 @@ void image_layer::gamma(double gamma)
         m_gamma = 1. / gamma;
         for (unsigned int i=0; i<= m_gamma_array_size; ++i)
             m_gamma_array[i] = std::pow(((double) i)/ m_gamma_array_size, m_gamma);
-        m_gamma = gamma;
+		m_gamma = gamma;
     }
-    m_gamma=gamma;
 }
 
 layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const

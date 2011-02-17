@@ -39,6 +39,8 @@ extern "C" {
 #include "device.hpp"
 #include "is_allowed.hpp"
 
+#undef min  
+#undef max
 
 namespace boost { namespace gil { namespace detail {
 
