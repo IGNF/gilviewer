@@ -45,6 +45,8 @@
 #include "../src/GilViewer/gui/panel_manager.hpp"
 #include "../src/GilViewer/plugins/plugin_manager.hpp"
 
+#include "../src/GilViewer/config/config_plugins.hpp"
+
 #include "gilviewer_frame.hpp"
 
 BEGIN_EVENT_TABLE(gilviewer_frame,basic_viewer_frame)
@@ -106,5 +108,5 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
     SetMenuBar( m_panelviewer->menubar() );
     m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
-    plugin_manager::instance()->register_plugins(".");
+    plugin_manager::instance()->register_plugins( plugins_dir );
 }
