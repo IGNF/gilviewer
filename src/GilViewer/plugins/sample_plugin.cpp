@@ -73,13 +73,9 @@ void sample_plugin::process()
 
             // Works, but commented to avoid compilation warning
             //sample_plugin_visitor spv;
-
-
-
             //imagelayer->variant_view()->value.apply_visitor( spv );
         }
     }
-    cout << "sample_plugin::process()" << endl;
 }
 
 wxWindow* sample_plugin::gui()
