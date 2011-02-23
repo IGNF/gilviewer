@@ -1,17 +1,13 @@
-if(WIN32)
-    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
+set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
                                            ${Boost_LIBRARIES}
 		    							   ${TIFF_LIBRARIES}
 			    						   ${JPEG_LIBRARIES}
-						    			   tinyxml)
+						    			   tinyxml)								   
+if(WIN32)    
 else()
-    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
-                                           ${Boost_LIBRARIES}
-		    							   ${TIFF_LIBRARIES}
-			    						   ${JPEG_LIBRARIES}
+    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES}
 		    							   ${PNG_LIBRARIES}
-			    						   ${ZLIB_LIBRARIES}
-						    			   tinyxml)
+			    						   ${ZLIB_LIBRARIES})
 endif()
 
 # Option to choose to use GDAL/OGR

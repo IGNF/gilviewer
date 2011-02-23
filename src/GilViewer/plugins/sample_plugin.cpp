@@ -24,11 +24,22 @@ struct sample_plugin_visitor// : public boost::static_visitor<>
             result_type operator()(ViewType& v) const { boost::gil::apply_operation(v, sample_plugin_functor()); }
 };
 
-sample_plugin::sample_plugin() : plugin_base() {}
+sample_plugin::sample_plugin() : plugin_base()
+{
+    ::wxLogMessage(wxT("[sample_plugin::sample_plugin] start"));
+}
 
 void sample_plugin::process()
 {
-    layer_control *lc = panel_manager::instance()->panels_list()[0]->layercontrol();
+	::wxLogMessage(wxT("[sample_plugin::process] start"));
+	std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
+	if(v_pv.empty())
+	{
+		::wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
+		return;
+	}
+	layer_control *lc = v_pv[0]->layercontrol();
+    //layer_control *lc = panel_manager::instance()->panels_list()[0]->layercontrol();
     layer_control::iterator itb=lc->begin(), ite=lc->end();
     unsigned int i=0;
     for(;itb!=ite;++itb,++i)
@@ -73,6 +84,7 @@ void sample_plugin::process()
 
 wxWindow* sample_plugin::gui()
 {
+	::wxLogMessage(wxT("[sample_plugin::gui] start"));
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
     wxBoxSizer* bSizer1;
@@ -93,5 +105,6 @@ wxWindow* sample_plugin::gui()
 
 void sample_plugin::OnButton(wxCommandEvent& e)
 {
-        process();
+	::wxLogMessage(wxT("[sample_plugin::OnButton] start"));
+    process();
 }

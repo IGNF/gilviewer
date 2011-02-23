@@ -100,14 +100,14 @@ bool gilviewer_app::OnInit()
     try
     {
         m_frame = new gilviewer_frame((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
-	m_frame->AddLayersFromFiles( cmdFiles );
-	m_frame->Show();
+	    m_frame->AddLayersFromFiles( cmdFiles );
+	    m_frame->Show();
     }
     catch( std::exception &e )
     {
         GILVIEWER_LOG_EXCEPTION("Exception")
         wxString message(e.what(), *wxConvCurrent);
-	::wxMessageBox( message );
+	    ::wxMessageBox( message );
     }
 
     return true;

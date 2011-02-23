@@ -212,8 +212,8 @@ void image_layer::init()
 {
     alpha(255);
     m_minmaxResult = apply_visitor( min_max_visitor(), m_variant_view->value );
-    intensity_min(m_minmaxResult.first);
-    intensity_max(m_minmaxResult.second);
+    intensity_min(0.);
+    intensity_max(255.);
     transparent(false);
     transparency_max(0.);
     transparency_min(0.);
@@ -271,7 +271,10 @@ void image_layer::update(int width, int height)
         m_green=nb_channels-1;
     if(m_blue>=nb_channels)
         m_blue=nb_channels-1;
-    channel_converter_functor my_cc(intensity_min(), intensity_max(), m_gamma_array, *m_cLUT, m_red, m_green, m_blue);
+    channel_converter_functor my_cc(
+		intensity_min(), intensity_max(),
+		m_gamma_array, m_gamma_array_size,
+		*m_cLUT, m_red, m_green, m_blue);
     //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
     screen_image_visitor siv(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
     apply_visitor( siv, m_variant_view->value );

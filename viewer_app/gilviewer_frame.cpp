@@ -106,5 +106,5 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
     SetMenuBar( m_panelviewer->menubar() );
     m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
-    //plugin_manager::instance()->register_plugins("/home/olivier/work/dev/lib/gilviewer-googlecode/gilviewer-unstable/lib/");
+    plugin_manager::instance()->register_plugins(".");
 }
