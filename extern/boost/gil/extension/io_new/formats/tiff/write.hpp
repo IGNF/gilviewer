@@ -195,8 +195,9 @@ private:
         else
         {
             uint32 tw = info._tile_width, th = info._tile_length;
-            if(!_io_dev.check_tile_size( tw, th ))
-                ; // @todo: warn the user?
+            // @todo: warn the user?
+            //if(!_io_dev.check_tile_size( tw, th ))
+                //;
 
             // tile related tags
             _io_dev.template set_property<tiff_tile_width> ( tw );
@@ -310,11 +311,11 @@ private:
     {
         uint32 i = 0, j = 0;
         View tile_subimage_view;
-        while(i<src_view.height())
+        while(i<(uint32)src_view.height())
         {
-            while(j<src_view.width())
+            while(j<(uint32)src_view.width())
             {
-                if(j+tw<src_view.width() && i+th<src_view.height())
+                if(j+tw<(uint32)src_view.width() && i+th<(uint32)src_view.height())
                 {
                     // a tile is fully included in the image: just copy values
                     tile_subimage_view = subimage_view( src_view

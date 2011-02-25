@@ -13,7 +13,7 @@
 using namespace std;
 using namespace boost;
 
-plugin_base::plugin_base() : wxFrame(NULL, wxID_ANY, wxString(_("Plugion frame"))) {}
+plugin_base::plugin_base() : wxFrame(NULL, wxID_ANY, wxString(_("Plugin frame"))) {}
 
 plugin_base* load_plugin(const string &id, const string &path)
 {
