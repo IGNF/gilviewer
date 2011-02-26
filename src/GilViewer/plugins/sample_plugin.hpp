@@ -3,17 +3,12 @@
 
 #include "plugin_base.hpp"
 
-
-
-#include <boost/gil/image.hpp>
-#include <boost/gil/typedefs.hpp>
-#include <boost/gil/image_view_factory.hpp>
-#include <boost/gil/image_view.hpp>
-
 class sample_plugin : public plugin_base
 {
 public:
-    sample_plugin();
+    /// It is mandatory to provide an empty constructor (used to register the plugin)
+    sample_plugin() : plugin_base() {}
+    sample_plugin(const wxString &title);
     virtual void process();
     virtual wxWindow* gui();
 

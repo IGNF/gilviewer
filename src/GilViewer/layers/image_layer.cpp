@@ -211,7 +211,6 @@ private:
 void image_layer::init()
 {
     alpha(255);
-    m_minmaxResult = apply_visitor( min_max_visitor(), m_variant_view->value );
     intensity_min(0.);
     intensity_max(255.);
     transparent(false);
@@ -226,7 +225,10 @@ void image_layer::init()
 }
 
 image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const variant_view_ptr& v):
-        layer(), m_img(image), m_variant_view(v), m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
+    layer(),
+    m_img(image),
+    m_variant_view(v),
+    m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
 {
     if(!v)
     {
@@ -239,9 +241,26 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
     init();
 }
 
+image_layer::image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_):
+    layer(),
+    m_img( boost::shared_ptr<image_t>()),
+    m_variant_view(variant_view_),
+    m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
+{
+    name(name_);
+    filename(filename_);
+
+    init();
+}
+
 layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const string &name)
 {
     return ptrLayerType(new image_layer(image, name));
+}
+
+layer::ptrLayerType image_layer::create_image_layer(const variant_view_ptr &variant_view_, const string &name)
+{
+    return ptrLayerType(new image_layer(variant_view_, name));
 }
 
 void image_layer::update(int width, int height)

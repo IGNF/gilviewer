@@ -2,11 +2,11 @@
 #define __PLUGIN_BASE_HPP__
 
 #include <wx/wx.h>
-#if defined(__WIN32__)
+#ifdef _WINDOWS
 #   define IMPLEMENT_PLUGIN(name) extern "C" __declspec(dllexport) plugin_base* create_plugin_base() { return new name();};
 #else
 #   define IMPLEMENT_PLUGIN(name) extern "C" plugin_base* create_plugin_base() { return new name();};
-#endif
+#endif // _WINDOWS
 
 //the plugin interface (a.k.a. abstract class)
 //our plugin will contain GUI in itself - therefore we need to make it extend wxEvtHandler (or wxDialog for that matter)
@@ -14,6 +14,7 @@ class plugin_base : public wxFrame
 {
 public:
     plugin_base();
+    plugin_base(const wxString &title);
     virtual void process() = 0;
     virtual wxWindow* gui() = 0;
     void parent(wxWindow* parent);
