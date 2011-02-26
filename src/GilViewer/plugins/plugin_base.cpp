@@ -13,7 +13,8 @@
 using namespace std;
 using namespace boost;
 
-plugin_base::plugin_base() : wxFrame(NULL, wxID_ANY, wxString(_("Plugin frame"))) {}
+plugin_base::plugin_base() : wxFrame(NULL, wxID_ANY, wxString("", *wxConvCurrent)) {}
+plugin_base::plugin_base(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {}
 
 plugin_base* load_plugin(const string &id, const string &path)
 {
@@ -28,7 +29,6 @@ plugin_base* load_plugin(const string &id, const string &path)
         //check if the function is found
         if(pfncreate_plugin_base)
         {
-			GILVIEWER_LOG_ERROR("Loaded plugin " << path << " slash " << id)
             //Important: Use Detach(), otherwise the DLL will be unloaded once the wxDynamibLibrary object
             //goes out of scope
             dll.Detach();
@@ -36,10 +36,11 @@ plugin_base* load_plugin(const string &id, const string &path)
             plugin_base* plugin = pfncreate_plugin_base();
             return plugin;
         }
-	} else
-	{
-		GILVIEWER_LOG_ERROR("Could not load plugin " << path << " slash " << id)
-	}
+    }
+    else
+    {
+        GILVIEWER_LOG_ERROR("Could not load plugin " << path << " slash " << id)
+    }
     return NULL;
 }
 
