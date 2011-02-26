@@ -51,22 +51,23 @@ struct channel_converter_functor
     unsigned char m_atc0max, m_atc1max, m_atc2max;
     const boost::shared_array<float>& m_gamma_array;
     const unsigned char* m_lut;
-    unsigned int m_red_index, m_green_index, m_blue_index, m_n_gamma;
+    unsigned int m_red_index, m_green_index, m_blue_index;
+    int m_n_gamma;
 
     channel_converter_functor(const float min, const float max,
-		const boost::shared_array<float>& gamma_array, unsigned int n_gamma,
+                const boost::shared_array<float>& gamma_array, int n_gamma,
 		const color_lookup_table& lut,
 		unsigned int red_index=0, unsigned int green_index=1, unsigned int blue_index=2):
             m_min_src(min),
             m_max_src(max),
             m_1_over_delta(1./float(m_max_src - m_min_src)),
-			m_n_gamma(n_gamma),
 			m_ngamma_over_delta( n_gamma * m_1_over_delta ),
             m_gamma_array(gamma_array),
             m_lut(&lut.get_data().front()),
             m_red_index(red_index),
             m_green_index(green_index),
-            m_blue_index(blue_index)
+            m_blue_index(blue_index),
+            m_n_gamma(n_gamma)
     {
         boost::gil::at_c<0>(m_min_dst) = m_lut[0];
         boost::gil::at_c<1>(m_min_dst) = m_lut[256];
