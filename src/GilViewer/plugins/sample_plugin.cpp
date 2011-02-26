@@ -18,13 +18,13 @@ using namespace std;
 using namespace boost;
 using namespace boost::gil;
 
-IMPLEMENT_PLUGIN(sample_plugin)
+IMPLEMENT_PLUGIN(rotate_image_plugin)
 
-struct sample_plugin_functor
+struct rotate_image_plugin_functor
 {
     typedef void result_type;
 
-    sample_plugin_functor() {}
+    rotate_image_plugin_functor() {}
 
     template <typename ViewType>
     result_type operator()(ViewType& v)
@@ -50,17 +50,17 @@ struct sample_plugin_functor
     dynamic_xy_step_type<any_view_type>::type m_dest;
 };
 
-struct sample_plugin_visitor : public boost::static_visitor<void>
+struct rotate_image_plugin_visitor : public boost::static_visitor<void>
 {
     typedef void result_type;
 
     template <typename ViewType>
-    result_type operator()(ViewType& v) { apply_operation(v, sample_plugin_functor()); }
+    result_type operator()(ViewType& v) { apply_operation(v, rotate_image_plugin_functor()); }
 };
 
-sample_plugin::sample_plugin(const wxString &title) : plugin_base(title) {}
+rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(title) {}
 
-void sample_plugin::process()
+void rotate_image_plugin::process()
 {
     std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
     if(v_pv.empty())
@@ -87,13 +87,13 @@ void sample_plugin::process()
         {
             cout << "Layer " << (*itb)->filename() << " is an image layer" << endl;
 
-            sample_plugin_visitor spv;
+            rotate_image_plugin_visitor spv;
             imagelayer->variant_view()->value.apply_visitor( spv );
         }
     }
 }
 
-wxWindow* sample_plugin::gui()
+wxWindow* rotate_image_plugin::gui()
 {
     ::wxLogMessage(wxT("[sample_plugin::gui] start"));
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -107,14 +107,14 @@ wxWindow* sample_plugin::gui()
     this->SetSizer( bSizer1 );
     this->Layout();
 
-    m_button1->Connect( wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(sample_plugin::OnButton), NULL, this);
+    m_button1->Connect( wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(rotate_image_plugin::on_button_90cw), NULL, this);
 
     Show(true);
 
     return this;
 }
 
-void sample_plugin::OnButton(wxCommandEvent& e)
+void rotate_image_plugin::on_button_90cw(wxCommandEvent& e)
 {
     ::wxLogMessage(wxT("[sample_plugin::OnButton] start"));
     process();

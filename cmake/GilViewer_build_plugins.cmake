@@ -10,8 +10,8 @@ endif()
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp )
 
-set(sample_plugin_SRCS ./src/GilViewer/plugins/sample_plugin.hpp ./src/GilViewer/plugins/sample_plugin.cpp )
+set(rotate_image_plugin_SRCS ./src/GilViewer/plugins/sample_plugin.hpp ./src/GilViewer/plugins/sample_plugin.cpp )
 
-add_library(sample_plugin SHARED ${sample_plugin_SRCS})
-target_link_libraries(sample_plugin GilViewer)
+add_library(rotate_image_plugin SHARED ${rotate_image_plugin_SRCS})
+target_link_libraries(rotate_image_plugin GilViewer)
 
