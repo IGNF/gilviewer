@@ -1,6 +1,7 @@
 get_filename_component(SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 # TODO
 if(WIN32)
+	include(${SELF_DIR}/GilViewer-targets.cmake)
 else()
 	include(${SELF_DIR}/GilViewer-targets.cmake)
 endif()
