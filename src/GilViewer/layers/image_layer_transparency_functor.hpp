@@ -73,13 +73,13 @@ struct transparency_functor
         using namespace boost::gil;
 
         if (m_min_alpha <= m_max_alpha)
-            return m_min_alpha <= at_c<0>(src) && at_c<0>(src) <= m_max_alpha
-                   && m_min_alpha <= at_c<1>(src) && at_c<1>(src) <= m_max_alpha
-                   && m_min_alpha <= at_c<2>(src) && at_c<2>(src) <= m_max_alpha;
+            return m_min_alpha <= boost::gil::at_c<0>(src) && boost::gil::at_c<0>(src) <= m_max_alpha
+                   && m_min_alpha <= boost::gil::at_c<1>(src) && boost::gil::at_c<1>(src) <= m_max_alpha
+                   && m_min_alpha <= boost::gil::at_c<2>(src) && boost::gil::at_c<2>(src) <= m_max_alpha;
         else
-            return (m_min_alpha <= at_c<0>(src) || at_c<0>(src) <= m_max_alpha)
-                   && (m_min_alpha <= at_c<1>(src) || at_c<1>(src) <= m_max_alpha)
-                   && (m_min_alpha <= at_c<2>(src) || at_c<2>(src) <= m_max_alpha);
+            return (m_min_alpha <= boost::gil::at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha)
+                   && (m_min_alpha <= boost::gil::at_c<1>(src) || boost::gil::at_c<1>(src) <= m_max_alpha)
+                   && (m_min_alpha <= boost::gil::at_c<2>(src) || boost::gil::at_c<2>(src) <= m_max_alpha);
     }
 
     const double m_min_alpha, m_max_alpha;

@@ -642,15 +642,15 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	{
 		m_ori = layer->Orientation();
 		m_isOrientationSet = true;
-		::wxLogMessage(_("Viewer orientation has been set!"));
+		wxLogMessage(_("Viewer orientation has been set!"));
 	}
 	else if (!m_isOrientationSet && m_layers.size() > 1 && layer->HasOri())
 	{
-		::wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
+		wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
 	}
 	else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->HasOri())
 	{
-		::wxLogMessage(_("Image layer position initialised with respect to first image!"));
+		wxLogMessage(_("Image layer position initialised with respect to first image!"));
 		layer->ZoomFactor(m_layers[0]->ZoomFactor());
 		layer->TranslationX(m_layers[0]->TranslationX());
 		layer->TranslationY(m_layers[0]->TranslationY());
@@ -661,7 +661,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	//sa position initiale et son zoom
 	if (m_isOrientationSet && layer->HasOri())
 	{
-		::wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
+		wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
 
 		const Orientation2D &oriLayer = layer->Orientation();
 
@@ -677,7 +677,7 @@ void LayerControl::AddLayer(const Layer::ptrLayerType &layer)
 	//Si il y a une orientation definie pour le viewer et et qu'on a affaire a une couche vecteur :
 	if (m_isOrientationSet && vl != NULL)
 	{
-		::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
+		wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
 
 		double translationInitX =-m_ori.OriginX();// * m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationX();
 		double translationInitY = m_ori.OriginY(); //* m_layers[0]->ZoomFactor() ) + m_layers[0]->TranslationY();
@@ -713,7 +713,7 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 		// On est dans du wx, je m'autorise une MessageBox ...
 		std::string mess(oss.str());
 		wxString mes(mess.c_str(), *wxConvCurrent);
-		::wxLogMessage(mes);
+		wxLogMessage(mes);
 		return;
 	}
 	else if (firstRow >= m_numberOfLayers || secondRow >= m_numberOfLayers)
@@ -728,7 +728,7 @@ void LayerControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 		// On est dans du wx, je m'autorise une MessageBox ...
 		std::string mess(oss.str());
 		wxString mes(mess.c_str(), *wxConvCurrent);
-		::wxLogMessage(mes);
+		wxLogMessage(mes);
 		return;
 	}
 
@@ -904,7 +904,7 @@ void LayerControl::OnLoadDisplayConfigButton(wxCommandEvent& event)
 	{
 		wxString message;
 		message << _("Reading a display configuration file: ") << fd->GetPath();
-		::wxLogMessage(message);
+		wxLogMessage(message);
 
 		std::string loadname(fd->GetPath().fn_str());
 		if (boost::filesystem::extension(loadname) != ".xml")
@@ -980,7 +980,7 @@ void LayerControl::CreateNewImageLayerWithParameters(const ImageLayerParameters 
 		oss << "Function : " << __FUNCTION__ << "\n";
 		oss << "Line : " << __LINE__ << "\n";
 		oss << err.what();
-		::wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+		wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
 	}
 }
 
@@ -1017,6 +1017,6 @@ void LayerControl::CreateNewVectorLayerWithParameters(const VectorLayerParameter
 		oss << "Function : " << __FUNCTION__ << "\n";
 		oss << "Line : " << __LINE__ << "\n";
 		oss << err.what();
-		::wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+		wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
 	}
 }

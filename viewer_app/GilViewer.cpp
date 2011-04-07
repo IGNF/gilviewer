@@ -49,8 +49,9 @@ Authors:
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+{ wxCMD_LINE_PARAM, NULL, NULL, wxString("Input files",wxConvUTF8), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+{ wxCMD_LINE_NONE } 
+};
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -96,11 +97,11 @@ catch( std::exception &e )
 {
 	wxString message;
 	message << wxString(e.what(), *wxConvCurrent);
-	::wxMessageBox( message );
+	wxMessageBox( message );
 }
 catch( ... )
 {
-	::wxMessageBox( _("Unhandled exception ...") );
+	wxMessageBox( _("Unhandled exception ...") );
 }
 
 return true;
@@ -132,7 +133,7 @@ void GilViewerApp::set_langage(unsigned int language_id)
 
         if(! locale->IsOk() )
         {
-        	::wxLogMessage( _("Selected language is wrong!") );
+        	wxLogMessage( _("Selected language is wrong!") );
             delete locale;
             locale = new wxLocale( wxLANGUAGE_ENGLISH );
             language = wxLANGUAGE_ENGLISH;
@@ -140,7 +141,7 @@ void GilViewerApp::set_langage(unsigned int language_id)
     }
     else
     {
-       	::wxLogMessage( _("The selected langage is not supported by your system. Try installing support for this language.") );
+       	wxLogMessage( _("The selected langage is not supported by your system. Try installing support for this language.") );
         locale = new wxLocale( wxLANGUAGE_ENGLISH );
         language = wxLANGUAGE_ENGLISH;
     }

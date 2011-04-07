@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <iostream>
 
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
@@ -350,7 +351,7 @@ bool PanelViewer::InitToolbar() {
 
 void PanelViewer::OnPaint(wxPaintEvent& evt) {
 	wxBufferedPaintDC dc(this);
-	if (!dc.Ok())
+	if (!dc.IsOk())
 		return;
 	dc.Clear();
 
@@ -762,7 +763,7 @@ void PanelViewer::OnSnapshot(wxCommandEvent& event) {
 		wxBufferedPaintDC dc(this);
 		int width, height;
 		this->GetClientSize(&width, &height);
-		if (!dc.Ok())
+		if (!dc.IsOk())
 			return;
 		wxBitmap snap = dc.GetSelectedBitmap();
 		snap.SetHeight(height);

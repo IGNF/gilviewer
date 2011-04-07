@@ -352,7 +352,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
 		{
 			wxString message;
 			message << _("There is no PRJ file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << wxT("!");
-			::wxLogMessage( message , _("Info") );
+			wxLogMessage( message , _("Info") );
 			flagPRJ = IMAGE_COORDINATES;
 		}
 
@@ -363,7 +363,7 @@ void VectorLayer::AddVectorLayerContent(const std::string &shapefileFileName)
 		{
 			wxString message;
 			message << _("There is no DBF file for ") << wxString(shapefileFileName.c_str(), *wxConvCurrent) << wxT("!");
-			::wxLogMessage( message , _("Info") );
+			wxLogMessage( message , _("Info") );
 		}
 		else
 			flagDBF = true;

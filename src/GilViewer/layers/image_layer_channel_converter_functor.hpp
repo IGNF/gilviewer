@@ -103,25 +103,26 @@ struct channel_converter_functor
     {
         using namespace boost::gil;
 
-        if (at_c<0>(src) < m_min_src)
-            at_c<0>(dst)  = m_atc0min;
-        else if (at_c<0>(src) > m_max_src)
-            at_c<0>(dst)  = m_atc0max;
+        if (boost::gil::at_c<0>(src) < m_min_src)
+            boost::gil::at_c<0>(dst)  = m_atc0min;
+        else if (boost::gil::at_c<0>(src) > m_max_src)
+            boost::gil::at_c<0>(dst)  = m_atc0max;
         else
-            at_c<0>(dst) = m_255_over_delta*(at_c<0>(src) - m_min_src);
+            boost::gil::at_c<0>(dst) = m_255_over_delta*(boost::gil::at_c<0>(src) - m_min_src);
 
-        if (at_c<1>(src) < m_min_src)
-            at_c<1>(dst)  = m_atc1min;
-        else if (at_c<1>(src) > m_max_src)
-            at_c<1>(dst)  = m_atc1max;
+        if (boost::gil::at_c<1>(src) < m_min_src)
+            boost::gil::at_c<1>(dst)  = m_atc1min;
+        else if (boost::gil::at_c<1>(src) > m_max_src)
+            boost::gil::at_c<1>(dst)  = m_atc1max;
         else
-            at_c<1>(dst) = m_255_over_delta*(at_c<1>(src) - m_min_src);
+            boost::gil::at_c<1>(dst) = m_255_over_delta*(boost::gil::at_c<1>(src) - m_min_src);
 
-        if (at_c<2>(src) < m_min_src)
-            at_c<2>(dst)  = m_atc2min;
-        else if (at_c<2>(src) > m_max_src)
-            at_c<2>(dst)  = m_atc2max;
+        if (boost::gil::at_c<2>(src) < m_min_src)
+            boost::gil::at_c<2>(dst)  = m_atc2min;
+        else if (boost::gil::at_c<2>(src) > m_max_src)
+            boost::gil::at_c<2>(dst)  = m_atc2max;
         else
-            at_c<2>(dst) = m_255_over_delta*(at_c<2>(src) - m_min_src);
+            boost::gil::at_c<2>(dst) = m_255_over_delta*(boost::gil::at_c<2>(src) - m_min_src);
     }
 };
+

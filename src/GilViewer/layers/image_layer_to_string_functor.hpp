@@ -75,7 +75,7 @@ struct any_view_image_position_to_string_functor
         using namespace boost::gil;
 
         if (isInside(v, i_,j_))
-            oss_ << (int)at_c<0>(v(i_,j_)) << "," << (int)at_c<1>(v(i_,j_)) << "," << (int)at_c<2>(v(i_,j_));
+            oss_ << (int)boost::gil::at_c<0>(v(i_,j_)) << "," << (int)boost::gil::at_c<1>(v(i_,j_)) << "," << (int)boost::gil::at_c<2>(v(i_,j_));
         else
             oss_ << "outside";
     }

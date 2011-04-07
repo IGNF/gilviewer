@@ -142,7 +142,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 									childAppearance->ToElement()->Attribute( "value" , &i );
 									wxString mes;
 									mes << i;
-									::wxLogMessage( mes );
+									wxLogMessage( mes );
 									if ( !(i == 0 || i == 1) )
 									{
 										wxLogMessage( _("[Node Layer - Appearance - Visibility] Error while reading attribute 'value'!") );
@@ -158,7 +158,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 									childAppearance->ToElement()->Attribute( "value" , &i );
 									if ( !(i == 0 || i == 1) )
 									{
-										::wxLogMessage( _("[Node Layer - Appearance - Transformability] Error while reading attribute 'value' !") );
+										wxLogMessage( _("[Node Layer - Appearance - Transformability] Error while reading attribute 'value' !") );
 										return;
 									}
 									if ( i == 0 )
@@ -171,7 +171,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 									childAppearance->ToElement()->Attribute( "value" , &zoom_factor );
 									if ( zoom_factor < 0 )
 									{
-										::wxLogMessage( _("[Node Layer - Appearance - ZoomFactor] Error while reading attribute 'value' !") );
+										wxLogMessage( _("[Node Layer - Appearance - ZoomFactor] Error while reading attribute 'value' !") );
 										return;
 									}
 								}
@@ -192,7 +192,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 										childAppearance->ToElement()->Attribute( "value" , &alpha );
 										if ( alpha < 0 || alpha > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Alpha] Error while reading attribute 'value' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Alpha] Error while reading attribute 'value' !") );
 											return;
 										}
 									}
@@ -202,7 +202,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 										childAppearance->ToElement()->Attribute( "value" , &gamma );
 										if ( gamma < 0 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Gamma] Error while reading attribute 'value' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Gamma] Error while reading attribute 'value' !") );
 											return;
 										}
 									}
@@ -218,7 +218,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 										childAppearance->ToElement()->Attribute( "value" , &i );
 										if ( !(i == 0 || i == 1) )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Transparency] Error while reading attribute 'min' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Transparency] Error while reading attribute 'min' !") );
 											return;
 										}
 										if ( i == 0 )
@@ -252,31 +252,31 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &points_red );
 										if ( points_red < 0 || points_red > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'red' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'red' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &points_green );
 										if ( points_green < 0 || points_green > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &points_blue );
 										if ( points_blue < 0 || points_blue > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &points_alpha );
 										if ( points_alpha < 0 || points_alpha > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Width" )->ToElement()->Attribute( "value" , &points_width );
 										if ( points_width < 0 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Points - Width] Error while reading attribute 'width' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Points - Width] Error while reading attribute 'width' !") );
 											return;
 										}
 									}
@@ -286,37 +286,37 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &lines_red );
 										if ( lines_red < 0 || lines_red > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'red' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'red' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &lines_green );
 										if ( lines_green < 0 || lines_green > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'green' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'green' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &lines_blue );
 										if ( lines_blue < 0 || lines_blue > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'blue' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'blue' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &lines_alpha );
 										if ( lines_alpha < 0 || lines_alpha > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'alpha' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'alpha' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Width" )->ToElement()->Attribute( "value" , &lines_width );
 										if ( lines_width < 0 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Lines - Width] Error while reading attribute 'width' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Lines - Width] Error while reading attribute 'width' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Style" )->ToElement()->Attribute( "value" , &lines_style );
 										if ( lines_style < 0 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Lines - Style] Error while reading attribute 'style' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Lines - Style] Error while reading attribute 'style' !") );
 											return;
 										}
 									}
@@ -326,64 +326,64 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 										childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &polygons_rings_red );
 										if ( polygons_rings_red < 0 || polygons_rings_red > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'red' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'red' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &polygons_rings_green );
 										if ( polygons_rings_green < 0 || polygons_rings_green > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'green' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'green' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &polygons_rings_blue );
 										if ( polygons_rings_blue < 0 || polygons_rings_blue > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'blue' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'blue' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &polygons_rings_alpha );
 										if ( polygons_rings_alpha < 0 || polygons_rings_alpha > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'alpha' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'alpha' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Rings" )->FirstChild( "Style" )->ToElement()->Attribute( "value" , &polygons_rings_style );
 										if ( polygons_rings_style < 0 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Style] Error while reading attribute 'style' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Style] Error while reading attribute 'style' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Rings" )->FirstChild( "Width" )->ToElement()->Attribute( "value" , &polygons_rings_width );
 										childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &polygons_inside_red );
 										if ( polygons_inside_red < 0 || polygons_inside_red > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'red' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'red' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &polygons_inside_green );
 										if ( polygons_inside_green < 0 || polygons_inside_green > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'green' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'green' !") );
 											return;
 										}
 										childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &polygons_inside_blue );
 										if ( polygons_inside_blue < 0 || polygons_inside_blue > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'blue' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'blue' !") );
 											return;
 										}
 										// J'en ai marre de coder a peu pres proprement, je me mets en mode goret
 										childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &polygons_inside_alpha );
 										if ( polygons_inside_alpha < 0 || polygons_inside_alpha > 255 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'alpha' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'alpha' !") );
 											return;
 										}
 										// J'en ai marre de coder a peu pres proprement, je me mets en mode goret
 										childAppearance->FirstChild( "Inside" )->FirstChild( "Style" )->ToElement()->Attribute( "value" , &polygons_inside_style );
 										if ( polygons_inside_style < 0 )
 										{
-											::wxLogMessage( _("[Node Layer - Appearance - Polygons - Style] Error while reading attribute 'style' !") );
+											wxLogMessage( _("[Node Layer - Appearance - Polygons - Style] Error while reading attribute 'style' !") );
 											return;
 										}
 									}
@@ -395,7 +395,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 						{
 							wxString mes;
 							mes << _("[Layer] Invalid node: ") << wxString(childLayer->Value(), *wxConvCurrent);
-							::wxLogMessage( mes );
+							wxLogMessage( mes );
 							return;
 						}
 					}
@@ -405,7 +405,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 				{
 					wxString mes;
 					mes << _("Invalid node: ") << wxString(childLayers->Value(), *wxConvCurrent);
-					::wxLogMessage( mes );
+					wxLogMessage( mes );
 					return;
 				}
 
@@ -521,7 +521,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 					childOrientation->ToElement()->Attribute( "value" , &i );
 					if ( !(i == 0 || i == 1) )
 					{
-						::wxLogMessage( _("[Node Orientation - IsSet] Error while reading attribute value' !") );
+						wxLogMessage( _("[Node Orientation - IsSet] Error while reading attribute value' !") );
 						return;
 					}
 					if ( i == 0 )
@@ -530,7 +530,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 						layerControl->m_isOrientationSet = true;
 					wxString mes;
 					mes << _("Node 'IsSet': ") << i;
-					::wxLogMessage( mes );
+					wxLogMessage( mes );
 				}
 				else if ( std::string(childOrientation->Value()) == "ViewerOrientation" )
 				{
@@ -558,7 +558,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 					childOrientation->ToElement()->Attribute( "step" , &d );
 					if ( d < 0. )
 					{
-						::wxLogMessage( _("[Node Orientation - ViewerOrientation] Error while reading attribute 'step' !") );
+						wxLogMessage( _("[Node Orientation - ViewerOrientation] Error while reading attribute 'step' !") );
 						return;
 					}
 					layerControl->m_ori.Step(d);
@@ -568,14 +568,14 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 					layerControl->m_ori.ZoneCarto(i);
 					mes << _("   Attribute 'ZoneCarto' : ") << i << wxT("\n");
 
-					::wxLogMessage( mes );
+					wxLogMessage( mes );
 				}
 				// Tout le reste est invalide, sauf si c'est un commentaire ...
 				else if ( dynamic_cast<TiXmlComment*>( childOrientation ) == NULL )
 				{
 					wxString mes;
 					mes << _("Invalid node: ") << wxString(childOrientation->Value(), *wxConvCurrent);
-					::wxLogMessage( mes );
+					wxLogMessage( mes );
 					return;
 				}
 			}
@@ -585,7 +585,7 @@ void XMLDisplayConfigurationIO::Read( LayerControl* layerControl , const std::st
 		{
 			wxString mes;
 			mes << _("Invalid node: ") << wxString(child->Value(), *wxConvCurrent);
-			::wxLogMessage( mes );
+			wxLogMessage( mes );
 			return;
 		}
 	}
@@ -597,7 +597,7 @@ void XMLDisplayConfigurationIO::Write( const LayerControl* layerControl , const 
 {
 	if ( layerControl->GetRows().size() == 0 )
 	{
-		::wxMessageBox(_("There is no layer to save!"),_("Error!"));
+		wxMessageBox(_("There is no layer to save!"),_("Error!"));
 		return;
 	}
 	TiXmlDocument doc;

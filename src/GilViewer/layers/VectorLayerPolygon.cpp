@@ -118,7 +118,7 @@ VectorLayerPolygon::VectorLayerPolygon(const SHPHandle &handle , const std::stri
 		wxProgressDialog *progress = new wxProgressDialog(_("Reading shapefile ..."),_("Reading ..."),m_numberOfEntities,NULL,wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME);
 		wxString log;
 		log << wxT("VectorLayerPolygon : ") << m_numberOfEntities << _(" elements");
-		::wxLogMessage(log);
+		wxLogMessage(log);
 
 		wxString m;
 		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
@@ -209,7 +209,7 @@ VectorLayerPolygonZ::VectorLayerPolygonZ(const SHPHandle &handle , const std::st
 		wxProgressDialog *progress = new wxProgressDialog(_("Reading shapefile ..."),_("Reading ..."),m_numberOfEntities,NULL,wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME);
 		wxString log;
 		log << wxT("VectorLayerPolygonZ : ") << m_numberOfEntities << _(" elements");
-		::wxLogMessage(log);
+		wxLogMessage(log);
 
 		wxString m;
 		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");
@@ -260,7 +260,7 @@ VectorLayerPolygonM::VectorLayerPolygonM(const SHPHandle &handle , const std::st
 		wxProgressDialog *progress = new wxProgressDialog(_("Reading shapefile ..."),_("Reading ..."),m_numberOfEntities,NULL,wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME);
 		wxString log;
 		log << wxT("VectorLayerPolygonM : ") << m_numberOfEntities << _(" elements");
-		::wxLogMessage(log);
+		wxLogMessage(log);
 
 		wxString m;
 		m << _("File : ") << wxString(m_shapefileFileName.c_str(), *wxConvCurrent) << wxT("\n");

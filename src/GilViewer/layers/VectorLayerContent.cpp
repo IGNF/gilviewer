@@ -80,7 +80,7 @@ void VectorLayerContent::ReadAttributes(const std::string &DBFfilename)
 {
 	wxString mes;
 	mes << wxT("Reading DBF file") << wxString(DBFfilename.c_str(), *wxConvCurrent);
-	::wxLogMessage(mes);
+	wxLogMessage(mes);
 
 	try
 	{

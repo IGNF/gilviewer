@@ -209,7 +209,7 @@ void VectorLayerArc::AddPolyline( const std::vector<double> &x , const std::vect
 	{
 		wxString mes;
 		mes << _("x and y are not of the same size!\n");
-		::wxLogMessage( mes );
+		wxLogMessage( mes );
 		return;
 	}
 
