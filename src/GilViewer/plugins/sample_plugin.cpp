@@ -62,6 +62,7 @@ rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(ti
 
 void rotate_image_plugin::process()
 {
+	::wxLogMessage(wxT("[sample_plugin::process] Starting..."));
     std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
     if(v_pv.empty())
     {
