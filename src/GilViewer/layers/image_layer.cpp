@@ -385,7 +385,11 @@ layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
     boost::filesystem::path file(boost::filesystem::system_complete(filename()));
     std::ostringstream oss;
     oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
+    #if BOOST_FILESYSTEM_VERSION > 2
+    file.replace_extension(oss.str() + file.extension().string());
+    #else
     file.replace_extension(oss.str() + file.extension());
+    #endif
     std::string name = file.string();
     return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
 }
