@@ -45,8 +45,13 @@ void plugin_manager_model::register_plugins(const std::string &path)
         string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
         if( file_path.filename()!= libgilviewer_name && file_path.filename()!= libtinyxml_name )
         {
+            #if BOOST_FILESYSTEM_VERSION > 2
+            plugin_base::Register(file_path.filename().string(), file_path.parent_path().string());
+            plugin_base *p = plugin_manager::instance()->create_object(file_path.filename().string());
+            #else
             plugin_base::Register(file_path.filename(), file_path.parent_path().string());
             plugin_base *p = plugin_manager::instance()->create_object(file_path.filename());
+            #endif
             if(p)
             {
                 if(create_plugin_menu)
