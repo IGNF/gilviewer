@@ -348,7 +348,7 @@ bool panel_viewer::init_toolbar() {
 
 void panel_viewer::on_paint(wxPaintEvent& evt) {
     wxBufferedPaintDC dc(this);
-    if (!dc.Ok())
+	if (!dc.IsOk())
         return;
     dc.Clear();
 
@@ -755,7 +755,7 @@ void panel_viewer::snap_shot(wxCommandEvent& event) {
         wxBufferedPaintDC dc(this);
         int width, height;
         this->GetClientSize(&width, &height);
-        if (!dc.Ok())
+		if (!dc.IsOk())
             return;
         wxBitmap snap = dc.GetSelectedBitmap();
         snap.SetHeight(height);
