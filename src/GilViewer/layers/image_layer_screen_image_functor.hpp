@@ -35,13 +35,25 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
+#ifndef SCREEN_IMAGE_FUNCTOR
+#define SCREEN_IMAGE_FUNCTOR
+
 #include "image_layer_channel_converter_functor.hpp"
 #include "image_layer_transparency_functor.hpp"
 
 struct screen_image_functor
 {
     typedef void result_type;
-    screen_image_functor( boost::gil::dev3n8_view_t &screen_view, channel_converter_functor cc, double z, double tx, double ty, boost::gil::gray8_view_t& canal_alpha, const double min_alpha, const double max_alpha, const unsigned char alpha, bool isTransparent) :
+    screen_image_functor( boost::gil::dev3n8_view_t &screen_view,
+                          channel_converter_functor cc,
+                          double z,
+                          double tx,
+                          double ty,
+                          boost::gil::gray8_view_t& canal_alpha,
+                          const double min_alpha,
+                          const double max_alpha,
+                          const unsigned char alpha,
+                          bool isTransparent) :
             m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc),
             m_zoomFactor(z), m_translationX(tx), m_translationY(ty),
             m_alpha(alpha),
@@ -64,7 +76,7 @@ struct screen_image_functor
         //TODO to be optimized ?
         for (std::ptrdiff_t y=0; y < m_screen_view.height(); ++y)
         {
-            int yb = y*m_zoomFactor - m_translationY;
+            int yb = (int) floor(y*m_zoomFactor - m_translationY);
 
             if (yb < 0 || yb >= src.height())
                 continue;
@@ -75,7 +87,7 @@ struct screen_image_functor
 
             for (std::ptrdiff_t x=0; x < m_screen_view.width(); ++x) //, ++loc.x())
             {
-                int xb = x*m_zoomFactor - m_translationX;
+                int xb = (int) floor(x*m_zoomFactor - m_translationX);
 
                 if (xb>=0 && xb < src.width())
                 {
@@ -98,3 +110,5 @@ struct screen_image_functor
     transparency_functor m_transparencyFonctor;
     bool m_isTransparent;
 };
+
+#endif // SCREEN_IMAGE_FUNCTOR

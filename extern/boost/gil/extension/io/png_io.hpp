@@ -35,8 +35,8 @@ extern "C" {
 #include "png.h"
 }
 #include <boost/static_assert.hpp>
-#include "boost/gil/gil_config.hpp"
-#include "boost/gil/utilities.hpp"
+#include "../../gil_config.hpp"
+#include "../../utilities.hpp"
 #include "io_error.hpp"
 #include "png_io_private.hpp"
 

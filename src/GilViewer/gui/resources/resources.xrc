@@ -23,6 +23,8 @@
 	<object class="wxBitmap" name="EDIT-CLEAR_16x16">tango-icon-theme-0.8.90/16x16/actions/edit-clear.png</object>
 	<object class="wxBitmap" name="EDIT-CLEAR_22x22">tango-icon-theme-0.8.90/22x22/actions/edit-clear.png</object>
 
+        <object class="wxBitmap" name="VIEW-REFRESH_16x16">tango-icon-theme-0.8.90/16x16/actions/view-refresh.png</object>
+
 	<object class="wxBitmap" name="PROCESS-STOP_16x16">tango-icon-theme-0.8.90/16x16/actions/process-stop.png</object>
 
 	<object class="wxBitmap" name="USER-TRASH_16x16">tango-icon-theme-0.8.90/16x16/places/user-trash.png</object>
@@ -33,12 +35,17 @@
 
 	<object class="wxBitmap" name="APPLICATIONS-GRAPHICS_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-graphics.png</object>
 
+        <object class="wxBitmap" name="MEDIA-FLOPPY_22x22">tango-icon-theme-0.8.90/22x22/devices/media-floppy.png</object>
+        <object class="wxBitmap" name="MEDIA-FLOPPY_16x16">tango-icon-theme-0.8.90/16x16/devices/media-floppy.png</object>
+
 	<object class="wxBitmap" name="APPLICATIONS-OTHERS_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-other.png</object>
 
 	<object class="wxBitmap" name="APPLICATIONS-SYSTEM_16x16">tango-icon-theme-0.8.90/16x16/categories/applications-system.png</object>
 	<object class="wxBitmap" name="APPLICATIONS-SYSTEM_22x22">tango-icon-theme-0.8.90/22x22/categories/applications-system.png</object>
 
 	<object class="wxBitmap" name="IMAGE-X-GENERIC_16x16">tango-icon-theme-0.8.90/16x16/mimetypes/image-x-generic.png</object>
+
+        <object class="wxBitmap" name="VIEW_FULLSCREEN_16x16">tango-icon-theme-0.8.90/16x16/actions/view-fullscreen.png</object>
 
 	<object class="wxBitmap" name="X-OFFICE-ADDRESS-BOOK_22x22">tango-icon-theme-0.8.90/22x22/mimetypes/x-office-address-book.png</object>
 	

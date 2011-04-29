@@ -35,47 +35,68 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include "GilViewer/layers/image_types.hpp"
+
+#ifndef __HISTOGRAM_FUNCTOR__
+#define __HISTOGRAM_FUNCTOR__
+
+#include <boost/gil/pixel.hpp>
 
 struct histogram_functor
 {
-    typedef void result_type;
-    histogram_functor( std::vector< std::vector<double> > &histo , const double mini , const double maxi ) : m_histo(histo)
+    typedef std::vector< std::vector<double> > histogram_type;
+    typedef boost::shared_ptr<const histogram_type> result_type;
+
+    const static std::size_t histogram_size = 256;
+
+    histogram_functor(const double mini, const double maxi):
+        m_scale(255. / (maxi-mini)),
+        m_offset(-mini * m_scale)
+    {}
+
+    template <typename ViewType>
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType& v) const
     {
-        m_scale = 255. / (maxi-mini);
-        m_offset = -mini * m_scale;
+        boost::shared_ptr<histogram_type> histo(new histogram_type(1, std::vector<double>(histogram_size)));
+        typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
+        for (; it_begin!=it_end; ++it_begin)
+            increment_histo<0, ViewType>(it_begin, *histo);
+        return histo;
     }
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType& v) const
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
+    operator()(const ViewType& v) const
     {
-        typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
-        for (; it_begin!=it_end; ++it_begin)
-            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset ];
-    }
+        boost::shared_ptr<histogram_type> histo(new histogram_type(3, std::vector<double>(histogram_size)));
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>
-    >,
-    result_type>::type operator()(const ViewType& v) const
-    {
         typename ViewType::iterator it_begin = v.begin(), it_end = v.end();
         for (; it_begin!=it_end; ++it_begin)
         {
-            ++m_histo[0][ boost::gil::at_c<0>(*it_begin)*m_scale+m_offset];
-            ++m_histo[1][ boost::gil::at_c<1>(*it_begin)*m_scale+m_offset];
-            ++m_histo[2][ boost::gil::at_c<2>(*it_begin)*m_scale+m_offset];
+            increment_histo<0, ViewType>(it_begin, *histo);
+            increment_histo<1, ViewType>(it_begin, *histo);
+            increment_histo<2, ViewType>(it_begin, *histo);
         }
+        return histo;
     }
 
-    std::vector< std::vector<double> >& m_histo;
+private:
+    template<size_t ChannelNb, typename ViewType>
+    void increment_histo(typename ViewType::iterator it, histogram_type& histo) const
+    {
+        const size_t id = static_cast<size_t>(boost::gil::at_c<ChannelNb>(*it)*m_scale + m_offset);
+        assert(id >=0);
+        assert(id < histo[ChannelNb].size());
+        //assert(histo.size() == 3);
+        ++histo[ChannelNb][id];
+    }
+
     double m_scale;
     double m_offset;
 };
+
+#endif // __HISTOGRAM_FUNCTOR__

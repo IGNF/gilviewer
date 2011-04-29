@@ -35,9 +35,30 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include <boost/preprocessor/seq/for_each.hpp>
 
-#include "GilViewer/layers/image_types.hpp"
+#ifndef TOSTRING_FUNCTOR
+#define TOSTRING_FUNCTOR
+
+#include <boost/gil/pixel.hpp>
+#include <boost/gil/extension/io_new/detail/gil_extensions.hpp>
+
+template <typename Type>
+struct get_right_type_for_display
+{
+    typedef Type type;
+};
+
+template <>
+struct get_right_type_for_display<unsigned char>
+{
+    typedef unsigned int type;
+};
+
+template <>
+struct get_right_type_for_display<char>
+{
+    typedef int type;
+};
 
 template<typename ViewType, typename CoordType>
 inline bool isInside(const ViewType& v, const CoordType i, const CoordType j)
@@ -52,30 +73,36 @@ struct any_view_image_position_to_string_functor
     any_view_image_position_to_string_functor(const int i, const int j, std::ostringstream& oss):i_(i), j_(j), oss_(oss) {}
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_type<boost::mpl::_1> >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType& v)
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType& v)
     {
+        typedef typename boost::gil::get_pixel_type<ViewType>::type g_pixel_t;
+        typedef typename boost::gil::kth_element_type<g_pixel_t,0>::type element_0_t;
         if (isInside(v, i_,j_))
-            oss_ << (int) boost::gil::at_c<0>( v(i_,j_) );
+            oss_ << (typename get_right_type_for_display<element_0_t>::type) boost::gil::at_c<0>( v(i_,j_) );
         else
             oss_ << "outside";
     }
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_type<boost::mpl::_1 > >::type,
-    ViewType>
-    >,
-    result_type>::type operator()(const ViewType& v)
+    
+    template <typename ViewType>
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
+    operator()(const ViewType& v)
     {
         using namespace boost::gil;
+        typedef typename get_pixel_type<ViewType>::type g_pixel_t;
+        typedef typename kth_element_type<g_pixel_t,0>::type element_0_t;
+        typedef typename kth_element_type<g_pixel_t,1>::type element_1_t;
+        typedef typename kth_element_type<g_pixel_t,2>::type element_2_t;
 
         if (isInside(v, i_,j_))
-            oss_ << (int)boost::gil::at_c<0>(v(i_,j_)) << "," << (int)boost::gil::at_c<1>(v(i_,j_)) << "," << (int)boost::gil::at_c<2>(v(i_,j_));
+            oss_ << (typename get_right_type_for_display<element_0_t>::type)boost::gil::at_c<0>(v(i_,j_)) << ","
+                 << (typename get_right_type_for_display<element_1_t>::type)boost::gil::at_c<1>(v(i_,j_)) << ","
+                 << (typename get_right_type_for_display<element_2_t>::type)boost::gil::at_c<2>(v(i_,j_));
         else
             oss_ << "outside";
     }
@@ -83,3 +110,5 @@ struct any_view_image_position_to_string_functor
     const int i_, j_;
     std::ostringstream& oss_;
 };
+
+#endif // TOSTRING_FUNCTOR

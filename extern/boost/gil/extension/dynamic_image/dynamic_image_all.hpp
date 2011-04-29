@@ -22,7 +22,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "boost/gil/gil_all.hpp"
+#include "../../gil_all.hpp"
 #include "algorithm.hpp"
 #include "any_image.hpp"
 #include "apply_operation.hpp"

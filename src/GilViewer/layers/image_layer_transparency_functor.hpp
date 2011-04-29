@@ -35,9 +35,11 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include <boost/preprocessor/seq/for_each.hpp>
 
-#include "GilViewer/layers/image_types.hpp"
+#ifndef TRANSPARENCY_FUNCTOR
+#define TRANSPARENCY_FUNCTOR
+
+#include <boost/gil/pixel.hpp>
 
 struct transparency_functor
 {
@@ -49,9 +51,10 @@ struct transparency_functor
     {}
 
     template <typename ViewType>
-    typename boost::enable_if< boost::mpl::contains< boost::mpl::transform<gray_image_types,add_view_and_value_type<boost::mpl::_1> >::type,
-    ViewType>,
-    result_type>::type operator()(const ViewType & src) const
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value == 1,
+      result_type >::type
+    operator()(const ViewType & src) const
     {
         if (m_min_alpha <= m_max_alpha)
             return m_min_alpha <= src && src <= m_max_alpha;
@@ -59,15 +62,10 @@ struct transparency_functor
             return m_min_alpha <= src || src <= m_max_alpha;
     }
 
-    template<class ViewType>
-    typename boost::enable_if< boost::mpl::or_< boost::mpl::contains< boost::mpl::transform< rgb_image_types,
-    add_view_and_value_type<boost::mpl::_1 > >::type,
-    ViewType>,
-    boost::mpl::contains< boost::mpl::transform< rgba_image_types,
-    add_view_and_value_type<boost::mpl::_1 > >::type,
-    ViewType>
-    >,
-    result_type>::type
+    template<class ViewType> 
+    typename boost::enable_if_c<
+      boost::gil::num_channels<typename ViewType::value_type>::value >= 3,
+      result_type >::type
     operator()(const ViewType &src) const
     {
         using namespace boost::gil;
@@ -84,3 +82,5 @@ struct transparency_functor
 
     const double m_min_alpha, m_max_alpha;
 };
+
+#endif // TRANSPARENCY_FUNCTOR

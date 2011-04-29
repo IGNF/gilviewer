@@ -1,43 +1,7 @@
 ##################
-### Build de la ShapeLib ###
-##################
-if( UNIX )
-	# Option pour selectionner une compilation sous forme de bibliotheque statique ou dynamique
-	OPTION(BUILD_SHAPELIB_SHARED "Build shapelib library shared." ON)
-	# Verification du type de bibliotheque a construire
-	IF(BUILD_SHAPELIB_SHARED)
-		SET(SHAPELIB_LIBRARY_TYPE SHARED)
-	ELSE()
-		SET(SHAPELIB_LIBRARY_TYPE STATIC)
-	ENDIF()
-# Currently, dll are not supported on Windows platforms
-else()
-	set( SHAPELIB_LIBRARY_TYPE STATIC )
-endif()
-
-# On fixe une variable globale regroupant tous les fichiers source de la shapelib
-# tout les autre fichier *.c sont des applications example
-SET( SRC_SHPLIB extern/shapelib )
-SET( ALL_SHPLIB_SRC_FILES	${SRC_SHPLIB}/dbfopen.c
-							${SRC_SHPLIB}/shpopen.c
-							${SRC_SHPLIB}/shptree.c
-)
-
-SET( ALL_SHPLIB_INC_FILES  "${SRC_SHPLIB}/shapefil.h" )
-MESSAGE(STATUS " create ALL_SHPLIB_INC_FILES " ${ALL_SHPLIB_INC_FILES} )
-
-# On ajoute les repertoires d'include
-INCLUDE_DIRECTORIES( ${INCLUDE_DIRECTORIES} ${SRC_SHPLIB} )
-# Creation de la lib
-ADD_LIBRARY( shapelib ${SHAPELIB_LIBRARY_TYPE} ${ALL_SHPLIB_SRC_FILES} ${ALL_SHPLIB_INC_FILES})
-
-##################
-###      Fin ShapeLib       ###
-##################
-
-##################
 ###   Build de TinyXML  ###
 ##################
+add_definitions(-DTIXML_USE_STL)
 if( UNIX )
 	# Option pour selectionner une compilation sous forme de .lib ou de .dll
 	OPTION(BUILD_TINYXML_SHARED "Build tinyxml library shared." ON)
@@ -84,11 +48,4 @@ ADD_LIBRARY( tinyxml ${TINYXML_LIBRARY_TYPE} ${ALL_TINYXML_SRC_FILES} ${ALL_TINY
 ##################
 SET( INC_BOOST extern/boost )
 INCLUDE_DIRECTORIES( BEFORE ${INC_BOOST})
-
-
-
-#add_custom_command(
-#	TARGET install
-#	PRE_BUILD
-#	COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_DIR}/trac
-#)
+FILE( GLOB_RECURSE ALL_GIL_HEADER_FILES extern/boost/*.hpp )

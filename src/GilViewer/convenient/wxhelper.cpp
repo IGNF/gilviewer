@@ -36,13 +36,13 @@ Authors:
  
 ***********************************************************************/
 
-#include "GilViewer/convenient/wxhelper.hpp"
+#include "wxhelper.hpp"
 
 #include <wx/defs.h>
 
 namespace wxhelper
 {
-int FromWxStyleToSelectionIndex( unsigned int style )
+int from_wx_style_to_selection_index( unsigned int style )
 {
 	switch ( style )
 	{
@@ -75,14 +75,14 @@ int FromWxStyleToSelectionIndex( unsigned int style )
 	}
 }
 
-int FromPolygonSelectionIndexToWxStyle( unsigned int selection )
+int from_polygon_selection_index_to_wx_style( unsigned int selection )
 {
 	switch ( selection )
 	{
 		case 0:
 			return wxSOLID;
-		case 1:
-			return wxTRANSPARENT;
+                case 1:
+                        return wxTRANSPARENT;
 		case 2:
 			return wxDOT;
 		case 3:
@@ -96,7 +96,7 @@ int FromPolygonSelectionIndexToWxStyle( unsigned int selection )
 	}
 }
 
-int FromLineSelectionIndexToWxStyle( unsigned int selection )
+int from_line_selection_index_to_wx_style( unsigned int selection )
 {
 	switch ( selection )
 	{
@@ -120,4 +120,4 @@ int FromLineSelectionIndexToWxStyle( unsigned int selection )
 			return wxSOLID;
 	}
 }
-}
+} // namespace wxhelper
