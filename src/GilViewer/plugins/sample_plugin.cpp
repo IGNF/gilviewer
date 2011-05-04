@@ -38,7 +38,11 @@ struct rotate_image_plugin_functor
         std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
         if(v_pv.empty())
         {
+            #if wxMINOR_VERSION < 9
             ::wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
+            #else
+            wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
+            #endif 
             return;
         }
         layer_control *lc = v_pv[0]->layercontrol();
@@ -62,11 +66,19 @@ rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(ti
 
 void rotate_image_plugin::process()
 {
+        #if wxMINOR_VERSION < 9
 	::wxLogMessage(wxT("[sample_plugin::process] Starting..."));
+        #else
+	wxLogMessage(wxT("[sample_plugin::process] Starting..."));
+        #endif 
     std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
     if(v_pv.empty())
     {
+        #if wxMINOR_VERSION < 9
         ::wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
+        #else
+        wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
+        #endif 
         return;
     }
 
@@ -96,7 +108,11 @@ void rotate_image_plugin::process()
 
 wxWindow* rotate_image_plugin::gui()
 {
+    #if wxMINOR_VERSION < 9
     ::wxLogMessage(wxT("[sample_plugin::gui] start"));
+    #else
+    wxLogMessage(wxT("[sample_plugin::gui] start"));
+    #endif 
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
     wxBoxSizer* bSizer1;
@@ -117,6 +133,10 @@ wxWindow* rotate_image_plugin::gui()
 
 void rotate_image_plugin::on_button_90cw(wxCommandEvent& e)
 {
+    #if wxMINOR_VERSION < 9
     ::wxLogMessage(wxT("[sample_plugin::OnButton] start"));
+    #else
+    wxLogMessage(wxT("[sample_plugin::OnButton] start"));
+    #endif 
     process();
 }

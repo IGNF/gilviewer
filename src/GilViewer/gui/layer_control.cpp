@@ -269,7 +269,14 @@ void layer_control::on_save_button(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
     std::string file = m_layers[id]->filename();
-    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+
+    #if wxMINOR_VERSION < 9
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+    #else
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
+    #endif
     if (fileDialog->ShowModal() == wxID_OK)
     {
         string filename(fileDialog->GetFilename().To8BitData());
