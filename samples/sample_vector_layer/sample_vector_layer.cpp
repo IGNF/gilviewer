@@ -62,7 +62,7 @@ using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+{ wxCMD_LINE_PARAM, NULL, NULL, wxString("Input files", wxConvUTF8), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 { wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
