@@ -269,7 +269,14 @@ void layer_control::on_save_button(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
     std::string file = m_layers[id]->filename();
-    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+
+    #if wxMINOR_VERSION < 9
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+    #else
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
+    #endif
     if (fileDialog->ShowModal() == wxID_OK)
     {
         string filename(fileDialog->GetFilename().To8BitData());
@@ -556,15 +563,15 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     {
         m_ori = layer->orientation();
         m_isOrientationSet = true;
-        ::wxLogMessage(_("Viewer orientation has been set!"));
+		wxLogMessage(_("Viewer orientation has been set!"));
     }
     else if (!m_isOrientationSet && m_layers.size() > 1 && layer->has_ori())
     {
-        ::wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
+		wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
     }
     else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori())
     {
-        ::wxLogMessage(_("Image layer position initialised with respect to first image!"));
+		wxLogMessage(_("Image layer position initialised with respect to first image!"));
         layer->zoom_factor(m_ghostLayer->zoom_factor());
         layer->translation_x(m_ghostLayer->translation_x());
         layer->translation_y(m_ghostLayer->translation_y());
@@ -575,7 +582,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     //sa position initiale et son zoom
     if (m_isOrientationSet && layer->has_ori())
     {
-        ::wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
+		wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
 
         const boost::shared_ptr<orientation_2d> &oriLayer = layer->orientation();
 
@@ -591,7 +598,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     //Si il y a une orientation definie pour le viewer et et qu'on a affaire a une couche vecteur :
     if (m_isOrientationSet && layer->layer_type_as_string() == "Vector")
     {
-        ::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
+		wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
 
         double translationInitX =-m_ori->origin_x();
         double translationInitY = m_ori->origin_y();
@@ -635,7 +642,7 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
         oss << "Function : " << __FUNCTION__ << std::endl;
         std::string mess(oss.str());
         wxString mes(mess.c_str(), *wxConvCurrent);
-        ::wxLogMessage(mes);
+		wxLogMessage(mes);
         return;
     }
     else if (firstRow >= m_rows.size() || secondRow >= m_rows.size())
@@ -649,7 +656,7 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
         oss << "Function : " << __FUNCTION__ << std::endl;
         std::string mess(oss.str());
         wxString mes(mess.c_str(), *wxConvCurrent);
-        ::wxLogMessage(mes);
+		wxLogMessage(mes);
         return;
     }
 
@@ -803,7 +810,7 @@ void layer_control::on_load_display_config_button(wxCommandEvent& event)
     {
         wxString message;
         message << _("Reading a display configuration file: ") << fd->GetPath();
-        ::wxLogMessage(message);
+		wxLogMessage(message);
 
         std::string loadname((const char*) (fd->GetPath().mb_str()) );
         if (filesystem::extension(loadname) != ".xml")

@@ -146,9 +146,19 @@ else()
 endif()
 
 # Find BOOST
-set( Boost_ADDITIONAL_VERSIONS "1.39.0" "1.39" "1.40.0" "1.40" "1.41.0" "1.41" "1.42.0" "1.42" "1.43.0" "1.43" "1.44.0" "1.44")
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREAD ON)
+set( Boost_ADDITIONAL_VERSIONS 
+           "1.39.0" "1.39" 
+           "1.40.0" "1.40" 
+           "1.41.0" "1.41" 
+           "1.42.0" "1.42" 
+            "1.43.0" "1.43" 
+            "1.44.0" "1.44"
+            "1.46" "1.46.1"
+     )
+set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use boost static lib")
+set(Boost_USE_MULTITHREAD ON CACHE BOOL "use boost multi thread lib")
+set(BOOST_ROOT "" CACHE PATH "path to boost root directory")
+set(Boost_NO_SYSTEM_PATHS TRUE CACHE BOOL "use boost path env variable")
 FIND_PACKAGE( Boost 1.37 COMPONENTS filesystem system thread serialization )
 IF( NOT Boost_FOUND )
 	MESSAGE(FATAL_ERROR "Boost not found ! Please set Boost path ...")

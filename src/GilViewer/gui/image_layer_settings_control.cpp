@@ -434,7 +434,7 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
         }
         else
         {
-            ::wxLogMessage(_("LUT file does not exist!"));
+			wxLogMessage(_("LUT file does not exist!"));
         }
     }
 
@@ -625,7 +625,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
     if (m_isInit)
     {
         wxBufferedPaintDC dc(this);
-        if (!dc.Ok())
+		if (!dc.IsOk())
             return;
         dc.Clear();
 
@@ -717,7 +717,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
     else
     {
         wxBufferedPaintDC dc(this);
-        if (!dc.Ok())
+		if (!dc.IsOk())
             return;
         dc.Clear();
 
