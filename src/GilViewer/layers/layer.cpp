@@ -17,6 +17,7 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_filename(""),
         m_zoomFactor(1.),
         m_translationX(0.), m_translationY(0.),
+        m_layer_orientation(LO_0),
         m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)),
         m_hasOri(false),
         m_infos(""),

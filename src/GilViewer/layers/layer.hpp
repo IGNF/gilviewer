@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -51,7 +51,7 @@ Authors:
 
 class wxDC;
 #ifdef WIN32
-#	include <wx/msw/winundef.h>
+#   include <wx/msw/winundef.h>
 #endif
 
 class orientation_2d;
@@ -59,9 +59,19 @@ class color_lookup_table;
 class layer_settings_control;
 class layer_control;
 
+
+
 class layer
 {
 public:
+
+  enum layerOrientation{
+      LO_0,
+      LO_90,
+      LO_180,
+      LO_270
+      };
+
     typedef boost::shared_ptr< layer > ptrLayerType;
     typedef std::vector<std::vector<double> > histogram_type;
 
@@ -110,22 +120,26 @@ public:
     virtual void translation_y(double dy) { m_translationY = dy; }
     virtual inline double translation_y() const { return m_translationY; }
 
+    virtual void layer_orientation(layerOrientation orientation) { m_layer_orientation = orientation; }
+    virtual inline layerOrientation layer_orientation() const { return m_layer_orientation; }
+
+
     inline virtual double center_x() {return 0.;}
     inline virtual double center_y() {return 0.;}
 
     // local<->global transforms. Default: pixel-centered
-    wxPoint from_local(const wxPoint &p, double delta=0.5) const
+    virtual wxPoint from_local(const wxPoint &p, double delta=0.5) const
     {
-	return wxPoint(
-		wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
-		wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
+    return wxPoint(
+        wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
+        wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
     }
 
-    wxPoint to_local(const wxPoint &p, double delta=0.5) const
+    virtual wxPoint to_local(const wxPoint &p, double delta=0.5) const
     {
-	return wxPoint(
-		wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
-		wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
+    return wxPoint(
+        wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
+        wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
     }
 
 
@@ -230,6 +244,7 @@ protected:
     double m_zoomFactor;
     double m_translationX, m_translationY;
     double m_resolution;
+   layerOrientation m_layer_orientation;
 
     //orientation (possible que pour les calques images)
     boost::shared_ptr<orientation_2d> m_ori;
@@ -240,6 +255,7 @@ protected:
 
     unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
+
 };
 
 #endif // __LAYER_HPP__
