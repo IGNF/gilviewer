@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -70,6 +70,7 @@ public:
     virtual ~panel_viewer() {}
 
     void add_layer( const layer::ptrLayerType &layer );
+    void delete_layer( unsigned int index);
 
     layer_control* layercontrol() const;
     application_settings* applicationsettings() const;
