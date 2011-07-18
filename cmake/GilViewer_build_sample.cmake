@@ -21,7 +21,11 @@ if(UNIX)
                                                 ./samples/sample_subimage/sample_subimage.cpp
                                                 ./samples/sample_subimage/sample_subimage.hpp )
         endif()
-        target_link_libraries( GilViewerApp ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
+        message(STATUS ${GILVIEWER_LINK_EXTERNAL_LIBRARIES})
+        LINK_DIRECTORIES("/home/bcannelle/Programmation/Librairies/v6_4_1-00841C/lib/Linux-x86-32-gcc/")
+        target_link_libraries( GilViewerApp ${GILVIEWER_LINK_EXTERNAL_LIBRARIES}
+            GilViewer
+            )
         target_link_libraries( sample_vector_layer ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
         target_link_libraries( sample_subimage ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
 endif()

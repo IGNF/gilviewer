@@ -70,8 +70,12 @@ public:
 
     /// Cette methode permet d'ajouter un calque
     void add_layer(const layer::ptrLayerType &layer);
-    /// Cette methode permet de supprimer
+    /// Cette methode permet de supprimer un calque
     void delete_layer(unsigned int index);
+    void delete_all_layer(){wxCommandEvent event;on_delete_all_rows_button(event);}
+    
+    /// Recuperation d'un calque par son Id
+    layer::ptrLayerType get_layer_with_id(unsigned int id)const;
     
     ///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
     bool oriented() const {return m_isOrientationSet; }
