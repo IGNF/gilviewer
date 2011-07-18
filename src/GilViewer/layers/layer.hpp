@@ -126,6 +126,8 @@ public:
 
     inline virtual double center_x() {return 0.;}
     inline virtual double center_y() {return 0.;}
+    
+    inline unsigned int getId()const{return m_id;}
 
     // local<->global transforms. Default: pixel-centered
     virtual wxPoint from_local(const wxPoint &p, double delta=0.5) const
@@ -255,6 +257,9 @@ protected:
 
     unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
+    
+    unsigned int m_id;
+
 
 };
 

@@ -41,6 +41,7 @@ Authors:
 
 #include <wx/dnd.h>
 #include <wx/panel.h>
+#include <wx/brush.h>
 
 #include "../layers/layer.hpp"
 
@@ -71,6 +72,7 @@ public:
 
     void add_layer( const layer::ptrLayerType &layer );
     void delete_layer( unsigned int index);
+    layer::ptrLayerType get_layer_with_id(unsigned int id)const;
 
     layer_control* layercontrol() const;
     application_settings* applicationsettings() const;
@@ -148,6 +150,8 @@ protected:
     /// The menu 'About'
     wxMenu *m_menuAbout;
 
+    wxBrush m_bgbrush;
+
     bool m_mouseMovementStarted;
     float m_mouseMovementInitX;
     float m_mouseMovementInitY;
@@ -191,7 +195,6 @@ protected:
     void on_paint(wxPaintEvent& evt);
     void update_statusbar(const int i, const int j);
     void on_size( wxSizeEvent &e );
-
     // Mouse events
     void on_mouse_move(wxMouseEvent &event);
     void on_left_down(wxMouseEvent &event);

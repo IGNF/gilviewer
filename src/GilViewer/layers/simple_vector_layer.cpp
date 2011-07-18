@@ -8,18 +8,18 @@ GIL and wxWidgets.
 
 Homepage: 
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors: 
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
-	
-	
+    
+    
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -261,7 +261,7 @@ void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double
     et.b = db;
     et.theta = theta;
     // Construction de la liste des points
-    static const double EToBConst =	0.2761423749154;
+    static const double EToBConst = 0.2761423749154;
     wxSize offset((int)(2*da*EToBConst), (int)(2*db*EToBConst));
 
     wxCoord x_center = (wxCoord) dx_center;

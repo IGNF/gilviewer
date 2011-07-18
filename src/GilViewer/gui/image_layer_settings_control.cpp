@@ -53,6 +53,7 @@ Authors:
 #include <wx/textctrl.h>
 #include <wx/filepicker.h>
 #include <wx/valtext.h>
+#include <wx/radiobox.h>
 
 #include "../gui/panel_viewer.hpp"
 #include "../gui/layer_control.hpp"
@@ -262,12 +263,40 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
     // On rajoute tout ce qui concerne la transparence dans le sizer principal
     m_main_sizer->Add(alpha_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
 
+    wxArrayString choices;
+    choices.Add(wxT("0°"));
+    choices.Add(wxT("90°"));
+    choices.Add(wxT("180°"));
+    choices.Add(wxT("270°"));
+    m_radioBoxRotation=new wxRadioBox(this,wxID_ANY, wxT("Rotation"),wxDefaultPosition, wxDefaultSize,choices, 0,wxRA_SPECIFY_COLS,wxDefaultValidator,wxT("radioBox"));
+    m_radioBoxRotation->SetItemToolTip(0,wxT("Original Orientation"));
+    m_radioBoxRotation->SetItemToolTip(1,wxT("Rotation of 90° clockwise "));
+    m_radioBoxRotation->SetItemToolTip(2,wxT("Rotation of 180°"));
+    m_radioBoxRotation->SetItemToolTip(3,wxT("Rotation of 90° counterclockwise "));
+    switch(m_parent->layers()[index]->layer_orientation()){
+        case layer::LO_0:
+            m_radioBoxRotation->SetSelection(0);break;
+        case layer::LO_90:
+            m_radioBoxRotation->SetSelection(1);break;
+        case layer::LO_180:
+            m_radioBoxRotation->SetSelection(2);break;
+        case layer::LO_270:
+            m_radioBoxRotation->SetSelection(3);break;
+        
+    }
+    
+    m_main_sizer->Add(m_radioBoxRotation, 0,wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
+
+
     wxStdDialogButtonSizer *buttons_sizer = new wxStdDialogButtonSizer();
     buttons_sizer->AddButton(new wxButton(this,wxID_OK, wxT("OK")));
     buttons_sizer->AddButton(new wxButton(this,wxID_APPLY, wxT("Apply")));
     buttons_sizer->AddButton(new wxButton(this,wxID_CANCEL, wxT("Cancel")));
     buttons_sizer->Realize();
     m_main_sizer->Add(buttons_sizer, 0, wxALIGN_RIGHT|wxALL, 5);
+    
+    
+    
 
     //CreateStatusBar();
     //GetStatusBar()->SetStatusText(wxString(_("Status :")));
@@ -385,20 +414,20 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
                 m_textAlphaRangeMax->SetValue(mx);
             }
 
-            //			// Enfin, si le min est superieur au max, on inverse les valeurs ...
-            //			if ( alphaRangeMin > alphaRangeMax )
-            //			{
-            //				double inv = alphaRangeMin;
-            //				alphaRangeMin = alphaRangeMax;
-            //				alphaRangeMax = inv;
-            //				// ... et les textControl !
-            //				wxString mn;
-            //				mn << alphaRangeMin;
-            //				wxString mx;
-            //				mx << alphaRangeMax;
-            //				m_textAlphaRangeMin->SetValue(mn);
-            //				m_textAlphaRangeMax->SetValue(mx);
-            //			}
+            //          // Enfin, si le min est superieur au max, on inverse les valeurs ...
+            //          if ( alphaRangeMin > alphaRangeMax )
+            //          {
+            //              double inv = alphaRangeMin;
+            //              alphaRangeMin = alphaRangeMax;
+            //              alphaRangeMax = inv;
+            //              // ... et les textControl !
+            //              wxString mn;
+            //              mn << alphaRangeMin;
+            //              wxString mx;
+            //              mx << alphaRangeMax;
+            //              m_textAlphaRangeMin->SetValue(mn);
+            //              m_textAlphaRangeMax->SetValue(mx);
+            //          }
         }
     }
 
@@ -410,6 +439,16 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     layercontrol()->layers()[m_index]->intensity_max(redMaxDouble);
     layercontrol()->layers()[m_index]->gamma(redGammaDouble);
 
+    //orientation
+    if( m_radioBoxRotation->GetSelection() ==0)
+        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_0 );
+    if( m_radioBoxRotation->GetSelection() ==1)
+        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_90 );
+    if( m_radioBoxRotation->GetSelection() ==2)
+        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_180 );
+    if( m_radioBoxRotation->GetSelection() ==3)
+        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_270 );
+    
     // La, il faut brancher le range pour la transparence : alphaRangeMin et alphaRangeMax
     if (m_checkAlphaRange->IsChecked() )
     {
@@ -434,10 +473,12 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
         }
         else
         {
-			wxLogMessage(_("LUT file does not exist!"));
+            wxLogMessage(_("LUT file does not exist!"));
         }
     }
+    
 
+    
     m_parent->panelviewer()->layercontrol()->layers()[m_index]->needs_update(true);
     m_parent->panelviewer()->Refresh();
 }
@@ -497,6 +538,10 @@ void image_layer_settings_control::update()
     if(m_filePicker_CLUT)
     {
         m_filePicker_CLUT->SetPath(wxString(layer->colorlookuptable()->lut_file().c_str(), *wxConvCurrent));
+    }
+    
+    if(m_radioBoxRotation){
+        m_radioBoxRotation->SetSelection(layer->layer_orientation());
     }
 }
 
@@ -625,7 +670,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
     if (m_isInit)
     {
         wxBufferedPaintDC dc(this);
-		if (!dc.IsOk())
+        if (!dc.IsOk())
             return;
         dc.Clear();
 
@@ -668,14 +713,14 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
                         static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+i*step_width),
                         static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
                                              -step_height*histo[0][i]),
-                        static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width), 						static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
+                        static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width),                       static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
                                                                                                                                                      -step_height*histo[0][i+1])
                         );
         }
         else //nombre de canaux quelconque
         {
             // On calcule l'etendue maximale. On a donc besoin du min des min des n canaux et du max des max des n canaux.
-            double	max_value = std::numeric_limits<double>::min();
+            double  max_value = std::numeric_limits<double>::min();
             double min_value = std::numeric_limits<double>::max();
             for(unsigned int channel = 0; channel < histo.size(); ++channel)
             {
@@ -706,7 +751,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
                             static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+i*step_width),
                             static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
                                                  -step_height*histo[channel][i]),
-                            static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width), 							static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
+                            static_cast<wxCoord>(HISTOGRAM_LEFT_MARGIN+(i+1)*step_width),                           static_cast<wxCoord>(HISTOGRAM_UP_MARGIN+window_height
                                                                                                                                                                      -step_height*histo[channel][i+1])
                             );
 
@@ -717,7 +762,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
     else
     {
         wxBufferedPaintDC dc(this);
-		if (!dc.IsOk())
+        if (!dc.IsOk())
             return;
         dc.Clear();
 

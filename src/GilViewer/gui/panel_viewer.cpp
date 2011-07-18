@@ -213,6 +213,9 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     m_menuBar->Insert(0, m_menuFile, _("File"));
     m_menuBar->Insert(1, m_menuAbout, _("About ..."));
 
+
+    m_bgbrush.SetColour(wxColor(200,200,200));
+    
     //  /////Popup menu
     //  m_menuMain = new wxMenu;
     //  //  wxMenu* menuRemove = new wxMenu;
@@ -350,8 +353,10 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
     wxBufferedPaintDC dc(this);
     if (!dc.IsOk())
         return;
-    dc.Clear();
 
+    dc.SetBackgroundMode    ( wxSOLID);     
+    dc.SetBackground    (m_bgbrush);     
+    dc.Clear();
     wxSize tailleImage(this->GetSize());
     int dx = static_cast<int> (m_translationDrag.x);
     int dy = static_cast<int> (m_translationDrag.y);
@@ -657,10 +662,11 @@ void panel_viewer::update_statusbar(const int i, const int j) {
                 if (!affichagePixelDone) {
                     affichagePixelDone = true;
                     std::ostringstream coordPixel;
+                    wxPoint res=(*it)->to_local(wxPoint(i,j));
                     coordPixel << "Coord image : (";
-                    coordPixel << static_cast<int> (-(*it)->translation_x() + i * (*it)->zoom_factor());
+                    coordPixel << static_cast<int> ( res.x);
                     coordPixel << ",";
-                    coordPixel << static_cast<int> (-(*it)->translation_y() + j * (*it)->zoom_factor());
+                    coordPixel << static_cast<int> (res.y);
                     coordPixel << ")";
                     double dx, dy;
                     subpix_coord_image(i, j, dx, dy);
@@ -730,6 +736,10 @@ void panel_viewer::add_layer(const layer::ptrLayerType &layer) {
 
 void panel_viewer::delete_layer( unsigned int index){
     m_layerControl->delete_layer(index);
+}
+
+layer::ptrLayerType panel_viewer::get_layer_with_id(unsigned int id)const{
+    return m_layerControl->get_layer_with_id(id);
 }
 
 void panel_viewer::show_layer_control(bool show) const {
