@@ -103,10 +103,12 @@ string vector_layer::available_formats_wildcard() const
 
 vector<string> vector_layer::available_formats_extensions() const
 {
-    vector<string> extensions, ogr_extensions, simple_extensions;
+    vector<string> extensions, ogr_extensions, simple_extensions, cgal_extensions;
     ogr_extensions    = ogr_available_formats_extensions();
     simple_extensions = simple_available_formats_extensions();
+    cgal_extensions   = cgal_available_formats_extensions();
     extensions.insert(extensions.begin(), ogr_extensions.begin()   , ogr_extensions.end());
     extensions.insert(extensions.end()  , simple_extensions.begin(), simple_extensions.end());
+    extensions.insert(extensions.end()  , cgal_extensions.begin(),   cgal_extensions.end());
     return extensions;
 }
