@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+  http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+  Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+  Olivier Tournaire, Adrien Chauve
 
 
 
@@ -41,14 +41,21 @@ Authors:
 #include "image_layer_channel_converter_functor.hpp"
 #include "image_layer_transparency_functor.hpp"
 
-struct screen_image_functor
+#include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
+#include <boost/gil/image_view_factory.hpp>
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
+
+class screen_image_functor
 {
+public:
     typedef void result_type;
     screen_image_functor( boost::gil::dev3n8_view_t &screen_view,
                           channel_converter_functor cc,
                           double z,
                           double tx,
                           double ty,
+                         image_layer::layerOrientation ori,
                           boost::gil::gray8_view_t& canal_alpha,
                           const double min_alpha,
                           const double max_alpha,
@@ -56,6 +63,7 @@ struct screen_image_functor
                           bool isTransparent) :
             m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc),
             m_zoomFactor(z), m_translationX(tx), m_translationY(ty),
+            m_layer_orientation(ori),
             m_alpha(alpha),
             m_zero(0),
             m_transparencyFonctor(min_alpha, max_alpha),
@@ -65,6 +73,20 @@ struct screen_image_functor
 
     template <typename ViewType>
     result_type operator()( const ViewType& src ) const
+    {
+    switch(m_layer_orientation){
+    case image_layer::LO_0: return apply_rotated(src);
+    case image_layer::LO_180: return apply_rotated(rotated180_view(src));
+    case image_layer::LO_90: return apply_rotated(rotated90cw_view(src));
+    case image_layer::LO_270: return apply_rotated(rotated90ccw_view(src));
+    }
+    }
+
+
+    private:
+
+    template <typename ViewType>
+    result_type apply_rotated( const ViewType& src ) const
     {
         boost::gil::dev3n8_pixel_t blank;
         boost::gil::at_c<0>(blank) = 0;
@@ -106,6 +128,7 @@ struct screen_image_functor
     boost::gil::gray8_view_t& m_canal_alpha;
     channel_converter_functor m_cc;
     double m_zoomFactor, m_translationX, m_translationY;
+    image_layer::layerOrientation m_layer_orientation;
     const boost::gil::gray8_pixel_t m_alpha, m_zero;
     transparency_functor m_transparencyFonctor;
     bool m_isTransparent;

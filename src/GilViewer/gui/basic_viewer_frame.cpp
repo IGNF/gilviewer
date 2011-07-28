@@ -97,7 +97,7 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
     {
         mes << wxString(it->c_str(), *wxConvCurrent) << wxString(" ", *wxConvCurrent);
     }
-    ::wxLogMessage(mes);
+    wxLogMessage(mes);
 
     //ToolBar
     m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);

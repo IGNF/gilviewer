@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -53,7 +53,7 @@ Authors:
 
 class wxDC;
 #ifdef WIN32
-#	include <wx/msw/winundef.h>
+#   include <wx/msw/winundef.h>
 #endif
 
 class orientation_2d;
@@ -61,9 +61,19 @@ class color_lookup_table;
 class layer_settings_control;
 class layer_control;
 
+
+
 class layer
 {
 public:
+
+  enum layerOrientation{
+      LO_0,
+      LO_90,
+      LO_180,
+      LO_270
+      };
+
     typedef boost::shared_ptr< layer > ptrLayerType;
     typedef std::vector<std::vector<double> > histogram_type;
 
@@ -105,10 +115,13 @@ public:
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
+    virtual void layer_orientation(layerOrientation orientation) { m_layer_orientation = orientation; }
+    virtual inline layerOrientation layer_orientation() const { return m_layer_orientation; }
+
     inline virtual double center_x() {return 0.;}
     inline virtual double center_y() {return 0.;}
-
-
+    
+    inline unsigned int getId()const{return m_id;}
 
     virtual void has_ori(bool hasOri) { m_hasOri = hasOri; }
     virtual bool has_ori() const { return m_hasOri; }
@@ -216,19 +229,22 @@ protected:
     // Le nom du fichier associe si il existe
     std::string m_filename;
 
-    //infos du layer
-    std::string m_infos;
-
     // transformation du layer
     layer_transform m_layer_transform;
+    layerOrientation m_layer_orientation;
 
     //orientation (possible que pour les calques images)
     boost::shared_ptr<orientation_2d> m_ori;
     bool m_hasOri;
 
+    //infos du layer
+    std::string m_infos;
+
     unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
-};
+    
+    unsigned int m_id;
 
+};
 
 #endif // __LAYER_HPP__

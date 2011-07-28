@@ -7,6 +7,7 @@
 #include "../tools/color_lookup_table.hpp"
 #include "../gui/layer_settings_control.hpp"
 
+#include <iostream>
 
 layer::layer(const boost::function<void()> &notifyLayerControl, const boost::function<void()> &notifyLayerSettingsControl):
         notifyLayerControl_(notifyLayerControl),
@@ -16,14 +17,20 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_hasToBeUpdated(true),
         m_name("Default layer name"),
         m_filename(""),
-        m_infos(""),
+        m_layer_orientation(LO_0),
         m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)),
         m_hasOri(false),
+        m_infos(""),
         m_point_width(3), m_line_width(3),
         m_line_style(wxSOLID),
         m_polygon_border_width(3),
         m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
-        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {}
+        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {
+    
+    static unsigned int countId=0;
+    ++countId;
+    m_id=countId;
+}
 
 const boost::shared_ptr<orientation_2d> &layer::orientation() const
 {

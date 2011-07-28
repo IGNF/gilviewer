@@ -75,7 +75,7 @@ struct transparency_functor
                    && m_min_alpha <= boost::gil::at_c<1>(src) && boost::gil::at_c<1>(src) <= m_max_alpha
                    && m_min_alpha <= boost::gil::at_c<2>(src) && boost::gil::at_c<2>(src) <= m_max_alpha;
         else
-            return (m_min_alpha <=boost::gil:: at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha)
+            return (m_min_alpha <= boost::gil::at_c<0>(src) || boost::gil::at_c<0>(src) <= m_max_alpha)
                    && (m_min_alpha <= boost::gil::at_c<1>(src) || boost::gil::at_c<1>(src) <= m_max_alpha)
                    && (m_min_alpha <= boost::gil::at_c<2>(src) || boost::gil::at_c<2>(src) <= m_max_alpha);
     }
