@@ -58,8 +58,7 @@ using namespace std;
 using namespace boost::filesystem;
 
 ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename_): vector_layer(),
-        m_nb_geometries(0),
-        m_coordinates(1)
+        m_nb_geometries(0)
 {
     try
     {
@@ -181,7 +180,7 @@ void ogr_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
     wxBrush polygon_brush(m_polygon_inner_color,m_polygon_inner_style);
 
     /// Geometries
-    draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,resolution(),zoom_factor(),translation_x(),translation_y(),m_coordinates);
+    draw_geometry_visitor visitor(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,transform());
     for(unsigned int i=0;i<m_geometries_features.size();++i)
         boost::apply_visitor( visitor, m_geometries_features[i].first );
 
@@ -191,10 +190,9 @@ void ogr_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
         wxPen text_pen;
         text_pen.SetColour(m_text_color);
         dc.SetPen(text_pen);
-        double delta=0.5*resolution();
         for(unsigned int i=0;i<m_texts.size();++i)
         {
-            wxPoint p = ogr_vector_layer::from_local(zoom_factor(), translation_x(), translation_y(), delta, m_texts[i].first.x, m_texts[i].first.y, m_coordinates);
+            wxPoint p = transform().from_local( m_texts[i].first.x, m_texts[i].first.y);
             //dc.DrawLine(p);
             dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
         }
@@ -223,7 +221,7 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
     if(spatial_reference)
     {
         // If the layer has a spatial reference, y coordinates must be inverted
-        m_coordinates=-1;
+        transform().coordinates(-1);
         if(spatial_reference->IsGeographic())
             oss << "Geographic system" << std::endl;
         if(spatial_reference->IsLocal())
@@ -255,12 +253,6 @@ string ogr_vector_layer::available_formats_wildcard() const
 const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::geometries_features() const {return m_geometries_features;}
 
 std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::geometries_features() {return m_geometries_features;}
-
-wxPoint ogr_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates = 1 /*IMAGE_COORDINATES*/)
-{
-    return wxPoint( static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
-                    static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor) );
-}
 
 void ogr_vector_layer::add_point( double x , double y )
 {

@@ -58,27 +58,20 @@ public:
     /// Constructeur a partir d'un nom de calque et d'un fichier shapefile
     cgal_vector_layer(const std::string &layer_name, const std::string &filename);
     /// Constructeur vide: pour creer un layer a remplir a la main ...
-    cgal_vector_layer(const std::string &layer_name="default name"): vector_layer(),
-            m_nb_geometries(0),
-            m_coordinates(1) {m_name=layer_name;}
+    cgal_vector_layer(const std::string &layer_name="default name") {m_name=layer_name;}
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~cgal_vector_layer();
 
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void update(int, int) {}
+    virtual void snap(  eSNAP snap, double x , double y, double& dsnap, double& xsnap, double& ysnap ) const;
 
     virtual std::string available_formats_wildcard() const;
 
     //void build_infos(OGRSpatialReference *spatial_reference);
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
-
-    inline virtual double center_x() {return m_center_x;}
-    inline virtual double center_y() {return m_center_y;}
-
-    static wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
-    inline void coordinates(int c) {m_coordinates=c;}
 
     virtual void add_point( double x , double y );
     virtual void add_line( double x1 , double y1 , double x2 , double y2 );
@@ -98,12 +91,6 @@ public:
 
 private:
     Arrangement *m_arrangement;
-    double m_center_x, m_center_y;
-    unsigned int m_nb_geometries;
-    // 1 --> image; -1 --> cartographic coordinates
-    int m_coordinates;
-
-  //  void compute_center(OGRLayer* layer, int nb_layers);
 };
 
 #endif // CGAL_VECTOR_LAYER_HPP

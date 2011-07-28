@@ -126,8 +126,6 @@ public:
     simple_vector_layer(const std::string& layer_name="default layer name");
     virtual ~simple_vector_layer() {}
 
-    wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates=1/*IMAGE_COORDINATES*/) const;
-
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void update(int, int) {}
 

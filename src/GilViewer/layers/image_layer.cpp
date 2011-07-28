@@ -295,7 +295,7 @@ void image_layer::update(int width, int height)
 		m_gamma_array, m_gamma_array_size,
 		*m_cLUT, m_red, m_green, m_blue);
     //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
-    screen_image_visitor siv(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
+    screen_image_visitor siv(screen_view, my_cc, transform().zoom_factor(), transform().translation_x(), transform().translation_y(), alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
     apply_visitor( siv, m_variant_view->value );
 
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
@@ -334,8 +334,8 @@ string image_layer::pixel_value(int i, int j) const
     ostringstream oss;
     oss.precision(6);
     oss<<"(";
-    i = static_cast<int>(floor(i*m_zoomFactor-m_translationX));
-    j = static_cast<int>(floor(j*m_zoomFactor-m_translationY));
+    i = static_cast<int>(floor(i*transform().zoom_factor()-transform().translation_x()));
+    j = static_cast<int>(floor(j*transform().zoom_factor()-transform().translation_y()));
     //apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
     image_position_to_string_visitor iptsv(i, j, oss);
     apply_visitor( iptsv, m_variant_view->value );

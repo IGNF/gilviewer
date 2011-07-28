@@ -46,6 +46,8 @@ Authors:
 #include <wx/brush.h>
 #include <wx/gdicmn.h>
 
+#include "layer_transform.hpp"
+
 class wxDC;
 class wxPoint;
 
@@ -53,18 +55,6 @@ class vector_layer_ghost
 {
 public:
     vector_layer_ghost( bool isCarto = false );
-
-    void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
-    inline double zoom_factor() const { return m_zoomFactor; }
-    void translation_x(double dx) { m_translationX = dx; }
-    inline double translation_x() const { return m_translationX; }
-    void translation_y(double dy) { m_translationY = dy; }
-    inline double translation_y() const { return m_translationY; }
-
-    // local<->global transforms. Default: pixel-centered
-    wxPoint to_local  (const wxPoint &p, double delta =0.5) const;
-    wxPoint from_local(const wxPoint &p, double delta =0.5) const;
-
     wxRect rectangle() const;
 
     void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
@@ -75,7 +65,6 @@ public:
 
     typedef std::pair< wxPoint , double > CircleType;
     CircleType m_circle;
-
 
     bool m_isCarto;
     bool m_drawPointPosition;
@@ -90,12 +79,12 @@ public:
     wxPen m_penPoint, m_penRectangle, m_penCircle, m_penLine;
     wxBrush m_brushRectangle, m_brushCircle;
 
-private:
-    //gestion de la geometrie
-    double m_zoomFactor;
-    double m_translationX, m_translationY;
-    double m_resolution;
+    layer_transform& transform() { return m_layer_transform; }
+    const layer_transform& transform() const { return m_layer_transform; }
 
+private:
+    // transformation du layer
+    layer_transform m_layer_transform;
 };
 
 #endif /*VECTORLAYERGENERIC_H_*/

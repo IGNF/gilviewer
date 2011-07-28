@@ -40,26 +40,11 @@ Authors:
 
 #include "vector_layer_ghost.hpp"
 
-wxPoint vector_layer_ghost::from_local(const wxPoint &p, double delta) const
-{
-    return wxPoint(
-            wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
-            wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
-}
-
-wxPoint vector_layer_ghost::to_local(const wxPoint &p, double delta) const
-{
-    return wxPoint(
-            wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
-            wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
-}
-
 vector_layer_ghost::vector_layer_ghost(bool isCarto) :
 	m_pointPosition(0, 0), m_rectangleSelection(std::make_pair(wxPoint(0, 0), wxPoint(0, 0)) ), m_isCarto(isCarto), m_drawPointPosition(false),
 	m_drawRectangleSelection(false), m_rectangleSelectionFirstPointSet(false),
 	m_drawCircle(false), m_CircleFirstPointSet(false),
-	m_drawLine(false), m_lineEndCapture(false), m_lineHasBegun(false),
-	m_zoomFactor(1.), m_translationX(0.), m_translationY(0.)
+        m_drawLine(false), m_lineEndCapture(false), m_lineHasBegun(false)
 {
 }
 
@@ -68,7 +53,7 @@ wxRect vector_layer_ghost::rectangle() const {
     wxPoint q(m_rectangleSelection.second);
     if(p.x>q.x) std::swap(p.x,q.x);
     if(p.y>q.y) std::swap(p.y,q.y);
-    return wxRect(from_local(p,0),from_local(q,1));
+    return wxRect(transform().from_local(p,0),transform().from_local(q,1));
 }
 
 void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
@@ -77,7 +62,7 @@ void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     {
         dc.SetPen(m_penCircle);
         dc.SetBrush(m_brushCircle);
-        dc.DrawCircle(from_local(m_circle.first), wxCoord(m_circle.second/m_zoomFactor) );
+        dc.DrawCircle(transform().from_local(m_circle.first), wxCoord(m_circle.second/transform().zoom_factor() ));
     }
 
     // m_pointPosition
@@ -85,7 +70,7 @@ void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     {
         dc.SetPen(m_penPoint);
         dc.SetBrush(m_brushCircle);
-        dc.DrawLine(from_local(m_pointPosition) , from_local(m_pointPosition));
+        dc.DrawLine(transform().from_local(m_pointPosition) , transform().from_local(m_pointPosition));
     }
 
     // m_rectangleSelection
@@ -101,8 +86,8 @@ void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         dc.SetPen(m_penLine);
         unsigned int  i;
         for (i=0;i<m_linePoints.size()-1;++i)
-            dc.DrawLine(from_local(m_linePoints[i]),from_local(m_linePoints[i+1]));
-        dc.DrawLine(from_local(m_linePoints[i]),from_local(m_linePoints.back()));
+            dc.DrawLine(transform().from_local(m_linePoints[i]),transform().from_local(m_linePoints[i+1]));
+        dc.DrawLine(transform().from_local(m_linePoints[i]),transform().from_local(m_linePoints.back()));
     }
 
 }

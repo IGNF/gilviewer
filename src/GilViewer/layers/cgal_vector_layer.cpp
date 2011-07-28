@@ -138,9 +138,7 @@ struct Arrangement {
     }
 
 
-    void draw(wxDC &dc, wxPen point_pen, wxPen line_pen, wxPen poly_pen, wxBrush poly_brush, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty, int coordinates) const {
-        double delta = 0.5*r;
-
+    void draw(wxDC &dc, wxPen point_pen, wxPen line_pen, wxPen poly_pen, wxBrush poly_brush, wxCoord x, wxCoord y, bool transparent, const layer_transform& trans) const {
         dc.SetPen(poly_pen);
         dc.SetBrush(poly_brush);
         Face_const_iterator fit;
@@ -151,7 +149,7 @@ struct Arrangement {
             Arrangement_2::Ccb_halfedge_const_circulator curr, first;
             curr = first = fit->outer_ccb();
             do {
-                wxPoint p=cgal_vector_layer::from_local(z,tx,ty,delta,CGAL::to_double(curr->source()->point().x()),CGAL::to_double(curr->source()->point().y()),coordinates);
+                wxPoint p=trans.from_local(CGAL::to_double(curr->source()->point().x()),CGAL::to_double(curr->source()->point().y()));
                 points.push_back(p);
             } while ((++curr) != first);
             std::cout << points.size() << std::endl;
@@ -163,18 +161,35 @@ struct Arrangement {
         Edge_const_iterator eit;
         for (eit = m_arrangement.edges_begin(); eit != m_arrangement.edges_end(); ++eit)
         {
-            wxPoint p1=cgal_vector_layer::from_local(z,tx,ty,delta,CGAL::to_double(eit->source()->point().x()),CGAL::to_double(eit->source()->point().y()),coordinates);
-            wxPoint p2=cgal_vector_layer::from_local(z,tx,ty,delta,CGAL::to_double(eit->target()->point().x()),CGAL::to_double(eit->target()->point().y()),coordinates);
+            wxPoint p1=trans.from_local(CGAL::to_double(eit->source()->point().x()),CGAL::to_double(eit->source()->point().y()));
+            wxPoint p2=trans.from_local(CGAL::to_double(eit->target()->point().x()),CGAL::to_double(eit->target()->point().y()));
             dc.DrawLine(p1,p2);
         }
 
         dc.SetPen(point_pen);
         Vertex_const_iterator vit;
         for (vit = m_arrangement.vertices_begin(); vit != m_arrangement.vertices_end(); ++vit) {
-            wxPoint p=cgal_vector_layer::from_local(z,tx,ty,delta,CGAL::to_double(vit->point().x()),CGAL::to_double(vit->point().y()),coordinates);
+            wxPoint p=trans.from_local(CGAL::to_double(vit->point().x()),CGAL::to_double(vit->point().y()));
             dc.DrawLine(p,p);
-        }      
+        }
     }
+
+    void snap_point(const layer_transform& trans, double x , double y, double& dsnap, double& xsnap, double& ysnap ) const
+    {
+        Vertex_const_iterator vit;
+        for (vit = m_arrangement.vertices_begin(); vit != m_arrangement.vertices_end(); ++vit) {
+            wxPoint p=trans.from_local(CGAL::to_double(vit->point().x()),CGAL::to_double(vit->point().y()));
+            double d=(p.x-x)*(p.x-x)+(p.y-y)*(p.y-y);
+            if(d<dsnap)
+            {
+                xsnap=p.x;
+                ysnap=p.y;
+                dsnap=d;
+            }
+        }
+    }
+
+
 
     void clear() { m_arrangement.clear(); }
 
@@ -186,9 +201,7 @@ private:
 using namespace std;
 using namespace boost::filesystem;
 
-cgal_vector_layer::cgal_vector_layer(const string &layer_name, const string &filename_): vector_layer(),
-        m_nb_geometries(0),
-        m_coordinates(1)
+cgal_vector_layer::cgal_vector_layer(const string &layer_name, const string &filename_)
 {
     m_arrangement = new Arrangement;
     m_arrangement->load(filename_);
@@ -209,6 +222,10 @@ cgal_vector_layer::~cgal_vector_layer()
     if(m_arrangement) delete m_arrangement;
 }
 
+void cgal_vector_layer::snap( eSNAP snap, double x , double y, double& dsnap, double& xsnap, double& ysnap ) const
+{
+    if(snap&SNAP_POINT) m_arrangement->snap_point(transform(),x,y,dsnap,xsnap,ysnap);
+}
 
 void cgal_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
@@ -216,7 +233,7 @@ void cgal_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) c
     wxPen line_pen(m_line_color,m_line_width,m_line_style);
     wxPen polygon_pen(m_polygon_border_color,m_polygon_border_width,m_polygon_border_style);
     wxBrush polygon_brush(m_polygon_inner_color,m_polygon_inner_style);
-    m_arrangement->draw(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,resolution(),zoom_factor(),translation_x(),translation_y(),m_coordinates);
+    m_arrangement->draw(dc,point_pen,line_pen,polygon_pen,polygon_brush,x,y,transparent,transform());
 }
 
 layer_settings_control* cgal_vector_layer::build_layer_settings_control(unsigned int index, layer_control* parent)
@@ -243,17 +260,7 @@ string cgal_vector_layer::available_formats_wildcard() const
     wildcard << "KML (*.kml)|*.kml;*.KML";
     return wildcard.str();
 }
-/*
-const std::vector<std::pair<geometry_types,OGRFeature*> >& cgal_vector_layer::geometries_features() const {return m_geometries_features;}
 
-std::vector<std::pair<geometry_types,OGRFeature*> >& cgal_vector_layer::geometries_features() {return m_geometries_features;}
-*/
-
-wxPoint cgal_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates = 1 /*IMAGE_COORDINATES*/)
-{
-    return wxPoint( static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
-                    static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor) );
-}
 void cgal_vector_layer::add_point( double x , double y )
 {
 }

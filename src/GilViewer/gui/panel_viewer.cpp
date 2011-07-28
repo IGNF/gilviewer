@@ -189,7 +189,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT) {
+        m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT), m_snap(layer::SNAP_NONE) {
     if (panel_manager::instance()->panels_list().size() == 0)
         m_applicationSettings = new application_settings(this, wxID_ANY);
 
@@ -578,14 +578,9 @@ void panel_viewer::update_if_transformable() {
 }
 
 void panel_viewer::scene_move(const wxPoint& translation) {
-    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-        if ((*it)->transformable()) {
-            (*it)->translation_x((*it)->translation_x() + translation.x * (*it)->zoom_factor());
-            (*it)->translation_y((*it)->translation_y() + translation.y * (*it)->zoom_factor());
-        }
-    }
-    m_ghostLayer->translation_x(m_ghostLayer->translation_x() + translation.x * m_ghostLayer->zoom_factor());
-    m_ghostLayer->translation_y(m_ghostLayer->translation_y() + translation.y * m_ghostLayer->zoom_factor());
+    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
+        if ((*it)->transformable()) (*it)->transform().translate(translation);
+    m_ghostLayer->transform().translate(translation);
     Refresh();
 }
 
@@ -594,9 +589,9 @@ bool panel_viewer::coord_image(const int mouseX, const int mouseY, int &i, int &
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
         if ((*it)->visible() && ((*it)->pixel_value(i, j).length() != 0)) {
             coordOK = true;
-            double zoom = (*it)->zoom_factor();
-            i = static_cast<int> (zoom*mouseX-(*it)->translation_x());
-            j = static_cast<int> (zoom*mouseY-(*it)->translation_y());
+            double zoom = (*it)->transform().zoom_factor();
+            i = static_cast<int> (zoom*mouseX-(*it)->transform().translation_x());
+            j = static_cast<int> (zoom*mouseY-(*it)->transform().translation_y());
         }
     }
     return coordOK;
@@ -607,9 +602,9 @@ bool panel_viewer::subpix_coord_image(const int mouseX, const int mouseY, double
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
         if ((*it)->visible()) {
             coordOK = true;
-            double zoom = (*it)->zoom_factor();
-            i = static_cast<double> (zoom*mouseX-(*it)->translation_x()- 0.5);
-            j = static_cast<double> (zoom*mouseY-(*it)->translation_y()- 0.5);
+            double zoom = (*it)->transform().zoom_factor();
+            i = static_cast<double> (zoom*mouseX-(*it)->transform().translation_x()- 0.5);
+            j = static_cast<double> (zoom*mouseY-(*it)->transform().translation_y()- 0.5);
         }
     }
     return coordOK;
@@ -658,16 +653,16 @@ void panel_viewer::update_statusbar(const int i, const int j) {
                     affichagePixelDone = true;
                     std::ostringstream coordPixel;
                     coordPixel << "Coord image : (";
-                    coordPixel << static_cast<int> (-(*it)->translation_x() + i * (*it)->zoom_factor());
+                    coordPixel << static_cast<int> (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor());
                     coordPixel << ",";
-                    coordPixel << static_cast<int> (-(*it)->translation_y() + j * (*it)->zoom_factor());
+                    coordPixel << static_cast<int> (-(*it)->transform().translation_y() + j * (*it)->transform().zoom_factor());
                     coordPixel << ")";
                     double dx, dy;
                     subpix_coord_image(i, j, dx, dy);
                     coordPixel << (" - ( ");
-                    coordPixel << static_cast<double> (-(*it)->translation_x() + i * (*it)->zoom_factor()) - 0.5;
+                    coordPixel << static_cast<double> (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor()) - 0.5;
                     coordPixel << ",";
-                    coordPixel << static_cast<double> (-(*it)->translation_y() + j * (*it)->zoom_factor()) - 0.5;
+                    coordPixel << static_cast<double> (-(*it)->transform().translation_y() + j * (*it)->transform().zoom_factor()) - 0.5;
                     coordPixel << ")";
                     m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
                     ++count;
@@ -677,9 +672,9 @@ void panel_viewer::update_statusbar(const int i, const int j) {
                     affichageCartoDone = true;
                     std::ostringstream coordCarto;
                     coordCarto << "Coord carto : (";
-                    coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-(*it)->translation_x() + i * (*it)->zoom_factor()));
+                    coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor()));
                     coordCarto << ",";
-                    coordCarto << static_cast<int> (ori->origin_y() + ori->step() * ((*it)->translation_y() - j * (*it)->zoom_factor()));
+                    coordCarto << static_cast<int> (ori->origin_y() + ori->step() * ((*it)->transform().translation_y() - j * (*it)->transform().zoom_factor()));
                     coordCarto << ")";
                     m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
                     ++count;
@@ -688,7 +683,7 @@ void panel_viewer::update_statusbar(const int i, const int j) {
                 affichage += boost::filesystem::basename((*it)->name()) + " : ";
                 affichage += (*it)->pixel_value(i, j);
                 std::ostringstream oss;
-                oss << 100. / (*it)->zoom_factor();
+                oss << 100. / (*it)->transform().zoom_factor();
                 affichage += "-" + oss.str() + "%";
                 m_parent->SetStatusText(wxString(affichage.c_str(), *wxConvCurrent), count);
                 ++count;
@@ -700,15 +695,11 @@ void panel_viewer::update_statusbar(const int i, const int j) {
 void panel_viewer::zoom(double zoom_factor, wxMouseEvent &event) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
         if ((*it)->transformable()) {
-            (*it)->translation_x((*it)->translation_x() + event.m_x * (*it)->zoom_factor() * (zoom_factor - 1));
-            (*it)->translation_y((*it)->translation_y() + event.m_y * (*it)->zoom_factor() * (zoom_factor - 1));
-            (*it)->zoom_factor((*it)->zoom_factor() * zoom_factor);
+            (*it)->transform().zoom(zoom_factor,event.GetPosition());
             (*it)->needs_update(true);
         }
     }
-    m_ghostLayer->translation_x(m_ghostLayer->translation_x() + event.m_x * m_ghostLayer->zoom_factor() * (zoom_factor - 1));
-    m_ghostLayer->translation_y(m_ghostLayer->translation_y() + event.m_y * m_ghostLayer->zoom_factor() * (zoom_factor - 1));
-    m_ghostLayer->zoom_factor(m_ghostLayer->zoom_factor() * zoom_factor);
+    m_ghostLayer->transform().zoom(zoom_factor,event.GetPosition());
     Refresh();
 }
 
@@ -819,7 +810,18 @@ void panel_viewer::geometry_add_point(const wxPoint & p)
 {
     //	double xi,yi;
     //	GetSubPixCoordImage( x, y, xi, yi );
-    wxPoint pt = m_ghostLayer->to_local(p);
+    double x = p.x, y=p.y;
+    if(m_snap!=layer::SNAP_NONE)
+    {
+        double d0=100, dsnap=d0; // squared snap tolerance in pixels (squared)
+        double xsnap, ysnap;
+        for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+            (*it)->snap(m_snap,x,y,dsnap,xsnap,ysnap);
+        }
+        if(dsnap<d0) std::cout << "snap!"<<dsnap<<xsnap<<ysnap<<std::endl;
+    }
+    wxPoint pt = m_ghostLayer->transform().to_local(p);
+
 
     m_ghostLayer->m_drawPointPosition = false;
     m_ghostLayer->m_drawCircle = false;
@@ -916,7 +918,7 @@ void panel_viewer::geometry_move_relative(const wxPoint& translation) {
 }
 
 void panel_viewer::geometry_move_absolute(const wxPoint& p) {
-    wxPoint pt = m_ghostLayer->to_local(p);
+    wxPoint pt = m_ghostLayer->transform().to_local(p);
 
     switch (m_geometry) {
     case GEOMETRY_NULL:
@@ -952,7 +954,7 @@ void panel_viewer::geometry_move_absolute(const wxPoint& p) {
 void panel_viewer::geometry_update_absolute(const wxPoint & p)
         //coord filées par l'event (pas encore image)
 {
-    wxPoint pt = m_ghostLayer->to_local(p);
+    wxPoint pt = m_ghostLayer->transform().to_local(p);
 
     switch (m_geometry) {
     case GEOMETRY_NULL:
@@ -1054,16 +1056,16 @@ void panel_viewer::crop() {
 
     for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
         wxRect  r  = m_ghostLayer->rectangle();
-        wxPoint p0 = (*it)->to_local(r.GetTopLeft());
-        wxPoint p1 = (*it)->to_local(r.GetBottomRight());
+        wxPoint p0 = (*it)->transform().to_local(r.GetTopLeft());
+        wxPoint p1 = (*it)->transform().to_local(r.GetBottomRight());
         try {
             layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
             if(!layer) continue; // todo : warn the user ??
             m_layerControl->add_layer(layer);
             // now that the layer is added, we can set its geometry
-            layer->translation_x(p0.x+(*it)->translation_x());
-            layer->translation_y(p0.y+(*it)->translation_y());
-            layer->zoom_factor  (     (*it)->zoom_factor  ());
+            layer->transform().translation_x(p0.x+(*it)->transform().translation_x());
+            layer->transform().translation_y(p0.y+(*it)->transform().translation_y());
+            layer->transform().zoom_factor  (     (*it)->transform().zoom_factor  ());
             // todo : handle Orientation2D of *it if it exists ... ??
 
         } catch (std::exception &e) {

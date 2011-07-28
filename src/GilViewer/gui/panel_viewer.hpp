@@ -123,8 +123,10 @@ public:
         GEOMETRY_POLYGONE
     };
 
+
     inline eMode mode() { return m_mode; }
     inline eGEOMETRY geometry() { return m_geometry; }
+    inline layer::eSNAP snap() { return m_snap; }
     inline boost::shared_ptr<vector_layer_ghost> vectorlayerghost() { return m_ghostLayer; }
 
     DECLARE_EVENT_TABLE();
@@ -171,6 +173,8 @@ protected:
     eMode m_mode;
     ///Flag indiquant la primitive géométrique en cours quand on n'est pas en mode navigation (point, rectangle, ...)
     eGEOMETRY m_geometry;
+    ///Flag indiquant le mode de snap courant
+    layer::eSNAP m_snap;
 
     ///Ajoute un point à la géométrie courante
     void geometry_add_point(const wxPoint& pt);
