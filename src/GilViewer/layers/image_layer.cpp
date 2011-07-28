@@ -169,6 +169,7 @@ struct screen_image_visitor : public boost::static_visitor<>
                          double z,
                          double tx,
                          double ty,
+                         image_layer::layerOrientation ori,
                          boost::gil::gray8_view_t& canal_alpha,
                          const double min_alpha,
                          const double max_alpha,
@@ -178,6 +179,7 @@ struct screen_image_visitor : public boost::static_visitor<>
                                                m_z(z),
                                                m_tx(tx),
                                                m_ty(ty),
+      m_layer_orientation(ori),
                                                m_canal_alpha(canal_alpha),
                                                m_min_alpha(min_alpha),
                                                m_max_alpha(max_alpha),
@@ -185,12 +187,13 @@ struct screen_image_visitor : public boost::static_visitor<>
                                                m_is_transparent(isTransparent) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, screen_image_functor(m_screen_view, m_cc, m_z, m_tx, m_ty, m_canal_alpha, m_min_alpha, m_max_alpha, m_alpha, m_is_transparent)); }
+    result_type operator()(const ViewType& v) const { return apply_operation(v, screen_image_functor(m_screen_view, m_cc, m_z, m_tx, m_ty, m_layer_orientation, m_canal_alpha, m_min_alpha, m_max_alpha, m_alpha, m_is_transparent)); }
 
 private:
     boost::gil::dev3n8_view_t &m_screen_view;
     channel_converter_functor m_cc;
     double m_z, m_tx, m_ty;
+    image_layer::layerOrientation m_layer_orientation;
     boost::gil::gray8_view_t& m_canal_alpha;
     const double m_min_alpha;
     const double m_max_alpha;
@@ -291,12 +294,12 @@ void image_layer::update(int width, int height)
     if(m_blue>=nb_channels)
         m_blue=nb_channels-1;
     channel_converter_functor my_cc(
-		intensity_min(), intensity_max(),
-		m_gamma_array, m_gamma_array_size,
-		*m_cLUT, m_red, m_green, m_blue);
+    intensity_min(), intensity_max(),
+    m_gamma_array, m_gamma_array_size,
+    *m_cLUT, m_red, m_green, m_blue);
     //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
-    screen_image_visitor siv(screen_view, my_cc, transform().zoom_factor(), transform().translation_x(), transform().translation_y(), alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
-    apply_visitor( siv, m_variant_view->value );
+    screen_image_visitor siv(screen_view, my_cc, transform().zoom_factor(), transform().translation_x(), transform().translation_y(), m_layer_orientation, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
+  apply_visitor( siv, m_variant_view->value );
 
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
     monImage.SetAlpha(interleaved_view_get_raw_data(boost::gil::view(*m_alpha_img)), true);
@@ -334,10 +337,9 @@ string image_layer::pixel_value(int i, int j) const
     ostringstream oss;
     oss.precision(6);
     oss<<"(";
-    i = static_cast<int>(floor(i*transform().zoom_factor()-transform().translation_x()));
-    j = static_cast<int>(floor(j*transform().zoom_factor()-transform().translation_y()));
+    wxPoint pt=transform().to_local(wxPoint(i,j));
     //apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
-    image_position_to_string_visitor iptsv(i, j, oss);
+    image_position_to_string_visitor iptsv(pt.x, pt.y, oss);
     apply_visitor( iptsv, m_variant_view->value );
     oss<<")";
     return oss.str();
@@ -366,7 +368,7 @@ void image_layer::gamma(double gamma)
         m_gamma = 1. / gamma;
         for (unsigned int i=0; i<= m_gamma_array_size; ++i)
             m_gamma_array[i] = std::pow(((double) i)/ m_gamma_array_size, m_gamma);
-		m_gamma = gamma;
+    m_gamma = gamma;
     }
 }
 
@@ -430,3 +432,25 @@ layer_settings_control* image_layer::build_layer_settings_control(unsigned int i
 
 double image_layer::center_x() {return apply_visitor( width_visitor(), m_variant_view->value )/2.;}
 double image_layer::center_y() {return apply_visitor( height_visitor(), m_variant_view->value )/2.;}
+
+wxPoint image_layer::rotated_coordinate_to_local(const wxPoint& pt)const{
+  double h=apply_visitor( height_visitor(), m_variant_view->value );
+  double w=apply_visitor( width_visitor(), m_variant_view->value );
+  switch (m_layer_orientation){
+  case LO_0: return wxPoint(pt);//correct
+  case LO_90: return wxPoint(pt.y,h-pt.x-1);//correct
+  case LO_180: return wxPoint(w-pt.x-1.,h-pt.y-1.);//correct
+  case LO_270: return wxPoint(w-pt.y-1,pt.x);//correct
+ }
+}
+
+wxPoint image_layer::rotated_coordinate_from_local(const wxPoint& pt)const{
+  double h=apply_visitor( height_visitor(), m_variant_view->value );
+  double w=apply_visitor( width_visitor(), m_variant_view->value );
+  switch (m_layer_orientation){
+  case LO_0: return wxPoint(pt);//correct
+  case LO_90: return wxPoint(h-pt.y-1,pt.x);//correct
+  case LO_180: return wxPoint(w-pt.x-1.,h-pt.y-1.);//correct
+  case LO_270: return wxPoint(pt.y,w-pt.x-1.);//correct
+ }
+}

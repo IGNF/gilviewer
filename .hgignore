@@ -19,3 +19,9 @@ syntax: glob
 *~
 *.kdev*
 glob:build/
+glob:cmake/~GilViewer_build_sample.cmake
+glob:src/GilViewer/io/gilviewer_file_io_stereoV2_jp2.hpp_
+glob:src/GilViewer/io/gilviewer_file_io_stereoV2_jp2.cpp_
+glob:data/bertrand/Mairie-090708_0645-22-00001_0000479.pk1
+glob:data/bertrand/*
+glob:src/GilViewer/config/config_plugins.hpp
