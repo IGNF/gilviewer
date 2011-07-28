@@ -671,15 +671,15 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
         // Zoom
         TiXmlElement *elemZoom = new TiXmlElement( "ZoomFactor" );
         elemAppearance->LinkEndChild( elemZoom );
-        elemZoom->SetDoubleAttribute("value",(*it)->zoom_factor());
+        elemZoom->SetDoubleAttribute("value",(*it)->transform().zoom_factor());
 
         // Translations
         TiXmlElement *elemTranslationX = new TiXmlElement( "TranslationX" );
         elemAppearance->LinkEndChild( elemTranslationX );
-        elemTranslationX->SetDoubleAttribute("value",(*it)->translation_x());
+        elemTranslationX->SetDoubleAttribute("value",(*it)->transform().translation_x());
         TiXmlElement *elemTranslationY = new TiXmlElement( "TranslationY" );
         elemAppearance->LinkEndChild( elemTranslationY );
-        elemTranslationY->SetDoubleAttribute("value",(*it)->translation_y());
+        elemTranslationY->SetDoubleAttribute("value",(*it)->transform().translation_y());
 
         // Ca, ca n'est valable que si le calque est une image
         if (is_image)

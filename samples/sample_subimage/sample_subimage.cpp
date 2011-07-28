@@ -102,8 +102,8 @@ bool sample_subimage_app::OnInit()
         m_frame->add_layer( file->load(filename) );
         boost::shared_ptr<layer> sublayer = file->load(filename, 1200, 200 , 950, 550);
         m_frame->add_layer( sublayer );
-        sublayer->translation_x(100);
-        sublayer->translation_y(250);
+        sublayer->transform().translation_x(100);
+        sublayer->transform().translation_y(250);
         //m_frame->add_layer( file->load(filename, 1000, 650, 450, 250) );
     }
     catch (const std::exception &e)

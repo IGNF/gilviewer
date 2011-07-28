@@ -77,8 +77,7 @@ public:
     ogr_vector_layer(const std::string &layer_name, const std::string &filename);
     /// Constructeur vide: pour creer un layer a remplir a la main ...
     ogr_vector_layer(const std::string &layer_name="default name"): vector_layer(),
-            m_nb_geometries(0),
-            m_coordinates(1) {m_name=layer_name;}
+            m_nb_geometries(0) { transform().coordinates(1); m_name=layer_name;}
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~ogr_vector_layer();
@@ -98,8 +97,6 @@ public:
     const std::vector<std::pair<geometry_types,OGRFeature*> >& geometries_features() const;
     std::vector<std::pair<geometry_types,OGRFeature*> >& geometries_features();
 
-    static wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates);
-    inline void coordinates(int c) {m_coordinates=c;}
 
     virtual void add_point( double x , double y );
     virtual void add_text( double x , double y , const std::string &text , const wxColour &color = *wxRED );
@@ -119,8 +116,6 @@ private:
     std::vector< std::pair< internal_point_type , std::string > > m_texts;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
-    // 1 --> image; -1 --> cartographic coordinates
-    int m_coordinates;
 
     void compute_center(OGRLayer* layer, int nb_layers);
 };

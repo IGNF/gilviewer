@@ -401,9 +401,9 @@ void layer_control::on_reset(wxCommandEvent& event)
     // Pour chaque calque, on reinitialise
     for (layer_control::iterator it = begin(); it != end(); ++it)
     {
-        (*it)->zoom_factor(1.);
-        (*it)->translation_x(0.);
-        (*it)->translation_y(0.);
+        (*it)->transform().zoom_factor(1.);
+        (*it)->transform().translation_x(0.);
+        (*it)->transform().translation_y(0.);
         (*it)->needs_update(true);
         (*it)->transformable(true);
         (*it)->visible(true);
@@ -565,9 +565,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori())
     {
         ::wxLogMessage(_("Image layer position initialised with respect to first image!"));
-        layer->zoom_factor(m_ghostLayer->zoom_factor());
-        layer->translation_x(m_ghostLayer->translation_x());
-        layer->translation_y(m_ghostLayer->translation_y());
+        layer->transform()=m_ghostLayer->transform();
 
     }
 
@@ -580,15 +578,15 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
         const boost::shared_ptr<orientation_2d> &oriLayer = layer->orientation();
 
         double newzoom_factor = m_ori->step() / oriLayer->step();
-        double translationInitX = (oriLayer->origin_x() - m_ori->origin_x()) / oriLayer->step();//+ m_layers[0]->translation_x()/m_layers[0]->zoom_factor();
-        double translationInitY = -(oriLayer->origin_y() - m_ori->origin_y()) / oriLayer->step();//+ m_layers[0]->translation_y()/m_layers[0]->zoom_factor();
+        double translationInitX = (oriLayer->origin_x() - m_ori->origin_x()) / oriLayer->step();
+        double translationInitY = -(oriLayer->origin_y() - m_ori->origin_y()) / oriLayer->step();
 
-        layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
-        layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);//* layer->zoom_factor());
-        layer->translation_y(translationInitY + m_layers[0]->translation_y() * newzoom_factor);//* layer->zoom_factor());
+        layer->transform().zoom_factor(newzoom_factor * m_layers[0]->transform().zoom_factor());
+        layer->transform().translation_x(translationInitX + m_layers[0]->transform().translation_x() * newzoom_factor);
+        layer->transform().translation_y(translationInitY + m_layers[0]->transform().translation_y() * newzoom_factor);
     }
 
-    //Si il y a une orientation definie pour le viewer et et qu'on a affaire a une couche vecteur :
+    //Si il y a une orientation definie pour le viewer et qu'on a affaire a une couche vecteur :
     if (m_isOrientationSet && layer->layer_type_as_string() == "Vector")
     {
         ::wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
@@ -598,19 +596,19 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
 
         double newzoom_factor = m_ori->step();
         //layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
-        layer->zoom_factor(m_layers[0]->zoom_factor());
-        layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);
-        layer->translation_y(translationInitY + m_layers[0]->translation_y() * newzoom_factor);
+        layer->transform().zoom_factor(m_layers[0]->transform().zoom_factor());
+        layer->transform().translation_x(translationInitX + m_layers[0]->transform().translation_x() * newzoom_factor);
+        layer->transform().translation_y(translationInitY + m_layers[0]->transform().translation_y() * newzoom_factor);
     }
     layer->default_display_parameters();
     layer->notifyLayerSettingsControl_();
 
 
     if(m_isOrientationSet)
-        layer->resolution(m_ori->step());
+        layer->transform().resolution(m_ori->step());
     else
     {
-        layer->resolution(1.);
+        layer->transform().resolution(1.);
     }
 
     Refresh();
@@ -853,9 +851,9 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
         this->m_layers.back()->transparent(parameters.transparent);
         this->m_layers.back()->transparency_min(parameters.transparency_min);
         this->m_layers.back()->transparency_max(parameters.transparency_max);
-        this->m_layers.back()->zoom_factor(parameters.zoom_factor);
-        this->m_layers.back()->translation_x(parameters.translation_x);
-        this->m_layers.back()->translation_y(parameters.translation_y);
+        this->m_layers.back()->transform().zoom_factor(parameters.zoom_factor);
+        this->m_layers.back()->transform().translation_x(parameters.translation_x);
+        this->m_layers.back()->transform().translation_y(parameters.translation_y);
         this->m_layers.back()->alpha_channel(parameters.useAlphaChannel,parameters.alphaChannel);
         // TODO: binary or text?
         this->m_layers.back()->colorlookuptable()->load_from_binary_file(parameters.lut_file);
@@ -908,9 +906,9 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
         this->m_layers.back()->polygon_border_style(parameters.polygonsRingsStyle);
         this->m_layers.back()->polygon_inner_style(parameters.polygonsInsideStyle);
 
-        this->m_layers.back()->zoom_factor(parameters.zoom_factor);
-        this->m_layers.back()->translation_x(parameters.translation_x);
-        this->m_layers.back()->translation_y(parameters.translation_y);
+        this->m_layers.back()->transform().zoom_factor(parameters.zoom_factor);
+        this->m_layers.back()->transform().translation_x(parameters.translation_x);
+        this->m_layers.back()->transform().translation_y(parameters.translation_y);
 
         // MAJ de l'interface
         this->m_layers.back()->notifyLayerControl_();

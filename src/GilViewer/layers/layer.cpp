@@ -7,6 +7,7 @@
 #include "../tools/color_lookup_table.hpp"
 #include "../gui/layer_settings_control.hpp"
 
+
 layer::layer(const boost::function<void()> &notifyLayerControl, const boost::function<void()> &notifyLayerSettingsControl):
         notifyLayerControl_(notifyLayerControl),
         notifyLayerSettingsControl_(notifyLayerSettingsControl),
@@ -15,11 +16,9 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_hasToBeUpdated(true),
         m_name("Default layer name"),
         m_filename(""),
-        m_zoomFactor(1.),
-        m_translationX(0.), m_translationY(0.),
+        m_infos(""),
         m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)),
         m_hasOri(false),
-        m_infos(""),
         m_point_width(3), m_line_width(3),
         m_line_style(wxSOLID),
         m_polygon_border_width(3),

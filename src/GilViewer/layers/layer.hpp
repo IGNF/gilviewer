@@ -49,6 +49,8 @@ Authors:
 #include <wx/font.h>
 #include <wx/colour.h>
 
+#include "layer_transform.hpp"
+
 class wxDC;
 #ifdef WIN32
 #	include <wx/msw/winundef.h>
@@ -103,34 +105,10 @@ public:
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
-    virtual void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
-    virtual inline double zoom_factor() const { return m_zoomFactor; }
-    virtual void translation_x(double dx) { m_translationX = dx; }
-    virtual inline double translation_x() const { return m_translationX; }
-    virtual void translation_y(double dy) { m_translationY = dy; }
-    virtual inline double translation_y() const { return m_translationY; }
-
     inline virtual double center_x() {return 0.;}
     inline virtual double center_y() {return 0.;}
 
-    // local<->global transforms. Default: pixel-centered
-    wxPoint from_local(const wxPoint &p, double delta=0.5) const
-    {
-	return wxPoint(
-		wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
-		wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
-    }
 
-    wxPoint to_local(const wxPoint &p, double delta=0.5) const
-    {
-	return wxPoint(
-		wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
-		wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
-    }
-
-
-    virtual void resolution(double r) { m_resolution = r; }
-    virtual inline double resolution() const { return m_resolution; }
 
     virtual void has_ori(bool hasOri) { m_hasOri = hasOri; }
     virtual bool has_ori() const { return m_hasOri; }
@@ -172,6 +150,15 @@ public:
     // Methodes specifiques VectorLayer
     virtual void add_vector_layer_content( const std::string &shapefileFileName ) {}
 
+    enum eSNAP //snap modes (may be bitwise-combined using the '&' operator)
+    {
+        SNAP_NONE = 0,
+        SNAP_POINT = 1,
+        SNAP_LINE = 2,
+        SNAP_INTERSECTION = 4,
+    };
+
+    virtual void snap(  eSNAP snap, double x , double y, double& dsnap, double& xsnap, double& ysnap ) const {}
     virtual void add_point( double x , double y ) {}
     virtual void add_text( double x , double y , const std::string &text , const wxColour &color = *wxBLACK ) {}
     virtual void add_line( double x1 , double y1 , double x2 , double y2 ) {}
@@ -217,6 +204,9 @@ public:
     boost::function<void ()> notifyLayerSettingsControl_;
 
 
+    layer_transform& transform() { return m_layer_transform; }
+    const layer_transform& transform() const { return m_layer_transform; }
+
 protected:
     bool m_isVisible;
     bool m_isTransformable;
@@ -226,20 +216,19 @@ protected:
     // Le nom du fichier associe si il existe
     std::string m_filename;
 
-    //gestion de la geometrie
-    double m_zoomFactor;
-    double m_translationX, m_translationY;
-    double m_resolution;
+    //infos du layer
+    std::string m_infos;
+
+    // transformation du layer
+    layer_transform m_layer_transform;
 
     //orientation (possible que pour les calques images)
     boost::shared_ptr<orientation_2d> m_ori;
     bool m_hasOri;
 
-    //infos du layer
-    std::string m_infos;
-
     unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
 };
+
 
 #endif // __LAYER_HPP__

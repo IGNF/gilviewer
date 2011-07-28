@@ -67,8 +67,6 @@ simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_
 //void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
-    const double delta = 0.5 * resolution();
-
     wxPen pen;
     wxBrush brush;
 
@@ -82,21 +80,17 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetBrush(brush);
     for (unsigned int i = 0; i < m_circles.size(); i++)
     {
-        wxPoint p = simple_vector_layer::from_local(
-                zoom_factor(),translation_x(),translation_y(),delta,
-                m_circles[i].x,m_circles[i].y);
-        wxCoord r = static_cast<wxCoord>(m_circles[i].radius / zoom_factor());
+        wxPoint p = transform().from_local(m_circles[i].x,m_circles[i].y);
+        wxCoord r = static_cast<wxCoord>(m_circles[i].radius / transform().zoom_factor());
         dc.DrawCircle(p, r);
     }
     // Ellipses alignees
     for (unsigned int i=0;i<m_ellipses.size();++i)
     {
-        wxPoint p = simple_vector_layer::from_local(
-                zoom_factor(),translation_x(),translation_y(),delta,
-                m_ellipses[i].x,m_ellipses[i].y);
+        wxPoint p = transform().from_local(m_ellipses[i].x,m_ellipses[i].y);
         wxSize  s(
-                static_cast<wxCoord>(2*m_ellipses[i].a/zoom_factor()),
-                static_cast<wxCoord>(2*m_ellipses[i].b/zoom_factor())
+                static_cast<wxCoord>(2*m_ellipses[i].a/transform().zoom_factor()),
+                static_cast<wxCoord>(2*m_ellipses[i].b/transform().zoom_factor())
                 );
         dc.DrawEllipse(p,s);
         //dc.DrawEllipticArc(p,s,0.,90.);
@@ -108,10 +102,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         points.reserve( m_rotatedellipses[i].controlPoints.size() );
         for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
-            points.push_back( simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    m_rotatedellipses[i].controlPoints[j].x,
-                    m_rotatedellipses[i].controlPoints[j].y ));
+            points.push_back(transform().from_local(m_rotatedellipses[i].controlPoints[j].x,m_rotatedellipses[i].controlPoints[j].y));
         dc.DrawSpline(points.size(),&points.front());
     }
     for (unsigned int i=0;i<m_polygons.size();++i)
@@ -119,9 +110,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         points.reserve( m_polygons[i].size() );
         for (unsigned int j=0;j<m_polygons[i].size();++j)
-            points.push_back(simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    m_polygons[i][j].x,m_polygons[i][j].y ));
+            points.push_back(transform().from_local(m_polygons[i][j].x,m_polygons[i][j].y));
         dc.DrawPolygon( points.size() , &(points.front()) );
     }
 
@@ -135,12 +124,8 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         const ArcType &local_tab = m_arcs[i];
         for (unsigned int j = 0; j < local_tab.arc_points.size() - 1; ++j)
         {
-            wxPoint p = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    local_tab.arc_points[j  ].x,local_tab.arc_points[j  ].y);
-            wxPoint q = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    local_tab.arc_points[j+1].x,local_tab.arc_points[j+1].y);
+            wxPoint p = transform().from_local(local_tab.arc_points[j  ].x,local_tab.arc_points[j  ].y);
+            wxPoint q = transform().from_local(local_tab.arc_points[j+1].x,local_tab.arc_points[j+1].y);
             dc.DrawLine(p,q);
         }
     }
@@ -152,9 +137,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         for (int j=0;j<n;++j)
         {
-            wxPoint p = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    spline[j].x,spline[j].y);
+            wxPoint p = transform().from_local(spline[j].x,spline[j].y);
             points.push_back(p);
         }
         dc.DrawSpline(n,&points.front());
@@ -166,9 +149,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetPen(pen);
     for (unsigned int i = 0; i < m_points.size(); i++)
     {
-        wxPoint p = simple_vector_layer::from_local(
-                zoom_factor(),translation_x(),translation_y(),delta,
-                m_points[i].x,m_points[i].y);
+        wxPoint p = transform().from_local(m_points[i].x,m_points[i].y);
         //dc.DrawLine(p);
         dc.DrawPoint(p);
     }
@@ -180,9 +161,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         dc.SetPen(pen);
         for (unsigned int i = 0; i < m_texts.size(); i++)
         {
-            wxPoint p = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    m_texts[i].first.x,m_texts[i].first.y);
+            wxPoint p = transform().from_local(m_texts[i].first.x,m_texts[i].first.y);
             //dc.DrawLine(p);
             dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
         }
@@ -312,13 +291,6 @@ void simple_vector_layer::clear()
     vector<vector<PointType> >().swap(m_polygons);
     vector< pair<PointType,string> >().swap(m_texts);
 }
-
-wxPoint simple_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates) const {
-        return wxPoint(
-                static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
-                static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor)
-        );
-    }
 
 string simple_vector_layer::available_formats_wildcard() const
 {
