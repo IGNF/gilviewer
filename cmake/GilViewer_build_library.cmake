@@ -11,7 +11,7 @@ else()
 endif()
 
 # Option to choose to use GDAL/OGR
-option(USE_GDAL_OGR "Build GilVeiwer with GDAL/OGR" OFF)
+option(USE_GDAL_OGR "Build GilViewer with GDAL/OGR" OFF)
 if(USE_GDAL_OGR)
     # Find GDAL
     find_package(GDAL)
@@ -24,6 +24,22 @@ if(USE_GDAL_OGR)
     set( GILVIEWER_USE_GDAL_OGR 1 )
 else()
     set( GILVIEWER_USE_GDAL_OGR 0 )
+endif()
+# Option to choose to use CGAL
+option(USE_CGAL "Build GilViewer with CGAL" OFF)
+if(USE_CGAL)
+    # Find CGAL
+    find_package(CGAL COMPONENTS Core)
+    if(CGAL_FOUND)
+        include( ${CGAL_USE_FILE} )
+        message(status  ${CGAL_USE_FILE} )
+        set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${CGAL_LIBRARIES}  ${CGAL_3RD_PARTY_LIBRARIES} )
+    else()
+        message(FATAL_ERROR "CGAL not found!")
+    endif()
+    set( GILVIEWER_USE_CGAL 1 )
+else()
+    set( GILVIEWER_USE_CGAL 0 )
 endif()
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config.hpp )
 
