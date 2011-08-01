@@ -8,11 +8,11 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
@@ -87,6 +87,18 @@ public:
             m_translationX(0.), m_translationY(0.),
             m_coordinates(1)
     {}
+    layer_transform(const layer_transform& l):
+            m_zoomFactor(l.m_zoomFactor),
+            m_translationX(l.m_translationX), m_translationY(l.m_translationY),
+            m_coordinates(l.m_coordinates)
+    {}
+    layer_transform& operator =(const layer_transform& l){
+            m_zoomFactor=l.m_zoomFactor;
+            m_translationX=l.m_translationX;m_translationY=l.m_translationY;
+            m_coordinates=l.m_coordinates;
+            return *this;
+    }
+
     void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
     inline double zoom_factor() const { return m_zoomFactor; }
     void translation_x(double dx) { m_translationX = dx; }
