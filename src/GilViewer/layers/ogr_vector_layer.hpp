@@ -77,7 +77,7 @@ public:
     ogr_vector_layer(const std::string &layer_name, const std::string &filename);
     /// Constructeur vide: pour creer un layer a remplir a la main ...
     ogr_vector_layer(const std::string &layer_name="default name"): vector_layer(),
-            m_nb_geometries(0) { transform().coordinates(1); m_name=layer_name;}
+            m_nb_geometries(0) { m_name=layer_name;}
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~ogr_vector_layer();

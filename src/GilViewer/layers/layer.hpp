@@ -61,7 +61,21 @@ class color_lookup_table;
 class layer_settings_control;
 class layer_control;
 
+// convenience wxRealPoint operators
+inline wxRealPoint& operator+=(wxRealPoint& p, const wxRealPoint&q)
+{
+    p=p+q;
+    return p;
+}
+inline wxRealPoint operator-(const wxRealPoint&p)
+{
+    return wxRealPoint(-p.x,-p.y);
+}
 
+inline wxRealPoint operator*(double d, const wxRealPoint&p)
+{
+    return wxRealPoint(d*p.x,d*p.y);
+}
 
 class layer
 {
@@ -166,12 +180,15 @@ public:
     enum eSNAP //snap modes (may be bitwise-combined using the '&' operator)
     {
         SNAP_NONE = 0,
-        SNAP_POINT = 1,
+        SNAP_GRID = 1,
         SNAP_LINE = 2,
         SNAP_INTERSECTION = 4,
+        SNAP_POINT = 8,
+        SNAP_ALL = 15,
+        SNAP_MAX_ID = SNAP_ALL+1,
     };
 
-    virtual void snap(  eSNAP snap, double x , double y, double& dsnap, double& xsnap, double& ysnap ) const {}
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap ) { return false; }
     virtual void add_point( double x , double y ) {}
     virtual void add_text( double x , double y , const std::string &text , const wxColour &color = *wxBLACK ) {}
     virtual void add_line( double x1 , double y1 , double x2 , double y2 ) {}

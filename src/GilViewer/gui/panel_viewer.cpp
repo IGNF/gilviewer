@@ -189,7 +189,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT), m_snap(layer::SNAP_NONE) {
+        m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT), m_snap(layer::SNAP_ALL) {
     if (panel_manager::instance()->panels_list().size() == 0)
         m_applicationSettings = new application_settings(this, wxID_ANY);
 
@@ -385,18 +385,17 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
 }
 
 void panel_viewer::on_left_down(wxMouseEvent &event) {
+    m_mouseMovementInit = snap(event);
+
     // on commence un cliquer-glisser pour bouger
     m_mouseMovementStarted = true;
     SetCursor(wxCursor(wxCURSOR_HAND));
-
-    m_mouseMovementInitX = event.m_x;
-    m_mouseMovementInitY = event.m_y;
 
     ///saisie d'un point
     if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
         //rien
     } else if (m_mode == MODE_CAPTURE) {
-        geometry_add_point(wxPoint(event.m_x, event.m_y));
+        geometry_add_point(m_mouseMovementInit);
     }
 
 }
@@ -448,13 +447,12 @@ void panel_viewer::on_right_down(wxMouseEvent &event) {
             break;
         case GEOMETRY_LINE:
             m_ghostLayer->m_lineEndCapture = true;
-            geometry_add_point(wxPoint(event.m_x, event.m_y));
+            geometry_add_point(snap(event));
             break;
         case GEOMETRY_POLYGONE:
             break;
         }
     }
-
 }
 
 void panel_viewer::on_left_double_click(wxMouseEvent &event) {
@@ -508,12 +506,11 @@ void panel_viewer::on_mouse_wheel(wxMouseEvent& event) {
 }
 
 void panel_viewer::on_mouse_move(wxMouseEvent &event) {
+    wxRealPoint p = snap(event);
     //déplacement (de l'image ou de la géométrie) si on a bouton gauche enfoncé (m_mouseMovementStarted)
     if (m_mouseMovementStarted) {
-        wxPoint translation((int) (event.m_x - m_mouseMovementInitX), (int) (event.m_y - m_mouseMovementInitY));
-
-        m_mouseMovementInitX = event.m_x;
-        m_mouseMovementInitY = event.m_y;
+        wxRealPoint translation(p-m_mouseMovementInit);
+        m_mouseMovementInit = p;
 
         ///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation) : déplacement de l'image
         if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
@@ -522,16 +519,16 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
         }
         ///si en mode geometry moving : c'est la géométrie qui bouge !!
         else if (m_mode == MODE_GEOMETRY_MOVING) {
-            geometry_move_absolute(wxPoint(event.m_x, event.m_y));
+            geometry_move_absolute(p);
         }
     }
 
     if (m_mode == MODE_CAPTURE) ///si en mode capture : c'est le point à ajouter qui bouge !!
     {
-        geometry_update_absolute(wxPoint(event.m_x, event.m_y));
+        geometry_update_absolute(p);
     }
 
-    update_statusbar(event.m_x, event.m_y);
+    update_statusbar(p.x, p.y);
     //  SetFocus();
 }
 
@@ -542,16 +539,16 @@ void panel_viewer::on_keydown(wxKeyEvent& event) {
     else
         step = 1;
 
-    wxPoint deplacement(0, 0);
+    wxRealPoint deplacement(0, 0);
     //déplacement effectif
     if (event.m_keyCode == WXK_RIGHT)
-        deplacement = wxPoint(step, 0);
+        deplacement = wxRealPoint(step, 0);
     else if (event.m_keyCode == WXK_LEFT)
-        deplacement = wxPoint(-step, 0);
+        deplacement = wxRealPoint(-step, 0);
     else if (event.m_keyCode == WXK_DOWN)
-        deplacement = wxPoint(0, step);
+        deplacement = wxRealPoint(0, step);
     else if (event.m_keyCode == WXK_UP)
-        deplacement = wxPoint(0, -step);
+        deplacement = wxRealPoint(0, -step);
 
     if (event.m_keyCode == WXK_RIGHT || event.m_keyCode == WXK_LEFT || event.m_keyCode == WXK_UP || event.m_keyCode == WXK_DOWN) {
         ///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation) : déplacement de l'image
@@ -582,7 +579,7 @@ void panel_viewer::update_if_transformable() {
     }
 }
 
-void panel_viewer::scene_move(const wxPoint& translation) {
+void panel_viewer::scene_move(const wxRealPoint& translation) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
         if ((*it)->transformable()) (*it)->transform().translate(translation);
     m_ghostLayer->transform().translate(translation);
@@ -700,11 +697,11 @@ void panel_viewer::update_statusbar(const int i, const int j) {
 void panel_viewer::zoom(double zoom_factor, wxMouseEvent &event) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
         if ((*it)->transformable()) {
-            (*it)->transform().zoom(zoom_factor,event.GetPosition());
+            (*it)->transform().zoom(zoom_factor,event.GetPosition().x,event.GetPosition().y);
             (*it)->needs_update(true);
         }
     }
-    m_ghostLayer->transform().zoom(zoom_factor,event.GetPosition());
+    m_ghostLayer->transform().zoom(zoom_factor,event.GetPosition().x,event.GetPosition().y);
     Refresh();
 }
 
@@ -813,28 +810,31 @@ void panel_viewer::execute_mode_selection() {
 
 }
 
-inline double DistancePoints(const wxPoint& pt1, const wxPoint &pt2) {
-    wxPoint diff(pt2 - pt1);
+inline double DistancePoints(const wxRealPoint& pt1, const wxRealPoint &pt2) {
+    wxRealPoint diff(pt2 - pt1);
     return std::sqrt((double) (diff.x * diff.x + diff.y * diff.y));
 }
 
-void panel_viewer::geometry_add_point(const wxPoint & p)
+wxRealPoint panel_viewer::snap(const wxMouseEvent& e) const
+{
+    wxRealPoint p(e.m_x,e.m_y), q=p;
+    if(m_snap)
+    {
+        double d2[layer::SNAP_MAX_ID]; // squared snap tolerance in [screen pixels squared]
+        if(m_snap&layer::SNAP_POINT) d2[layer::SNAP_POINT]=10*10;
+        if(m_snap&layer::SNAP_LINE ) d2[layer::SNAP_LINE ]=10*10;
+        if(m_snap&layer::SNAP_GRID ) d2[layer::SNAP_GRID ]=10*10;
+        for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+            (*it)->snap(m_snap,d2,p,q);
+        }
+    }
+    return q;
+}
+
+void panel_viewer::geometry_add_point(const wxRealPoint & p)
         //coord filées par l'event (pas encore image)
 {
-    //  double xi,yi;
-    //  GetSubPixCoordImage( x, y, xi, yi );
-    double x = p.x, y=p.y;
-    if(m_snap!=layer::SNAP_NONE)
-    {
-        double d0=100, dsnap=d0; // squared snap tolerance in pixels (squared)
-        double xsnap, ysnap;
-        for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-            (*it)->snap(m_snap,x,y,dsnap,xsnap,ysnap);
-        }
-        if(dsnap<d0) std::cout << "snap!"<<dsnap<<xsnap<<ysnap<<std::endl;
-    }
-    wxPoint pt = m_ghostLayer->transform().to_local(p);
-
+    wxRealPoint pt = m_ghostLayer->transform().to_local(p);
 
     m_ghostLayer->m_drawPointPosition = false;
     m_ghostLayer->m_drawCircle = false;
@@ -901,9 +901,10 @@ void panel_viewer::geometry_add_point(const wxPoint & p)
     }
 
     execute_mode();
+    Refresh();
 }
 
-void panel_viewer::geometry_move_relative(const wxPoint& translation) {
+void panel_viewer::geometry_move_relative(const wxRealPoint& translation) {
     switch (m_geometry) {
     case GEOMETRY_NULL:
 
@@ -930,8 +931,8 @@ void panel_viewer::geometry_move_relative(const wxPoint& translation) {
     execute_mode();
 }
 
-void panel_viewer::geometry_move_absolute(const wxPoint& p) {
-    wxPoint pt = m_ghostLayer->transform().to_local(p);
+void panel_viewer::geometry_move_absolute(const wxRealPoint& p) {
+    wxRealPoint pt = m_ghostLayer->transform().to_local(p);
 
     switch (m_geometry) {
     case GEOMETRY_NULL:
@@ -941,9 +942,9 @@ void panel_viewer::geometry_move_absolute(const wxPoint& p) {
         m_ghostLayer->m_circle.first = pt;
         break;
     case GEOMETRY_LINE: {
-            wxPoint bary(std::accumulate(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), wxPoint(0, 0)));
-            bary.x = (int) (bary.x / float(m_ghostLayer->m_linePoints.size()));
-            bary.y = (int) (bary.y / float(m_ghostLayer->m_linePoints.size()));
+            wxRealPoint bary(std::accumulate(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), wxRealPoint(0, 0)));
+            bary.x /= m_ghostLayer->m_linePoints.size();
+            bary.y /= m_ghostLayer->m_linePoints.size();
             std::for_each(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), boost::lambda::_1 += -bary + pt);
     }
         break;
@@ -954,8 +955,8 @@ void panel_viewer::geometry_move_absolute(const wxPoint& p) {
 
         break;
     case GEOMETRY_RECTANGLE:
-        wxPoint rectangleDiagonale = m_ghostLayer->m_rectangleSelection.second - m_ghostLayer->m_rectangleSelection.first;
-        m_ghostLayer->m_rectangleSelection.first = wxPoint((int) (pt.x - float(rectangleDiagonale.x) / 2), (int) (pt.y - float(rectangleDiagonale.y) / 2));
+        wxRealPoint rectangleDiagonale = m_ghostLayer->m_rectangleSelection.second - m_ghostLayer->m_rectangleSelection.first;
+        m_ghostLayer->m_rectangleSelection.first = pt - 0.5*rectangleDiagonale;
         m_ghostLayer->m_rectangleSelection.second = m_ghostLayer->m_rectangleSelection.first + rectangleDiagonale;
 
         break;
@@ -964,10 +965,10 @@ void panel_viewer::geometry_move_absolute(const wxPoint& p) {
     execute_mode();
 }
 
-void panel_viewer::geometry_update_absolute(const wxPoint & p)
+void panel_viewer::geometry_update_absolute(const wxRealPoint & p)
         //coord filées par l'event (pas encore image)
 {
-    wxPoint pt = m_ghostLayer->transform().to_local(p);
+    wxRealPoint pt = m_ghostLayer->transform().to_local(p);
 
     switch (m_geometry) {
     case GEOMETRY_NULL:
@@ -1002,7 +1003,7 @@ void panel_viewer::geometry_update_absolute(const wxPoint & p)
 
 }
 
-void panel_viewer::geometry_update_relative(const wxPoint & translation)
+void panel_viewer::geometry_update_relative(const wxRealPoint & translation)
         //coord filées par l'event (pas encore image)
 {
     switch (m_geometry) {
@@ -1068,9 +1069,9 @@ void panel_viewer::crop() {
     }
 
     for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
-        wxRect  r  = m_ghostLayer->rectangle();
-        wxPoint p0 = (*it)->transform().to_local(r.GetTopLeft());
-        wxPoint p1 = (*it)->transform().to_local(r.GetBottomRight());
+        wxRect  r  = m_ghostLayer->local_rectangle((*it)->transform());
+        wxPoint p0 = r.GetTopLeft();
+        wxPoint p1 = r.GetBottomRight();
         try {
             layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
             if(!layer) continue; // todo : warn the user ??

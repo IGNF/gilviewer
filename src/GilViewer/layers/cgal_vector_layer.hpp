@@ -65,7 +65,7 @@ public:
 
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void update(int, int) {}
-    virtual void snap(  eSNAP snap, double x , double y, double& dsnap, double& xsnap, double& ysnap ) const;
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
 
     virtual std::string available_formats_wildcard() const;
 
@@ -91,6 +91,7 @@ public:
 
 private:
     Arrangement *m_arrangement;
+    wxColor m_selection_color;
 };
 
 #endif // CGAL_VECTOR_LAYER_HPP

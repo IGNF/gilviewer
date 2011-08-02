@@ -192,7 +192,7 @@ void ogr_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) co
         dc.SetPen(text_pen);
         for(unsigned int i=0;i<m_texts.size();++i)
         {
-            wxPoint p = transform().from_local( m_texts[i].first.x, m_texts[i].first.y);
+            wxPoint p = transform().from_local_int( m_texts[i].first);
             //dc.DrawLine(p);
             dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
         }

@@ -155,10 +155,9 @@ protected:
     wxBrush m_bgbrush;
 
     bool m_mouseMovementStarted;
-    float m_mouseMovementInitX;
-    float m_mouseMovementInitY;
+    wxRealPoint m_mouseMovementInit;
 
-    wxPoint m_translationDrag;
+    wxRealPoint m_translationDrag;
 
     // Le controle des couches
     layer_control* m_layerControl;
@@ -182,19 +181,19 @@ protected:
     layer::eSNAP m_snap;
 
     ///Ajoute un point à la géométrie courante
-    void geometry_add_point(const wxPoint& pt);
+    void geometry_add_point(const wxRealPoint& pt);
     ///Mets à jour la géométrie avec le point sous la souris lors d'un MouseMove, sans le sélectionner définitivement
-    void geometry_update_absolute(const wxPoint& pt);
-    void geometry_update_relative(const wxPoint& translation);
+    void geometry_update_absolute(const wxRealPoint& pt);
+    void geometry_update_relative(const wxRealPoint& translation);
     ///Fin du clic, on ferme (ou pas ?) la géométrie et on exécute les traitements
     void geometry_end();
 
     ///Déplacement de la géométrie
-    void geometry_move_absolute(const wxPoint& pt);
-    void geometry_move_relative(const wxPoint& translation);
+    void geometry_move_absolute(const wxRealPoint& pt);
+    void geometry_move_relative(const wxRealPoint& translation);
 
     ///Déplacement de la scene
-    void scene_move(const wxPoint& translation);
+    void scene_move(const wxRealPoint& translation);
 
     void on_paint(wxPaintEvent& evt);
     void update_statusbar(const int i, const int j);
@@ -219,6 +218,8 @@ protected:
     ///pour ne créer des panels qu'à partir de la factory (PanelManager)
     panel_viewer(wxFrame* parent);
     friend panel_viewer* create_panel_viewer(wxFrame* parent);
+
+    wxRealPoint snap(const wxMouseEvent&) const;
 
 };
 

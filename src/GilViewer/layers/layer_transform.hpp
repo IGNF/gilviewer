@@ -39,47 +39,6 @@ Authors:
 #ifndef __LAYER_TRANSFORM_HPP__
 #define __LAYER_TRANSFORM_HPP__
 
-/*
-wxPoint vector_layer_ghost::from_local(const wxPoint &p, double delta) const
-{
-    return wxPoint(
-            wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
-            wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
-}
-
-wxPoint vector_layer_ghost::to_local(const wxPoint &p, double delta) const
-{
-    return wxPoint(
-            wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
-            wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
-}
-
-wxPoint cgal_vector_layer::from_local(const layer_transform& trans, double x, double y, int coordinates = 1 )//IMAGE_COORDINATES
-{
-    double delta = trans.resolution()*0.5;
-    return wxPoint( static_cast<wxCoord>((delta+            x+trans.translation_x())/trans.zoom_factor()),
-                    static_cast<wxCoord>((delta+coordinates*y+trans.translation_y())/trans.zoom_factor()) );
-}
-wxPoint ogr_vector_layer::from_local(const layer_transform& trans, double x, double y, int coordinates = 1 )//IMAGE_COORDINATES
-{
-        double delta = 0.5*trans.resolution();
-        return wxPoint(
-                static_cast<wxCoord>((delta+            x+trans.translation_x())/trans.zoom_factor()),
-                static_cast<wxCoord>((delta+coordinates*y+trans.translation_y())/trans.zoom_factor())
-        );
-}
-
-wxPoint simple_vector_layer::from_local(const layer_transform& trans, double x, double y, int coordinates) const {
-      double delta = 0.5*trans.resolution();
-        return wxPoint(
-                static_cast<wxCoord>((delta+            x+trans.translation_x())/trans.zoom_factor()),
-                static_cast<wxCoord>((delta+coordinates*y+trans.translation_y())/trans.zoom_factor())
-        );
-    }
-
-*/
-
-
 class layer_transform {
 public:
     layer_transform() :
@@ -95,40 +54,71 @@ public:
     inline double translation_y() const { return m_translationY; }
 
     // local<->global transforms. Default: pixel-centered
-    inline wxPoint from_local(const wxPoint &p, double delta=0.5) const
+    // double,double -> double,double transformation
+    inline void from_local(double lx, double ly, double& gx, double& gy) const
     {
-        return from_local(p.x,p.y,delta);
+        gx = (              lx +m_translationX)/m_zoomFactor;
+        gy = (m_coordinates*ly +m_translationY)/m_zoomFactor;
     }
 
-    wxPoint from_local(double x, double y, double delta=0.5) const
+    inline void to_local(double gx, double gy, double& lx, double& ly) const
     {
-        return wxPoint(
-                wxCoord((              x +m_translationX+delta)/m_zoomFactor),
-                wxCoord((m_coordinates*y +m_translationY+delta)/m_zoomFactor));
+        lx =                m_zoomFactor*gx -m_translationX;
+        ly = m_coordinates*(m_zoomFactor*gy -m_translationY); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
     }
 
-    wxPoint to_local(const wxPoint &p, double delta=0.5) const
+    inline void from_local_int(double lx, double ly, double& gx, double& gy, double delta) const
     {
-        return wxPoint(
-                wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
-                wxCoord(m_coordinates*(m_zoomFactor*p.y -m_translationY-delta)+0.5));
+        gx = (              lx +m_translationX+delta-0.5)/m_zoomFactor;
+        gy = (m_coordinates*ly +m_translationY+delta-0.5)/m_zoomFactor;
     }
+    inline void to_local_int(double gx, double gy, double& lx, double& ly, double delta) const
+    {
+        lx =                m_zoomFactor*gx -m_translationX-delta;
+        ly = m_coordinates*(m_zoomFactor*gy -m_translationY-delta); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
+    }
+
+    // double,double  -> wxRealPoint transformations
+    inline wxRealPoint from_local(double x, double y) const { wxRealPoint q; from_local(x,y,q.x,q.y); return q; }
+    inline wxRealPoint   to_local(double x, double y) const { wxRealPoint q;   to_local(x,y,q.x,q.y); return q; }
+
+    // double,double  -> wxPoint transformations
+    inline wxPoint from_local_int(double lx, double ly, double delta=0.5) const
+    {
+        double x,y;
+        from_local_int(lx, ly, x, y, delta);
+        return wxPoint(static_cast<wxCoord>(x),static_cast<wxCoord>(y));
+    }
+
+    inline wxPoint to_local_int(double gx, double gy, double delta=0.5) const
+    {
+        double x,y;
+        to_local_int(gx, gy, x, y, delta);
+        return wxPoint(static_cast<wxCoord>(x),static_cast<wxCoord>(y));
+    }
+
+    // transformations from a (x,y) template
+    template<typename T> inline wxRealPoint from_local(const T& p) const { return from_local(p.x,p.y); }
+    template<typename T> inline wxRealPoint   to_local(const T& p) const { return   to_local(p.x,p.y); }
+    template<typename T> inline wxPoint from_local_int(const T& p, double delta=0.5) const { return from_local_int(p.x,p.y,delta); }
+    template<typename T> inline wxPoint   to_local_int(const T& p, double delta=0.5) const { return   to_local_int(p.x,p.y,delta); }
 
 
     void resolution(double r) { m_resolution = r; }
     inline double resolution() const { return m_resolution; }
 
-    void translate(const wxPoint &p)
+    void translate(const wxRealPoint &p)
     {
         m_translationX += p.x * m_zoomFactor;
         m_translationY += p.y * m_zoomFactor;
     }
 
-    void zoom(double z, const wxPoint &p)
+    // zoom_factor is multiplied by z, while keeping from_local(p) fixed
+    void zoom(double zoom, double x, double y)
     {
-        m_translationX += p.x * m_zoomFactor * (z - 1);
-        m_translationY += p.y * m_zoomFactor * (z - 1);
-        m_zoomFactor *= z;
+        m_translationX += x * m_zoomFactor * (zoom - 1);
+        m_translationY += y * m_zoomFactor * (zoom - 1);
+        m_zoomFactor *= zoom;
     }
 
     inline void coordinates(int c) {m_coordinates=c;}

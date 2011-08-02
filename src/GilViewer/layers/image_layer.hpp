@@ -73,21 +73,19 @@ public:
     image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_="");
     virtual ~image_layer() {}
 
-
     // local<->global transforms. Default: pixel-centered
-    virtual wxPoint from_local(const wxPoint &p, double delta=0.5) const
+    virtual wxRealPoint from_local(const wxRealPoint &p, double delta=0.5) const
     {
-      //wxPoint res=rotated_coordinate(p);
-      wxPoint res=rotated_coordinate_from_local(p);
-      return transform().from_local(res);
+        //wxPoint res=rotated_coordinate(p);
+        wxRealPoint res=rotated_coordinate_from_local(p);
+        return transform().from_local(res);
     }
 
-    virtual wxPoint to_local(const wxPoint &p, double delta=0.5) const
+    virtual wxRealPoint to_local(const wxRealPoint &p, double delta=0.5) const
     {
-     wxPoint res=transform().to_local(p);
-          return rotated_coordinate_to_local(res);
+        wxRealPoint res=transform().to_local(p);
+        return rotated_coordinate_to_local(res);
     }
-
 
 
 protected:
@@ -110,8 +108,7 @@ public:
 
     virtual void orientation(const boost::shared_ptr<orientation_2d> &orientation);
 
-
-
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
 
     virtual void channels(unsigned int red, unsigned int green, unsigned int blue)
     {
@@ -201,8 +198,8 @@ public:
     static unsigned int m_gamma_array_size;
 
 
-        wxPoint rotated_coordinate_to_local(const wxPoint& pt)const;
-        wxPoint rotated_coordinate_from_local(const wxPoint& pt)const;
+    wxRealPoint rotated_coordinate_to_local(const wxRealPoint& pt)const;
+    wxRealPoint rotated_coordinate_from_local(const wxRealPoint& pt)const;
 };
 
 #endif // __IMAGE_LAYER_HPP__

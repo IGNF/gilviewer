@@ -56,14 +56,15 @@ class vector_layer_ghost
 public:
     vector_layer_ghost( bool isCarto = false );
     wxRect rectangle() const;
+    wxRect local_rectangle(const layer_transform& trans) const;
 
     void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
 
-    wxPoint m_pointPosition;
-    std::pair<wxPoint,wxPoint>  m_rectangleSelection;
-    std::vector<wxPoint> m_linePoints;
+    wxRealPoint m_pointPosition;
+    std::pair<wxRealPoint,wxRealPoint>  m_rectangleSelection;
+    std::vector<wxRealPoint> m_linePoints;
 
-    typedef std::pair< wxPoint , double > CircleType;
+    typedef std::pair< wxRealPoint , double > CircleType;
     CircleType m_circle;
 
     bool m_isCarto;

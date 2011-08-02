@@ -84,8 +84,8 @@ void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
     // Merge with ()(OGRLineString*)?
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
-        wxPoint p1=m_trans.from_local(operand->getX(j),operand->getY(j));
-        wxPoint p2=m_trans.from_local(operand->getX(j+1),operand->getY(j+1));
+        wxPoint p1=m_trans.from_local_int(operand->getX(j),operand->getY(j));
+        wxPoint p2=m_trans.from_local_int(operand->getX(j+1),operand->getY(j+1));
         m_dc.DrawLine(p1,p2);
     }
 }
@@ -96,8 +96,8 @@ void draw_geometry_visitor::operator()(OGRLineString* operand) const
     m_dc.SetPen(m_line_pen);
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
-        wxPoint p1=m_trans.from_local(operand->getX(j),operand->getY(j));
-        wxPoint p2=m_trans.from_local(operand->getX(j+1),operand->getY(j+1));
+        wxPoint p1=m_trans.from_local_int(operand->getX(j),operand->getY(j));
+        wxPoint p2=m_trans.from_local_int(operand->getX(j+1),operand->getY(j+1));
         m_dc.DrawLine(p1,p2);
     }
 }
@@ -114,7 +114,7 @@ template <>
 void draw_geometry_visitor::operator()(OGRPoint* operand) const
 {
     m_dc.SetPen(m_point_pen);
-    wxPoint p1=m_trans.from_local(operand->getX(),operand->getY());
+    wxPoint p1=m_trans.from_local_int(operand->getX(),operand->getY());
     m_dc.DrawLine(p1,p1);
 }
 
@@ -135,7 +135,7 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
     std::vector<wxPoint> points;
     for(int j=0;j<operand->getExteriorRing()->getNumPoints();++j)
     {
-        wxPoint p=m_trans.from_local(operand->getExteriorRing()->getX(j),operand->getExteriorRing()->getY(j));
+        wxPoint p=m_trans.from_local_int(operand->getExteriorRing()->getX(j),operand->getExteriorRing()->getY(j));
         points.push_back(p);
     }
     m_dc.DrawPolygon(points.size(),&points.front());
@@ -144,7 +144,7 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
         std::vector<wxPoint> points;
         for(int j=0;j<operand->getInteriorRing(i)->getNumPoints();++j)
         {
-            wxPoint p=m_trans.from_local(operand->getInteriorRing(i)->getX(j),operand->getInteriorRing(i)->getY(j));
+            wxPoint p=m_trans.from_local_int(operand->getInteriorRing(i)->getX(j),operand->getInteriorRing(i)->getY(j));
             points.push_back(p);
         }
         m_dc.DrawPolygon(points.size(),&points.front());
