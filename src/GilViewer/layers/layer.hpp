@@ -43,6 +43,7 @@ Authors:
 #include <boost/function.hpp>
 
 #include <vector>
+#include <cmath>
 
 #include <wx/gdicmn.h>
 #include <wx/colour.h>
@@ -60,22 +61,6 @@ class orientation_2d;
 class color_lookup_table;
 class layer_settings_control;
 class layer_control;
-
-// convenience wxRealPoint operators
-inline wxRealPoint& operator+=(wxRealPoint& p, const wxRealPoint&q)
-{
-    p=p+q;
-    return p;
-}
-inline wxRealPoint operator-(const wxRealPoint&p)
-{
-    return wxRealPoint(-p.x,-p.y);
-}
-
-inline wxRealPoint operator*(double d, const wxRealPoint&p)
-{
-    return wxRealPoint(d*p.x,d*p.y);
-}
 
 class layer
 {

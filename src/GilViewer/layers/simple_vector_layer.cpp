@@ -39,8 +39,10 @@ Authors:
 #include <wx/dc.h>
 #include <wx/pen.h>
 #include <wx/brush.h>
+#include <wx/log.h>
 
 #include "../gui/vector_layer_settings_control.hpp"
+#include "../convenient/wxrealpoint.hpp"
 
 #include "simple_vector_layer.hpp"
 
@@ -49,13 +51,13 @@ Authors:
 using namespace std;
 
 simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_layer(),
-    m_circles(std::vector<CircleType>() ),
-    m_ellipses(std::vector<EllipseType>() ),
-    m_rotatedellipses(std::vector<RotatedEllipseType> ()),
-    m_arcs(std::vector<ArcType> ()),
-    m_points(std::vector<PointType> ()),
-    m_splines(std::vector< std::vector<PointType> > ()),
-    m_polygons(std::vector< std::vector<PointType> > ())
+m_circles(std::vector<CircleType>() ),
+m_ellipses(std::vector<EllipseType>() ),
+m_rotatedellipses(std::vector<RotatedEllipseType> ()),
+m_arcs(std::vector<ArcType> ()),
+m_points(std::vector<PointType> ()),
+m_splines(std::vector< std::vector<PointType> > ()),
+m_polygons(std::vector< std::vector<PointType> > ())
 {
     m_name=layer_name;
 
@@ -193,7 +195,7 @@ void simple_vector_layer::add_polyline( const std::vector<double> &x , const std
     assert(x.size()==y.size());
     for(unsigned int i=0;i<x.size()-1;++i)
         add_line(x[i  ],y[i  ],
-                x[i+1],y[i+1]);
+                 x[i+1],y[i+1]);
 }
 
 void simple_vector_layer::add_point( double x , double y )
@@ -319,4 +321,136 @@ std::string simple_vector_layer::infos()
     oss << m_polygons.size() << " polygons\n";
     m_infos = oss.str();
     return m_infos;
+}
+
+bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
+{
+    wxRealPoint q =  transform().to_local(p);
+    double zoom = transform().zoom_factor();
+    double invzoom2 = 1.0/(zoom*zoom);
+    bool snapped = false;
+
+    if(snap&(SNAP_POINT|SNAP_LINE))
+    {
+        for (unsigned int i = 0; i < m_circles.size(); i++)
+        {
+            wxRealPoint c(m_circles[i].x,m_circles[i].y);
+            double d = squared_distance(q,c)*invzoom2;
+            if((snap&SNAP_POINT) && (d < d2[SNAP_POINT] ))
+            {
+                for(unsigned int j=0; j<SNAP_POINT; ++j) d2[j]=0;
+                d2[SNAP_POINT] = d;
+                psnap = transform().from_local(c);
+                snapped = true;
+            }
+            else
+            {
+                double radius =  std::sqrt(d)*zoom;
+                d =radius-m_circles[i].radius;
+                d = d*d*invzoom2;
+                if((snap&SNAP_LINE) && (d < d2[SNAP_LINE] ))
+                {
+                    for(unsigned int j=0; j<SNAP_LINE; ++j) d2[j]=0;
+                    d2[SNAP_LINE] = d;
+                    psnap = transform().from_local(c+(m_circles[i].radius/radius)*(q-c));
+                    snapped = true;
+                }
+            }
+        }
+    }
+    // Ellipses alignees
+    if(!m_ellipses.empty())
+    {
+        wxLogMessage(wxT("snapping to ellipses not implemented in simple_vector_layer"));
+    }
+    // Ellipses non alignees
+    if(!m_rotatedellipses.empty())
+    {
+        wxLogMessage(wxT("snapping to rotated ellipses not implemented in simple_vector_layer"));
+    }
+
+
+    if(snap&(SNAP_POINT|SNAP_LINE))
+    {
+        for (unsigned int i=0;i<m_polygons.size();++i)
+        {
+            wxRealPoint p0(m_polygons[i].back().x,m_polygons[i].back().y), p1;
+            for (unsigned int j=0;j<m_polygons[i].size();++j, p0=p1)
+            {
+                p1 = wxRealPoint(m_polygons[i][j].x,m_polygons[i][j].y);
+                if(snap&SNAP_POINT)
+                {
+
+                    double d = squared_distance(q,p1)*invzoom2;
+                    if(d < d2[SNAP_POINT] )
+                    {
+                        for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
+                        d2[SNAP_POINT] = d;
+                        psnap = transform().from_local(p1);
+                        snapped = true;
+                    }
+                }
+                if(snap&SNAP_LINE)
+                {
+                    wxRealPoint u(q -p0);
+                    wxRealPoint v(p1-p0);
+                    double t = dot(u,v)/dot(v,v);
+                    if(t<0 || t> 1) continue;
+                    wxRealPoint proj(p0+t*v);
+                    double d = squared_distance(q,proj)*invzoom2;
+                    if(d < d2[SNAP_LINE] )
+                    {
+                        for(unsigned int k=0; k<SNAP_LINE; ++k) d2[k]=0;
+                        d2[SNAP_LINE] = d;
+                        psnap = transform().from_local(proj);
+                        snapped = true;
+                    }
+                }
+            }
+        }
+    }
+    if(!m_arcs.empty())
+    {
+        wxLogMessage(wxT("snapping to arcs not implemented in simple_vector_layer"));
+    }
+    if(!m_splines.empty())
+    {
+        wxLogMessage(wxT("snapping to splines not implemented in simple_vector_layer"));
+    }
+
+    // 0D
+    if(snap&SNAP_POINT)
+    {
+
+        for (unsigned int i = 0; i < m_points.size(); i++)
+        {
+            wxRealPoint p1(m_points[i].x,m_points[i].y);
+            double d = squared_distance(q,p1)*invzoom2;
+            if(d < d2[SNAP_POINT] )
+            {
+                for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
+                d2[SNAP_POINT] = d;
+                psnap = transform().from_local(p1);
+                snapped = true;
+            }
+        }
+
+        // Text
+        if(text_visibility())
+        {
+            for (unsigned int i = 0; i < m_texts.size(); i++)
+            {
+                wxRealPoint p1(m_texts[i].first.x,m_texts[i].first.y);
+                double d = squared_distance(q,p1)*invzoom2;
+                if(d < d2[SNAP_POINT] )
+                {
+                    for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
+                    d2[SNAP_POINT] = d;
+                    psnap = transform().from_local(p1);
+                    snapped = true;
+                }
+            }
+        }
+    }
+    return snapped;
 }
