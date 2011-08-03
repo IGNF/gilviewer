@@ -209,15 +209,35 @@ struct Arrangement {
         }
     }
 
-    bool snap(const layer_transform& trans, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
+    void select(const layer_transform& trans, double d2[], const wxRealPoint& p)
+    {
+        wxLogMessage(_("selecting"));
+        wxRealPoint dummy;
+        CGAL::Object obj = snap(trans,d2,p,dummy);
+        Vertex_const_handle   v;
+        Halfedge_const_handle h;
+        Face_const_handle     f;
+
+        if (CGAL::assign (f, obj)) {
+            m_arrangement.non_const_handle(f)->data().selected = !m_arrangement.non_const_handle(f)->data().selected;
+        }
+        else if (CGAL::assign (h, obj)) {
+            bool selected =  !m_arrangement.non_const_handle(h)->data().selected;
+            m_arrangement.non_const_handle(h        )->data().selected = selected;
+            m_arrangement.non_const_handle(h->twin())->data().selected = selected;
+        }
+        else if (CGAL::assign (v, obj)) {
+            m_arrangement.non_const_handle(v)->data().selected = !m_arrangement.non_const_handle(v)->data().selected;
+        }
+    }
+
+    CGAL::Object snap(const layer_transform& trans, double d2[], const wxRealPoint& p, wxRealPoint& psnap ) const
     {
         FT zoom = trans.zoom_factor();
         FT invzoom2 = 1.0/(zoom*zoom);
         wxRealPoint plocal = trans.to_local(p);
         Point_2 q(plocal.x,plocal.y);
         Point_2 qsnap(q);
-
-        m_snap = CGAL::Object();
 
         CGAL::Object obj = m_pl.locate (q);
 
@@ -253,11 +273,6 @@ struct Arrangement {
                 } while ((++curr) != first);
 
             }
-            if(h==Halfedge_const_handle())
-            {
-                m_arrangement.non_const_handle(f)->data().selected = ! f->data().selected;
-                m_snap = CGAL::make_object(f);
-            }
         }
 
         if(CGAL::assign (h, obj)) d2[layer::SNAP_LINE]=0;
@@ -277,10 +292,7 @@ struct Arrangement {
             }
             if(v==Vertex_const_handle())
             {
-                bool selected = ! h->data().selected;
-                m_arrangement.non_const_handle(h        )->data().selected = selected;
-                m_arrangement.non_const_handle(h->twin())->data().selected = selected;
-                m_snap = CGAL::make_object(h);
+                obj = CGAL::make_object(h);
 
                 Segment_2 s(h->source()->point(),h->target()->point());
                 // implementation de qsnap = project(q,s);
@@ -295,15 +307,13 @@ struct Arrangement {
         if(v!=Vertex_const_handle())
         {
             for(unsigned int i=0; i<layer::SNAP_LINE; ++i) d2[i]=0;
-            m_arrangement.non_const_handle(v)->data().selected = ! v->data().selected;
-            m_snap = CGAL::make_object(v);
+            obj = CGAL::make_object(v);
             qsnap = v->point();
         }
         
-        if(m_snap.empty()) return false;
-
-        psnap = trans.from_local(CGAL::to_double(qsnap.x()),CGAL::to_double(qsnap.y()));
-        return true;
+        if(!obj.empty())
+            psnap = trans.from_local(CGAL::to_double(qsnap.x()),CGAL::to_double(qsnap.y()));
+        return obj;
     }
     
     
@@ -343,9 +353,8 @@ cgal_vector_layer::~cgal_vector_layer()
 
 bool cgal_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
-    bool b = m_arrangement->snap(transform(),d2,p,psnap);
-    needs_update(b);
-    return b;
+    CGAL::Object obj = m_arrangement->snap(transform(),d2,p,psnap);
+    return !obj.empty();
 }
 
 void cgal_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
@@ -428,5 +437,15 @@ void cgal_vector_layer::clear()
 }
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...
+
+
+
+void cgal_vector_layer::select(const wxRealPoint& p)
+{
+    double d2[SNAP_MAX_ID];
+    d2[SNAP_POINT] = 100;
+    d2[SNAP_LINE] = 100;
+    m_arrangement->select(transform(),d2,p);
+}
 
 #endif // GILVIEWER_USE_CGAL
