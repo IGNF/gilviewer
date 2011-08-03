@@ -56,16 +56,6 @@ wxRect vector_layer_ghost::rectangle() const {
     return wxRect(transform().from_local_int(p),transform().from_local_int(q) );
 }
 
-wxRect vector_layer_ghost::local_rectangle(const layer_transform& trans) const {
-    wxRealPoint p(transform().from_local(m_rectangleSelection.first));
-    wxRealPoint q(transform().from_local(m_rectangleSelection.second));
-    if(p.x>q.x) std::swap(p.x,q.x);
-    if(p.y>q.y) std::swap(p.y,q.y);
-    return wxRect(
-            trans.to_local_int(p,0),
-            trans.to_local_int(q,1) );
-}
-
 void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 {
     if (m_drawCircle)

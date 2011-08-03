@@ -74,14 +74,14 @@ public:
     virtual ~image_layer() {}
 
     // local<->global transforms. Default: pixel-centered
-    virtual wxRealPoint from_local(const wxRealPoint &p, double delta=0.5) const
+    virtual wxRealPoint from_local(const wxRealPoint &p) const
     {
         //wxPoint res=rotated_coordinate(p);
         wxRealPoint res=rotated_coordinate_from_local(p);
         return transform().from_local(res);
     }
 
-    virtual wxRealPoint to_local(const wxRealPoint &p, double delta=0.5) const
+    virtual wxRealPoint to_local(const wxRealPoint &p) const
     {
         wxRealPoint res=transform().to_local(p);
         return rotated_coordinate_to_local(res);
@@ -148,7 +148,7 @@ public:
     virtual void transparent(bool t) { m_isTransparent=t; }
     virtual bool transparent() const { return m_isTransparent; }
 
-    virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
+    virtual ptrLayerType crop(const wxRealPoint& p0, const wxRealPoint& p1) const;
 
     virtual image_ptr image() const { return m_img; }
     virtual variant_view_ptr  variant_view() const { return m_variant_view; }

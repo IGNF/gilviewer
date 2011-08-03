@@ -52,6 +52,10 @@ public:
     inline double translation_x() const { return m_translationX; }
     void translation_y(double dy) { m_translationY = dy; }
     inline double translation_y() const { return m_translationY; }
+    inline void coordinates(int c) {m_coordinates=c;}
+    inline int coordinates() const { return m_coordinates; }
+    void resolution(double r) { m_resolution = r; }
+    inline double resolution() const { return m_resolution; }
 
     // local<->global transforms. Default: pixel-centered
     // double,double -> double,double transformation
@@ -104,8 +108,6 @@ public:
     template<typename T> inline wxPoint   to_local_int(const T& p, double delta=0.5) const { return   to_local_int(p.x,p.y,delta); }
 
 
-    void resolution(double r) { m_resolution = r; }
-    inline double resolution() const { return m_resolution; }
 
     void translate(const wxRealPoint &p)
     {
@@ -121,7 +123,6 @@ public:
         m_zoomFactor *= zoom;
     }
 
-    inline void coordinates(int c) {m_coordinates=c;}
 
 private:
 

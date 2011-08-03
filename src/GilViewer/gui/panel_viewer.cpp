@@ -820,10 +820,10 @@ wxRealPoint panel_viewer::snap(const wxMouseEvent& e) const
     wxRealPoint p(e.m_x,e.m_y), q=p;
     if(m_snap)
     {
-        double d2[layer::SNAP_MAX_ID]; // squared snap tolerance in [screen pixels squared]
-        if(m_snap&layer::SNAP_POINT) d2[layer::SNAP_POINT]=10*10;
-        if(m_snap&layer::SNAP_LINE ) d2[layer::SNAP_LINE ]=10*10;
-        if(m_snap&layer::SNAP_GRID ) d2[layer::SNAP_GRID ]=10*10;
+        double d2[layer::SNAP_MAX_ID];
+        if(m_snap&layer::SNAP_GRID ) d2[layer::SNAP_GRID ]=10*10; // squared snap tolerance in [grid steps squared]
+        if(m_snap&layer::SNAP_POINT) d2[layer::SNAP_POINT]=10*10; // squared snap tolerance in [screen pixels squared]
+        if(m_snap&layer::SNAP_LINE ) d2[layer::SNAP_LINE ]=10*10; // squared snap tolerance in [screen pixels squared]
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
             (*it)->snap(m_snap,d2,p,q);
         }
@@ -1068,19 +1068,13 @@ void panel_viewer::crop() {
         }
     }
 
+    wxRealPoint p0(m_ghostLayer->transform().from_local(m_ghostLayer->m_rectangleSelection.first ));
+    wxRealPoint p1(m_ghostLayer->transform().from_local(m_ghostLayer->m_rectangleSelection.second));
     for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
-        wxRect  r  = m_ghostLayer->local_rectangle((*it)->transform());
-        wxPoint p0 = r.GetTopLeft();
-        wxPoint p1 = r.GetBottomRight();
         try {
-            layer::ptrLayerType layer = (*it)->crop(p0.x,p0.y,p1.x,p1.y);
+            layer::ptrLayerType layer = (*it)->crop(p0,p1);
             if(!layer) continue; // todo : warn the user ??
-            m_layerControl->add_layer(layer);
-            // now that the layer is added, we can set its geometry
-            layer->transform().translation_x(p0.x+(*it)->transform().translation_x());
-            layer->transform().translation_y(p0.y+(*it)->transform().translation_y());
-            layer->transform().zoom_factor  (     (*it)->transform().zoom_factor  ());
-            // todo : handle Orientation2D of *it if it exists ... ??
+            m_layerControl->add_layer(layer,true);
 
         } catch (std::exception &e) {
             GILVIEWER_LOG_EXCEPTION("")

@@ -125,7 +125,7 @@ public:
     virtual std::string layer_type_as_string() const {return "unknown type";}
     virtual void save(const std::string &name) const {}
 
-    virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
+    virtual ptrLayerType crop(const wxRealPoint& p0, const wxRealPoint& p1) const { return ptrLayerType(); }
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
