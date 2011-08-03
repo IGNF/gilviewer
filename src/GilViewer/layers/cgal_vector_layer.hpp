@@ -87,6 +87,8 @@ public:
     virtual void add_ellipse(double x_center, double y_center, double a, double b, double theta);
 */
 
+    void select(const wxRealPoint& p);
+
     virtual void clear();
 
 private:
