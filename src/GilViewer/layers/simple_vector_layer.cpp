@@ -323,6 +323,40 @@ std::string simple_vector_layer::infos()
     return m_infos;
 }
 
+
+template<typename P>
+void snap_segment(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p0, const P& _p1, wxRealPoint& psnap, bool& snapped )
+{
+    wxRealPoint p0(_p0.x,_p0.y), p1(_p1.x,_p1.y);
+    wxRealPoint u(q -p0);
+    wxRealPoint v(p1-p0);
+    double t = dot(u,v)/dot(v,v);
+    if(t<0 || t> 1) return;
+    wxRealPoint proj(p0+t*v);
+    double d = squared_distance(q,proj)*invzoom2;
+    if(d < d2[layer::SNAP_LINE] )
+    {
+        for(unsigned int k=0; k<layer::SNAP_LINE; ++k) d2[k]=0;
+        d2[layer::SNAP_LINE] = d;
+        psnap = trans.from_local(proj);
+        snapped = true;
+    }
+}
+
+template<typename P>
+void snap_point(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p, wxRealPoint& psnap, bool& snapped )
+{
+    wxRealPoint p(_p.x,_p.y);
+    double d = squared_distance(q,p)*invzoom2;
+    if(d < d2[layer::SNAP_POINT] )
+    {
+        for(unsigned int k=0; k<layer::SNAP_POINT; ++k) d2[k]=0;
+        d2[layer::SNAP_POINT] = d;
+        psnap = trans.from_local(p);
+        snapped = true;
+    }
+}
+
 bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
     wxRealPoint q =  transform().to_local(p);
@@ -378,40 +412,21 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
             for (unsigned int j=0;j<m_polygons[i].size();++j, p0=p1)
             {
                 p1 = wxRealPoint(m_polygons[i][j].x,m_polygons[i][j].y);
-                if(snap&SNAP_POINT)
-                {
-
-                    double d = squared_distance(q,p1)*invzoom2;
-                    if(d < d2[SNAP_POINT] )
-                    {
-                        for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
-                        d2[SNAP_POINT] = d;
-                        psnap = transform().from_local(p1);
-                        snapped = true;
-                    }
-                }
-                if(snap&SNAP_LINE)
-                {
-                    wxRealPoint u(q -p0);
-                    wxRealPoint v(p1-p0);
-                    double t = dot(u,v)/dot(v,v);
-                    if(t<0 || t> 1) continue;
-                    wxRealPoint proj(p0+t*v);
-                    double d = squared_distance(q,proj)*invzoom2;
-                    if(d < d2[SNAP_LINE] )
-                    {
-                        for(unsigned int k=0; k<SNAP_LINE; ++k) d2[k]=0;
-                        d2[SNAP_LINE] = d;
-                        psnap = transform().from_local(proj);
-                        snapped = true;
-                    }
-                }
+                if(snap&SNAP_POINT) snap_point(transform(), invzoom2, d2, q, p1, psnap, snapped );
+                if(snap&SNAP_LINE ) snap_segment(transform(), invzoom2, d2, q, p0, p1, psnap, snapped );
             }
         }
-    }
-    if(!m_arcs.empty())
-    {
-        wxLogMessage(wxT("snapping to arcs not implemented in simple_vector_layer"));
+        for (unsigned int i = 0; i < m_arcs.size(); i++)
+        {
+            const ArcType &arc = m_arcs[i];
+            if(!arc.arc_points.empty() && (snap&SNAP_POINT))
+                snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap, snapped );
+            for (unsigned int j = 0; j < arc.arc_points.size() - 1; ++j)
+            {
+                if(snap&SNAP_POINT) snap_point(transform(), invzoom2, d2, q, arc.arc_points[j+1], psnap, snapped );
+                if(snap&SNAP_LINE ) snap_segment(transform(), invzoom2, d2, q, arc.arc_points[j], arc.arc_points[j+1], psnap, snapped );
+            }
+        }
     }
     if(!m_splines.empty())
     {
@@ -424,15 +439,7 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
 
         for (unsigned int i = 0; i < m_points.size(); i++)
         {
-            wxRealPoint p1(m_points[i].x,m_points[i].y);
-            double d = squared_distance(q,p1)*invzoom2;
-            if(d < d2[SNAP_POINT] )
-            {
-                for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
-                d2[SNAP_POINT] = d;
-                psnap = transform().from_local(p1);
-                snapped = true;
-            }
+            snap_point(transform(), invzoom2, d2, q, m_points[i], psnap, snapped );
         }
 
         // Text
@@ -440,15 +447,7 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
         {
             for (unsigned int i = 0; i < m_texts.size(); i++)
             {
-                wxRealPoint p1(m_texts[i].first.x,m_texts[i].first.y);
-                double d = squared_distance(q,p1)*invzoom2;
-                if(d < d2[SNAP_POINT] )
-                {
-                    for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
-                    d2[SNAP_POINT] = d;
-                    psnap = transform().from_local(p1);
-                    snapped = true;
-                }
+                snap_point(transform(), invzoom2, d2, q, m_texts[i].first, psnap, snapped );
             }
         }
     }
