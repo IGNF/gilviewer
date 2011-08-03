@@ -69,7 +69,7 @@ public:
                   long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
     /// Cette methode permet d'ajouter un calque
-    void add_layer(const layer::ptrLayerType &layer);
+    void add_layer(const layer::ptrLayerType &layer, bool has_transform = false);
     /// Cette methode permet de supprimer un calque
     void delete_layer(unsigned int index);
     void delete_all_layer(){wxCommandEvent event;on_delete_all_rows_button(event);}

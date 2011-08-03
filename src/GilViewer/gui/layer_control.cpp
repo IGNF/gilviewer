@@ -509,7 +509,7 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 }
 
-void layer_control::add_layer(const layer::ptrLayerType &layer)
+void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transform)
 {
     if (!layer) return;
 
@@ -534,7 +534,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     {
         wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
     }
-    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori())
+    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori() && !has_transform)
     {
         wxLogMessage(_("Image layer position initialised with respect to first image!"));
         layer->transform()=m_ghostLayer->transform();

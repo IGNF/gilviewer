@@ -56,7 +56,6 @@ class vector_layer_ghost
 public:
     vector_layer_ghost( bool isCarto = false );
     wxRect rectangle() const;
-    wxRect local_rectangle(const layer_transform& trans) const;
 
     void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
 

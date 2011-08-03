@@ -372,28 +372,73 @@ void image_layer::gamma(double gamma)
     }
 }
 
-layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
+layer::ptrLayerType image_layer::crop(const wxRealPoint& p0, const wxRealPoint& p1) const
 {
-    if(x0<0) x0=0;
-    if(y0<0) y0=0;
-    if(x1>apply_visitor( width_visitor(), m_variant_view->value )) x1=apply_visitor( width_visitor(), m_variant_view->value );
-    if(y1>apply_visitor( height_visitor(), m_variant_view->value )) y1=apply_visitor( height_visitor(), m_variant_view->value );
-    if(x0>=x1 || y0>=y1) return ptrLayerType();
-    //view_t::type crop = subimage_view(m_view->value, x0, y0, x1-x0, y1-y0 );
-    subimage_visitor sv(x0, y0, x1-x0, y1-y0);
+    // compute local coordinates
+    wxRealPoint q0 = to_local(p0);
+    wxRealPoint q1 = to_local(p1);
+
+    //  q0 = min point, q1 = max point
+    if(q0.x>q1.x) std::swap(q0.x,q1.x);
+    if(q0.y>q1.y) std::swap(q0.y,q1.y);
+
+    // clip to image range
+    int w = apply_visitor(  width_visitor(), m_variant_view->value );
+    int h = apply_visitor( height_visitor(), m_variant_view->value );
+    if(q0.x<0) q0.x=0;
+    if(q0.y<0) q0.y=0;
+    if(q1.x>w) q1.x=w;
+    if(q1.y>h) q1.y=h;
+
+    // get integral image coordinates
+    q0.x = floor(q0.x+0.5);
+    q0.y = floor(q0.y+0.5);
+    q1.x = floor(q1.x+0.5);
+    q1.y = floor(q1.y+0.5);
+
+    int x0 = (int)(q0.x);
+    int y0 = (int)(q0.y);
+    int w0  = (int)(q1.x)-x0;
+    int h0  = (int)(q1.y)-y0;
+
+    // abort if trivial range
+    if(w0<=0 || h0<=0) return ptrLayerType();
+
+    subimage_visitor sv(x0, y0, w0, h0);
     variant_view_t::type crop = apply_visitor( sv, m_variant_view->value );
     //view_ptr crop_ptr(new view_t(crop));
     variant_view_ptr crop_ptr(new variant_view_t(crop));
     boost::filesystem::path file(boost::filesystem::system_complete(filename()));
     std::ostringstream oss;
-    oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
+    oss << ".crop" <<x0<<"_"<<y0<<"_"<<w0<<"x"<<h0;
 #if BOOST_FILESYSTEM_VERSION > 2
     file.replace_extension(oss.str() + file.extension().string());
 #else
     file.replace_extension(oss.str() + file.extension());
 #endif
     std::string name = file.string();
-    return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
+
+
+    image_layer *l = new image_layer(m_img, name, file.string(), crop_ptr);
+
+    // fix "off by 1 pixel transform" errors for rotated images
+    q1.x -= 1;
+    q1.y -= 1;
+
+    wxRealPoint r0 = from_local(q0);
+    wxRealPoint r1 = from_local(q1);
+    if(r0.x>r1.x) std::swap(r0.x,r1.x);
+    if(r0.y>r1.y) std::swap(r0.y,r1.y);
+
+    l->layer_orientation(layer_orientation());
+    l->transform() = transform();
+    l->transform().translation_x(0);
+    l->transform().translation_y(0);
+    l->transform().translate(r0);
+
+    // todo : handle Orientation2D of if it exists ... ??
+
+    return ptrLayerType(l);
 }
 
 vector<string> image_layer::available_formats_extensions() const
@@ -458,19 +503,22 @@ wxRealPoint image_layer::rotated_coordinate_from_local(const wxRealPoint& pt)con
 
 bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
+
     if(!(snap & SNAP_GRID)) return false;
 
-    wxRealPoint q = rotated_coordinate_to_local(p);
+    wxRealPoint q = to_local(p);
     int h=apply_visitor( height_visitor(), m_variant_view->value );
     int w=apply_visitor(  width_visitor(), m_variant_view->value );
-    if( q.x < -1 || q.y < -1 || q.x > w+1 || q.y > h+1 ) return false;
+    if( q.x < -0.5 || q.y < -0.5 || q.x > w+0.5 || q.y > h+0.5 ) return false;
 
-    wxRealPoint v = psnap-p;
+    wxRealPoint qsnap (floor(q.x+0.5),floor(q.y+0.5));
+
+    wxRealPoint v(q-qsnap);
     double d = v.x*v.x+v.y*v.y;
     if(d>=d2[SNAP_GRID]) return false;
 
     for(unsigned int i=0; i<SNAP_GRID;++i) d2[i]=0;
     d2[SNAP_GRID]=d;
-    psnap = transform().from_local(q);
+    psnap = from_local(qsnap);
     return true;
 }
