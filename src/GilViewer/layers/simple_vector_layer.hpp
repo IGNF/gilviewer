@@ -132,6 +132,8 @@ public:
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
     virtual std::string infos();
 
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
+
     virtual std::string available_formats_wildcard() const;
 
     void add_circle( double x , double y , double radius );

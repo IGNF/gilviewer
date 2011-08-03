@@ -70,6 +70,7 @@
 #include "../gui/define_id.hpp"
 #include "../gui/panel_manager.hpp"
 #include "../tools/orientation_2d.hpp"
+#include "../convenient/wxrealpoint.hpp"
 
 #ifdef _WINDOWS
 #   include <wx/msw/winundef.h>
@@ -810,11 +811,6 @@ void panel_viewer::execute_mode_selection() {
 
 }
 
-inline double DistancePoints(const wxRealPoint& pt1, const wxRealPoint &pt2) {
-    wxRealPoint diff(pt2 - pt1);
-    return std::sqrt((double) (diff.x * diff.x + diff.y * diff.y));
-}
-
 wxRealPoint panel_viewer::snap(const wxMouseEvent& e) const
 {
     wxRealPoint p(e.m_x,e.m_y), q=p;
@@ -854,7 +850,7 @@ void panel_viewer::geometry_add_point(const wxRealPoint & p)
             m_ghostLayer->m_circle.second = 1;
             m_ghostLayer->m_CircleFirstPointSet = true;
         } else {
-            m_ghostLayer->m_circle.second = DistancePoints(m_ghostLayer->m_circle.first, pt);
+            m_ghostLayer->m_circle.second = std::sqrt(squared_distance(m_ghostLayer->m_circle.first, pt));
             m_ghostLayer->m_CircleFirstPointSet = false;
             geometry_end();
         }
@@ -976,7 +972,7 @@ void panel_viewer::geometry_update_absolute(const wxRealPoint & p)
         break;
     case GEOMETRY_CIRCLE:
         if (m_ghostLayer->m_CircleFirstPointSet) {
-            m_ghostLayer->m_circle.second = DistancePoints(m_ghostLayer->m_circle.first, pt);
+            m_ghostLayer->m_circle.second = std::sqrt(squared_distance(m_ghostLayer->m_circle.first, pt));
         }
         break;
     case GEOMETRY_LINE:
