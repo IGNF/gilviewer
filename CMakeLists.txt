@@ -10,7 +10,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 #Nom du projet
 PROJECT(GilViewer)
- 
+
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
+
+
 set(BUILD_SHARED_LIBS ON)
 message( STATUS ${CMAKE_BUILD_TYPE} )
  
