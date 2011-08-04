@@ -9,7 +9,6 @@ elseif(WIN32)
 endif()
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 message( STATUS "Scanning plugins :" )
 file( GLOB list "plugins/*" )
