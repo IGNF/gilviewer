@@ -5,6 +5,7 @@
 #include "gilviewer_file_io_tiff.hpp"
 
 #include "gilviewer_file_io_pk1.hpp"
+//#include "gilviewer_file_io_key.hpp"
 
 #include "../config/config.hpp"
 #if GILVIEWER_USE_GDAL
@@ -53,6 +54,7 @@ void register_all_vector_file_formats()
     gilviewer_file_io_serialization_xml::Register();
     gilviewer_file_io_serialization_binary::Register();
     gilviewer_file_io_pk1::Register();
+//    gilviewer_file_io_key::Register();
 }
 
 void register_all_file_formats()

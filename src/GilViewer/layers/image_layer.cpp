@@ -372,11 +372,12 @@ void image_layer::gamma(double gamma)
     }
 }
 
-layer::ptrLayerType image_layer::crop(const wxRealPoint& p0, const wxRealPoint& p1) const
+layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const
 {
     // compute local coordinates
-    wxRealPoint q0 = to_local(p0);
-    wxRealPoint q1 = to_local(p1);
+    
+    wxRealPoint q0 (rotated_coordinate_to_local(p0));
+    wxRealPoint q1 (rotated_coordinate_to_local(p1));
 
     //  q0 = min point, q1 = max point
     if(q0.x>q1.x) std::swap(q0.x,q1.x);
@@ -402,8 +403,13 @@ layer::ptrLayerType image_layer::crop(const wxRealPoint& p0, const wxRealPoint& 
     int h0  = (int)(q1.y)-y0;
 
     // abort if trivial range
-    if(w0<=0 || h0<=0) return ptrLayerType();
-
+    if(w0<=0 || h0<=0) {
+        //std::cout<< x0<<" "<<y0<<" "<< w0<<" "<< h0<<std::endl;;
+        //std::cout<<"Pb de crop"<<std::endl;;
+        return ptrLayerType();
+        }
+    
+    
     subimage_visitor sv(x0, y0, w0, h0);
     variant_view_t::type crop = apply_visitor( sv, m_variant_view->value );
     //view_ptr crop_ptr(new view_t(crop));
@@ -417,7 +423,6 @@ layer::ptrLayerType image_layer::crop(const wxRealPoint& p0, const wxRealPoint& 
     file.replace_extension(oss.str() + file.extension());
 #endif
     std::string name = file.string();
-
 
     image_layer *l = new image_layer(m_img, name, file.string(), crop_ptr);
 

@@ -110,7 +110,8 @@ public:
     virtual std::string layer_type_as_string() const {return "unknown type";}
     virtual void save(const std::string &name) const {}
 
-    virtual ptrLayerType crop(const wxRealPoint& p0, const wxRealPoint& p1) const { return ptrLayerType(); }
+    ptrLayerType crop(const wxRealPoint& p0, const wxRealPoint& p1) const ;
+    virtual ptrLayerType crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const { return ptrLayerType(); }
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
@@ -221,7 +222,7 @@ public:
 
     layer_transform& transform() { return m_layer_transform; }
     const layer_transform& transform() const { return m_layer_transform; }
-
+    
 protected:
     bool m_isVisible;
     bool m_isTransformable;
