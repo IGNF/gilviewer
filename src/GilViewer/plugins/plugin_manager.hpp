@@ -52,7 +52,8 @@ public:
     plugin_base* create_object(const std::string& id);
 
     static void register_plugins(const std::string &path);
-
+    unsigned int  getNbPlugins()const{ return (unsigned int)m_plugins.size();}
+    plugin_base* getPluginAt(unsigned int i)const{return m_plugins.at(i);}
 private:
     plugin_manager_model() {}
     // Le tableau des plugins

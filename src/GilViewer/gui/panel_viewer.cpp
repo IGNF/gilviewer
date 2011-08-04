@@ -69,8 +69,11 @@
 #include "../gui/layer_control.hpp"
 #include "../gui/define_id.hpp"
 #include "../gui/panel_manager.hpp"
+
 #include "../tools/orientation_2d.hpp"
+#include "../plugins/plugin_manager.hpp"
 #include "../convenient/wxrealpoint.hpp"
+
 
 #ifdef _WINDOWS
 #   include <wx/msw/winundef.h>
@@ -528,6 +531,10 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
     {
         geometry_update_absolute(p);
     }
+#ifndef _WINDOWS
+    for(unsigned int i=0;i<plugin_manager::instance()->getNbPlugins();i=i+1)
+        plugin_manager::instance()->getPluginAt(i)-> on_mouse_move(event);
+#endif // _WINDOWS
 
     update_statusbar(p.x, p.y);
     //  SetFocus();
