@@ -116,19 +116,7 @@ public:
         MODE_SELECTION //sélection raster
     };
 
-    enum eGEOMETRY //choix de primitives
-    {
-        GEOMETRY_NULL,
-        GEOMETRY_POINT,
-        GEOMETRY_CIRCLE,
-        GEOMETRY_RECTANGLE,
-        GEOMETRY_LINE,
-        GEOMETRY_POLYGONE
-    };
-
-
-    inline eMode mode() { return m_mode; }
-    inline eGEOMETRY geometry() { return m_geometry; }
+    template<typename Event> eMode mode(Event& event) const;
     inline layer::eSNAP snap() { return m_snap; }
     inline boost::shared_ptr<vector_layer_ghost> vectorlayerghost() { return m_ghostLayer; }
 
@@ -175,13 +163,11 @@ protected:
 
     /// Flag indiquant le mode navigation, saisie, ...)
     eMode m_mode;
-    ///Flag indiquant la primitive géométrique en cours quand on n'est pas en mode navigation (point, rectangle, ...)
-    eGEOMETRY m_geometry;
     ///Flag indiquant le mode de snap courant
     layer::eSNAP m_snap;
 
     ///Ajoute un point à la géométrie courante
-    void geometry_add_point(const wxRealPoint& pt);
+    void geometry_add_point(const wxRealPoint& pt, bool final=false);
     ///Mets à jour la géométrie avec le point sous la souris lors d'un MouseMove, sans le sélectionner définitivement
     void geometry_update_absolute(const wxRealPoint& pt);
     void geometry_update_relative(const wxRealPoint& translation);

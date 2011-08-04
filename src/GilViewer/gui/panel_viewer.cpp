@@ -40,13 +40,10 @@
 #   define NOMINMAX
 #endif
 
-#include <algorithm>
-#include <numeric>
 #include <iostream>
 
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
 
 #include <wx/xrc/xmlres.h>
 #include <wx/dcbuffer.h>
@@ -89,87 +86,37 @@ BEGIN_EVENT_TABLE(panel_viewer, wxPanel)
         EVT_MOUSEWHEEL(panel_viewer::on_mouse_wheel)
         EVT_KEY_DOWN(panel_viewer::on_keydown)
         ADD_GILVIEWER_EVENTS_TO_TABLE(panel_viewer)
-END_EVENT_TABLE()
+        END_EVENT_TABLE()
 
-IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(panel_viewer,this)
+        IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(panel_viewer,this)
 
-using namespace std;
+        using namespace std;
 
 void panel_viewer::on_size(wxSizeEvent &e) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
         (*it)->needs_update(true);
 }
 
-void panel_viewer::mode_navigation() {
-    m_mode = MODE_NAVIGATION;
-    //m_toolBar->ToggleTool(ID_MODE_NAVIGATION, true);
-    //  m_menuMain->Check(ID_MODE_NAVIGATION, true);
+
+template<typename Event>
+panel_viewer::eMode panel_viewer::mode(Event& event) const
+{
+    if(event.ShiftDown()) return MODE_NAVIGATION;
+    return m_mode;
 }
 
-void panel_viewer::mode_capture() {
-    m_mode = MODE_CAPTURE;
-    //m_toolBar->ToggleTool(ID_MODE_CAPTURE, true);
-    //  m_menuMain->Check(ID_MODE_CAPTURE, true);
-}
+void panel_viewer::mode_navigation     () { m_mode = MODE_NAVIGATION; }
+void panel_viewer::mode_capture        () { m_mode = MODE_CAPTURE; }
+void panel_viewer::mode_geometry_moving() { m_mode = MODE_GEOMETRY_MOVING; }
+void panel_viewer::mode_edition        () { m_mode = MODE_EDITION; }
+void panel_viewer::mode_selection      () { m_mode = MODE_SELECTION; }
 
-void panel_viewer::mode_geometry_moving() {
-    m_mode = MODE_GEOMETRY_MOVING;
-    //m_toolBar->ToggleTool(ID_MODE_GEOMETRY_MOVING, true);
-    //  m_menuMain->Check(ID_MODE_GEOMETRY_MOVING, true);
-}
-
-void panel_viewer::mode_edition() {
-    m_mode = MODE_EDITION;
-    //m_toolBar->ToggleTool(ID_MODE_EDITION, true);
-    //  m_menuMain->Check(ID_MODE_EDITION, true);
-}
-
-void panel_viewer::mode_selection() {
-    m_mode = MODE_SELECTION;
-    //m_toolBar->ToggleTool(ID_MODE_SELECTION, true);
-    //  m_menuMain->Check(ID_MODE_SELECTION, true);
-}
-
-void panel_viewer::geometry_null() {
-    m_ghostLayer->m_drawPointPosition = false;
-    m_ghostLayer->m_drawCircle = false;
-    m_ghostLayer->m_drawRectangleSelection = false;
-
-    m_geometry = GEOMETRY_NULL;
-    //m_toolBar->ToggleTool(ID_GEOMETRY_NULL, true);
-    //  m_menuMain->Check(ID_GEOMETRY_NULL, true);
-    Refresh();
-}
-
-void panel_viewer::geometry_point() {
-    m_geometry = GEOMETRY_POINT;
-    //m_toolBar->ToggleTool(ID_GEOMETRY_POINT, true);
-    //  m_menuMain->Check(ID_GEOMETRY_POINT, true);
-}
-
-void panel_viewer::geometry_circle() {
-    m_geometry = GEOMETRY_CIRCLE;
-    //m_toolBar->ToggleTool(ID_GEOMETRY_CIRCLE, true);
-    //  m_menuMain->Check(ID_GEOMETRY_CIRCLE, true);
-}
-
-void panel_viewer::geometry_rectangle() {
-    m_geometry = GEOMETRY_RECTANGLE;
-    //m_toolBar->ToggleTool(ID_GEOMETRY_RECTANGLE, true);
-    //  m_menuMain->Check(ID_GEOMETRY_RECTANGLE, true);
-}
-
-void panel_viewer::geometry_line() {
-    m_geometry = GEOMETRY_LINE;
-    //m_toolBar->ToggleTool(ID_GEOMETRY_LINE, true);
-    //  m_menuMain->Check(ID_GEOMETRY_LINE, true);
-}
-
-void panel_viewer::geometry_polygon() {
-    m_geometry = GEOMETRY_POLYGONE;
-    //m_toolBar->ToggleTool(ID_GEOMETRY_POLYGONE, true);
-    //  m_menuMain->Check(ID_GEOMETRY_POLYGONE, true);
-}
+void panel_viewer::geometry_null     () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Nothing>  (); Refresh(); }
+void panel_viewer::geometry_point    () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Point>    (); Refresh(); }
+void panel_viewer::geometry_circle   () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Circle>   (); Refresh(); }
+void panel_viewer::geometry_rectangle() { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Rectangle>(); Refresh(); }
+void panel_viewer::geometry_line     () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Polyline> (); Refresh(); }
+void panel_viewer::geometry_polygon  () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Polygon>  (); Refresh(); }
 
 layer_control* panel_viewer::layercontrol() const {
     return m_layerControl;
@@ -180,8 +127,8 @@ application_settings* panel_viewer::applicationsettings() const {
 }
 
 panel_viewer::panel_viewer(wxFrame* parent) :
-    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
-    //m_menuMain(NULL),
+        wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
+        //m_menuMain(NULL),
         m_mouseMovementStarted(false), m_translationDrag(0, 0),
         // Construction des differentes fenetres liees au PanelViewer :
         //      - layer control
@@ -190,7 +137,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_geometry(GEOMETRY_POINT), m_snap(layer::SNAP_ALL) {
+        m_mode(MODE_NAVIGATION), m_snap(layer::SNAP_ALL) {
     if (panel_manager::instance()->panels_list().size() == 0)
         m_applicationSettings = new application_settings(this, wxID_ANY);
 
@@ -369,7 +316,7 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
                     (*it)->update(tailleImage.GetX(), tailleImage.GetY());
                 } catch (const std::exception &e) {
                     GILVIEWER_LOG_EXCEPTION("")
-                    wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent), _("Error!"), wxICON_ERROR);
+                            wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent), _("Error!"), wxICON_ERROR);
                     return;
                 }
                 (*it)->needs_update(false);
@@ -393,12 +340,17 @@ void panel_viewer::on_left_down(wxMouseEvent &event) {
     SetCursor(wxCursor(wxCURSOR_HAND));
 
     ///saisie d'un point
-    if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
-        //rien
-    } else if (m_mode == MODE_CAPTURE) {
+    switch(mode(event))
+    {
+    case MODE_NAVIGATION :
+        break;
+    case MODE_CAPTURE :
+    case MODE_SELECTION :
         geometry_add_point(m_mouseMovementInit);
+        break;
+    default:
+        break;
     }
-
 }
 
 void panel_viewer::on_left_up(wxMouseEvent &event) {
@@ -414,15 +366,6 @@ void panel_viewer::on_left_up(wxMouseEvent &event) {
 
         Refresh();
     }
-
-    if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
-        //rien
-    }
-    ///si capture (et qu'on ne recommence pas à naviguer donc que shift est n'est pas enfoncé) : fin de la géométrie
-    else if (m_mode == MODE_CAPTURE) {
-        geometry_end();
-    }
-
 }
 
 void panel_viewer::on_right_down(wxMouseEvent &event) {
@@ -439,41 +382,48 @@ void panel_viewer::on_right_down(wxMouseEvent &event) {
     //      ShowPopUpMenu(point);
     //  } else
 
-    if (m_mode == MODE_CAPTURE) {
-        switch (m_geometry) {
-        case GEOMETRY_NULL:
-        case GEOMETRY_POINT:
-        case GEOMETRY_CIRCLE:
-        case GEOMETRY_RECTANGLE:
-            break;
-        case GEOMETRY_LINE:
-            m_ghostLayer->m_lineEndCapture = true;
-            geometry_add_point(snap(event));
-            break;
-        case GEOMETRY_POLYGONE:
-            break;
-        }
+    switch(mode(event))
+    {
+    case MODE_NAVIGATION :
+        break;
+    case MODE_CAPTURE :
+        geometry_add_point(snap(event),true);
+        break;
+    default:
+        break;
     }
 }
 
 void panel_viewer::on_left_double_click(wxMouseEvent &event) {
-    ///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation)
-    if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
-        wxConfigBase *pConfig = wxConfigBase::Get();
-        double zoom_;
-        pConfig->Read(wxT("/Options/Zoom"), &zoom_, 0.5);
-        zoom(zoom_, event);
+    switch(mode(event))
+    {
+    case MODE_NAVIGATION :
+        {
+            wxConfigBase *pConfig = wxConfigBase::Get();
+            double zoom_;
+            pConfig->Read(wxT("/Options/Zoom"), &zoom_, 0.5);
+            zoom(zoom_, event);
+            break;
+        }
+    default:
+        break;
     }
     update_statusbar(event.m_x, event.m_y);
 }
 
 void panel_viewer::on_right_double_click(wxMouseEvent &event) {
-    ///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation)
-    if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
-        wxConfigBase *pConfig = wxConfigBase::Get();
-        double dezoom;
-        pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
-        zoom(dezoom, event);
+    switch(mode(event))
+    {
+    case MODE_NAVIGATION :
+        {
+            wxConfigBase *pConfig = wxConfigBase::Get();
+            double dezoom;
+            pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
+            zoom(dezoom, event);
+            break;
+        }
+    default:
+        break;
     }
     update_statusbar(event.m_x, event.m_y);
 }
@@ -513,20 +463,29 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
         wxRealPoint translation(p-m_mouseMovementInit);
         m_mouseMovementInit = p;
 
-        ///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation) : déplacement de l'image
-        if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
+        switch(mode(event))
+        {
+        case MODE_NAVIGATION :
             m_translationDrag += translation;
             scene_move(translation);
-        }
-        ///si en mode geometry moving : c'est la géométrie qui bouge !!
-        else if (m_mode == MODE_GEOMETRY_MOVING) {
+            break;
+        case MODE_GEOMETRY_MOVING :
+            ///si en mode geometry moving : c'est la géométrie qui bouge !!
             geometry_move_absolute(p);
+            break;
+        default:
+            break;
         }
     }
 
-    if (m_mode == MODE_CAPTURE) ///si en mode capture : c'est le point à ajouter qui bouge !!
+    switch(mode(event))
     {
+    case MODE_SELECTION :
+    case MODE_CAPTURE :
         geometry_update_absolute(p);
+        break;
+    default:
+        break;
     }
 
     update_statusbar(p.x, p.y);
@@ -553,17 +512,21 @@ void panel_viewer::on_keydown(wxKeyEvent& event) {
 
     if (event.m_keyCode == WXK_RIGHT || event.m_keyCode == WXK_LEFT || event.m_keyCode == WXK_UP || event.m_keyCode == WXK_DOWN) {
         ///si on est en mode navigation (ou qu'on appuie sur shift -> force le mode navigation) : déplacement de l'image
-        if (m_mode == MODE_NAVIGATION || event.m_shiftDown) {
+
+        switch(mode(event))
+        {
+        case MODE_NAVIGATION :
             update_if_transformable();
             scene_move(deplacement);
-        }
-        ///si en mode capture : c'est le point à ajouter qui bouge !!
-        else if (m_mode == MODE_CAPTURE) {
+            break;
+        case MODE_CAPTURE :
             geometry_update_relative(deplacement);
-        }
-        ///si en mode geometry moving : c'est la géométrie qui bouge !!
-        else if (m_mode == MODE_GEOMETRY_MOVING) {
+            break;
+        case MODE_GEOMETRY_MOVING :
             geometry_move_relative(deplacement);
+            break;
+        default:
+            break;
         }
     }
 
@@ -719,7 +682,7 @@ void panel_viewer::add_layer(const layer::ptrLayerType &layer) {
         m_layerControl->add_layer(layer);
     } catch (const std::exception &e) {
         GILVIEWER_LOG_EXCEPTION("")
-    }
+            }
 }
 
 void panel_viewer::delete_layer( unsigned int index){
@@ -827,208 +790,11 @@ wxRealPoint panel_viewer::snap(const wxMouseEvent& e) const
     return q;
 }
 
-void panel_viewer::geometry_add_point(const wxRealPoint & p)
-        //coord filées par l'event (pas encore image)
-{
-    wxRealPoint pt = m_ghostLayer->transform().to_local(p);
-
-    m_ghostLayer->m_drawPointPosition = false;
-    m_ghostLayer->m_drawCircle = false;
-    m_ghostLayer->m_drawLine = false;
-    m_ghostLayer->m_drawRectangleSelection = false;
-
-    switch (m_geometry) {
-    case GEOMETRY_NULL:
-
-        break;
-    case GEOMETRY_CIRCLE:
-        m_ghostLayer->m_drawCircle = true;
-        m_ghostLayer->m_penCircle = wxPen(*wxBLUE, 2);
-        m_ghostLayer->m_brushCircle = wxBrush(*wxBLUE, wxTRANSPARENT);
-        if (!m_ghostLayer->m_CircleFirstPointSet) {
-            m_ghostLayer->m_circle.first = pt;
-            m_ghostLayer->m_circle.second = 1;
-            m_ghostLayer->m_CircleFirstPointSet = true;
-        } else {
-            m_ghostLayer->m_circle.second = std::sqrt(squared_distance(m_ghostLayer->m_circle.first, pt));
-            m_ghostLayer->m_CircleFirstPointSet = false;
-            geometry_end();
-        }
-        break;
-    case GEOMETRY_LINE:
-        m_ghostLayer->m_drawLine = true;
-        m_ghostLayer->m_penLine = wxPen(*wxBLUE, 1);
-
-        if (!m_ghostLayer->m_lineHasBegun) {
-            m_ghostLayer->m_linePoints.clear();
-            m_ghostLayer->m_linePoints.push_back(pt);
-        }
-
-        m_ghostLayer->m_lineHasBegun = true;
-        m_ghostLayer->m_linePoints.push_back(pt);
-        if (m_ghostLayer->m_lineEndCapture) {
-            m_ghostLayer->m_lineEndCapture = false;
-            m_ghostLayer->m_lineHasBegun = false;
-            geometry_end();
-        }
-        break;
-    case GEOMETRY_POINT:
-        m_ghostLayer->m_penPoint = wxPen(*wxGREEN, 3);
-        m_ghostLayer->m_pointPosition = pt;
-        m_ghostLayer->m_drawPointPosition = true;
-        geometry_end();
-        break;
-    case GEOMETRY_POLYGONE:
-
-        break;
-    case GEOMETRY_RECTANGLE:
-        m_ghostLayer->m_penRectangle = wxPen(*wxRED, 2, wxDOT);
-        m_ghostLayer->m_drawRectangleSelection = true;
-        m_ghostLayer->m_rectangleSelection.second = pt;
-        m_ghostLayer->m_brushRectangle = wxBrush(*wxRED, wxTRANSPARENT);
-        if (!m_ghostLayer->m_rectangleSelectionFirstPointSet) {
-            m_ghostLayer->m_rectangleSelection.first  = pt;
-            m_ghostLayer->m_rectangleSelectionFirstPointSet = true;
-        } else {
-            m_ghostLayer->m_rectangleSelectionFirstPointSet = false;
-            geometry_end();
-        }
-        break;
-    }
-
-    execute_mode();
-    Refresh();
-}
-
-void panel_viewer::geometry_move_relative(const wxRealPoint& translation) {
-    switch (m_geometry) {
-    case GEOMETRY_NULL:
-
-        break;
-    case GEOMETRY_CIRCLE:
-        m_ghostLayer->m_circle.first += translation;
-        break;
-    case GEOMETRY_LINE:
-        std::for_each(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), boost::lambda::_1 += translation);
-        break;
-    case GEOMETRY_POINT:
-        m_ghostLayer->m_pointPosition += translation;
-        break;
-    case GEOMETRY_POLYGONE:
-
-        break;
-    case GEOMETRY_RECTANGLE:
-        m_ghostLayer->m_rectangleSelection.first += translation;
-        m_ghostLayer->m_rectangleSelection.second += translation;
-
-        break;
-    }
-
-    execute_mode();
-}
-
-void panel_viewer::geometry_move_absolute(const wxRealPoint& p) {
-    wxRealPoint pt = m_ghostLayer->transform().to_local(p);
-
-    switch (m_geometry) {
-    case GEOMETRY_NULL:
-
-        break;
-    case GEOMETRY_CIRCLE:
-        m_ghostLayer->m_circle.first = pt;
-        break;
-    case GEOMETRY_LINE: {
-            wxRealPoint bary(std::accumulate(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), wxRealPoint(0, 0)));
-            bary.x /= m_ghostLayer->m_linePoints.size();
-            bary.y /= m_ghostLayer->m_linePoints.size();
-            std::for_each(m_ghostLayer->m_linePoints.begin(), m_ghostLayer->m_linePoints.end(), boost::lambda::_1 += -bary + pt);
-    }
-        break;
-    case GEOMETRY_POINT:
-        m_ghostLayer->m_pointPosition = pt;
-        break;
-    case GEOMETRY_POLYGONE:
-
-        break;
-    case GEOMETRY_RECTANGLE:
-        wxRealPoint rectangleDiagonale = m_ghostLayer->m_rectangleSelection.second - m_ghostLayer->m_rectangleSelection.first;
-        m_ghostLayer->m_rectangleSelection.first = pt - 0.5*rectangleDiagonale;
-        m_ghostLayer->m_rectangleSelection.second = m_ghostLayer->m_rectangleSelection.first + rectangleDiagonale;
-
-        break;
-    }
-
-    execute_mode();
-}
-
-void panel_viewer::geometry_update_absolute(const wxRealPoint & p)
-        //coord filées par l'event (pas encore image)
-{
-    wxRealPoint pt = m_ghostLayer->transform().to_local(p);
-
-    switch (m_geometry) {
-    case GEOMETRY_NULL:
-
-        break;
-    case GEOMETRY_CIRCLE:
-        if (m_ghostLayer->m_CircleFirstPointSet) {
-            m_ghostLayer->m_circle.second = std::sqrt(squared_distance(m_ghostLayer->m_circle.first, pt));
-        }
-        break;
-    case GEOMETRY_LINE:
-        if (m_ghostLayer->m_lineHasBegun) {
-            if (m_ghostLayer->m_linePoints.size() > 1)
-                m_ghostLayer->m_linePoints.back() = pt;
-        }
-        break;
-    case GEOMETRY_POINT:
-        //rien à faire pour un point
-        break;
-    case GEOMETRY_POLYGONE:
-
-        break;
-    case GEOMETRY_RECTANGLE:
-        //si le rectangle a déjà un premier point, on met à jour le deuxième
-        if (m_ghostLayer->m_rectangleSelectionFirstPointSet) {
-            m_ghostLayer->m_rectangleSelection.second = pt;
-        }
-        break;
-    }
-
-    execute_mode();
-
-}
-
-void panel_viewer::geometry_update_relative(const wxRealPoint & translation)
-        //coord filées par l'event (pas encore image)
-{
-    switch (m_geometry) {
-    case GEOMETRY_NULL:
-
-        break;
-    case GEOMETRY_CIRCLE:
-
-        break;
-    case GEOMETRY_LINE:
-
-        break;
-    case GEOMETRY_POINT:
-        //rien à faire pour un point
-        break;
-    case GEOMETRY_POLYGONE:
-
-        break;
-    case GEOMETRY_RECTANGLE:
-        //si le rectangle a déjà un premier point, on met à jour le deuxième
-        if (m_ghostLayer->m_rectangleSelectionFirstPointSet) {
-            m_ghostLayer->m_rectangleSelection.second += translation;
-        }
-        break;
-    }
-
-    execute_mode();
-
-}
+void panel_viewer::geometry_add_point(const wxRealPoint& p, bool final) { if(m_ghostLayer->add_point(p,final)) geometry_end(); Refresh(); }
+void panel_viewer::geometry_move_relative  (const wxRealPoint& p) { m_ghostLayer->move_relative(p); execute_mode(); }
+void panel_viewer::geometry_move_absolute  (const wxRealPoint& p) { m_ghostLayer->move_absolute(p); execute_mode(); }
+void panel_viewer::geometry_update_absolute(const wxRealPoint& p) { m_ghostLayer->update_absolute(p); execute_mode(); }
+void panel_viewer::geometry_update_relative(const wxRealPoint& p) { m_ghostLayer->update_relative(p); execute_mode(); }
 
 void panel_viewer::geometry_end() {
     execute_mode();
@@ -1051,11 +817,7 @@ bool gilviewer_file_drop_target::OnDropFiles(wxCoord x, wxCoord y, const wxArray
 }
 #endif // wxUSE_DRAG_AND_DROP
 void panel_viewer::crop() {
-    // On se met en mode capture et on active la selection par rectangle
-    mode_capture();
-    geometry_rectangle();
     // On recherche le calque selectionne
-    std::vector<boost::shared_ptr<layer_control_row> >::iterator itr = m_layerControl->rows().begin();
     unsigned int i = 0, size = m_layerControl->rows().size();
     std::vector<layer::ptrLayerType> selected_layers;
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < size; ++it, ++i) {
@@ -1063,9 +825,12 @@ void panel_viewer::crop() {
             selected_layers.push_back(*it);
         }
     }
-
-    wxRealPoint p0(m_ghostLayer->transform().from_local(m_ghostLayer->m_rectangleSelection.first ));
-    wxRealPoint p1(m_ghostLayer->transform().from_local(m_ghostLayer->m_rectangleSelection.second));
+    const vector_layer_ghost::Rectangle *rect = m_ghostLayer->get<vector_layer_ghost::Rectangle>();
+    if(!rect) return;
+    wxRealPoint p0(m_ghostLayer->transform().from_local(rect->first ));
+    wxRealPoint p1(m_ghostLayer->transform().from_local(rect->second));
+    if(p0.x>p1.x) std::swap(p0.x,p1.x);
+    if(p0.y>p1.y) std::swap(p0.y,p1.y);
     for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
         try {
             layer::ptrLayerType layer = (*it)->crop(p0,p1);
@@ -1074,7 +839,7 @@ void panel_viewer::crop() {
 
         } catch (std::exception &e) {
             GILVIEWER_LOG_EXCEPTION("")
-            wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+                    wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
         }
     }
 }

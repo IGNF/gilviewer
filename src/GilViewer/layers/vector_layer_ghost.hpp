@@ -47,6 +47,7 @@ Authors:
 #include <wx/gdicmn.h>
 
 #include "layer_transform.hpp"
+#include "boost/variant.hpp"
 
 class wxDC;
 class wxPoint;
@@ -54,37 +55,57 @@ class wxPoint;
 class vector_layer_ghost
 {
 public:
-    vector_layer_ghost( bool isCarto = false );
-    wxRect rectangle() const;
 
+    // constructor
+    vector_layer_ghost();
+
+    // input types
+    struct Nothing {};
+    typedef wxRealPoint Point;
+    typedef std::pair<wxRealPoint,wxRealPoint> Rectangle;
+    typedef std::pair<wxRealPoint,double> Circle;
+    class Polyline : public std::vector<wxRealPoint> {};
+    class Polygon : public std::vector<wxRealPoint> {};
+    typedef boost::variant<Nothing,Point,Rectangle,Circle,Polyline,Polygon> variant_input;
+
+
+    // input reseting (same input type)
+    void reset();
+    // input reseting to a new given input type
+    template<typename T> void reset()
+    {
+        m_input = T();
+        m_complete = true;
+    }
+
+    // drawing and geometry modifications
     void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
+    bool add_point(const wxRealPoint& p, bool final = false);
+    void move_relative(const wxRealPoint& p);
+    void move_absolute(const wxRealPoint& p);
+    void update_relative(const wxRealPoint& p);
+    void update_absolute(const wxRealPoint& p);
 
-    wxRealPoint m_pointPosition;
-    std::pair<wxRealPoint,wxRealPoint>  m_rectangleSelection;
-    std::vector<wxRealPoint> m_linePoints;
-
-    typedef std::pair< wxRealPoint , double > CircleType;
-    CircleType m_circle;
-
-    bool m_isCarto;
-    bool m_drawPointPosition;
-    bool m_drawRectangleSelection;
-    bool m_rectangleSelectionFirstPointSet;
-    bool m_drawCircle;
-    bool m_CircleFirstPointSet; //=center
-    bool m_drawLine;
-    bool m_lineEndCapture; // existance du premier point de la polyligne
-    bool m_lineHasBegun;
-
+    // rendering style
     wxPen m_penPoint, m_penRectangle, m_penCircle, m_penLine;
     wxBrush m_brushRectangle, m_brushCircle;
 
+    // transform
     layer_transform& transform() { return m_layer_transform; }
     const layer_transform& transform() const { return m_layer_transform; }
 
+    // input is ready for consumption
+    inline bool complete() const { return m_complete; }
+    inline void complete(bool c) { m_complete = c; }
+
+    // get the input
+    const variant_input& get() const { return m_input; }
+    template<typename T> inline const T* get() const { return boost::get<T>(&m_input); }
+
 private:
-    // transformation du layer
     layer_transform m_layer_transform;
+    variant_input m_input;
+    bool m_complete;
 };
 
 #endif /*VECTORLAYERGENERIC_H_*/

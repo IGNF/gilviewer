@@ -382,9 +382,11 @@ string cgal_vector_layer::available_formats_wildcard() const
 
 void cgal_vector_layer::add_point( double x , double y )
 {
+    m_arrangement->add_point(x,y);
 }
 void cgal_vector_layer::add_line( double x1 , double y1 , double x2 , double y2 )
 {
+    m_arrangement->add_line(x1,y1,x2,y2);
 }
 
 void cgal_vector_layer::add_polyline( const std::vector<double> &x , const std::vector<double> &y )
