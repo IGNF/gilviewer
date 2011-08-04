@@ -10,15 +10,15 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 #Nom du projet
 PROJECT(GilViewer)
-
+ 
 set(BUILD_SHARED_LIBS ON)
 message( STATUS ${CMAKE_BUILD_TYPE} )
-
+ 
 IF(UNIX) 
         add_definitions(-Wall)
         SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG" CACHE STRING "Flags used by the compiler during debug builds." FORCE)
         #add_definitions(-pedantic)
-ENDIF(UNIX)
+ENDIF(UNIX) 
 
 SET(CMAKE_CONFIG_DIR cmake)
 
