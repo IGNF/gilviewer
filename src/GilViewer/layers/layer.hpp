@@ -221,7 +221,7 @@ public:
 
     layer_transform& transform() { return m_layer_transform; }
     const layer_transform& transform() const { return m_layer_transform; }
-
+    
 protected:
     bool m_isVisible;
     bool m_isTransformable;
