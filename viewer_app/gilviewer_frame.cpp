@@ -39,13 +39,13 @@
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
 
-#include "../src/GilViewer/gui/layer_control.hpp"
-#include "../src/GilViewer/gui/panel_viewer.hpp"
-#include "../src/GilViewer/gui/define_id.hpp"
-#include "../src/GilViewer/gui/panel_manager.hpp"
-#include "../src/GilViewer/plugins/plugin_manager.hpp"
+#include "GilViewer/gui/layer_control.hpp"
+#include "GilViewer/gui/panel_viewer.hpp"
+#include "GilViewer/gui/define_id.hpp"
+#include "GilViewer/gui/panel_manager.hpp"
+#include "GilViewer/plugins/plugin_manager.hpp"
 
-#include "../src/GilViewer/config/config_plugins.hpp"
+#include "GilViewer/config/config_plugins.hpp"
 
 #include "gilviewer_frame.hpp"
 
