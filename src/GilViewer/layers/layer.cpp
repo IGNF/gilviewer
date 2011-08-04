@@ -58,3 +58,31 @@ void layer::add_orientation( const std::string &image_filename )
     else
         this->has_ori(false);
 }
+
+layer::ptrLayerType layer::crop(const wxRealPoint& p0, const wxRealPoint& p1) const {
+    // compute local coordinates
+    std::cout<<p0.x<<" "<<p0.y<<" "<<p1.x<<" "<<p1.y<<std::endl;
+    wxRealPoint q0 = m_layer_transform.to_local(p0);
+    wxRealPoint q1 = m_layer_transform.to_local(p1);
+     std::cout<<q0.x<<" "<<q0.y<<" "<<q1.x<<" "<<q1.y<<std::endl;
+   
+    ptrLayerType l=crop_local(q0,q1);
+    if(l==layer::ptrLayerType())
+         return ptrLayerType();
+    // fix "off by 1 pixel transform" errors for rotated images
+    q1.x -= 1;
+    q1.y -= 1;
+ 
+    wxRealPoint r0 = m_layer_transform.from_local(q0);
+    wxRealPoint r1 = m_layer_transform.from_local(q1);
+    if(r0.x>r1.x) std::swap(r0.x,r1.x);
+    if(r0.y>r1.y) std::swap(r0.y,r1.y);
+
+    l->layer_orientation(layer_orientation());
+    l->transform() = m_layer_transform;
+    l->transform().translation_x(0);
+    l->transform().translation_y(0);
+    l->transform().translate(r0);
+
+    return l;
+}
