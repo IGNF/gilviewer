@@ -1,11 +1,11 @@
-#include "sample_plugin.hpp"
-#include "plugin_base.hpp"
+#include "rotate_image.hpp"
+#include "GilViewer/plugins/plugin_base.hpp"
 
-#include "../gui/layer_control.hpp"
-#include "../gui/panel_manager.hpp"
+#include "GilViewer/gui/layer_control.hpp"
+#include "GilViewer/gui/panel_manager.hpp"
 
-#include "../layers/image_types.hpp"
-#include "../layers/image_layer.hpp"
+#include "GilViewer/layers/image_types.hpp"
+#include "GilViewer/layers/image_layer.hpp"
 
 #include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 #include <boost/gil/image_view_factory.hpp>

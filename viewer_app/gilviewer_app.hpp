@@ -74,7 +74,7 @@ DECLARE_APP(gilviewer_app);
  *
  *  \dontinclude gilviewer_frame.hpp
  *  First, you need to include all required headers and forward declare some classes:
- *  \skip #include "../src/GilViewer/layers/Layer.hpp"
+ *  \skip #include "GilViewer/layers/Layer.hpp"
  *  \until class wxMenuBar;
  *  Note that the include path for <i>libGilViewer</i> are <b>relative to viewer_app directory</b>. If you have installed <i>libGilViewer</i>
  *  use the following include directive:
