@@ -127,10 +127,11 @@ protected:
 
     void show_layer_control(bool show) const;
 
+    /*
     ///Recuperer les coord images du pointeur souris par rapport a la premiere couche image
     bool coord_image(const int mouseX, const int mouseY, int &i, int &j) const;
     bool subpix_coord_image(const int mouseX, const int mouseY, double &i, double&j) const;
-
+*/
     wxToolBar* m_mainToolbar;
     wxToolBar* m_modeAndGeometryToolbar;
     /// The main menu bar
@@ -182,7 +183,7 @@ protected:
     void scene_move(const wxRealPoint& translation);
 
     void on_paint(wxPaintEvent& evt);
-    void update_statusbar(const int i, const int j);
+    void update_statusbar(const wxRealPoint& p);
     void on_size( wxSizeEvent &e );
     // Mouse events
     void on_mouse_move(wxMouseEvent &event);
@@ -205,8 +206,11 @@ protected:
     panel_viewer(wxFrame* parent);
     friend panel_viewer* create_panel_viewer(wxFrame* parent);
 
-    wxRealPoint snap(const wxMouseEvent&) const;
+    
+    wxRealPoint snap(const wxRealPoint& p) const;
 
+    template<typename Event>
+    inline wxRealPoint snap(const Event& e) const { return snap(wxRealPoint(e.m_x,e.m_y)); }
 };
 
 #if wxUSE_DRAG_AND_DROP
