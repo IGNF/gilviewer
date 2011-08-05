@@ -39,10 +39,10 @@ Authors:
 #ifndef __FRAME_VIEWER_HPP__
 #define __FRAME_VIEWER_HPP__
 
-#include "../src/GilViewer/layers/layer.hpp"
+#include "GilViewer/layers/layer.hpp"
 
-#include "../src/GilViewer/gui/basic_viewer_frame.hpp"
-#include "../src/GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/gui/basic_viewer_frame.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
 
 #include "gilviewer_app.hpp"
 

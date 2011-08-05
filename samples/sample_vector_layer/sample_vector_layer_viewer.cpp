@@ -52,7 +52,7 @@
 #	include <wx/icon.h>
 #endif
 
-#include "GilViewer/gui/resources/LOGO_MATIS_small.xpm"
+#include "../src/GilViewer/gui/resources/LOGO_MATIS_small.xpm"
 #include "GilViewer/gui/application_settings.hpp"
 #include "GilViewer/gui/layer_control.hpp"
 #include "GilViewer/gui/panel_viewer.hpp"
