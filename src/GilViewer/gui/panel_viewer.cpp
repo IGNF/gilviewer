@@ -495,7 +495,10 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
         plugin_manager::instance()->getPluginAt(i)-> on_mouse_move(event);
 #endif // _WINDOWS
 
-    update_statusbar(p.x, p.y);
+    //BERTRAND
+//    update_statusbar(p.x, p.y);
+    update_statusbar(event.m_x, event.m_y);
+    //FIN BERTRAND
     //  SetFocus();
 }
 
@@ -562,9 +565,15 @@ bool panel_viewer::coord_image(const int mouseX, const int mouseY, int &i, int &
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
         if ((*it)->visible() && ((*it)->pixel_value(i, j).length() != 0)) {
             coordOK = true;
+            double i_,j_;
+            (*it)->transform().to_local((double)mouseX,(double)mouseY,i_,j_);
+            i=static_cast<int> (i_);
+            j=static_cast<int> (j_);
+            /*
             double zoom = (*it)->transform().zoom_factor();
             i = static_cast<int> (zoom*mouseX-(*it)->transform().translation_x());
             j = static_cast<int> (zoom*mouseY-(*it)->transform().translation_y());
+            */ 
         }
     }
     return coordOK;
@@ -575,9 +584,13 @@ bool panel_viewer::subpix_coord_image(const int mouseX, const int mouseY, double
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && !coordOK; ++it) {
         if ((*it)->visible()) {
             coordOK = true;
+            (*it)->transform().to_local(mouseX,mouseY,i,j);
+
+            /*
             double zoom = (*it)->transform().zoom_factor();
             i = static_cast<double> (zoom*mouseX-(*it)->transform().translation_x()- 0.5);
             j = static_cast<double> (zoom*mouseY-(*it)->transform().translation_y()- 0.5);
+            */ 
         }
     }
     return coordOK;
@@ -625,17 +638,24 @@ void panel_viewer::update_statusbar(const int i, const int j) {
                 if (!affichagePixelDone) {
                     affichagePixelDone = true;
                     std::ostringstream coordPixel;
+                    double res_x,res_y;
+                    (*it)->transform().to_local((double)i,(double)j,res_x,res_y);
                     coordPixel << "Coord image : (";
-                    coordPixel << static_cast<int> (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor());
+                    //coordPixel << static_cast<int> (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor());
+                    coordPixel<<(int) (res_x);
                     coordPixel << ",";
-                    coordPixel << static_cast<int> (-(*it)->transform().translation_y() + j * (*it)->transform().zoom_factor());
+                    //coordPixel << static_cast<int> (-(*it)->transform().translation_y() + j * (*it)->transform().zoom_factor());
+                    coordPixel<<(int) (res_y);
                     coordPixel << ")";
-                    double dx, dy;
-                    subpix_coord_image(i, j, dx, dy);
+//                    double dx, dy;
+//                    subpix_coord_image(i, j, dx, dy);
+                    //(*it)->transform().to_local(i,j,res_x,res_y);
                     coordPixel << (" - ( ");
-                    coordPixel << static_cast<double> (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor()) - 0.5;
+//                    coordPixel << static_cast<double> (-(*it)->transform().translation_x() + i * (*it)->transform().zoom_factor()) - 0.5;
+                    coordPixel<<static_cast<double> (res_x);
                     coordPixel << ",";
-                    coordPixel << static_cast<double> (-(*it)->transform().translation_y() + j * (*it)->transform().zoom_factor()) - 0.5;
+//                    coordPixel << static_cast<double> (-(*it)->transform().translation_y() + j * (*it)->transform().zoom_factor()) - 0.5;
+                    coordPixel<<static_cast<double> (res_y);
                     coordPixel << ")";
                     m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
                     ++count;
@@ -654,6 +674,8 @@ void panel_viewer::update_statusbar(const int i, const int j) {
                 }
 
                 affichage += boost::filesystem::basename((*it)->name()) + " : ";
+                //double res_x,res_y;
+                //(*it)->transform().to_local((double)i,(double)j,res_x,res_y);
                 affichage += (*it)->pixel_value(i, j);
                 std::ostringstream oss;
                 oss << 100. / (*it)->transform().zoom_factor();
