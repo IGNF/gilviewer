@@ -10,7 +10,7 @@ wxRealPoint layer_transform::rotated_coordinate_to_local(const wxRealPoint& pt)c
         case LO_180: out= wxRealPoint(m_w-pt.x-1.,m_h-pt.y-1.);break;//correct
         case LO_270: out= wxRealPoint(m_w-pt.y-1,pt.x);break;//correct
         }
-        std::cout<<__FUNCTION__<<" "<<pt.x<<" "<<pt.y<<" "<<out.x<<" "<<out.y<<" "<<m_w<<" "<<m_h<<" "<<(unsigned int)m_layer_orientation<<std::endl;
+        //std::cout<<__FUNCTION__<<" "<<pt.x<<" "<<pt.y<<" "<<out.x<<" "<<out.y<<" "<<m_w<<" "<<m_h<<" "<<(unsigned int)m_layer_orientation<<std::endl;
         //return pt;
         return out;
     }
@@ -26,6 +26,6 @@ wxRealPoint  layer_transform::rotated_coordinate_from_local(const wxRealPoint& p
         case LO_180: out=wxRealPoint(m_w-pt.x-1.,m_h-pt.y-1.);break;//return wxRealPoint(m_w-pt.x-1.,m_h-pt.y-1.);//correct
         case LO_270: out=wxRealPoint(pt.y,m_w-pt.x-1.);break;//return wxRealPoint(pt.y,m_w-pt.x-1.);//correct
         }
-        std::cout<<__FUNCTION__<<" "<<pt.x<<" "<<pt.y<<" "<<out.x<<" "<<out.y<<" "<<m_w<<" "<<m_h<<" "<<(unsigned int)m_layer_orientation<<std::endl;
+        //std::cout<<__FUNCTION__<<" "<<pt.x<<" "<<pt.y<<" "<<out.x<<" "<<out.y<<" "<<m_w<<" "<<m_h<<" "<<(unsigned int)m_layer_orientation<<std::endl;
         return out;
     }
