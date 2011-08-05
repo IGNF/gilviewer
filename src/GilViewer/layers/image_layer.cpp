@@ -169,7 +169,7 @@ struct screen_image_visitor : public boost::static_visitor<>
                          double z,
                          double tx,
                          double ty,
-                         image_layer::layerOrientation ori,
+                         layer_transform::layerOrientation ori,
                          boost::gil::gray8_view_t& canal_alpha,
                          const double min_alpha,
                          const double max_alpha,
@@ -193,7 +193,7 @@ private:
     boost::gil::dev3n8_view_t &m_screen_view;
     channel_converter_functor m_cc;
     double m_z, m_tx, m_ty;
-    image_layer::layerOrientation m_layer_orientation;
+    layer_transform::layerOrientation m_layer_orientation;
     boost::gil::gray8_view_t& m_canal_alpha;
     const double m_min_alpha;
     const double m_max_alpha;
@@ -298,7 +298,7 @@ void image_layer::update(int width, int height)
             m_gamma_array, m_gamma_array_size,
             *m_cLUT, m_red, m_green, m_blue);
     //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
-    screen_image_visitor siv(screen_view, my_cc, transform().zoom_factor(), transform().translation_x(), transform().translation_y(), m_layer_orientation, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
+    screen_image_visitor siv(screen_view, my_cc, transform().zoom_factor(), transform().translation_x(), transform().translation_y(), transform().orientation(), alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
     apply_visitor( siv, m_variant_view->value );
 
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
@@ -376,9 +376,11 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
 {
     // compute local coordinates
     
-    wxRealPoint q0 (rotated_coordinate_to_local(p0));
-    wxRealPoint q1 (rotated_coordinate_to_local(p1));
-
+    //wxRealPoint q0 (rotated_coordinate_to_local(p0));
+    //wxRealPoint q1 (rotated_coordinate_to_local(p1));
+    wxRealPoint q0=p0;
+    wxRealPoint q1=p1;
+    
     //  q0 = min point, q1 = max point
     if(q0.x>q1.x) std::swap(q0.x,q1.x);
     if(q0.y>q1.y) std::swap(q0.y,q1.y);
@@ -430,13 +432,15 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     q1.x -= 1;
     q1.y -= 1;
 
-    wxRealPoint r0 = from_local(q0);
-    wxRealPoint r1 = from_local(q1);
+    wxRealPoint r0 = transform().from_local(q0);
+    wxRealPoint r1 = transform().from_local(q1);
     if(r0.x>r1.x) std::swap(r0.x,r1.x);
     if(r0.y>r1.y) std::swap(r0.y,r1.y);
 
-    l->layer_orientation(layer_orientation());
+//    l->layer_orientation(layer_orientation());
     l->transform() = transform();
+//    l->transform().orientation(transform().orientation(),apply_visitor( width_visitor(), crop_ptr->value ) ,apply_visitor( height_visitor(), crop_ptr->value ));
+
     l->transform().translation_x(0);
     l->transform().translation_y(0);
     l->transform().translate(r0);
@@ -482,7 +486,7 @@ layer_settings_control* image_layer::build_layer_settings_control(unsigned int i
 
 double image_layer::center_x() {return apply_visitor( width_visitor(), m_variant_view->value )/2.;}
 double image_layer::center_y() {return apply_visitor( height_visitor(), m_variant_view->value )/2.;}
-
+/*
 wxRealPoint image_layer::rotated_coordinate_to_local(const wxRealPoint& pt)const{
     double h=apply_visitor( height_visitor(), m_variant_view->value );
     double w=apply_visitor( width_visitor(), m_variant_view->value );
@@ -504,14 +508,14 @@ wxRealPoint image_layer::rotated_coordinate_from_local(const wxRealPoint& pt)con
     case LO_270: return wxRealPoint(pt.y,w-pt.x-1.);//correct
     }
 }
-
+*/
 
 bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
 
     if(!(snap & SNAP_GRID)) return false;
 
-    wxRealPoint q = to_local(p);
+    wxRealPoint q = transform().to_local(p);
     int h=apply_visitor( height_visitor(), m_variant_view->value );
     int w=apply_visitor(  width_visitor(), m_variant_view->value );
     if( q.x < -0.5 || q.y < -0.5 || q.x > w+0.5 || q.y > h+0.5 ) return false;
@@ -524,6 +528,10 @@ bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoi
 
     for(unsigned int i=0; i<SNAP_GRID;++i) d2[i]=0;
     d2[SNAP_GRID]=d;
-    psnap = from_local(qsnap);
+    psnap = transform().from_local(qsnap);
     return true;
 }
+
+unsigned int image_layer::width(){return boost::gil::view(m_img->value).width() ;}
+unsigned int image_layer::height(){return boost::gil::view(m_img->value).height();}
+    

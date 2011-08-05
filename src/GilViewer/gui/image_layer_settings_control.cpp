@@ -60,6 +60,7 @@ Authors:
 #include "../gui/define_id.hpp"
 #include "../gui/resources/image_icon.xpm"
 #include "../gui/image_layer_settings_control.hpp"
+#include "../layers/image_layer.hpp"
 #include "../tools/color_lookup_table.hpp"
 
 BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
@@ -273,14 +274,14 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
     m_radioBoxRotation->SetItemToolTip(1,wxT("Rotation of 90° clockwise "));
     m_radioBoxRotation->SetItemToolTip(2,wxT("Rotation of 180°"));
     m_radioBoxRotation->SetItemToolTip(3,wxT("Rotation of 90° counterclockwise "));
-    switch(m_parent->layers()[index]->layer_orientation()){
-        case layer::LO_0:
+    switch(m_parent->layers()[index]-> transform().orientation()){
+        case layer_transform::LO_0:
             m_radioBoxRotation->SetSelection(0);break;
-        case layer::LO_90:
+        case layer_transform::LO_90:
             m_radioBoxRotation->SetSelection(1);break;
-        case layer::LO_180:
+        case layer_transform::LO_180:
             m_radioBoxRotation->SetSelection(2);break;
-        case layer::LO_270:
+        case layer_transform::LO_270:
             m_radioBoxRotation->SetSelection(3);break;
         
     }
@@ -439,15 +440,19 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     layercontrol()->layers()[m_index]->intensity_max(redMaxDouble);
     layercontrol()->layers()[m_index]->gamma(redGammaDouble);
 
+    boost::shared_ptr<image_layer> d_ = boost::static_pointer_cast<image_layer>((layercontrol()->layers()[m_index]));
+
+    unsigned int w= d_->width();
+    unsigned int h= d_->height();
     //orientation
     if( m_radioBoxRotation->GetSelection() ==0)
-        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_0 );
+        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_0,w,h );
     if( m_radioBoxRotation->GetSelection() ==1)
-        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_90 );
+        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_90,w,h );
     if( m_radioBoxRotation->GetSelection() ==2)
-        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_180 );
+        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_180,w,h );
     if( m_radioBoxRotation->GetSelection() ==3)
-        layercontrol()->layers()[m_index]->layer_orientation( layer::LO_270 );
+        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_270,w,h );
     
     // La, il faut brancher le range pour la transparence : alphaRangeMin et alphaRangeMax
     if (m_checkAlphaRange->IsChecked() )
@@ -541,7 +546,7 @@ void image_layer_settings_control::update()
     }
     
     if(m_radioBoxRotation){
-        m_radioBoxRotation->SetSelection(layer->layer_orientation());
+        m_radioBoxRotation->SetSelection(layer->transform().orientation());
     }
 }
 

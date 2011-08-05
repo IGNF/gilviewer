@@ -373,9 +373,8 @@ void layer_control::on_reset(wxCommandEvent& event)
     // Pour chaque calque, on reinitialise
     for (layer_control::iterator it = begin(); it != end(); ++it)
     {
-        (*it)->transform().zoom_factor(1.);
-        (*it)->transform().translation_x(0.);
-        (*it)->transform().translation_y(0.);
+        
+        (*it)->transform().reset();
         (*it)->needs_update(true);
         (*it)->transformable(true);
         (*it)->visible(true);
@@ -599,7 +598,8 @@ layer::ptrLayerType layer_control::get_layer_with_id(unsigned int id)const{
 
     
 void layer_control::delete_layer(unsigned int index){
-    
+    if(m_layers.size()<=index)
+        return;
     //Swap
     for (unsigned int i = index; i < m_rows.size() - 1; ++i)
     {

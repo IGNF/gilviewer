@@ -17,7 +17,6 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_hasToBeUpdated(true),
         m_name("Default layer name"),
         m_filename(""),
-        m_layer_orientation(LO_0),
         m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)),
         m_hasOri(false),
         m_infos(""),
