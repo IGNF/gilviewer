@@ -55,7 +55,7 @@ public:
                           double z,
                           double tx,
                           double ty,
-                         image_layer::layerOrientation ori,
+                         layer_transform::layerOrientation ori,
                           boost::gil::gray8_view_t& canal_alpha,
                           const double min_alpha,
                           const double max_alpha,
@@ -75,10 +75,10 @@ public:
     result_type operator()( const ViewType& src ) const
     {
     switch(m_layer_orientation){
-    case image_layer::LO_0: return apply_rotated(src);
-    case image_layer::LO_180: return apply_rotated(rotated180_view(src));
-    case image_layer::LO_90: return apply_rotated(rotated90cw_view(src));
-    case image_layer::LO_270: return apply_rotated(rotated90ccw_view(src));
+    case layer_transform::LO_0: return apply_rotated(src);
+    case layer_transform::LO_180: return apply_rotated(rotated180_view(src));
+    case layer_transform::LO_90: return apply_rotated(rotated90cw_view(src));
+    case layer_transform::LO_270: return apply_rotated(rotated90ccw_view(src));
     }
     }
 
@@ -128,7 +128,7 @@ public:
     boost::gil::gray8_view_t& m_canal_alpha;
     channel_converter_functor m_cc;
     double m_zoomFactor, m_translationX, m_translationY;
-    image_layer::layerOrientation m_layer_orientation;
+    layer_transform::layerOrientation m_layer_orientation;
     const boost::gil::gray8_pixel_t m_alpha, m_zero;
     transparency_functor m_transparencyFonctor;
     bool m_isTransparent;

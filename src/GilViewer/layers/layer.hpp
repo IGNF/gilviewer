@@ -65,14 +65,14 @@ class layer_control;
 class layer
 {
 public:
-
+/*
   enum layerOrientation{
       LO_0,
       LO_90,
       LO_180,
       LO_270
       };
-
+*/
     typedef boost::shared_ptr< layer > ptrLayerType;
     typedef std::vector<std::vector<double> > histogram_type;
 
@@ -114,13 +114,13 @@ public:
     virtual ptrLayerType crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const { return ptrLayerType(); }
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
-
+/*
     virtual void layer_orientation(layerOrientation orientation) { m_layer_orientation = orientation; }
     virtual inline layerOrientation layer_orientation() const { return m_layer_orientation; }
-
+*/
     inline virtual double center_x() {return 0.;}
     inline virtual double center_y() {return 0.;}
-    
+        
     inline unsigned int getId()const{return m_id;}
 
     virtual void has_ori(bool hasOri) { m_hasOri = hasOri; }
@@ -234,7 +234,7 @@ protected:
 
     // transformation du layer
     layer_transform m_layer_transform;
-    layerOrientation m_layer_orientation;
+    //layerOrientation m_layer_orientation;
 
     //orientation (possible que pour les calques images)
     boost::shared_ptr<orientation_2d> m_ori;
