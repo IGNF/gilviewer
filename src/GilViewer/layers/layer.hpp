@@ -152,7 +152,7 @@ public:
 
     virtual unsigned int nb_components() const { return 0; }
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const { return boost::shared_ptr<const histogram_type>(); }
-    virtual std::string pixel_value(int i, int j) const { return std::string(); }
+    virtual std::string pixel_value(const wxRealPoint& p) const { return std::string(); }
     // Fin methodes specifiques ImageLayer
 
     virtual std::vector<std::string> available_formats_extensions() const { return std::vector<std::string>(); }

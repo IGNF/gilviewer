@@ -103,7 +103,7 @@ public:
     virtual unsigned int nb_components() const ;
     std::string type_channel() const;
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const;
-    virtual std::string pixel_value(int i, int j) const;
+    virtual std::string pixel_value(const wxRealPoint& p) const;
 
     virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 

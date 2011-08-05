@@ -42,29 +42,8 @@ Authors:
 #include <iostream>
 #include <wx/gdicmn.h>
 class layer_transform {
-    wxRealPoint rotated_coordinate_to_local(const wxRealPoint& pt)const;/*{
-        std::cout<<__FUNCTION__<<" "<<pt.x<<" "<<pt.y<<" "<<m_w<<" "<<m_h<<" "<<(unsigned int)m_layer_orientation<<std::endl;
-        if(m_h==0 && m_w==0)
-            return pt;
-        switch (m_layer_orientation){
-        case LO_0: return pt;//correct
-        case LO_90: return wxRealPoint(pt.y,m_h-pt.x-1);//correct
-        case LO_180: return wxRealPoint(m_w-pt.x-1.,m_h-pt.y-1.);//correct
-        case LO_270: return wxRealPoint(m_w-pt.y-1,pt.x);//correct
-        }
-    }*/
-
-    wxRealPoint rotated_coordinate_from_local(const wxRealPoint& pt)const;/*{
-        std::cout<<__FUNCTION__<<" "<<pt.x<<" "<<pt.y<<" "<<m_w<<" "<<m_h<<" "<<(unsigned int)m_layer_orientation<<std::endl;
-        if(m_h==0 && m_w==0)
-            return pt;
-        switch (m_layer_orientation){
-        case LO_0: return pt;//correct
-        case LO_90: return wxRealPoint(m_h-pt.y-1,pt.x);//correct
-        case LO_180: return wxRealPoint(m_w-pt.x-1.,m_h-pt.y-1.);//correct
-        case LO_270: return wxRealPoint(pt.y,m_w-pt.x-1.);//correct
-        }
-    }*/
+    wxRealPoint rotated_coordinate_to_local(const wxRealPoint& pt)const;
+    wxRealPoint rotated_coordinate_from_local(const wxRealPoint& pt)const;
 
 public:
   enum layerOrientation{
@@ -104,12 +83,9 @@ public:
     inline int coordinates() const { return m_coordinates; }
     void resolution(double r) { m_resolution = r; }
     inline double resolution() const { return m_resolution; }
-    
-//    void h(unsigned int  h_) { m_h = h_; }
+
     inline unsigned int  h() const { return m_h; }
-//    void w(unsigned int  w_) { m_w = w_; }
     inline unsigned int  w() const { return m_w; }
-//    void orientation(layerOrientation ori) { m_layer_orientation = ori; }
     inline layerOrientation orientation() const { return m_layer_orientation; }
     void orientation(layerOrientation ori,unsigned int w,unsigned int h){m_layer_orientation = ori;m_w = w;m_h = h; }
     
@@ -132,6 +108,11 @@ public:
         l_=rotated_coordinate_to_local(l_);
         lx=l_.x;
         ly=l_.y;
+
+        double gx2, gy2;
+        from_local(lx, ly, gx2, gy2);
+        std::cout << "bc debug!!!!! "<< gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx << " "<< gy << std::endl;
+
     }
 
     inline void from_local_int(double lx, double ly, double& gx, double& gy, double delta) const
