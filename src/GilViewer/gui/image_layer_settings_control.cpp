@@ -445,14 +445,7 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     unsigned int w= d_->width();
     unsigned int h= d_->height();
     //orientation
-    if( m_radioBoxRotation->GetSelection() ==0)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_0,w,h );
-    if( m_radioBoxRotation->GetSelection() ==1)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_90,w,h );
-    if( m_radioBoxRotation->GetSelection() ==2)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_180,w,h );
-    if( m_radioBoxRotation->GetSelection() ==3)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_270,w,h );
+    layercontrol()->layers()[m_index]->transform().orientation( (layer_transform::layerOrientation) m_radioBoxRotation->GetSelection(),w,h );
     
     // La, il faut brancher le range pour la transparence : alphaRangeMin et alphaRangeMax
     if (m_checkAlphaRange->IsChecked() )

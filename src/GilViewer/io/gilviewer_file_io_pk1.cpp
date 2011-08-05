@@ -41,7 +41,8 @@ shared_ptr<layer> gilviewer_file_io_pk1::load(const string &filename, const ptrd
 }
 
 void gilviewer_file_io_pk1::save(shared_ptr<layer> layer, const string &filename)
-{  std::cout<<"TO DO";
+{
+    std::cout<<"TO DO";
 }
 
 boost::shared_ptr<gilviewer_file_io_pk1> create_gilviewer_file_io_pk1()

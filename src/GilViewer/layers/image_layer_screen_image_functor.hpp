@@ -40,6 +40,7 @@ Authors:
 
 #include "image_layer_channel_converter_functor.hpp"
 #include "image_layer_transparency_functor.hpp"
+#include "layer_transform.hpp"
 
 #include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 #include <boost/gil/image_view_factory.hpp>
@@ -52,18 +53,14 @@ public:
     typedef void result_type;
     screen_image_functor( boost::gil::dev3n8_view_t &screen_view,
                           channel_converter_functor cc,
-                          double z,
-                          double tx,
-                          double ty,
-                         layer_transform::layerOrientation ori,
+                          const layer_transform& trans,
                           boost::gil::gray8_view_t& canal_alpha,
                           const double min_alpha,
                           const double max_alpha,
                           const unsigned char alpha,
                           bool isTransparent) :
             m_screen_view(screen_view), m_canal_alpha(canal_alpha), m_cc(cc),
-            m_zoomFactor(z), m_translationX(tx), m_translationY(ty),
-            m_layer_orientation(ori),
+            m_transform(trans),
             m_alpha(alpha),
             m_zero(0),
             m_transparencyFonctor(min_alpha, max_alpha),
@@ -74,7 +71,7 @@ public:
     template <typename ViewType>
     result_type operator()( const ViewType& src ) const
     {
-    switch(m_layer_orientation){
+    switch(m_transform.orientation()){
     case layer_transform::LO_0: return apply_rotated(src);
     case layer_transform::LO_180: return apply_rotated(rotated180_view(src));
     case layer_transform::LO_90: return apply_rotated(rotated90cw_view(src));
@@ -98,7 +95,7 @@ public:
         //TODO to be optimized ?
         for (std::ptrdiff_t y=0; y < m_screen_view.height(); ++y)
         {
-            int yb = (int) floor(y*m_zoomFactor - m_translationY);
+            int yb = (int) floor(y*m_transform.zoom_factor() - m_transform.translation_y());
 
             if (yb < 0 || yb >= src.height())
                 continue;
@@ -109,7 +106,7 @@ public:
 
             for (std::ptrdiff_t x=0; x < m_screen_view.width(); ++x) //, ++loc.x())
             {
-                int xb = (int) floor(x*m_zoomFactor - m_translationX);
+                int xb = (int) floor(x*m_transform.zoom_factor() - m_transform.translation_x());
 
                 if (xb>=0 && xb < src.width())
                 {
@@ -127,8 +124,7 @@ public:
     boost::gil::dev3n8_view_t& m_screen_view;
     boost::gil::gray8_view_t& m_canal_alpha;
     channel_converter_functor m_cc;
-    double m_zoomFactor, m_translationX, m_translationY;
-    layer_transform::layerOrientation m_layer_orientation;
+    layer_transform m_transform;
     const boost::gil::gray8_pixel_t m_alpha, m_zero;
     transparency_functor m_transparencyFonctor;
     bool m_isTransparent;

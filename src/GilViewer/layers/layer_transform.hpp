@@ -47,10 +47,10 @@ class layer_transform {
 
 public:
   enum layerOrientation{
-      LO_0,
-      LO_90,
-      LO_180,
-      LO_270
+      LO_0 = 0,
+      LO_90 = 1,
+      LO_180 = 2,
+      LO_270 = 3
       };
       
     layer_transform() :

@@ -72,22 +72,6 @@ public:
     image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr() );
     image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_="");
     virtual ~image_layer() {}
-/*
-    // local<->global transforms. Default: pixel-centered
-    virtual wxRealPoint from_local(const wxRealPoint &p) const
-    {
-        //wxPoint res=rotated_coordinate(p);
-        //wxRealPoint res=rotated_coordinate_from_local(p);
-        return transform().from_local(p);
-    }
-
-    virtual wxRealPoint to_local(const wxRealPoint &p) const
-    {
-        //wxRealPoint res=transform().to_local(p);
-        //return rotated_coordinate_to_local(p);
-        return transform().to_local(p);
-    }
-*/
 
 protected:
     void init();
