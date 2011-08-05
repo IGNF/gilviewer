@@ -332,12 +332,12 @@ shared_ptr<const layer::histogram_type> image_layer::histogram(double &min, doub
     return apply_visitor(hv, m_variant_view->value);
 }
 
-string image_layer::pixel_value(int i, int j) const
+string image_layer::pixel_value(const wxRealPoint& p) const
 {
     ostringstream oss;
     oss.precision(6);
     oss<<"(";
-    wxPoint pt=transform().to_local_int(wxPoint(i,j));
+    wxPoint pt=transform().to_local_int(p);
     //apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
     image_position_to_string_visitor iptsv(pt.x, pt.y, oss);
     apply_visitor( iptsv, m_variant_view->value );
@@ -486,29 +486,6 @@ layer_settings_control* image_layer::build_layer_settings_control(unsigned int i
 
 double image_layer::center_x() {return apply_visitor( width_visitor(), m_variant_view->value )/2.;}
 double image_layer::center_y() {return apply_visitor( height_visitor(), m_variant_view->value )/2.;}
-/*
-wxRealPoint image_layer::rotated_coordinate_to_local(const wxRealPoint& pt)const{
-    double h=apply_visitor( height_visitor(), m_variant_view->value );
-    double w=apply_visitor( width_visitor(), m_variant_view->value );
-    switch (m_layer_orientation){
-    case LO_0: return pt;//correct
-    case LO_90: return wxRealPoint(pt.y,h-pt.x-1);//correct
-    case LO_180: return wxRealPoint(w-pt.x-1.,h-pt.y-1.);//correct
-    case LO_270: return wxRealPoint(w-pt.y-1,pt.x);//correct
-    }
-}
-
-wxRealPoint image_layer::rotated_coordinate_from_local(const wxRealPoint& pt)const{
-    double h=apply_visitor( height_visitor(), m_variant_view->value );
-    double w=apply_visitor( width_visitor(), m_variant_view->value );
-    switch (m_layer_orientation){
-    case LO_0: return pt;//correct
-    case LO_90: return wxRealPoint(h-pt.y-1,pt.x);//correct
-    case LO_180: return wxRealPoint(w-pt.x-1.,h-pt.y-1.);//correct
-    case LO_270: return wxRealPoint(pt.y,w-pt.x-1.);//correct
-    }
-}
-*/
 
 bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
