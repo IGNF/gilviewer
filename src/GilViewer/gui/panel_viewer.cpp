@@ -832,8 +832,6 @@ void panel_viewer::crop() {
     if(!rect) return;
     wxRealPoint p0(m_ghostLayer->transform().from_local(rect->first ));
     wxRealPoint p1(m_ghostLayer->transform().from_local(rect->second));
-    if(p0.x>p1.x) std::swap(p0.x,p1.x);
-    if(p0.y>p1.y) std::swap(p0.y,p1.y);
     for(std::vector<layer::ptrLayerType>::const_iterator it=selected_layers.begin(); it!=selected_layers.end(); ++it) {
         try {
             layer::ptrLayerType layer = (*it)->crop(p0,p1);

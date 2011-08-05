@@ -164,8 +164,8 @@ public:
     inline virtual double center_x();
     inline virtual double center_y();
     
-    unsigned int width() ;
-    unsigned int height();
+    unsigned int width() const  ;
+    unsigned int height() const ;
     
         protected:
 
