@@ -41,7 +41,7 @@ Authors:
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 
-#include "../src/GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "gilviewer_frame.hpp"
 #include "gilviewer_app.hpp"
 
@@ -49,7 +49,7 @@ Authors:
 #	include <locale.h>
 #endif
 
-#include "../src/GilViewer/config/config.hpp"
+#include "GilViewer/config/config.hpp"
 #if GILVIEWER_USE_GDAL
 #   include <gdal/ogrsf_frmts.h>
 #endif // GILVIEWER_USE_GDAL
