@@ -186,7 +186,6 @@ struct Arrangement {
                     wxPoint p=trans.from_local_int(CGAL::to_double(curr->source()->point().x()),CGAL::to_double(curr->source()->point().y()));
                     points.push_back(p);
                 } while ((++curr) != first);
-                std::cout << points.size() << std::endl;
                 dc.DrawPolygon(points.size(),&points.front());
             }
             //TODO : handle interior rings, might require face tesselation

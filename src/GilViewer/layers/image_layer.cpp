@@ -166,20 +166,14 @@ struct screen_image_visitor : public boost::static_visitor<>
 {
     screen_image_visitor(boost::gil::dev3n8_view_t &screen_view,
                          channel_converter_functor cc,
-                         double z,
-                         double tx,
-                         double ty,
-                         layer_transform::layerOrientation ori,
+                         const layer_transform& trans,
                          boost::gil::gray8_view_t& canal_alpha,
                          const double min_alpha,
                          const double max_alpha,
                          const unsigned char alpha,
                          bool isTransparent) : m_screen_view(screen_view),
     m_cc(cc),
-    m_z(z),
-    m_tx(tx),
-    m_ty(ty),
-    m_layer_orientation(ori),
+    m_transform(trans),
     m_canal_alpha(canal_alpha),
     m_min_alpha(min_alpha),
     m_max_alpha(max_alpha),
@@ -187,13 +181,12 @@ struct screen_image_visitor : public boost::static_visitor<>
     m_is_transparent(isTransparent) {}
 
     template <typename ViewType>
-            result_type operator()(const ViewType& v) const { return apply_operation(v, screen_image_functor(m_screen_view, m_cc, m_z, m_tx, m_ty, m_layer_orientation, m_canal_alpha, m_min_alpha, m_max_alpha, m_alpha, m_is_transparent)); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, screen_image_functor(m_screen_view, m_cc, m_transform, m_canal_alpha, m_min_alpha, m_max_alpha, m_alpha, m_is_transparent)); }
 
 private:
     boost::gil::dev3n8_view_t &m_screen_view;
     channel_converter_functor m_cc;
-    double m_z, m_tx, m_ty;
-    layer_transform::layerOrientation m_layer_orientation;
+    layer_transform m_transform;
     boost::gil::gray8_view_t& m_canal_alpha;
     const double m_min_alpha;
     const double m_max_alpha;
@@ -297,8 +290,7 @@ void image_layer::update(int width, int height)
             intensity_min(), intensity_max(),
             m_gamma_array, m_gamma_array_size,
             *m_cLUT, m_red, m_green, m_blue);
-    //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
-    screen_image_visitor siv(screen_view, my_cc, transform().zoom_factor(), transform().translation_x(), transform().translation_y(), transform().orientation(), alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
+    screen_image_visitor siv(screen_view, my_cc, transform(), alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
     apply_visitor( siv, m_variant_view->value );
 
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
@@ -338,7 +330,6 @@ string image_layer::pixel_value(const wxRealPoint& p) const
     oss.precision(6);
     oss<<"(";
     wxPoint pt=transform().to_local_int(p);
-    //apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
     image_position_to_string_visitor iptsv(pt.x, pt.y, oss);
     apply_visitor( iptsv, m_variant_view->value );
     oss<<")";
@@ -403,12 +394,7 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     int h0  = (int)(q1.y)-y0;
 
     // abort if trivial range
-    if(w0<=0 || h0<=0) {
-        //std::cout<< x0<<" "<<y0<<" "<< w0<<" "<< h0<<std::endl;;
-        //std::cout<<"Pb de crop"<<std::endl;;
-        return ptrLayerType();
-        }
-    
+    if(w0<=0 || h0<=0) return ptrLayerType();
     
     subimage_visitor sv(x0, y0, w0, h0);
     variant_view_t::type crop = apply_visitor( sv, m_variant_view->value );

@@ -613,48 +613,38 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
         m_parent->GetStatusBar()->SetFieldsCount(nb + 1); //+1 pour les coord en pixels
 
         unsigned int count = 0;
-        bool affichagePixelDone = false;
         bool affichageCartoDone = false;
 
+        {
+            std::ostringstream coordPixel;
+            wxRealPoint q = m_ghostLayer->transform().to_local(p);
+            coordPixel << "Global (" << q.x << "," << q.y << ")";
+            m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
+            ++count;
+
+            if (!affichageCartoDone && m_layerControl->oriented()) {
+                // MB : coordonnées carto du ghost layer, a vérifier....
+                affichageCartoDone = true;
+                std::ostringstream coordCarto;
+                coordCarto << "Carto : (";
+                coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-m_ghostLayer->transform().translation_x() + p.x * m_ghostLayer->transform().zoom_factor()));
+                coordCarto << ",";
+                coordCarto << static_cast<int> (ori->origin_y() + ori->step() * (m_ghostLayer->transform().translation_y() - p.y * m_ghostLayer->transform().zoom_factor()));
+                coordCarto << ")";
+                m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
+                ++count;
+            }
+        }
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-            std::string affichage;
-
-            if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
+            if ((*it)->visible())
             {
-                if (!affichagePixelDone) {
-                    std::cout << "affichagePixel ";
-                    affichagePixelDone = true;
-                    std::ostringstream coordPixel;
-                    wxPoint plocal_int = (*it)->transform().to_local_int(p);
-                    wxRealPoint plocal = (*it)->transform().to_local(p);
-                    coordPixel << "(" << p.x << "," << p.y << ")";
-                    coordPixel << "Local coordinates: (" << plocal_int.x << "," << plocal_int.y << ")";
-                    coordPixel << " - (" << plocal.x << "," << plocal.y << ")";
-                    wxRealPoint pglobal = (*it)->transform().from_local(plocal);
-                    coordPixel << "(" << pglobal.x << "," << pglobal.y << ")";
-                    m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
-                    ++count;
-                }
-                if (!affichageCartoDone && m_layerControl->oriented()) {
-                    std::cout << "affichageCarto ";
-                    affichageCartoDone = true;
-                    std::ostringstream coordCarto;
-                    coordCarto << "Coord carto : (";
-                    coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-(*it)->transform().translation_x() + p.x * (*it)->transform().zoom_factor()));
-                    coordCarto << ",";
-                    coordCarto << static_cast<int> (ori->origin_y() + ori->step() * ((*it)->transform().translation_y() - p.y * (*it)->transform().zoom_factor()));
-                    coordCarto << ")";
-                    m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
-                    ++count;
-                }
-
-                std::cout << "pixel_value : ";
-                affichage += boost::filesystem::basename((*it)->name()) + " : ";
-                affichage += (*it)->pixel_value(p);
-                std::ostringstream oss;
-                oss << 100. / (*it)->transform().zoom_factor();
-                affichage += "-" + oss.str() + "%";
-                m_parent->SetStatusText(wxString(affichage.c_str(), *wxConvCurrent), count);
+                wxRealPoint q = (*it)->transform().to_local(p);
+                std::ostringstream affichage;
+                affichage << boost::filesystem::basename((*it)->name());
+                affichage << "-" << 100. / (*it)->transform().zoom_factor() << "\% : ";
+                affichage << "("<<q.x<<","<<q.y<<") ";
+                affichage << (*it)->pixel_value(p);
+                m_parent->SetStatusText(wxString(affichage.str().c_str(), *wxConvCurrent), count);
                 ++count;
             }
         }
