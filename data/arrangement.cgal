@@ -1,0 +1,436 @@
+# BEGIN ARRANGEMENT
+# number_of_vertices
+49
+# number_of_edges
+68
+# number_of_faces
+23
+# BEGIN VERTICES
+4 4 1 -3.42715 -0.562914
+4 4 1 5.01656 5.39735
+4 4 1 0.00484583 1.85967
+4 4 1 -4.0894 5.7947
+4 4 1 1.87086 0.0662252
+4 4 1 -2.20122 3.97994
+4 4 1 -3.26159 2.84768
+4 4 1 0.645695 7.01987
+4 4 1 -3.03821 4.78439
+4 4 1 -3.85762 6.68874
+4 4 1 -2.53755 3.62081
+4 4 1 -1.36401 0.893421
+4 4 1 -0.281457 -1.62252
+4 4 1 -3.6465 6.19809
+4 4 1 -5.11589 6.12583
+4 4 1 0.0461735 6.3797
+4 4 1 4.98344 6.62252
+4 4 1 -0.0788721 6.37355
+4 4 1 -1.1755 8.1457
+4 4 1 -0.0314119 6.29685
+4 4 1 1.89064 3.19082
+4 4 1 2.96358 1.45695
+4 4 1 0.943709 7.21854
+4 4 1 5.14901 6.68874
+4 4 1 -5.01656 7.64901
+4 4 1 -2.20122 3.97994
+4 4 1 -2.20122 3.97994
+4 4 1 -2.20122 3.97994
+4 4 1 1.89064 3.19082
+4 4 1 1.89064 3.19082
+4 4 1 0.0203148 3.55152
+4 4 1 0.00484583 1.85967
+4 4 1 0.0442974 6.17451
+4 4 1 0.0461735 6.3797
+4 4 1 0.0461735 6.3797
+4 4 1 0.0461735 6.3797
+4 4 1 100 100
+4 4 1 200 200
+4 4 1 150 150
+4 4 1 100 200
+4 4 1 200 100
+4 4 1 175 125
+4 4 1 150 100
+4 4 1 200 150
+4 4 1 300 200
+4 4 1 175 40
+4 4 1 175 175
+4 4 1 175 200
+4 4 1 175 300
+# END VERTICES
+# BEGIN EDGES
+11 0 1 1 -3.42715 -0.562914 -1.36401 0.893421
+2 28 0 1 0.00484583 1.85967 1.89064 3.19082
+27 2 0 1 -2.20122 3.97994 0.00484583 1.85967
+4 2 1 1 0.00484583 1.85967 1.87086 0.0662252
+8 3 1 1 -4.0894 5.7947 -3.03821 4.78439
+6 10 0 1 -2.53755 3.62081 -3.26159 2.84768
+19 5 1 1 -0.0314119 6.29685 -2.20122 3.97994
+8 5 0 1 -3.03821 4.78439 -2.20122 3.97994
+13 8 0 1 -3.03821 4.78439 -3.6465 6.19809
+10 25 0 1 -2.20122 3.97994 -2.53755 3.62081
+10 8 1 1 -2.53755 3.62081 -3.03821 4.78439
+11 2 0 1 -1.36401 0.893421 0.00484583 1.85967
+11 10 1 1 -1.36401 0.893421 -2.53755 3.62081
+12 11 1 1 -0.281457 -1.62252 -1.36401 0.893421
+13 9 1 1 -3.6465 6.19809 -3.85762 6.68874
+14 13 0 1 -5.11589 6.12583 -3.6465 6.19809
+15 7 0 1 0.645695 7.01987 0.0461735 6.3797
+13 17 0 1 -3.6465 6.19809 -0.0788721 6.37355
+16 15 1 1 0.0461735 6.3797 4.98344 6.62252
+34 15 0 1 0.0461735 6.3797 0.0461735 6.3797
+18 17 0 1 -1.1755 8.1457 -0.0788721 6.37355
+33 15 0 1 0.0461735 6.3797 0.0461735 6.3797
+19 17 1 1 -0.0788721 6.37355 -0.0314119 6.29685
+20 1 0 1 1.89064 3.19082 5.01656 5.39735
+32 20 0 1 0.0442974 6.17451 1.89064 3.19082
+21 20 1 1 1.89064 3.19082 2.96358 1.45695
+23 22 1 1 0.943709 7.21854 5.14901 6.68874
+1 21 1 1 5.01656 5.39735 2.96358 1.45695
+21 4 1 1 1.87086 0.0662252 2.96358 1.45695
+4 12 1 1 1.87086 0.0662252 -0.281457 -1.62252
+12 0 1 1 -0.281457 -1.62252 -3.42715 -0.562914
+0 6 0 1 -3.42715 -0.562914 -3.26159 2.84768
+6 3 1 1 -3.26159 2.84768 -4.0894 5.7947
+3 14 1 1 -4.0894 5.7947 -5.11589 6.12583
+24 14 1 1 -5.11589 6.12583 -5.01656 7.64901
+24 9 0 1 -3.85762 6.68874 -5.01656 7.64901
+25 5 0 1 -2.20122 3.97994 -2.20122 3.97994
+26 25 0 1 -2.20122 3.97994 -2.20122 3.97994
+27 5 1 1 -2.20122 3.97994 -2.20122 3.97994
+27 25 1 1 -2.20122 3.97994 -2.20122 3.97994
+28 20 0 1 1.89064 3.19082 1.89064 3.19082
+28 30 1 1 0.0203148 3.55152 1.89064 3.19082
+29 28 1 1 1.89064 3.19082 1.89064 3.19082
+30 27 1 1 -2.20122 3.97994 0.0203148 3.55152
+31 30 0 1 0.0203148 3.55152 0.00484583 1.85967
+32 19 1 1 -0.0314119 6.29685 0.0442974 6.17451
+32 30 1 1 0.0442974 6.17451 0.0203148 3.55152
+33 19 1 1 0.0461735 6.3797 -0.0314119 6.29685
+33 32 1 1 0.0461735 6.3797 0.0442974 6.17451
+34 17 1 1 -0.0788721 6.37355 0.0461735 6.3797
+34 33 1 1 0.0461735 6.3797 0.0461735 6.3797
+35 34 1 1 0.0461735 6.3797 0.0461735 6.3797
+0 14 1 1 -3.42715 -0.562914 -5.11589 6.12583
+38 36 1 1 100 100 150 150
+46 37 0 1 175 175 200 200
+39 38 0 1 100 200 150 150
+40 41 1 1 175 125 200 100
+41 38 1 1 150 150 175 125
+42 41 0 1 150 100 175 125
+43 41 1 1 175 125 200 150
+47 37 0 1 200 200 175 200
+44 37 1 1 300 200 200 200
+45 41 0 1 175 40 175 125
+46 38 1 1 150 150 175 175
+46 41 1 1 175 125 175 175
+47 39 1 1 175 200 100 200
+47 46 1 1 175 175 175 200
+48 47 1 1 175 200 175 300
+# END EDGES
+# BEGIN FACES
+# BEGIN FACE
+1 1 
+# number_of_outer_ccbs
+0
+# number_of_inner_ccbs
+3
+# halfedges_on_inner_ccb
+23
+104 69 70 29 34 41 40 99 103 102 38 32 33 37 36 43 96 48 46 54 56 58 60 
+# halfedges_on_inner_ccb
+2
+53 52 
+# halfedges_on_inner_ccb
+20
+107 111 131 135 134 120 123 122 109 128 119 118 113 112 125 124 117 116 114 106 
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+6
+21 18 75 74 72 15 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+5
+78 19 25 22 5 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+5
+44 35 16 14 13 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+100 42 39 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+6
+82 89 88 86 4 2 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+55 47 51 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+7
+57 50 81 85 84 3 7 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+59 6 23 27 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+61 26 0 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+63 1 24 11 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+65 10 20 8 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+67 9 17 31 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+71 68 30 28 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+79 76 73 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+92 83 80 49 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+5
+93 90 12 77 87 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+97 94 91 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+101 98 45 95 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+105 62 64 66 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+132 108 121 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+3
+129 126 115 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# BEGIN FACE
+0 1 
+# number_of_outer_ccbs
+1
+# halfedges_on_outer_ccb
+4
+133 130 110 127 
+# number_of_inner_ccbs
+0
+# number_of_isolated_vertices
+0
+
+# END FACE
+# END FACES
+# END ARRANGEMENT
