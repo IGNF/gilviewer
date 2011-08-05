@@ -42,8 +42,8 @@ Authors:
 #include <iostream>
 #include <wx/gdicmn.h>
 class layer_transform {
-    wxRealPoint rotated_coordinate_to_local(const wxRealPoint& pt)const;
-    wxRealPoint rotated_coordinate_from_local(const wxRealPoint& pt)const;
+    void rotated_coordinate_to_local(double gx, double gy, double& lx, double& ly) const;
+    void rotated_coordinate_from_local(double lx, double ly, double& gx, double& gy) const;
 
 public:
   enum layerOrientation{
@@ -92,45 +92,10 @@ public:
 
     // local<->global transforms. Default: pixel-centered
     // double,double -> double,double transformation
-    inline void from_local(double lx, double ly, double& gx, double& gy) const
-    {
-        wxRealPoint l_(lx,ly);
-        rotated_coordinate_from_local(l_);
-        gx = (              l_.x +m_translationX)/m_zoomFactor;
-        gy = (m_coordinates*l_.y +m_translationY)/m_zoomFactor;
-    }
-
-    inline void to_local(double gx, double gy, double& lx, double& ly) const
-    {
-        lx =                m_zoomFactor*gx -m_translationX;
-        ly = m_coordinates*(m_zoomFactor*gy -m_translationY); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
-        wxRealPoint l_(lx,ly);
-        l_=rotated_coordinate_to_local(l_);
-        lx=l_.x;
-        ly=l_.y;
-
-        double gx2, gy2;
-        from_local(lx, ly, gx2, gy2);
-        std::cout << "bc debug!!!!! "<< gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx << " "<< gy << std::endl;
-
-    }
-
-    inline void from_local_int(double lx, double ly, double& gx, double& gy, double delta) const
-    {
-        wxRealPoint l_(lx,ly);
-        rotated_coordinate_from_local(l_);
-        gx = (              l_.x +m_translationX+delta-0.5)/m_zoomFactor;
-        gy = (m_coordinates*l_.y +m_translationY+delta-0.5)/m_zoomFactor;
-    }
-    inline void to_local_int(double gx, double gy, double& lx, double& ly, double delta) const
-    {
-        lx =                m_zoomFactor*gx -m_translationX-delta;
-        ly = m_coordinates*(m_zoomFactor*gy -m_translationY-delta); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
-        wxRealPoint l_(lx,ly);
-        l_=rotated_coordinate_to_local(l_);
-        lx=l_.x;
-        ly=l_.y;
-    }
+    void from_local(double lx, double ly, double& gx, double& gy) const;
+    void to_local  (double gx, double gy, double& lx, double& ly) const;
+    void from_local_int(double lx, double ly, double& gx, double& gy, double delta) const;
+    void to_local_int  (double gx, double gy, double& lx, double& ly, double delta) const;
 
     // double,double  -> wxRealPoint transformations
     inline wxRealPoint from_local(double x, double y) const { wxRealPoint q; from_local(x,y,q.x,q.y); return q; }

@@ -372,15 +372,13 @@ void image_layer::gamma(double gamma)
     }
 }
 
+
 layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const
 {
     // compute local coordinates
-    
-    //wxRealPoint q0 (rotated_coordinate_to_local(p0));
-    //wxRealPoint q1 (rotated_coordinate_to_local(p1));
     wxRealPoint q0=p0;
     wxRealPoint q1=p1;
-    
+
     //  q0 = min point, q1 = max point
     if(q0.x>q1.x) std::swap(q0.x,q1.x);
     if(q0.y>q1.y) std::swap(q0.y,q1.y);
@@ -437,10 +435,7 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     if(r0.x>r1.x) std::swap(r0.x,r1.x);
     if(r0.y>r1.y) std::swap(r0.y,r1.y);
 
-//    l->layer_orientation(layer_orientation());
     l->transform() = transform();
-//    l->transform().orientation(transform().orientation(),apply_visitor( width_visitor(), crop_ptr->value ) ,apply_visitor( height_visitor(), crop_ptr->value ));
-
     l->transform().translation_x(0);
     l->transform().translation_y(0);
     l->transform().translate(r0);

@@ -622,16 +622,21 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
             if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
             {
                 if (!affichagePixelDone) {
+                    std::cout << "affichagePixel ";
                     affichagePixelDone = true;
                     std::ostringstream coordPixel;
                     wxPoint plocal_int = (*it)->transform().to_local_int(p);
                     wxRealPoint plocal = (*it)->transform().to_local(p);
+                    coordPixel << "(" << p.x << "," << p.y << ")";
                     coordPixel << "Local coordinates: (" << plocal_int.x << "," << plocal_int.y << ")";
                     coordPixel << " - (" << plocal.x << "," << plocal.y << ")";
+                    wxRealPoint pglobal = (*it)->transform().from_local(plocal);
+                    coordPixel << "(" << pglobal.x << "," << pglobal.y << ")";
                     m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
                     ++count;
                 }
                 if (!affichageCartoDone && m_layerControl->oriented()) {
+                    std::cout << "affichageCarto ";
                     affichageCartoDone = true;
                     std::ostringstream coordCarto;
                     coordCarto << "Coord carto : (";
@@ -643,6 +648,7 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
                     ++count;
                 }
 
+                std::cout << "pixel_value : ";
                 affichage += boost::filesystem::basename((*it)->name()) + " : ";
                 affichage += (*it)->pixel_value(p);
                 std::ostringstream oss;
