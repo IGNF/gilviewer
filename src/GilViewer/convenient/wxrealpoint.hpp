@@ -43,21 +43,26 @@ Authors:
 #include <cmath>
 
 // convenience wxRealPoint operators
+#if wxMINOR_VERSION < 9
 inline wxRealPoint& operator+=(wxRealPoint& p, const wxRealPoint&q)
 {
     p=p+q;
     return p;
 }
+#endif
 
 inline wxRealPoint operator-(const wxRealPoint&p)
 {
     return wxRealPoint(-p.x,-p.y);
 }
 
+
+#if wxMINOR_VERSION < 9
 inline wxRealPoint operator*(double d, const wxRealPoint&p)
 {
     return wxRealPoint(d*p.x,d*p.y);
 }
+#endif
 
 inline double squared_distance(const wxRealPoint& p, const wxRealPoint &q)
 {
