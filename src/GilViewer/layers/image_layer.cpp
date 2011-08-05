@@ -384,8 +384,8 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     if(q0.y>q1.y) std::swap(q0.y,q1.y);
 
     // clip to image range
-    int w = apply_visitor(  width_visitor(), m_variant_view->value );
-    int h = apply_visitor( height_visitor(), m_variant_view->value );
+    int w = width();
+    int h = height();
     if(q0.x<0) q0.x=0;
     if(q0.y<0) q0.y=0;
     if(q1.x>w) q1.x=w;
@@ -439,6 +439,7 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     l->transform().translation_x(0);
     l->transform().translation_y(0);
     l->transform().translate(r0);
+    l->transform().orientation(transform().orientation(),w0,h0);
 
     // todo : handle Orientation2D of if it exists ... ??
 
@@ -476,11 +477,8 @@ layer_settings_control* image_layer::build_layer_settings_control(unsigned int i
     return new image_layer_settings_control(index, parent);
 }
 
-//double image_layer::center_x() {return m_view->value.width()/2.;}
-//double image_layer::center_y() {return m_view->value.height()/2.;}
-
-double image_layer::center_x() {return apply_visitor( width_visitor(), m_variant_view->value )/2.;}
-double image_layer::center_y() {return apply_visitor( height_visitor(), m_variant_view->value )/2.;}
+double image_layer::center_x() {return 0.5*width ();}
+double image_layer::center_y() {return 0.5*height();}
 
 bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
@@ -488,8 +486,8 @@ bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoi
     if(!(snap & SNAP_GRID)) return false;
 
     wxRealPoint q = transform().to_local(p);
-    int h=apply_visitor( height_visitor(), m_variant_view->value );
-    int w=apply_visitor(  width_visitor(), m_variant_view->value );
+    int h=height();
+    int w=width();
     if( q.x < -0.5 || q.y < -0.5 || q.x > w+0.5 || q.y > h+0.5 ) return false;
 
     wxRealPoint qsnap (floor(q.x+0.5),floor(q.y+0.5));
@@ -504,6 +502,6 @@ bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoi
     return true;
 }
 
-unsigned int image_layer::width(){return boost::gil::view(m_img->value).width() ;}
-unsigned int image_layer::height(){return boost::gil::view(m_img->value).height();}
+unsigned int image_layer::width () const {return apply_visitor(  width_visitor(), m_variant_view->value );}
+unsigned int image_layer::height() const {return apply_visitor( height_visitor(), m_variant_view->value );}
     

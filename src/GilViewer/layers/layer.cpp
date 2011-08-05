@@ -62,7 +62,6 @@ layer::ptrLayerType layer::crop(const wxRealPoint& p0, const wxRealPoint& p1) co
     // compute local coordinates
     wxRealPoint q0 = transform().to_local(p0);
     wxRealPoint q1 = transform().to_local(p1);
-   
-    ptrLayerType l=crop_local(q0,q1);
-    return l;
+
+    return crop_local(q0,q1);
 }
