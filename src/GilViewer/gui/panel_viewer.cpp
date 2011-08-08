@@ -114,12 +114,12 @@ void panel_viewer::mode_geometry_moving() { m_mode = MODE_GEOMETRY_MOVING; }
 void panel_viewer::mode_edition        () { m_mode = MODE_EDITION; }
 void panel_viewer::mode_selection      () { m_mode = MODE_SELECTION; }
 
-void panel_viewer::geometry_null     () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Nothing>  (); Refresh(); }
-void panel_viewer::geometry_point    () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Point>    (); Refresh(); }
-void panel_viewer::geometry_circle   () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Circle>   (); Refresh(); }
-void panel_viewer::geometry_rectangle() { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Rectangle>(); Refresh(); }
-void panel_viewer::geometry_line     () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Polyline> (); Refresh(); }
-void panel_viewer::geometry_polygon  () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Polygon>  (); Refresh(); }
+void panel_viewer::geometry_null     () { m_ghostLayer->reset<vector_layer_ghost::Nothing>  (); Refresh(); }
+void panel_viewer::geometry_point    () { m_ghostLayer->reset<vector_layer_ghost::Point>    (); Refresh(); }
+void panel_viewer::geometry_circle   () { m_ghostLayer->reset<vector_layer_ghost::Circle>   (); Refresh(); }
+void panel_viewer::geometry_rectangle() { m_ghostLayer->reset<vector_layer_ghost::Rectangle>(); Refresh(); }
+void panel_viewer::geometry_line     () { m_ghostLayer->reset<vector_layer_ghost::Polyline> (); Refresh(); }
+void panel_viewer::geometry_polygon  () { m_ghostLayer->reset<vector_layer_ghost::Polygon>  (); Refresh(); }
 
 layer_control* panel_viewer::layercontrol() const {
     return m_layerControl;
@@ -387,8 +387,7 @@ void panel_viewer::on_right_down(wxMouseEvent &event) {
 
     switch(mode(event))
     {
-    case MODE_NAVIGATION :
-        break;
+    case MODE_SELECTION :
     case MODE_CAPTURE :
         geometry_add_point(snap(event),true);
         break;

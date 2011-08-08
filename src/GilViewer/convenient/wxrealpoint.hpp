@@ -75,4 +75,9 @@ inline double dot(const wxRealPoint& p, const wxRealPoint &q)
     return p.x*q.x+p.y*q.y;
 }
 
+inline bool operator<(const wxRealPoint& p, const wxRealPoint &q)
+{
+    return (p.x<q.x) || (p.x==q.x && p.y<q.y);
+}
+
 #endif // GILVIEWER_WXREALPOINT_HPP

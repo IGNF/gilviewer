@@ -107,16 +107,19 @@ struct vlg_point_adder : public boost::static_visitor<void>
     bool m_final;
 
     void operator()(vector_layer_ghost::Nothing&) { }
-    void operator()(vector_layer_ghost::Point& p) { p = m_p; }
+    void operator()(vector_layer_ghost::Point& p) {
+        m_layer.complete(true);
+        p = m_p;
+    }
     void operator()(vector_layer_ghost::Rectangle& r)
     {
-        m_layer.complete(!m_layer.complete());
+        m_layer.complete(m_layer.num_inputs()>1);
         r.second = m_p;
         if(!m_layer.complete()) r.first  = m_p;
     }
     void operator()(vector_layer_ghost::Circle& c)
     {
-        m_layer.complete(!m_layer.complete());
+        m_layer.complete(m_layer.num_inputs()>1);
         if (m_layer.complete()) {
             c.second = std::sqrt(squared_distance(c.first, m_p));
         } else {
@@ -129,7 +132,7 @@ struct vlg_point_adder : public boost::static_visitor<void>
         m_layer.complete(m_final);
         // at first, insert twice to enable the absolute updating on the second vertex
         if(poly.empty()) poly.push_back(m_p);
-        poly.push_back(m_p);
+        if(!m_final) poly.push_back(m_p);
     }
 };
 
@@ -170,11 +173,11 @@ struct vlg_absolute_updater : public boost::static_visitor<void>
     void operator()(vector_layer_ghost::Nothing& ) const { }
     void operator()(vector_layer_ghost::Point& p ) const { }
     void operator()(vector_layer_ghost::Circle& c) const {
-        if(!m_layer.complete()) c.second = std::sqrt(squared_distance(c.first, m_p));
+        if(m_layer.num_inputs()==1) c.second = std::sqrt(squared_distance(c.first, m_p));
     }
     void operator()(vector_layer_ghost::Rectangle& r) const
     {
-        if(!m_layer.complete()) r.second = m_p;
+        if(m_layer.num_inputs()==1) r.second = m_p;
     }
     template<typename Poly> void operator()(Poly& poly) const
     {
@@ -223,7 +226,8 @@ struct vlg_relative_mover : public boost::static_visitor<void>
 
 vector_layer_ghost::vector_layer_ghost() :
         m_input(Nothing()),
-        m_complete(true)
+        m_complete(true),
+        m_num_inputs(0)
 {
     m_penCircle = wxPen(*wxBLUE, 2);
     m_brushCircle = wxBrush(*wxBLUE, wxTRANSPARENT);
@@ -239,7 +243,7 @@ void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 }
 bool vector_layer_ghost::add_point(const wxRealPoint& p, bool final)
 {
-    if(complete()) reset();
+    ++m_num_inputs;
     vlg_point_adder v(*this,transform().to_local(p),final);
     boost::apply_visitor(v,m_input);
     return complete();
@@ -270,5 +274,6 @@ struct vlg_reseter : public boost::static_visitor<void> {
 void vector_layer_ghost::reset() {
     vlg_reseter c;
     boost::apply_visitor(c,m_input);
-    m_complete = true;
+    m_complete = false;
+    m_num_inputs = 0;
 }
