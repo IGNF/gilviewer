@@ -46,8 +46,9 @@ Authors:
 #include <iostream>
 #include <sstream>
 
-#include "../gui/vector_layer_settings_control.hpp"
-#include "../convenient/macros_gilviewer.hpp"
+#include "GilViewer/gui/vector_layer_settings_control.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/convenient/wxrealpoint.hpp"
 
 #include <wx/dc.h>
 #include <wx/pen.h>
@@ -91,6 +92,8 @@ struct Arrangement {
     typedef Arrangement_2::Vertex_const_iterator       Vertex_const_iterator;
     typedef Arrangement_2::Edge_const_iterator       Edge_const_iterator;
     typedef Arrangement_2::Face_const_iterator       Face_const_iterator;
+    typedef Arrangement_2::Isolated_vertex_iterator       Isolated_vertex_iterator;
+
     typedef Arrangement_2::Vertex_const_handle    Vertex_const_handle;
     typedef Arrangement_2::Halfedge_const_handle  Halfedge_const_handle;
     typedef Arrangement_2::Face_const_handle      Face_const_handle;
@@ -126,40 +129,65 @@ struct Arrangement {
         f << m_arrangement;
     }
     
-    
-    void add_point( double x , double y )
+    Vertex_handle add_point( double x , double y, CGAL::Object obj )
     {
+        std::cout << "p"<<m_arrangement.is_valid() << std::flush;
         Point_2 p(x,y);
-        CGAL::insert_point(m_arrangement,p);
+        Vertex_const_handle   v;
+        Halfedge_const_handle h;
+        Face_const_handle     f;
+        if (CGAL::assign (f, obj)) {
+            //m_arrangement.insert_in_face_interior(p,f);
+            std::cout << "new vertex on cached face: " << p << std::endl;
+            return CGAL::insert_point(m_arrangement,p);
+        }
+        else if (CGAL::assign (h, obj)) {
+            std::cout << "new vertex on cached edge: " << p << std::endl;
+            Curve_2 s(h->source()->point(),p);
+            Curve_2 t(h->target()->point(),p);
+            return m_arrangement.split_edge(m_arrangement.non_const_handle(h),s,t)->target();
+            //     return CGAL::insert_point(m_arrangement,p);
+        }
+        else if (CGAL::assign (v, obj)) {
+            std::cout << "cached vertex : " << v->point() << std::endl;
+            return m_arrangement.non_const_handle(v);
+        }
+        else
+        {
+            std::cout << "new vertex : " << p << std::endl;
+            return CGAL::insert_point(m_arrangement,p);
+        }
     }
-    void add_line( double x1 , double y1 , double x2 , double y2 )
+    void add_line( double x1 , double y1, CGAL::Object o1 , double x2 , double y2, CGAL::Object o2 )
     {
-        Point_2 p1(x1,y1);
-        Point_2 p2(x2,y2);
-        Curve_2 s(p1,p2);
-        CGAL::insert(m_arrangement,s);
+        Vertex_handle v1 = add_point(x1,y1,o1);
+        Vertex_handle v2 = add_point(x2,y2,o2);
+        if(v1!=v2)
+        {
+            Curve_2 s(v1->point(),v2->point());
+            CGAL::insert(m_arrangement,s);
+        }
     }
-    
+    /*
     void add_polyline( const std::vector<double> &x , const std::vector<double> &y )
     {
+        std::cout  << "add_polyline" << x.size() << std :: flush;
         if(x.size()==1) {
             Point_2 p(x.front(),y.front());
             CGAL::insert_point(m_arrangement,p);
+            std::cout << "pl"<<m_arrangement.is_valid() << std::flush;
             return;
         }
         // TODO : keep handles to speed this up
         for(unsigned int i=1; i<x.size(); ++i)
         {
-            Point_2 p(x[i-1],y[i-1]);
-            Point_2 q(x[i  ],y[i  ]);
-            Curve_2 s(p,q);
-            CGAL::insert(m_arrangement,s);
-            
+            add_line(x[i-1],y[i-1],x[i  ],y[i  ]);
         }
     }
-    
+
     void add_polygon( const std::vector<double> &x , const std::vector<double> &y )
     {
+        std::cout  << "add_polygon" << x.size() << std :: flush;
         // TODO : keep handles to speed this up
         add_polyline(x,y);
         if(x.size()>2) {
@@ -167,30 +195,54 @@ struct Arrangement {
             Point_2 q(x.back(),y.back());
             Curve_2 s(p,q);
             CGAL::insert(m_arrangement,s);
+            std::cout << "pg"<<m_arrangement.is_valid() << std::flush;
         }
     }
-    
-    
+*/
+
     void draw(wxDC &dc, wxPen point_pen[2], wxPen line_pen[2], wxPen poly_pen[2], wxBrush poly_brush[2], wxCoord x, wxCoord y, bool transparent, const layer_transform& trans) const {
         Face_const_iterator fit;
         for (fit = m_arrangement.faces_begin(); fit != m_arrangement.faces_end(); ++fit)
         {
+            if (fit->is_unbounded()) continue;
             dc.SetPen(poly_pen[fit->data().selected]);
             dc.SetBrush(poly_brush[fit->data().selected]);
+
+            unsigned int n = 1+fit->number_of_inner_ccbs();
+            std::vector<int> count;
             std::vector<wxPoint> points;
-            if (!fit->is_unbounded()) 
-            {
+
+            int prev_size = 0;
+            { // outer ccb
                 Arrangement_2::Ccb_halfedge_const_circulator curr, first;
                 curr = first = fit->outer_ccb();
+                wxPoint p=trans.from_local_int(CGAL::to_double(curr->source()->point().x()),CGAL::to_double(curr->source()->point().y()));
+                points.push_back(p);
                 do {
-                    wxPoint p=trans.from_local_int(CGAL::to_double(curr->source()->point().x()),CGAL::to_double(curr->source()->point().y()));
+                    p=trans.from_local_int(CGAL::to_double(curr->target()->point().x()),CGAL::to_double(curr->target()->point().y()));
                     points.push_back(p);
                 } while ((++curr) != first);
-                dc.DrawPolygon(points.size(),&points.front());
+                count.push_back(points.size()-prev_size);
+                prev_size = points.size();
+
             }
-            //TODO : handle interior rings, might require face tesselation
+
+            for(Inner_ccb_const_iterator it = fit->inner_ccbs_begin(); it != fit->inner_ccbs_end(); ++it)
+            {
+                Arrangement_2::Ccb_halfedge_const_circulator curr, first;
+                curr = first = *it;
+                wxPoint p=trans.from_local_int(CGAL::to_double(curr->source()->point().x()),CGAL::to_double(curr->source()->point().y()));
+                points.push_back(p);
+                do {
+                    p=trans.from_local_int(CGAL::to_double(curr->target()->point().x()),CGAL::to_double(curr->target()->point().y()));
+                    points.push_back(p);
+                } while ((++curr) != first);
+                count.push_back(points.size()-prev_size);
+                prev_size = points.size();
+            }
+            dc.DrawPolyPolygon(n,&(count.front()),&(points.front()),0,0,wxWINDING_RULE);
         }
-        
+
         Edge_const_iterator eit;
         for (eit = m_arrangement.edges_begin(); eit != m_arrangement.edges_end(); ++eit)
         {
@@ -199,7 +251,7 @@ struct Arrangement {
             wxPoint p2=trans.from_local_int(CGAL::to_double(eit->target()->point().x()),CGAL::to_double(eit->target()->point().y()));
             dc.DrawLine(p1,p2);
         }
-        
+
         Vertex_const_iterator vit;
         for (vit = m_arrangement.vertices_begin(); vit != m_arrangement.vertices_end(); ++vit) {
             dc.SetPen(point_pen[vit->data().selected]);
@@ -272,6 +324,19 @@ struct Arrangement {
                 } while ((++curr) != first);
 
             }
+            // trickery : ArrangementDcelFace misses a const iterator
+            Arrangement_2& arr = (Arrangement_2&) m_arrangement;
+            Face_handle g = arr.non_const_handle(f);
+
+            for(Isolated_vertex_iterator it = g->isolated_vertices_begin(); it != g->isolated_vertices_end(); ++it)
+            {
+                FT d = CGAL::squared_distance(it->point(),q)*invzoom2;
+                if(d<d2[layer::SNAP_POINT]) {
+                    d2[layer::SNAP_POINT]=CGAL::to_double(d);
+                    v = it;
+                }
+
+            }
         }
 
         if(CGAL::assign (h, obj)) d2[layer::SNAP_LINE]=0;
@@ -309,30 +374,43 @@ struct Arrangement {
             obj = CGAL::make_object(v);
             qsnap = v->point();
         }
-        
+
         if(!obj.empty())
             psnap = trans.from_local(CGAL::to_double(qsnap.x()),CGAL::to_double(qsnap.y()));
         return obj;
     }
-    
-    
+
+
     void clear() { m_arrangement.clear(); }
-    
-private:
+
+            private:
     Arrangement_2 m_arrangement;
     Point_location m_pl;
     CGAL::Object m_snap;
 };
 
 
+class ObjectCache : public std::map<wxRealPoint,CGAL::Object> {};
+
 using namespace std;
 using namespace boost::filesystem;
+
+cgal_vector_layer::cgal_vector_layer(const string &layer_name)
+{
+    name(layer_name);
+    m_arrangement = new Arrangement;
+    m_cache = new ObjectCache;
+    default_display_parameters();
+    notifyLayerSettingsControl_();
+    m_selection_color = wxColour(255, 255, 0); //*wxYELLOW;
+}
 
 cgal_vector_layer::cgal_vector_layer(const string &layer_name, const string &filename_)
 {
     m_arrangement = new Arrangement;
+    m_cache = new ObjectCache;
     m_arrangement->load(filename_);
-    
+
     m_infos = "CGAL vector layer";
     name(layer_name);
     filename( system_complete(filename_).string() );
@@ -348,11 +426,13 @@ void cgal_vector_layer::save( const std::string& filename ) const {
 cgal_vector_layer::~cgal_vector_layer()
 {
     if(m_arrangement) delete m_arrangement;
+    if(m_cache) delete m_cache;
 }
 
 bool cgal_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
     CGAL::Object obj = m_arrangement->snap(transform(),d2,p,psnap);
+    (*m_cache)[psnap] = obj;
     return !obj.empty();
 }
 
@@ -373,19 +453,20 @@ layer_settings_control* cgal_vector_layer::build_layer_settings_control(unsigned
 string cgal_vector_layer::available_formats_wildcard() const
 {
     ostringstream wildcard;
-    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.SHP;*.kml;*.KML|";
+    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.SHP;*.kml;*.KML;*.cgal;*.CGAL|";
     wildcard << "SHP (*.shp)|*.shp;*.SHP|";
     wildcard << "KML (*.kml)|*.kml;*.KML";
+    wildcard << "CGAL (*.cgal)|*.cgal;*.CGAL";
     return wildcard.str();
 }
 
 void cgal_vector_layer::add_point( double x , double y )
 {
-    m_arrangement->add_point(x,y);
+    m_arrangement->add_point(x,y,(*m_cache)[wxRealPoint(x,y)]);
 }
 void cgal_vector_layer::add_line( double x1 , double y1 , double x2 , double y2 )
 {
-    m_arrangement->add_line(x1,y1,x2,y2);
+    m_arrangement->add_line(x1,y1,(*m_cache)[wxRealPoint(x1,y1)],x2,y2,(*m_cache)[wxRealPoint(x2,y2)]);
 }
 
 void cgal_vector_layer::add_polyline( const std::vector<double> &x , const std::vector<double> &y )
@@ -397,7 +478,7 @@ void cgal_vector_layer::add_polygon( const std::vector<double> &x , const std::v
 }
 
 /*
-  
+
 void cgal_vector_layer::add_text( double x , double y , const std::string &text , const wxColour &color)
 {
     internal_point_type pt;
