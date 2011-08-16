@@ -41,6 +41,7 @@ Authors:
 
 #include <wx/gdicmn.h>
 #include <cmath>
+#include <iostream>
 
 // convenience wxRealPoint operators
 inline wxRealPoint& operator+=(wxRealPoint& p, const wxRealPoint&q)
@@ -69,5 +70,6 @@ inline double dot(const wxRealPoint& p, const wxRealPoint &q)
 {
     return p.x*q.x+p.y*q.y;
 }
+
 
 #endif // GILVIEWER_WXREALPOINT_HPP

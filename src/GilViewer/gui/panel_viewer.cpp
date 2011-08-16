@@ -610,19 +610,29 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
             ori = m_layerControl->orientation();
         }
 
-        m_parent->GetStatusBar()->SetFieldsCount(nb + 1); //+1 pour les coord en pixels
+        m_parent->GetStatusBar()->SetFieldsCount(nb + 2); //+1 pour les coord en pixels
 
         unsigned int count = 0;
         bool affichagePixelDone = false;
         bool affichageCartoDone = false;
 
+
+        std::ostringstream coordGlob;
+                    coordGlob << "Coord Glob : (";
+                    coordGlob << p.x;
+                    coordGlob << ",";
+                    coordGlob << p.y;
+                    coordGlob << ")";
+                    m_parent->SetStatusText(wxString(coordGlob.str().c_str(), *wxConvCurrent), count);
+                    ++count;
+                    
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
             std::string affichage;
 
             if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
             {
                 if (!affichagePixelDone) {
-                    std::cout << "affichagePixel ";
+                    //std::cout << "affichagePixel ";
                     affichagePixelDone = true;
                     std::ostringstream coordPixel;
                     wxPoint plocal_int = (*it)->transform().to_local_int(p);
@@ -636,7 +646,7 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
                     ++count;
                 }
                 if (!affichageCartoDone && m_layerControl->oriented()) {
-                    std::cout << "affichageCarto ";
+                    //std::cout << "affichageCarto ";
                     affichageCartoDone = true;
                     std::ostringstream coordCarto;
                     coordCarto << "Coord carto : (";
@@ -648,7 +658,7 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
                     ++count;
                 }
 
-                std::cout << "pixel_value : ";
+                //std::cout << "pixel_value : ";
                 affichage += boost::filesystem::basename((*it)->name()) + " : ";
                 affichage += (*it)->pixel_value(p);
                 std::ostringstream oss;

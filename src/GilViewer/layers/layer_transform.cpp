@@ -34,7 +34,7 @@ void layer_transform::to_local(double gx, double gy, double& lx, double& ly) con
 
     double gx2, gy2;
     from_local(lx, ly, gx2, gy2);
-    std::cout << "to_local" << gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx2 << " "<< gy2 << std::endl;
+    //std::cout << "to_local" << gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx2 << " "<< gy2 << std::endl;
 
 }
 
@@ -54,5 +54,5 @@ void layer_transform::to_local_int(double gx, double gy, double& lx, double& ly,
 
     double gx2, gy2;
     from_local(lx, ly, gx2, gy2);
-    std::cout << "to_local_int" << gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx2 << " "<< gy2 << std::endl;
+    //std::cout << "to_local_int" << gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx2 << " "<< gy2 << std::endl;
 }
