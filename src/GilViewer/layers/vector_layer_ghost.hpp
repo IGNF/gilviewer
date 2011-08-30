@@ -36,8 +36,8 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef VECTORLAYERGENERIC_H_
-#define VECTORLAYERGENERIC_H_
+#ifndef VECTOR_LAYER_GHOST_HPP
+#define VECTOR_LAYER_GHOST_HPP
 
 #include <utility>
 #include <vector>
@@ -104,6 +104,8 @@ public:
     const variant_input& get() const { return m_input; }
     template<typename T> inline const T* get() const { return boost::get<T>(&m_input); }
 
+    bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
+
 private:
     layer_transform m_layer_transform;
     variant_input m_input;
@@ -111,4 +113,4 @@ private:
     unsigned int m_num_inputs;
 };
 
-#endif /*VECTORLAYERGENERIC_H_*/
+#endif /*VECTOR_LAYER_GHOST_HPP*/

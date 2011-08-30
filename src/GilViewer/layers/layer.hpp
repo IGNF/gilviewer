@@ -65,14 +65,6 @@ class layer_control;
 class layer
 {
 public:
-/*
-  enum layerOrientation{
-      LO_0,
-      LO_90,
-      LO_180,
-      LO_270
-      };
-*/
     typedef boost::shared_ptr< layer > ptrLayerType;
     typedef std::vector<std::vector<double> > histogram_type;
 
@@ -162,17 +154,6 @@ public:
 
     // Methodes specifiques VectorLayer
     virtual void add_vector_layer_content( const std::string &shapefileFileName ) {}
-
-    enum eSNAP //snap modes (may be bitwise-combined using the '&' operator)
-    {
-        SNAP_NONE = 0,
-        SNAP_GRID = 1,
-        SNAP_LINE = 2,
-        SNAP_INTERSECTION = 4,
-        SNAP_POINT = 8,
-        SNAP_ALL = 15,
-        SNAP_MAX_ID = SNAP_ALL+1,
-    };
 
     virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap ) { return false; }
     virtual void add_point( double x , double y ) {}

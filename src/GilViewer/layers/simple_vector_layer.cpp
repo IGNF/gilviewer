@@ -324,39 +324,6 @@ std::string simple_vector_layer::infos()
 }
 
 
-template<typename P>
-void snap_segment(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p0, const P& _p1, wxRealPoint& psnap, bool& snapped )
-{
-    wxRealPoint p0(_p0.x,_p0.y), p1(_p1.x,_p1.y);
-    wxRealPoint u(q -p0);
-    wxRealPoint v(p1-p0);
-    double t = dot(u,v)/dot(v,v);
-    if(t<0 || t> 1) return;
-    wxRealPoint proj(p0+t*v);
-    double d = squared_distance(q,proj)*invzoom2;
-    if(d < d2[layer::SNAP_LINE] )
-    {
-        for(unsigned int k=0; k<layer::SNAP_LINE; ++k) d2[k]=0;
-        d2[layer::SNAP_LINE] = d;
-        psnap = trans.from_local(proj);
-        snapped = true;
-    }
-}
-
-template<typename P>
-void snap_point(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p, wxRealPoint& psnap, bool& snapped )
-{
-    wxRealPoint p(_p.x,_p.y);
-    double d = squared_distance(q,p)*invzoom2;
-    if(d < d2[layer::SNAP_POINT] )
-    {
-        for(unsigned int k=0; k<layer::SNAP_POINT; ++k) d2[k]=0;
-        d2[layer::SNAP_POINT] = d;
-        psnap = trans.from_local(p);
-        snapped = true;
-    }
-}
-
 bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
     wxRealPoint q =  transform().to_local(p);
@@ -412,19 +379,19 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
             for (unsigned int j=0;j<m_polygons[i].size();++j, p0=p1)
             {
                 p1 = wxRealPoint(m_polygons[i][j].x,m_polygons[i][j].y);
-                if(snap&SNAP_POINT) snap_point(transform(), invzoom2, d2, q, p1, psnap, snapped );
-                if(snap&SNAP_LINE ) snap_segment(transform(), invzoom2, d2, q, p0, p1, psnap, snapped );
+                if(snap&SNAP_POINT) snapped=snapped||snap_point(transform(), invzoom2, d2, q, p1, psnap );
+                if(snap&SNAP_LINE ) snapped=snapped||snap_segment(transform(), invzoom2, d2, q, p0, p1, psnap );
             }
         }
         for (unsigned int i = 0; i < m_arcs.size(); i++)
         {
             const ArcType &arc = m_arcs[i];
             if(!arc.arc_points.empty() && (snap&SNAP_POINT))
-                snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap, snapped );
+                snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap );
             for (unsigned int j = 0; j < arc.arc_points.size() - 1; ++j)
             {
-                if(snap&SNAP_POINT) snap_point(transform(), invzoom2, d2, q, arc.arc_points[j+1], psnap, snapped );
-                if(snap&SNAP_LINE ) snap_segment(transform(), invzoom2, d2, q, arc.arc_points[j], arc.arc_points[j+1], psnap, snapped );
+                if(snap&SNAP_POINT) snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points[j+1], psnap );
+                if(snap&SNAP_LINE ) snapped=snapped||snap_segment(transform(), invzoom2, d2, q, arc.arc_points[j], arc.arc_points[j+1], psnap );
             }
         }
     }
@@ -439,7 +406,7 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
 
         for (unsigned int i = 0; i < m_points.size(); i++)
         {
-            snap_point(transform(), invzoom2, d2, q, m_points[i], psnap, snapped );
+            snapped=snapped||snap_point(transform(), invzoom2, d2, q, m_points[i], psnap );
         }
 
         // Text
@@ -447,7 +414,7 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
         {
             for (unsigned int i = 0; i < m_texts.size(); i++)
             {
-                snap_point(transform(), invzoom2, d2, q, m_texts[i].first, psnap, snapped );
+                snapped=snapped||snap_point(transform(), invzoom2, d2, q, m_texts[i].first, psnap );
             }
         }
     }

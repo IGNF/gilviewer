@@ -138,10 +138,8 @@ struct vlg_point_adder : public boost::static_visitor<void>
 
 struct vlg_absolute_mover : public boost::static_visitor<void>
 {
-    vlg_absolute_mover(vector_layer_ghost& layer, const wxRealPoint& p)
-        : m_layer(layer), m_p(p) {}
+    vlg_absolute_mover(const wxRealPoint& p) : m_p(p) {}
 
-    vector_layer_ghost& m_layer;
     wxRealPoint m_p;
 
     void operator()(vector_layer_ghost::Nothing& ) const { }
@@ -202,10 +200,8 @@ struct vlg_relative_updater : public boost::static_visitor<void>
 
 struct vlg_relative_mover : public boost::static_visitor<void>
 {
-    vlg_relative_mover(vector_layer_ghost& layer, const wxRealPoint& p)
-        : m_layer(layer), m_p(p) {}
+    vlg_relative_mover(const wxRealPoint& p) : m_p(p) {}
 
-    vector_layer_ghost& m_layer;
     wxRealPoint m_p;
 
     void operator()(vector_layer_ghost::Nothing& ) const { }
@@ -213,12 +209,53 @@ struct vlg_relative_mover : public boost::static_visitor<void>
     void operator()(vector_layer_ghost::Circle& c) const { c.first += m_p; }
     void operator()(vector_layer_ghost::Rectangle& r) const
     {
-        r.first += m_p;
+        r.first  += m_p;
         r.second += m_p;
     }
     template<typename Poly> void operator()(Poly& poly) const
     {
         std::for_each(poly.begin(), poly.end(), boost::lambda::_1 += m_p);
+    }
+};
+
+struct vlg_snapper : public boost::static_visitor<bool>
+{
+    vlg_snapper(eSNAP snap, double *d2, const wxRealPoint& p, wxRealPoint& m_psnap, const layer_transform& trans )
+        :  m_snap(snap), m_p(trans.to_local(p)), m_psnap(m_psnap), m_trans(trans), m_d2(d2)
+    {
+        double zoom = m_trans.zoom_factor();
+        m_invzoom2 = 1.0/(zoom*zoom);
+    }
+
+    eSNAP m_snap;
+    wxRealPoint m_p;
+    wxRealPoint& m_psnap;
+    layer_transform m_trans;
+    double *m_d2, m_invzoom2;
+
+    bool operator()(const vector_layer_ghost::Nothing& ) const { return false; }
+    bool operator()(const vector_layer_ghost::Point& p ) {
+        return (m_snap&SNAP_POINT) && snap_point(m_trans,m_invzoom2,m_d2,m_p,p,m_psnap);
+    }
+    bool operator()(const vector_layer_ghost::Circle& c) const { return false; }
+    bool operator()(const vector_layer_ghost::Rectangle& r) const { return false; }
+
+
+    // the last point is the currently edited point moved with the mouse, snap only to the polyline [0..n-1]
+    template<typename Poly>
+    bool operator()(const Poly& p) const
+    {
+        if(p.size()<2) return false;
+        wxRealPoint p0(p.front().x,p.front().y), p1;
+        bool snapped = false;
+        if(m_snap&SNAP_POINT) snapped=snapped||snap_point(m_trans, m_invzoom2, m_d2, m_p, p0, m_psnap );
+        for (unsigned int j=1;j<p.size()-1;++j, p0=p1)
+        {
+            p1 = wxRealPoint(p[j].x,p[j].y);
+            if(m_snap&SNAP_POINT) snapped=snapped||snap_point(m_trans, m_invzoom2, m_d2, m_p, p1, m_psnap );
+            if(m_snap&SNAP_LINE ) snapped=snapped||snap_segment(m_trans, m_invzoom2, m_d2, m_p, p0, p1, m_psnap );
+        }
+        return snapped;
     }
 };
 
@@ -250,7 +287,7 @@ bool vector_layer_ghost::add_point(const wxRealPoint& p, bool final)
 }
 void vector_layer_ghost::move_absolute(const wxRealPoint& p)
 {
-    boost::apply_visitor(vlg_absolute_mover(*this,transform().to_local(p)),m_input);
+    boost::apply_visitor(vlg_absolute_mover(transform().to_local(p)),m_input);
 }
 void vector_layer_ghost::update_absolute(const wxRealPoint& p)
 {
@@ -258,7 +295,7 @@ void vector_layer_ghost::update_absolute(const wxRealPoint& p)
 }
 void vector_layer_ghost::move_relative(const wxRealPoint& p)
 {
-    boost::apply_visitor(vlg_relative_mover(*this,p),m_input);
+    boost::apply_visitor(vlg_relative_mover(p),m_input);
 }
 void vector_layer_ghost::update_relative(const wxRealPoint& p)
 {
@@ -276,4 +313,11 @@ void vector_layer_ghost::reset() {
     boost::apply_visitor(c,m_input);
     m_complete = false;
     m_num_inputs = 0;
+}
+
+
+bool vector_layer_ghost::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
+{
+    vlg_snapper snapper(snap,d2,p,psnap,transform());
+    return boost::apply_visitor(snapper,m_input);
 }
