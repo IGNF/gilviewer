@@ -140,7 +140,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_snap(layer::SNAP_ALL) {
+        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL) {
     if (panel_manager::instance()->panels_list().size() == 0)
         m_applicationSettings = new application_settings(this, wxID_ANY);
 
@@ -750,39 +750,35 @@ void panel_viewer::execute_mode() {
     }
 }
 
-void panel_viewer::execute_mode_navigation() {
-
-}
-void panel_viewer::execute_mode_geometry_moving() {
-
-}
-void panel_viewer::execute_mode_capture() {
-
-}
-void panel_viewer::execute_mode_edition() {
-
-}
-void panel_viewer::execute_mode_selection() {
-
-}
+void panel_viewer::execute_mode_navigation     () {}
+void panel_viewer::execute_mode_geometry_moving() {}
+void panel_viewer::execute_mode_capture        () {}
+void panel_viewer::execute_mode_edition        () {}
+void panel_viewer::execute_mode_selection      () {}
 
 wxRealPoint panel_viewer::snap(const wxRealPoint& p) const
 {
     wxRealPoint q=p;
     if(m_snap)
     {
-        double d2[layer::SNAP_MAX_ID];
-        if(m_snap&layer::SNAP_GRID ) d2[layer::SNAP_GRID ]=10*10; // squared snap tolerance in [grid steps squared]
-        if(m_snap&layer::SNAP_POINT) d2[layer::SNAP_POINT]=10*10; // squared snap tolerance in [screen pixels squared]
-        if(m_snap&layer::SNAP_LINE ) d2[layer::SNAP_LINE ]=10*10; // squared snap tolerance in [screen pixels squared]
+        double d2[SNAP_MAX_ID];
+        if(m_snap&SNAP_GRID ) d2[SNAP_GRID ]=10*10; // squared snap tolerance in [grid steps squared]
+        if(m_snap&SNAP_POINT) d2[SNAP_POINT]=10*10; // squared snap tolerance in [screen pixels squared]
+        if(m_snap&SNAP_LINE ) d2[SNAP_LINE ]=10*10; // squared snap tolerance in [screen pixels squared]
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
             (*it)->snap(m_snap,d2,p,q);
         }
+        m_ghostLayer->snap(m_snap,d2,p,q);
     }
     return q;
 }
 
-void panel_viewer::geometry_add_point(const wxRealPoint& p, bool final) { if(m_ghostLayer->add_point(p,final)) geometry_end(); Refresh(); }
+void panel_viewer::geometry_add_point(const wxRealPoint& p, bool final)
+{
+    if(vectorlayerghost()->complete()) vectorlayerghost()->reset();
+    if(m_ghostLayer->add_point(p,final)) geometry_end();
+    Refresh();
+}
 void panel_viewer::geometry_move_relative  (const wxRealPoint& p) { m_ghostLayer->move_relative(p); execute_mode(); }
 void panel_viewer::geometry_move_absolute  (const wxRealPoint& p) { m_ghostLayer->move_absolute(p); execute_mode(); }
 void panel_viewer::geometry_update_absolute(const wxRealPoint& p) { m_ghostLayer->update_absolute(p); execute_mode(); }

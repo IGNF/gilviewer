@@ -117,7 +117,7 @@ public:
     };
 
     template<typename Event> eMode mode(Event& event) const;
-    inline layer::eSNAP snap() { return m_snap; }
+    inline eSNAP snap() { return m_snap; }
     inline boost::shared_ptr<vector_layer_ghost> vectorlayerghost() { return m_ghostLayer; }
 
     DECLARE_EVENT_TABLE();
@@ -165,7 +165,7 @@ protected:
     /// Flag indiquant le mode navigation, saisie, ...)
     eMode m_mode;
     ///Flag indiquant le mode de snap courant
-    layer::eSNAP m_snap;
+    eSNAP m_snap;
 
     ///Ajoute un point à la géométrie courante
     void geometry_add_point(const wxRealPoint& pt, bool final=false);

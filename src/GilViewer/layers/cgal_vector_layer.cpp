@@ -304,8 +304,8 @@ struct Arrangement {
                 do {
                     Segment_2 s(curr->source()->point(),curr->target()->point());
                     FT d = CGAL::squared_distance(s,q)*invzoom2;
-                    if(d<d2[layer::SNAP_LINE]) {
-                        d2[layer::SNAP_LINE]=CGAL::to_double(d);
+                    if(d<d2[SNAP_LINE]) {
+                        d2[SNAP_LINE]=CGAL::to_double(d);
                         h = curr;
                     }
                 } while ((++curr) != first);
@@ -317,8 +317,8 @@ struct Arrangement {
                 do {
                     Segment_2 s(curr->source()->point(),curr->target()->point());
                     FT d = CGAL::squared_distance(s,q)*invzoom2;
-                    if(d<d2[layer::SNAP_LINE]) {
-                        d2[layer::SNAP_LINE]=CGAL::to_double(d);
+                    if(d<d2[SNAP_LINE]) {
+                        d2[SNAP_LINE]=CGAL::to_double(d);
                         h = curr;
                     }
                 } while ((++curr) != first);
@@ -331,27 +331,27 @@ struct Arrangement {
             for(Isolated_vertex_iterator it = g->isolated_vertices_begin(); it != g->isolated_vertices_end(); ++it)
             {
                 FT d = CGAL::squared_distance(it->point(),q)*invzoom2;
-                if(d<d2[layer::SNAP_POINT]) {
-                    d2[layer::SNAP_POINT]=CGAL::to_double(d);
+                if(d<d2[SNAP_POINT]) {
+                    d2[SNAP_POINT]=CGAL::to_double(d);
                     v = it;
                 }
 
             }
         }
 
-        if(CGAL::assign (h, obj)) d2[layer::SNAP_LINE]=0;
+        if(CGAL::assign (h, obj)) d2[SNAP_LINE]=0;
 
         if(h!=Halfedge_const_handle())
         {
-            for(unsigned int i=0; i<layer::SNAP_LINE;++i) d2[i]=0;
+            for(unsigned int i=0; i<SNAP_LINE;++i) d2[i]=0;
             FT d = CGAL::squared_distance(h->source()->point(),q)*invzoom2;
-            if(d<d2[layer::SNAP_POINT]) {
-                d2[layer::SNAP_POINT]=CGAL::to_double(d);
+            if(d<d2[SNAP_POINT]) {
+                d2[SNAP_POINT]=CGAL::to_double(d);
                 v = h->source();
             }
             d = CGAL::squared_distance(h->target()->point(),q)*invzoom2;
-            if(d<d2[layer::SNAP_POINT]) {
-                d2[layer::SNAP_POINT]=CGAL::to_double(d);
+            if(d<d2[SNAP_POINT]) {
+                d2[SNAP_POINT]=CGAL::to_double(d);
                 v = h->target();
             }
             if(v==Vertex_const_handle())
@@ -366,11 +366,11 @@ struct Arrangement {
             }
         }
 
-        if(CGAL::assign (v, obj))  d2[layer::SNAP_POINT]=0;
+        if(CGAL::assign (v, obj))  d2[SNAP_POINT]=0;
 
         if(v!=Vertex_const_handle())
         {
-            for(unsigned int i=0; i<layer::SNAP_LINE; ++i) d2[i]=0;
+            for(unsigned int i=0; i<SNAP_LINE; ++i) d2[i]=0;
             obj = CGAL::make_object(v);
             qsnap = v->point();
         }
