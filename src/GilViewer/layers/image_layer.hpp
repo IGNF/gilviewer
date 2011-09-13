@@ -70,7 +70,7 @@ public:
 
     //image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
     image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr() );
-    image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_="");
+   // image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_="");
     virtual ~image_layer() {}
 
 protected:
@@ -79,7 +79,7 @@ protected:
 
 public:
     static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer");
-    static ptrLayerType create_image_layer(const variant_view_ptr &variant_view_, const std::string &name);
+   // static ptrLayerType create_image_layer(const variant_view_ptr &variant_view_, const std::string &name);
 
     virtual void update(int width, int height);
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;

@@ -2,7 +2,8 @@ set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
                                            ${Boost_LIBRARIES}
                                            ${TIFF_LIBRARIES}
                                            ${JPEG_LIBRARIES}
-                                           tinyxml)                                
+                                           tinyxml
+                                            )
 if(WIN32)    
 else()
     set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES}
@@ -11,10 +12,10 @@ else()
 endif()
 
 # Option to choose to use GDAL/OGR
-option(USE_GDAL_OGR "Build GilViewer with GDAL/OGR" OFF)
+# Find GDAL
+find_package(GDAL)
+option(USE_GDAL_OGR "Build GilViewer with GDAL/OGR" GDAL_FOUND)
 if(USE_GDAL_OGR)
-    # Find GDAL
-    find_package(GDAL)
     if(GDAL_FOUND)
         include_directories(${GDAL_INCLUDE_DIR})
         set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${GDAL_LIBRARY} )
@@ -27,10 +28,10 @@ else()
 endif()
 
 # Option to choose to use CGAL
-option(USE_CGAL "Build GilViewer with CGAL" OFF)
+# Find CGAL
+find_package(CGAL COMPONENTS Core)
+option(USE_CGAL "Build GilViewer with CGAL" CGAL_FOUND)
 if(USE_CGAL)
-    # Find CGAL
-    find_package(CGAL COMPONENTS Core)
     if(CGAL_FOUND)
         include( ${CGAL_USE_FILE} )
         set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${CGAL_LIBRARIES}  ${CGAL_3RD_PARTY_LIBRARIES} )
@@ -50,6 +51,29 @@ else()
     set( GILVIEWER_USE_GDALJP2 0 )
 endif()
 
+
+# Find ImageIO
+find_package(ImageIO)
+option(USE_ImageIO "Build GilViewer with ImageIO" ImageIO_FOUND)
+if(USE_ImageIO)
+    if(ImageIO_FOUND)
+        include_directories(${ImageIO_INCLUDE_DIRS})
+        set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${ImageIO_LIBRARIES} )
+        message(STATUS  "ImageIO libraries : ${ImageIO_LIBRARIES}" )
+    else()
+        message(FATAL_ERROR "ImageIO not found!")
+    endif()
+    set( GILVIEWER_USE_IMAGEIO 1 )
+else()
+    set( GILVIEWER_USE_IMAGEIO 0 )
+endif()
+
+find_package(TIFF REQUIRED)
+if(TIFF_FOUND)
+    include_directories(${TIFF_INCLUDE_DIR})
+else()
+    message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
+endif()
 
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config.hpp )

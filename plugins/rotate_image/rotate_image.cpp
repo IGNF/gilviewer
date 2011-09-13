@@ -48,7 +48,7 @@ struct rotate_image_plugin_functor
         layer_control *lc = v_pv[0]->layercontrol();
 
         // @todo: decent name...
-        lc->add_layer( image_layer::create_image_layer( m_variant_ptr, "iuyiu") );
+        //MBFIX! lc->add_layer( image_layer::create_image_layer((v. m_variant_ptr, "iuyiu") );
     }
 
     dynamic_xy_step_type<any_view_type>::type m_dest;

@@ -74,37 +74,6 @@ using namespace boost;
 
 unsigned int image_layer::m_gamma_array_size = 1000;
 
-/*
-image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const view_ptr& v):
-        m_img(image), m_view(v)
-{
-    if(!v) m_view.reset(new view_t( view(m_img->value) ));
-
-    // TODO: remove
-    m_startInput[0] = m_startInput[1] = 0;
-    m_sizeInput[0] = m_sizeInput[1] = 0;
-
-    m_minmaxResult = apply_operation(m_view->value, any_view_min_max());
-
-    name(name_);
-    filename(filename_);
-
-    alpha(255);
-    //TODO
-    intensity_min(m_minmaxResult.first);
-    intensity_max(m_minmaxResult.second);
-    transparent(false);
-    transparency_max(0.);
-    transparency_min(0.);
-    gamma(1.);
-
-    m_cLUT = boost::shared_ptr<color_lookup_table>(new color_lookup_table);
-
-    channels(0,1,2);
-    alpha_channel(false,0);
-}
-*/
-
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/bind.hpp>
@@ -237,6 +206,7 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
     init();
 }
 
+/*
 image_layer::image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_):
         layer(),
         m_img( boost::shared_ptr<image_t>()),
@@ -248,16 +218,19 @@ image_layer::image_layer(const variant_view_ptr &variant_view_, const std::strin
 
     init();
 }
+*/
 
 layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const string &name)
 {
     return ptrLayerType(new image_layer(image, name));
 }
 
+/*
 layer::ptrLayerType image_layer::create_image_layer(const variant_view_ptr &variant_view_, const string &name)
 {
     return ptrLayerType(new image_layer(variant_view_, name));
 }
+*/
 
 void image_layer::update(int width, int height)
 {

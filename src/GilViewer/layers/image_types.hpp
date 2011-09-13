@@ -13,8 +13,8 @@ This header defines image types available in GilViewer. They are separated in se
 typedef boost::mpl::vector<
 	boost::gil::gray8_image_t,
 	boost::gil::gray16_image_t,
-	boost::gil::gray16s_image_t,
-	boost::gil::gray32_image_t,
+        boost::gil::gray16s_image_t,
+        boost::gil::gray32_image_t,
 	boost::gil::gray32F_image_t,
 	boost::gil::gray64F_image_t
 > gray_image_types;

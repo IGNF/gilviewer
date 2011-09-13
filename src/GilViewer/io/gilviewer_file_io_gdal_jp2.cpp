@@ -14,7 +14,6 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-#include <boost/gil/extension/io_new/tiff_all.hpp>
 
 shared_ptr<layer> gilviewer_file_io_gdal_jp2::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
@@ -51,8 +50,6 @@ typedef boost::gil::point2<std::ptrdiff_t> point_t;
         point_t size(dim_x,dim_y);
         if(dim_x==0 && dim_y==0)
             size = point_t(width,height);
-        
-//        image_read_settings<TagType> settings(origin, size );
 
         try
         {
@@ -125,9 +122,7 @@ typedef boost::gil::point2<std::ptrdiff_t> point_t;
         layer->infos( build_and_get_infos(filename) );
 
         return layer;
-        
-            
-    //return load_gil_image<jpeg_tag>(filename, point_t(top_left_x, top_left_y), point_t(dim_x, dim_y));
+
 }
 
 void gilviewer_file_io_gdal_jp2::save(shared_ptr<layer> layer, const string &filename)
@@ -138,7 +133,6 @@ void gilviewer_file_io_gdal_jp2::save(shared_ptr<layer> layer, const string &fil
 string gilviewer_file_io_gdal_jp2::build_and_get_infos(const std::string &filename)
 {
         return "TODO";
-    //image_read_info< jpeg_tag > info = read_image_info(filename, jpeg_tag());
     ostringstream infos_str;
     /*infos_str << "Dimensions: " << info._width << "x" << info._height << "\n";
     infos_str << "Number of components: " << info._num_components << "\n";
@@ -176,11 +170,6 @@ bool gilviewer_file_io_gdal_jp2::Register()
     gilviewer_io_factory::instance()->metadata().insert( to_insert );
 
 
-    /*
-    gilviewer_io_factory::instance()->Register("jpeg", create_gilviewer_file_io_jpg);
-    to_insert = make_pair< string, pair<string,string> >( "jpeg", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
-    */
     return true;
 }
 
