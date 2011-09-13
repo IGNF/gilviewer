@@ -51,7 +51,6 @@ class layer_settings_control;
 
 class wxColor;
 class Arrangement;
-class ObjectCache;
 
 class cgal_vector_layer : public vector_layer
 {
@@ -63,6 +62,8 @@ public:
     /// @param layerName Le nom du calque
     /// @param shapefileFileName Le chemin vers le fichier shapefile
     virtual ~cgal_vector_layer();
+
+    void load(const std::string& filename);
 
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void update(int, int) {}
@@ -95,7 +96,6 @@ public:
 private:
     Arrangement *m_arrangement;
     wxColor m_selection_color;
-    ObjectCache *m_cache;
 };
 
 #endif // CGAL_VECTOR_LAYER_HPP

@@ -95,13 +95,6 @@ if(WIN32)
     set(CMAKE_PREFIX_PATH "C:/Program Files/MATIS/")
 endif(WIN32)
 
-find_package(TIFF REQUIRED)
-if(TIFF_FOUND)
-    include_directories(${TIFF_INCLUDE_DIR})
-else()
-    message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
-endif()
-
 find_package(JPEG REQUIRED)
 if(JPEG_FOUND)
     include_directories(${JPEG_INCLUDE_DIR})
@@ -116,12 +109,14 @@ if(NOT WIN32)
     else()
         message(FATAL_ERROR "PNG not found ! Please set PNG path ...")
     endif()
+
     find_package(ZLIB REQUIRED)
     if(ZLIB_FOUND)
         include_directories(${ZLIB_INCLUDE_DIR})
     else()
         message(FATAL_ERROR "ZLIB not found ! Please set ZLIB path ...")
     endif()
+
     #Find wxWidgets
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
         find_package(wxWidgets REQUIRED adv base core xml aui xrc html)
@@ -138,7 +133,7 @@ else()
     if(wxWidgets_FOUND)
         message (STATUS "wxWidgets_DEFINITIONS " "${wxWidgets_DEFINITIONS}")
         #add_definitions(${wxWidgets_DEFINITIONS})
-        # not set definitions like that becaause on MSVC 2010 this add wrong terme on AdditionalOptions flags
+        # not set definitions like that because on MSVC 2010 this add wrong terme on AdditionalOptions flags
         include(${wxWidgets_USE_FILE})
         include_directories( ${wxWidgets_ROOT_DIR}/src/png )
         include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
