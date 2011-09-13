@@ -495,12 +495,6 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
                 progress->Destroy();
             GILVIEWER_LOG_EXCEPTION("")
         }
-        //else
-        //{
-        //c'est un format supporté par une appli dérivée du viewer -> on redirige vers PanelViewer::OpenCustomFormat
-        // m_basicDrawPane->OpenCustomFormat(string(names[i].fn_str()));
-        // !!!!!!!!!!! You now have to register the format in the factory !!!!!!!!!!!
-        //}
     }
 
     m_basicDrawPane->Refresh();
