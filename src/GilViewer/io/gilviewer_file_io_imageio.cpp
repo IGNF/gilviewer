@@ -10,48 +10,122 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-template<typename Value, typename Layout>
-void image_copy(image_layer::image_ptr& p, void *buf, int w, int h, int linespace)
-{
-    typedef boost::gil::pixel<Value,Layout> Pixel;
-    boost::gil::image<Pixel, false> img(w,h);
-    boost::gil::copy_pixels( boost::gil::interleaved_view(w,h, (Pixel *)buf, linespace) , boost::gil::view(img) );
-    p->value = img;
-}
 
-template<typename Layout>
-void image_copy(ign::imageio::eTypePixel t, image_layer::image_ptr& p, void *buf, int w, int h, int linespace)
-{
-    switch(t)
-    {
-    case ign::imageio::eUnsignedChar : image_copy<unsigned char,Layout>(p,buf,w,h,linespace); break;
-    case ign::imageio::eSignedShort  : image_copy<signed short,Layout>(p,buf,w,h,linespace); break;
-    case ign::imageio::eUnsignedShort : image_copy<unsigned short,Layout>(p,buf,w,h,linespace); break;
-    case ign::imageio::eUnsignedInt : image_copy<unsigned int,Layout>(p,buf,w,h,linespace); break;
-    case ign::imageio::eFloat : image_copy<float,Layout>(p,buf,w,h,linespace); break;
-    case ign::imageio::eBool : image_copy<bool,Layout>(p,buf,w,h,linespace); break;
-    case ign::imageio::eOther : break;
-    }
-}
-
+// this should be integrated into ImageIO
 namespace ign {
     namespace imageio {
-        size_t sizeof_pixeltype(ign::imageio::eTypePixel t)
+
+        // eTypePixel -> value_type metafunction
+        template<eTypePixel t> struct pixel_type {};
+        template<> struct pixel_type<eUnsignedChar> { typedef unsigned char type; };
+        template<> struct pixel_type<eSignedShort> { typedef unsigned short type; };
+        template<> struct pixel_type<eUnsignedShort> { typedef unsigned short type; };
+        template<> struct pixel_type<eUnsignedInt> { typedef unsigned int type; };
+        template<> struct pixel_type<eFloat> { typedef float type; };
+        template<> struct pixel_type<eBool> { typedef bool type; };
+        template<> struct pixel_type<eOther> {}; // compilation error if type is accessed !
+
+
+        // value_type -> eTypePixel metafunction
+        template<typename T> struct TypePixel_       { static const eTypePixel value = eOther; };
+        template<> struct TypePixel_<unsigned char > { static const eTypePixel value = eUnsignedChar; };
+        template<> struct TypePixel_<  signed short> { static const eTypePixel value = eSignedShort; };
+        template<> struct TypePixel_<unsigned short> { static const eTypePixel value = eUnsignedShort; };
+        template<> struct TypePixel_<unsigned int  > { static const eTypePixel value = eUnsignedInt; };
+        template<> struct TypePixel_<float         > { static const eTypePixel value = eFloat; };
+        template<> struct TypePixel_<bool          > { static const eTypePixel value = eBool; };
+
+        // eTypePixel -> sizeof metafunction
+        template<eTypePixel t> struct pixel_size
         {
-            switch(t)
+            typedef size_t value_type;
+            static const value_type value = sizeof(typename pixel_type<t>::type);
+            operator value_type() const { return value; }
+        };
+        template<> struct pixel_size<eBool>
+        {
+        typedef size_t value_type;
+        static const value_type value = 1;
+        operator value_type() const { return value; }
+    };
+
+        namespace detail
+        {
+            template<typename Functor, int bands>
+            typename Functor::result_type visitor_applier(Functor& f, const ImageInput& image)
             {
-            case eUnsignedChar : return sizeof(unsigned char);
-            case eSignedShort : return sizeof(signed short);
-            case eUnsignedShort : return sizeof(unsigned short);
-            case eUnsignedInt : return sizeof(unsigned int);
-            case eFloat : return sizeof(float);
-            case eBool : return sizeof(bool);
-            case eOther : return 0;
+                switch(image.Type())
+                {
+                case eUnsignedChar  : return f.template apply<bands,eUnsignedChar >(image);
+                case eSignedShort   : return f.template apply<bands,eSignedShort  >(image);
+                case eUnsignedShort : return f.template apply<bands,eUnsignedShort>(image);
+                case eUnsignedInt   : return f.template apply<bands,eUnsignedInt  >(image);
+                case eFloat         : return f.template apply<bands,eFloat        >(image);
+                case eBool          : return f.template apply<bands,eBool         >(image);
+                default /* eOther */: return f.error(image);
+                }
+            };
+        }
+
+
+        template<typename Functor>
+        typename Functor::result_type apply_visitor(Functor& f, const ImageInput& image)
+        {
+            int b = image.NbBands();
+            switch(b)
+            {
+            case 1 : return detail::visitor_applier<Functor,1>(f,image);
+            case 2 : return detail::visitor_applier<Functor,2>(f,image);
+            case 3 : return detail::visitor_applier<Functor,3>(f,image);
+            case 4 : return detail::visitor_applier<Functor,4>(f,image);
+            case 5 : return detail::visitor_applier<Functor,5>(f,image);
+            default: return f.error(image);
             }
-            return 0;
         }
     }
-}
+} // namespace ign::imageio
+
+struct image_copier
+{
+    typedef layer::ptrLayerType result_type;
+    int x0, y0, w, h;
+    std::string name;
+    image_copier(int x0_, int y0_, int w_, int h_, std::string name_)
+        : x0(x0_), y0(y0_), w(w_), h(h_), name(name_) {}
+
+    result_type error(const ign::imageio::ImageInput&)
+    {
+        GILVIEWER_LOG_ERROR("Unable to open the image!!!");
+        return result_type();
+    }
+
+    template<int bands, ign::imageio::eTypePixel t>
+    result_type apply(const ign::imageio::ImageInput& image)
+    {
+        typedef boost::gil::devicen_layout_t<bands> layout_type;
+        typedef typename ign::imageio::pixel_type<t>::type value_type;
+        const size_t size = ign::imageio::pixel_size<t>::value;
+        typedef boost::gil::pixel<value_type,layout_type> pixel_type;
+
+        int dezoom = 1;
+        int linespace = bands*w;
+        int bandspace = 1;
+
+        // todo (?): this only works if all bands have the same type : should use image.Type(0), image.Type(1)...
+        void *buf = new char[w*h*bands*size];
+        image.Read(x0,y0,0,w,h,bands,dezoom,buf,t,bands,linespace,bandspace);
+
+        boost::gil::image<pixel_type, false> img(w,h);
+        boost::gil::copy_pixels( boost::gil::interleaved_view(w,h, (pixel_type *)buf, linespace*size),
+                                 boost::gil::view(img) );
+
+        image_layer::image_ptr image_ptr(new image_layer::image_t);
+        image_ptr->value = img;
+
+        return result_type(new image_layer(image_ptr, name, name));
+    }
+
+};
 
 
 shared_ptr<layer> gilviewer_file_io_imageio::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
@@ -63,10 +137,8 @@ shared_ptr<layer> gilviewer_file_io_imageio::load(const string &filename, const 
         GILVIEWER_LOG_ERROR("Image is invalid!!!");
         return shared_ptr<layer>();
     }
-    ign::imageio::eTypePixel pixel_type = image_input.Type();
     int width  = image_input.Size().real();
     int height = image_input.Size().imag();
-    int bands  = image_input.NbBands();
 
     int x0 = top_left_x;
     int y0 = top_left_y;
@@ -79,29 +151,14 @@ shared_ptr<layer> gilviewer_file_io_imageio::load(const string &filename, const 
     int w = x1-x0;
     int h = y1-y0;
 
-    int dezoom = 1;
-    int linespace = bands*w;
-    int bandspace = 1;
-    // todo: this only works if all bands have the same type : should use image.Type(0), image.Type(1)...
-    size_t pixel_size = ign::imageio::sizeof_pixeltype(pixel_type);
-    void *buf = new char[w*h*bands*pixel_size];
-    image_input.Read(x0,y0,0,w,h,bands,dezoom,buf,pixel_type,bands,linespace,bandspace);
+    image_copier ic(x0,y0,w,h,filename);
+    layer::ptrLayerType layer = ign::imageio::apply_visitor(ic,image_input);
 
-    image_layer::image_ptr image(new image_layer::image_t);
-    switch(bands)
+    if(layer)
     {
-    case 1 : image_copy<boost::gil::gray_layout_t>(pixel_type,image,buf,w,h,linespace*pixel_size); break;
-    case 3 : image_copy<boost::gil:: rgb_layout_t>(pixel_type,image,buf,w,h,linespace*pixel_size); break;
-    case 4 : image_copy<boost::gil::rgba_layout_t>(pixel_type,image,buf,w,h,linespace*pixel_size); break;
-    default :
-        GILVIEWER_LOG_ERROR("bands!=1, 3 or 4 !!!");
-        return layer::ptrLayerType();
+        layer->add_orientation(filename);
+        layer->infos( build_and_get_infos(filename) );
     }
-
-    layer::ptrLayerType layer(new image_layer(image, filename, filename));
-    layer->add_orientation(filename);
-    layer->infos( build_and_get_infos(filename) );
-    GILVIEWER_LOG_ERROR("OK" << pixel_type << bands);
     return layer;
 }
 

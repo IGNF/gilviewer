@@ -30,10 +30,18 @@ typedef boost::mpl::vector<
         boost::gil::rgba16_image_t
 > rgba_image_types;
 
+typedef boost::mpl::vector<
+        boost::gil::dev1n8_image_t,
+        boost::gil::dev1n16_image_t,
+        boost::gil::dev1n32F_image_t,
+        boost::gil::dev3n8_image_t
+> device_image_types;
+
 // Concatenation of all available image types defined below
-typedef boost::mpl::copy< boost::mpl::copy< gray_image_types,
+typedef boost::mpl::copy< boost::mpl::copy< boost::mpl::copy< gray_image_types,
                  boost::mpl::back_inserter< rgb_image_types  > >::type,
-                 boost::mpl::back_inserter< rgba_image_types > >::type
+                 boost::mpl::back_inserter< rgba_image_types > >::type,
+                 boost::mpl::back_inserter< device_image_types > >::type
 	all_image_types;
 
 #include <boost/gil/extension/dynamic_image/any_image.hpp>

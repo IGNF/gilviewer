@@ -206,31 +206,10 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
     init();
 }
 
-/*
-image_layer::image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_):
-        layer(),
-        m_img( boost::shared_ptr<image_t>()),
-        m_variant_view(variant_view_),
-        m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
+layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const std::string &name, const std::string &filename, const variant_view_ptr& v)
 {
-    name(name_);
-    filename(filename_);
-
-    init();
+    return ptrLayerType(new image_layer(image,name,filename,v));
 }
-*/
-
-layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const string &name)
-{
-    return ptrLayerType(new image_layer(image, name));
-}
-
-/*
-layer::ptrLayerType image_layer::create_image_layer(const variant_view_ptr &variant_view_, const string &name)
-{
-    return ptrLayerType(new image_layer(variant_view_, name));
-}
-*/
 
 void image_layer::update(int width, int height)
 {

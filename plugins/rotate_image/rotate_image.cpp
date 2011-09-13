@@ -24,7 +24,7 @@ struct rotate_image_plugin_functor
 {
     typedef void result_type;
 
-    rotate_image_plugin_functor() {}
+    rotate_image_plugin_functor(const shared_ptr<image_layer> &layer) : m_layer(layer) {}
 
     template <typename ViewType>
     result_type operator()(ViewType& v)
@@ -47,19 +47,25 @@ struct rotate_image_plugin_functor
         }
         layer_control *lc = v_pv[0]->layercontrol();
 
-        // @todo: decent name...
-        //MBFIX! lc->add_layer( image_layer::create_image_layer((v. m_variant_ptr, "iuyiu") );
+        lc->add_layer(image_layer::create_image_layer(m_layer->image(),
+                                                      m_layer->name()+"_rotated",
+                                                      m_layer->filename(),
+                                                      m_variant_ptr) );
     }
 
     dynamic_xy_step_type<any_view_type>::type m_dest;
+    const shared_ptr<image_layer> m_layer;
 };
 
 struct rotate_image_plugin_visitor : public boost::static_visitor<void>
 {
     typedef void result_type;
+    rotate_image_plugin_visitor(const shared_ptr<image_layer> &layer) : m_functor(layer) {}
 
     template <typename ViewType>
-    result_type operator()(ViewType& v) { apply_operation(v, rotate_image_plugin_functor()); }
+    result_type operator()(ViewType& v) { apply_operation(v, m_functor); }
+
+    rotate_image_plugin_functor m_functor;
 };
 
 rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(title) {}
@@ -100,7 +106,7 @@ void rotate_image_plugin::process()
         {
             cout << "Layer " << (*itb)->filename() << " is an image layer" << endl;
 
-            rotate_image_plugin_visitor spv;
+            rotate_image_plugin_visitor spv(imagelayer);
             imagelayer->variant_view()->value.apply_visitor( spv );
         }
     }
@@ -118,7 +124,7 @@ wxWindow* rotate_image_plugin::gui()
     wxBoxSizer* bSizer1;
     bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-    wxButton* m_button1 = new wxButton( this, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxButton* m_button1 = new wxButton( this, wxID_ANY, wxT("Rotate!"), wxDefaultPosition, wxDefaultSize, 0 );
     bSizer1->Add( m_button1, 0, wxALL, 5 );
 
     this->SetSizer( bSizer1 );
