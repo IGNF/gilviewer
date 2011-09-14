@@ -126,13 +126,13 @@ public:
     simple_vector_layer(const std::string& layer_name="default layer name");
     virtual ~simple_vector_layer() {}
 
-    wxPoint from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates=1/*IMAGE_COORDINATES*/) const;
-
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void update(int, int) {}
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
     virtual std::string infos();
+
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
 
     virtual std::string available_formats_wildcard() const;
 

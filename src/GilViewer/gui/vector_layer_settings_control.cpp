@@ -102,7 +102,7 @@ layer_settings_control(parent, id, title, pos, size, style), m_parent(parent)
     SetBackgroundColour(bgcolor);
     ClearBackground();
 
-    m_main_sizer = new wxFlexGridSizer(1, 3);
+	m_main_sizer = new wxFlexGridSizer(1, 3,0,0);
     m_main_sizer->AddGrowableCol(0);
     m_main_sizer->AddGrowableRow(0);
     m_main_sizer->AddGrowableRow(1);

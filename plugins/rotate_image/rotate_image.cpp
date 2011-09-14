@@ -1,11 +1,11 @@
-#include "sample_plugin.hpp"
-#include "plugin_base.hpp"
+#include "rotate_image.hpp"
+#include "GilViewer/plugins/plugin_base.hpp"
 
-#include "../gui/layer_control.hpp"
-#include "../gui/panel_manager.hpp"
+#include "GilViewer/gui/layer_control.hpp"
+#include "GilViewer/gui/panel_manager.hpp"
 
-#include "../layers/image_types.hpp"
-#include "../layers/image_layer.hpp"
+#include "GilViewer/layers/image_types.hpp"
+#include "GilViewer/layers/image_layer.hpp"
 
 #include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 #include <boost/gil/image_view_factory.hpp>
@@ -24,7 +24,7 @@ struct rotate_image_plugin_functor
 {
     typedef void result_type;
 
-    rotate_image_plugin_functor() {}
+    rotate_image_plugin_functor(const shared_ptr<image_layer> &layer) : m_layer(layer) {}
 
     template <typename ViewType>
     result_type operator()(ViewType& v)
@@ -43,26 +43,32 @@ struct rotate_image_plugin_functor
         }
         layer_control *lc = v_pv[0]->layercontrol();
 
-        // @todo: decent name...
-        lc->add_layer( image_layer::create_image_layer( m_variant_ptr, "iuyiu") );
+        lc->add_layer(image_layer::create_image_layer(m_layer->image(),
+                                                      m_layer->name()+"_rotated",
+                                                      m_layer->filename(),
+                                                      m_variant_ptr) );
     }
 
     dynamic_xy_step_type<any_view_type>::type m_dest;
+    const shared_ptr<image_layer> m_layer;
 };
 
 struct rotate_image_plugin_visitor : public boost::static_visitor<void>
 {
     typedef void result_type;
+    rotate_image_plugin_visitor(const shared_ptr<image_layer> &layer) : m_functor(layer) {}
 
     template <typename ViewType>
-    result_type operator()(ViewType& v) { apply_operation(v, rotate_image_plugin_functor()); }
+    result_type operator()(ViewType& v) { apply_operation(v, m_functor); }
+
+    rotate_image_plugin_functor m_functor;
 };
 
 rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(title) {}
 
 void rotate_image_plugin::process()
 {
-    GILVIEWER_LOG_MESSAGE("[sample_plugin::process] Starting...")
+    GILVIEWER_LOG_MESSAGE("[sample_plugin::process] Starting...") 
     std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
     if(v_pv.empty())
     {
@@ -80,13 +86,13 @@ void rotate_image_plugin::process()
         if(selected)
         {
             ostringstream os;
-            os << "Layer " << (*itb)->filename() << " is selected" << endl;
+            os << "Layer " << (*itb)->filename() << " is selected";
             GILVIEWER_LOG_MESSAGE(os.str())
         }
         else
         {
             ostringstream os;
-            os << "Layer " << (*itb)->filename() << " is not selected" << endl;
+            os << "Layer " << (*itb)->filename() << " is not selected";
             GILVIEWER_LOG_MESSAGE(oss.str())
         }
 
@@ -95,10 +101,10 @@ void rotate_image_plugin::process()
         if(selected && imagelayer)
         {
             ostringstream os;
-            os << "Layer " << (*itb)->filename() << " is an image layer" << endl;
+            os << "Layer " << (*itb)->filename() << " is an image layer";
             GILVIEWER_LOG_MESSAGE(os.str())
 
-            rotate_image_plugin_visitor spv;
+            rotate_image_plugin_visitor spv(imagelayer);
             imagelayer->variant_view()->value.apply_visitor( spv );
         }
     }
@@ -112,7 +118,7 @@ wxWindow* rotate_image_plugin::gui()
     wxBoxSizer* bSizer1;
     bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-    wxButton* m_button1 = new wxButton( this, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxButton* m_button1 = new wxButton( this, wxID_ANY, wxT("Rotate!"), wxDefaultPosition, wxDefaultSize, 0 );
     bSizer1->Add( m_button1, 0, wxALL, 5 );
 
     this->SetSizer( bSizer1 );
@@ -127,6 +133,6 @@ wxWindow* rotate_image_plugin::gui()
 
 void rotate_image_plugin::on_button_90cw(wxCommandEvent& e)
 {
-    GILVIEWER_LOG_MESSAGE("[sample_plugin::OnButton] start")
+    GILVIEWER_LOG_MESSAGE("[sample_plugin::OnButton] start") 
     process();
 }

@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -43,15 +43,18 @@ Authors:
 #include <boost/function.hpp>
 
 #include <vector>
+#include <cmath>
 
 #include <wx/gdicmn.h>
 #include <wx/colour.h>
 #include <wx/font.h>
 #include <wx/colour.h>
 
+#include "layer_transform.hpp"
+
 class wxDC;
 #ifdef WIN32
-#	include <wx/msw/winundef.h>
+#   include <wx/msw/winundef.h>
 #endif
 
 class orientation_2d;
@@ -99,38 +102,18 @@ public:
     virtual std::string layer_type_as_string() const {return "unknown type";}
     virtual void save(const std::string &name) const {}
 
-    virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const { return ptrLayerType(); }
+    ptrLayerType crop(const wxRealPoint& p0, const wxRealPoint& p1) const ;
+    virtual ptrLayerType crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const { return ptrLayerType(); }
 
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
-
-    virtual void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
-    virtual inline double zoom_factor() const { return m_zoomFactor; }
-    virtual void translation_x(double dx) { m_translationX = dx; }
-    virtual inline double translation_x() const { return m_translationX; }
-    virtual void translation_y(double dy) { m_translationY = dy; }
-    virtual inline double translation_y() const { return m_translationY; }
-
+/*
+    virtual void layer_orientation(layerOrientation orientation) { m_layer_orientation = orientation; }
+    virtual inline layerOrientation layer_orientation() const { return m_layer_orientation; }
+*/
     inline virtual double center_x() {return 0.;}
     inline virtual double center_y() {return 0.;}
-
-    // local<->global transforms. Default: pixel-centered
-    wxPoint from_local(const wxPoint &p, double delta=0.5) const
-    {
-	return wxPoint(
-		wxCoord((p.x +m_translationX+delta)/m_zoomFactor),
-		wxCoord((p.y +m_translationY+delta)/m_zoomFactor));
-    }
-
-    wxPoint to_local(const wxPoint &p, double delta=0.5) const
-    {
-	return wxPoint(
-		wxCoord(m_zoomFactor*p.x -m_translationX+0.5-delta),
-		wxCoord(m_zoomFactor*p.y -m_translationY+0.5-delta));
-    }
-
-
-    virtual void resolution(double r) { m_resolution = r; }
-    virtual inline double resolution() const { return m_resolution; }
+        
+    inline unsigned int getId()const{return m_id;}
 
     virtual void has_ori(bool hasOri) { m_hasOri = hasOri; }
     virtual bool has_ori() const { return m_hasOri; }
@@ -161,7 +144,7 @@ public:
 
     virtual unsigned int nb_components() const { return 0; }
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const { return boost::shared_ptr<const histogram_type>(); }
-    virtual std::string pixel_value(int i, int j) const { return std::string(); }
+    virtual std::string pixel_value(const wxRealPoint& p) const { return std::string(); }
     // Fin methodes specifiques ImageLayer
 
     virtual std::vector<std::string> available_formats_extensions() const { return std::vector<std::string>(); }
@@ -172,6 +155,7 @@ public:
     // Methodes specifiques VectorLayer
     virtual void add_vector_layer_content( const std::string &shapefileFileName ) {}
 
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap ) { return false; }
     virtual void add_point( double x , double y ) {}
     virtual void add_text( double x , double y , const std::string &text , const wxColour &color = *wxBLACK ) {}
     virtual void add_line( double x1 , double y1 , double x2 , double y2 ) {}
@@ -217,6 +201,9 @@ public:
     boost::function<void ()> notifyLayerSettingsControl_;
 
 
+    layer_transform& transform() { return m_layer_transform; }
+    const layer_transform& transform() const { return m_layer_transform; }
+    
 protected:
     bool m_isVisible;
     bool m_isTransformable;
@@ -226,10 +213,9 @@ protected:
     // Le nom du fichier associe si il existe
     std::string m_filename;
 
-    //gestion de la geometrie
-    double m_zoomFactor;
-    double m_translationX, m_translationY;
-    double m_resolution;
+    // transformation du layer
+    layer_transform m_layer_transform;
+    //layerOrientation m_layer_orientation;
 
     //orientation (possible que pour les calques images)
     boost::shared_ptr<orientation_2d> m_ori;
@@ -240,6 +226,9 @@ protected:
 
     unsigned int m_point_width, m_line_width, m_line_style, m_polygon_border_width, m_polygon_border_style, m_polygon_inner_style;
     wxColor m_point_color, m_line_color, m_polygon_border_color, m_polygon_inner_color, m_text_color;
+    
+    unsigned int m_id;
+
 };
 
 #endif // __LAYER_HPP__

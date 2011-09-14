@@ -6,6 +6,7 @@
 
 std::vector<std::string> ogr_available_formats_extensions();
 std::vector<std::string> simple_available_formats_extensions();
+std::vector<std::string> cgal_available_formats_extensions();
 
 namespace gilviewer_utils
 {

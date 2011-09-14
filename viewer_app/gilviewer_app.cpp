@@ -41,7 +41,7 @@ Authors:
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 
-#include "../src/GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "gilviewer_frame.hpp"
 #include "gilviewer_app.hpp"
 
@@ -49,7 +49,7 @@ Authors:
 #	include <locale.h>
 #endif
 
-#include "../src/GilViewer/config/config.hpp"
+#include "GilViewer/config/config.hpp"
 #if GILVIEWER_USE_GDAL
 #   include <gdal/ogrsf_frmts.h>
 #endif // GILVIEWER_USE_GDAL
@@ -70,6 +70,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL },
 {   wxCMD_LINE_NONE } };
+
 
 IMPLEMENT_APP(gilviewer_app);
 
@@ -114,9 +115,9 @@ bool gilviewer_app::OnInit()
     }
     catch( std::exception &e )
     {
-        GILVIEWER_LOG_EXCEPTION("Exception")
+        GILVIEWER_LOG_EXCEPTION(e.what())
         wxString message(e.what(), *wxConvCurrent);
-	    ::wxMessageBox( message );
+	wxMessageBox( message );
     }
 
     return true;

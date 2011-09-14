@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -86,7 +86,7 @@ Authors:
 #include "../config/config.hpp"
 
 #ifdef _WINDOWS
-#	include <wx/msw/winundef.h>
+#   include <wx/msw/winundef.h>
 #endif
 
 using namespace boost;
@@ -184,10 +184,10 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghos
     m_globalSettingsControl = new global_settings_control(this);
 
     /*
-	m_sizer->SetSizeHints(this);
-	SetSizer(m_sizer);
-	Layout();
-	* */
+    m_sizer->SetSizeHints(this);
+    SetSizer(m_sizer);
+    Layout();
+    * */
 
     m_scroll->SetSizer(m_sizer);
     //m_scroll->SetAutoLayout(true);
@@ -268,7 +268,14 @@ void layer_control::on_save_button(wxCommandEvent& event)
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
     string file = m_layers[id]->filename();
-    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), wildcard, wxFD_SAVE | wxFD_CHANGE_DIR /*| wxOVERWRITE_PROMPT */ );
+
+    #if wxMINOR_VERSION < 9
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+    #else
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
+    #endif
     if (fileDialog->ShowModal() == wxID_OK)
     {
         string filename(fileDialog->GetFilename().To8BitData());
@@ -291,42 +298,7 @@ void layer_control::on_delete_button(wxCommandEvent& event)
 {
     // Get layer index
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_DELETE);
-
-    //Swap
-    for (unsigned int i = id; i < m_rows.size() - 1; ++i)
-    {
-        swap_rows(i, i + 1);
-    }
-
-    //Destroy de la row
-    m_rows.back()->m_nameStaticText->Destroy();
-    m_rows.back()->m_visibilityCheckBox->Destroy();
-    m_rows.back()->m_transformationCheckBox->Destroy();
-    m_rows.back()->m_infoButton->Destroy();
-    m_rows.back()->m_saveButton->Destroy();
-    m_rows.back()->m_deleteButton->Destroy();
-    m_rows.back()->m_settingsButton->Destroy();
-    //m_rows.back()->m_center_button->Destroy();
-    m_rows.back()->m_refresh_button->Destroy();
-    m_rows.back()->m_layerSettingsControl->Destroy();
-    m_sizer->Remove(m_rows.back()->m_boxSizer);
-
-    m_rows.pop_back();
-
-    //Delete de la layer
-    m_layers.pop_back();
-
-    //Refresh de la vue
-    m_basicDrawPane->Refresh();
-
-    //
-    m_sizer->Fit(m_scroll);
-    m_scroll->Layout();
-
-    //Orientation : supprimee si tous les calques ont ete supprimes
-    if (m_layers.empty())
-        m_isOrientationSet = false;
-
+    delete_layer(id);
 }
 
 void layer_control::on_settings_button(wxCommandEvent& event)
@@ -400,9 +372,8 @@ void layer_control::on_reset(wxCommandEvent& event)
     // Pour chaque calque, on reinitialise
     for (layer_control::iterator it = begin(); it != end(); ++it)
     {
-        (*it)->zoom_factor(1.);
-        (*it)->translation_x(0.);
-        (*it)->translation_y(0.);
+        
+        (*it)->transform().reset();
         (*it)->needs_update(true);
         (*it)->transformable(true);
         (*it)->visible(true);
@@ -523,12 +494,6 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
                 progress->Destroy();
             GILVIEWER_LOG_EXCEPTION(e.what())
         }
-        //else
-        //{
-        //c'est un format supporté par une appli dérivée du viewer -> on redirige vers PanelViewer::OpenCustomFormat
-        // m_basicDrawPane->OpenCustomFormat(string(names[i].fn_str()));
-        // !!!!!!!!!!! You now have to register the format in the factory !!!!!!!!!!!
-        //}
     }
 
     m_basicDrawPane->Refresh();
@@ -536,7 +501,7 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 }
 
-void layer_control::add_layer(const layer::ptrLayerType &layer)
+void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transform)
 {
     if (!layer) return;
 
@@ -561,12 +526,10 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     {
         GILVIEWER_LOG_MESSAGE("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!");
     }
-    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori())
+    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori() && !has_transform)
     {
         GILVIEWER_LOG_MESSAGE("Image layer position initialised with respect to first image!");
-        layer->zoom_factor(m_ghostLayer->zoom_factor());
-        layer->translation_x(m_ghostLayer->translation_x());
-        layer->translation_y(m_ghostLayer->translation_y());
+        layer->transform()=m_ghostLayer->transform();
 
     }
 
@@ -579,15 +542,15 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
         const boost::shared_ptr<orientation_2d> &oriLayer = layer->orientation();
 
         double newzoom_factor = m_ori->step() / oriLayer->step();
-        double translationInitX = (oriLayer->origin_x() - m_ori->origin_x()) / oriLayer->step();//+ m_layers[0]->translation_x()/m_layers[0]->zoom_factor();
-        double translationInitY = -(oriLayer->origin_y() - m_ori->origin_y()) / oriLayer->step();//+ m_layers[0]->translation_y()/m_layers[0]->zoom_factor();
+        double translationInitX = (oriLayer->origin_x() - m_ori->origin_x()) / oriLayer->step();
+        double translationInitY = -(oriLayer->origin_y() - m_ori->origin_y()) / oriLayer->step();
 
-        layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
-        layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);//* layer->zoom_factor());
-        layer->translation_y(translationInitY + m_layers[0]->translation_y() * newzoom_factor);//* layer->zoom_factor());
+        layer->transform().zoom_factor(newzoom_factor * m_layers[0]->transform().zoom_factor());
+        layer->transform().translation_x(translationInitX + m_layers[0]->transform().translation_x() * newzoom_factor);
+        layer->transform().translation_y(translationInitY + m_layers[0]->transform().translation_y() * newzoom_factor);
     }
 
-    //Si il y a une orientation definie pour le viewer et et qu'on a affaire a une couche vecteur :
+    //Si il y a une orientation definie pour le viewer et qu'on a affaire a une couche vecteur :
     if (m_isOrientationSet && layer->layer_type_as_string() == "Vector")
     {
         GILVIEWER_LOG_MESSAGE("Vector layer position initialised with respect to global orientation!");
@@ -597,19 +560,19 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
 
         double newzoom_factor = m_ori->step();
         //layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
-        layer->zoom_factor(m_layers[0]->zoom_factor());
-        layer->translation_x(translationInitX + m_layers[0]->translation_x() * newzoom_factor);
-        layer->translation_y(translationInitY + m_layers[0]->translation_y() * newzoom_factor);
+        layer->transform().zoom_factor(m_layers[0]->transform().zoom_factor());
+        layer->transform().translation_x(translationInitX + m_layers[0]->transform().translation_x() * newzoom_factor);
+        layer->transform().translation_y(translationInitY + m_layers[0]->transform().translation_y() * newzoom_factor);
     }
     layer->default_display_parameters();
     layer->notifyLayerSettingsControl_();
 
 
     if(m_isOrientationSet)
-        layer->resolution(m_ori->step());
+        layer->transform().resolution(m_ori->step());
     else
     {
-        layer->resolution(1.);
+        layer->transform().resolution(1.);
     }
 
     Refresh();
@@ -617,6 +580,56 @@ void layer_control::add_layer(const layer::ptrLayerType &layer)
     m_basicDrawPane->Refresh();
 }
 
+
+layer::ptrLayerType layer_control::get_layer_with_id(unsigned int id)const{
+    for(LayerContainerType::const_iterator it=m_layers.begin();it!=m_layers.end();++it)
+        if((*it)->getId()==id)
+            return (*it);
+            
+    return layer::ptrLayerType() ;
+}
+
+    
+void layer_control::delete_layer(unsigned int index){
+    if(m_layers.size()<=index)
+        return;
+    //Swap
+    for (unsigned int i = index; i < m_rows.size() - 1; ++i)
+    {
+        swap_rows(i, i + 1);
+    }
+
+    //Destroy de la row
+    m_rows.back()->m_nameStaticText->Destroy();
+    m_rows.back()->m_visibilityCheckBox->Destroy();
+    m_rows.back()->m_transformationCheckBox->Destroy();
+    m_rows.back()->m_infoButton->Destroy();
+    m_rows.back()->m_saveButton->Destroy();
+    m_rows.back()->m_deleteButton->Destroy();
+    m_rows.back()->m_settingsButton->Destroy();
+    //m_rows.back()->m_center_button->Destroy();
+    m_rows.back()->m_refresh_button->Destroy();
+    m_rows.back()->m_layerSettingsControl->Destroy();
+    m_sizer->Remove(m_rows.back()->m_boxSizer);
+
+    m_rows.pop_back();
+
+    //Delete de la layer
+    m_layers.pop_back();
+
+    //Refresh de la vue
+    m_basicDrawPane->Refresh();
+
+    //
+    m_sizer->Fit(m_scroll);
+    m_scroll->Layout();
+
+    //Orientation : supprimee si tous les calques ont ete supprimes
+    if (m_layers.empty())
+        m_isOrientationSet = false;
+
+}
+    
 boost::shared_ptr<orientation_2d> layer_control::orientation() const
 {
     return m_ori;
@@ -628,7 +641,7 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
     {
         ostringstream os;
         os << "You passed a negative index for a row !" << endl;
-        os << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << endl;
+        os << "firstRow = " << firstRow << "  --  secondRow = " << secondRow;
         GILVIEWER_LOG_ERROR(os.str());
         return;
     }
@@ -637,7 +650,7 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
         ostringstream os;
         os << "You passed an invalid index for a row !" << endl;
         os << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << endl;
-        os << "m_numberOfLayers = " << m_rows.size() << endl;
+        os << "m_numberOfLayers = " << m_rows.size();
         GILVIEWER_LOG_ERROR(os.str());
         return;
     }
@@ -842,9 +855,9 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
         this->m_layers.back()->transparent(parameters.transparent);
         this->m_layers.back()->transparency_min(parameters.transparency_min);
         this->m_layers.back()->transparency_max(parameters.transparency_max);
-        this->m_layers.back()->zoom_factor(parameters.zoom_factor);
-        this->m_layers.back()->translation_x(parameters.translation_x);
-        this->m_layers.back()->translation_y(parameters.translation_y);
+        this->m_layers.back()->transform().zoom_factor(parameters.zoom_factor);
+        this->m_layers.back()->transform().translation_x(parameters.translation_x);
+        this->m_layers.back()->transform().translation_y(parameters.translation_y);
         this->m_layers.back()->alpha_channel(parameters.useAlphaChannel,parameters.alphaChannel);
         // TODO: binary or text?
         this->m_layers.back()->colorlookuptable()->load_from_binary_file(parameters.lut_file);
@@ -897,9 +910,9 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
         this->m_layers.back()->polygon_border_style(parameters.polygonsRingsStyle);
         this->m_layers.back()->polygon_inner_style(parameters.polygonsInsideStyle);
 
-        this->m_layers.back()->zoom_factor(parameters.zoom_factor);
-        this->m_layers.back()->translation_x(parameters.translation_x);
-        this->m_layers.back()->translation_y(parameters.translation_y);
+        this->m_layers.back()->transform().zoom_factor(parameters.zoom_factor);
+        this->m_layers.back()->transform().translation_x(parameters.translation_x);
+        this->m_layers.back()->transform().translation_y(parameters.translation_y);
 
         // MAJ de l'interface
         this->m_layers.back()->notifyLayerControl_();

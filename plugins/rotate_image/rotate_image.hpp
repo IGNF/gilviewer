@@ -1,7 +1,7 @@
 #ifndef __SAMPLE_PLUGIN_HPP__
 #define __SAMPLE_PLUGIN_HPP__
 
-#include "plugin_base.hpp"
+#include "GilViewer/plugins/plugin_base.hpp"
 
 class rotate_image_plugin : public plugin_base
 {

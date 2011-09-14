@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+  http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+  Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+  Olivier Tournaire, Adrien Chauve
 
 
 
@@ -53,9 +53,14 @@ struct view_type;
 struct variant_view_type;
 class alpha_image_type;
 
+
+
+
 class image_layer : public layer
 {
 public:
+
+
     typedef image_type       image_t;
     typedef variant_view_type variant_view_t;
     typedef alpha_image_type alpha_image_t;
@@ -63,17 +68,15 @@ public:
     typedef boost::shared_ptr<variant_view_t       > variant_view_ptr;
     typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
-    //image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
     image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr() );
-    image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_="");
     virtual ~image_layer() {}
 
 protected:
     void init();
 
+
 public:
-    static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer");
-    static ptrLayerType create_image_layer(const variant_view_ptr &variant_view_, const std::string &name);
+    static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr());
 
     virtual void update(int width, int height);
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
@@ -81,11 +84,14 @@ public:
     virtual unsigned int nb_components() const ;
     std::string type_channel() const;
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const;
-    virtual std::string pixel_value(int i, int j) const;
+    virtual std::string pixel_value(const wxRealPoint& p) const;
 
     virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 
     virtual void orientation(const boost::shared_ptr<orientation_2d> &orientation);
+
+    virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
+
     virtual void channels(unsigned int red, unsigned int green, unsigned int blue)
     {
         m_red   = red;
@@ -124,10 +130,10 @@ public:
     virtual void transparent(bool t) { m_isTransparent=t; }
     virtual bool transparent() const { return m_isTransparent; }
 
-    virtual ptrLayerType crop(int& x0, int& y0, int& x1, int& y1) const;
+    virtual ptrLayerType crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const;
 
-    virtual image_ptr image() const { return m_img; };
-    virtual variant_view_ptr  variant_view() const { return m_variant_view; };
+    virtual image_ptr image() const { return m_img; }
+    virtual variant_view_ptr  variant_view() const { return m_variant_view; }
 
     virtual std::vector<std::string> available_formats_extensions() const;
     virtual std::string available_formats_wildcard() const;
@@ -138,7 +144,10 @@ public:
 
     inline virtual double center_x();
     inline virtual double center_y();
-
+    
+    unsigned int width() const  ;
+    unsigned int height() const ;
+    
         protected:
 
     image_ptr       m_img;
@@ -164,12 +173,19 @@ public:
     double m_transparencyMax;
     bool m_isTransparent;
 
+
+
     double m_gamma;
 
     double m_oldZoomFactor;
 
     boost::shared_array<float> m_gamma_array;
     static unsigned int m_gamma_array_size;
+    
+/*
+    wxRealPoint rotated_coordinate_to_local(const wxRealPoint& pt)const;
+    wxRealPoint rotated_coordinate_from_local(const wxRealPoint& pt)const;
+*/
 };
 
 #endif // __IMAGE_LAYER_HPP__
