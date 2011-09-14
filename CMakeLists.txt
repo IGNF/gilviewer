@@ -17,7 +17,7 @@ set(BUILD_SHARED_LIBS ON)
 message( STATUS ${CMAKE_BUILD_TYPE} )
  
 IF(UNIX) 
-        add_definitions(-Wall)
+        add_definitions(-Wall -fPIC)
         SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG" CACHE STRING "Flags used by the compiler during debug builds." FORCE)
         #add_definitions(-pedantic)
 ENDIF(UNIX) 
@@ -151,6 +151,7 @@ set( Boost_ADDITIONAL_VERSIONS
             "1.43.0" "1.43" 
             "1.44.0" "1.44"
             "1.46" "1.46.1"
+           "1.47" "1.47.0"
      )
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use boost static lib")
 set(Boost_USE_MULTITHREAD ON CACHE BOOL "use boost multi thread lib")
