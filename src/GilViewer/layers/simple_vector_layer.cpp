@@ -105,7 +105,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         points.reserve( m_rotatedellipses[i].controlPoints.size() );
         for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
             points.push_back(transform().from_local_int(m_rotatedellipses[i].controlPoints[j]));
-        dc.DrawSpline(points.size(),&points.front());
+        dc.DrawSpline(static_cast<int>(points.size()),&points.front());
     }
     for (unsigned int i=0;i<m_polygons.size();++i)
     {
@@ -113,7 +113,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         points.reserve( m_polygons[i].size() );
         for (unsigned int j=0;j<m_polygons[i].size();++j)
             points.push_back(transform().from_local_int(m_polygons[i][j]));
-        dc.DrawPolygon( points.size() , &(points.front()) );
+        dc.DrawPolygon( static_cast<int>(points.size()) , &(points.front()) );
     }
 
     // 1D
@@ -135,9 +135,9 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     for (unsigned int i=0;i<m_splines.size();++i)
     {
         const std::vector<PointType>& spline = m_splines[i];
-        int n = spline.size();
         std::vector<wxPoint> points;
-        for (int j=0;j<n;++j)
+        unsigned int n = static_cast<int>(spline.size());
+        for (unsigned int j=0;j<n;++j)
         {
             wxPoint p = transform().from_local_int(spline[j]);
             points.push_back(p);

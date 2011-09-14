@@ -47,6 +47,7 @@ Authors:
 
 #include "../gui/define_id.hpp"
 #include "../io/gilviewer_io_factory.hpp"
+#include "../convenient/macros_gilviewer.hpp"
 
 #include "basic_viewer_frame.hpp"
 
@@ -92,12 +93,11 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
 
     // Log all available formats ...
     vector<string> ids = gilviewer_io_factory::instance()->available_identifiers();
-    wxString mes(_("Available file formats:"));
+    ostringstream mes;
+    mes << "Available file formats:";
     for(vector<string>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
-    {
-        mes << wxString(it->c_str(), *wxConvCurrent) << wxString(" ", *wxConvCurrent);
-    }
-    wxLogMessage(mes);
+        mes << *it << " ";
+    GILVIEWER_LOG_MESSAGE(mes.str());
 
     //ToolBar
     m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
