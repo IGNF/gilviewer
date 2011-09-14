@@ -97,7 +97,7 @@ struct image_copier : public boost::static_visitor<layer::ptrLayerType>
 
     result_type error(const ign::imageio::ImageInput&)
     {
-        GILVIEWER_LOG_ERROR("Unable to open the image!!!");
+        GILVIEWER_LOG_ERROR("ImageIO is unable to open the image: " << name);
         return result_type();
     }
 
@@ -106,26 +106,13 @@ struct image_copier : public boost::static_visitor<layer::ptrLayerType>
     {
         typedef boost::gil::devicen_layout_t<bands> layout_type;
         typedef typename ign::imageio::pixel_type<t>::type value_type;
-        const size_t size = ign::imageio::pixel_size<t>::value;
         typedef boost::gil::pixel<value_type,layout_type> pixel_type;
 
-        int dezoom = 1;
-        int linespace = bands*w;
-        int bandspace = 1;
-
-        // todo (?): this only works if all bands have the same type : should use image.Type(0), image.Type(1)...
-        char *buf = new char[w*h*bands*size];
-        image.Read(x0,y0,0,w,h,bands,dezoom,buf,t,bands,linespace,bandspace);
-
         boost::gil::image<pixel_type, false> img(w,h);
-        boost::gil::copy_pixels( boost::gil::interleaved_view(w,h, (pixel_type *)buf, linespace*size),
-                                 boost::gil::view(img) );
-
+        value_type *buf = boost::gil::interleaved_view_get_raw_data(boost::gil::view(img));
+        image.Read(x0,y0,0,w,h,bands,1,buf,t,bands,bands*w,1);
         image_layer::image_ptr image_ptr(new image_layer::image_t);
         image_ptr->value = img;
-
-        delete [] buf;
-
         return result_type(new image_layer(image_ptr, name, name));
     }
 
@@ -203,7 +190,6 @@ void gilviewer_file_io_imageio::save(shared_ptr<layer> layer, const string &file
     shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
     if(!imagelayer)
         throw std::invalid_argument("Bad layer type (not an image layer)!\n");
-
     try
     {
         write_imageio_view_visitor writer(filename);
@@ -211,7 +197,7 @@ void gilviewer_file_io_imageio::save(shared_ptr<layer> layer, const string &file
     }
     catch( ign::imageio::Exception &e )
     {
-        GILVIEWER_LOG_EXCEPTION("Image write error: " + filename);
+        GILVIEWER_LOG_EXCEPTION("ImageIO is unable to write the image: " << filename);
     }
 }
 
