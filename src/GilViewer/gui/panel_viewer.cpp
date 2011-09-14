@@ -318,8 +318,8 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
                 try {
                     (*it)->update(tailleImage.GetX(), tailleImage.GetY());
                 } catch (const std::exception &e) {
-                    GILVIEWER_LOG_EXCEPTION("")
-                            wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent), _("Error!"), wxICON_ERROR);
+                    GILVIEWER_LOG_EXCEPTION(e.what())
+                    wxMessageBox( _("Exception: see log!"), _("Exception!"), wxICON_ERROR);
                     return;
                 }
                 (*it)->needs_update(false);
@@ -673,7 +673,7 @@ void panel_viewer::add_layer(const layer::ptrLayerType &layer) {
     try {
         m_layerControl->add_layer(layer);
     } catch (const std::exception &e) {
-        GILVIEWER_LOG_EXCEPTION("")
+        GILVIEWER_LOG_EXCEPTION(e.what())
             }
 }
 
@@ -806,9 +806,9 @@ bool gilviewer_file_drop_target::OnDropFiles(wxCoord x, wxCoord y, const wxArray
 #endif // wxUSE_DRAG_AND_DROP
 void panel_viewer::crop() {
     // On recherche le calque selectionne
-    unsigned int i = 0, size = m_layerControl->rows().size();
+    unsigned int i = 0;
     std::vector<layer::ptrLayerType> selected_layers;
-    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < size; ++it, ++i) {
+    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < static_cast<unsigned int>(m_layerControl->rows().size()); ++it, ++i) {
         if (m_layerControl->rows()[i]->m_nameStaticText->selected()) {
             selected_layers.push_back(*it);
         }
@@ -824,8 +824,8 @@ void panel_viewer::crop() {
             m_layerControl->add_layer(layer,true);
 
         } catch (std::exception &e) {
-            GILVIEWER_LOG_EXCEPTION("")
-                    wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+            GILVIEWER_LOG_EXCEPTION(e.what())
+                wxMessageBox(_("Exception: see log!"), _("Exception!"), wxICON_ERROR);
         }
     }
 }

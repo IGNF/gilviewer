@@ -38,11 +38,7 @@ struct rotate_image_plugin_functor
         std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
         if(v_pv.empty())
         {
-            #if wxMINOR_VERSION < 9
-            ::wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
-            #else
-            wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
-            #endif 
+            GILVIEWER_LOG_ERROR("[sample_plugin::process] Error: empty panel manager list")
             return;
         }
         layer_control *lc = v_pv[0]->layercontrol();
@@ -72,19 +68,11 @@ rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(ti
 
 void rotate_image_plugin::process()
 {
-        #if wxMINOR_VERSION < 9
-	::wxLogMessage(wxT("[sample_plugin::process] Starting..."));
-        #else
-	wxLogMessage(wxT("[sample_plugin::process] Starting..."));
-        #endif 
+    GILVIEWER_LOG_MESSAGE("[sample_plugin::process] Starting...") 
     std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
     if(v_pv.empty())
     {
-        #if wxMINOR_VERSION < 9
-        ::wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
-        #else
-        wxLogMessage(wxT("[sample_plugin::process] Error: empty panel manager list"));
-        #endif 
+        GILVIEWER_LOG_ERROR("[sample_plugin::process] Empty panel manager list")
         return;
     }
 
@@ -96,15 +84,25 @@ void rotate_image_plugin::process()
     {
         bool selected = lc->rows()[i]->m_nameStaticText->selected();
         if(selected)
-            cout << "Layer " << (*itb)->filename() << " is selected" << endl;
+        {
+            ostringstream os;
+            os << "Layer " << (*itb)->filename() << " is selected";
+            GILVIEWER_LOG_MESSAGE(os.str())
+        }
         else
-            cout << "Layer " << (*itb)->filename() << " is not selected" << endl;
+        {
+            ostringstream os;
+            os << "Layer " << (*itb)->filename() << " is not selected";
+            GILVIEWER_LOG_MESSAGE(oss.str())
+        }
 
         shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>((*itb));
 
         if(selected && imagelayer)
         {
-            cout << "Layer " << (*itb)->filename() << " is an image layer" << endl;
+            ostringstream os;
+            os << "Layer " << (*itb)->filename() << " is an image layer";
+            GILVIEWER_LOG_MESSAGE(os.str())
 
             rotate_image_plugin_visitor spv(imagelayer);
             imagelayer->variant_view()->value.apply_visitor( spv );
@@ -114,11 +112,7 @@ void rotate_image_plugin::process()
 
 wxWindow* rotate_image_plugin::gui()
 {
-    #if wxMINOR_VERSION < 9
-    ::wxLogMessage(wxT("[sample_plugin::gui] start"));
-    #else
-    wxLogMessage(wxT("[sample_plugin::gui] start"));
-    #endif 
+    GILVIEWER_LOG_MESSAGE("[sample_plugin::gui] start")
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
     wxBoxSizer* bSizer1;
@@ -139,10 +133,6 @@ wxWindow* rotate_image_plugin::gui()
 
 void rotate_image_plugin::on_button_90cw(wxCommandEvent& e)
 {
-    #if wxMINOR_VERSION < 9
-    ::wxLogMessage(wxT("[sample_plugin::OnButton] start"));
-    #else
-    wxLogMessage(wxT("[sample_plugin::OnButton] start"));
-    #endif 
+    GILVIEWER_LOG_MESSAGE("[sample_plugin::OnButton] start") 
     process();
 }

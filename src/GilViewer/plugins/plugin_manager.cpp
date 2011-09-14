@@ -39,13 +39,14 @@ void plugin_manager_model::register_plugins(const std::string &path)
     for(unsigned int i=0;i<all_so_files.size();++i)
     {
         boost::filesystem::path file_path(boost::filesystem::system_complete(all_so_files[i]));
-        wxString plugin_name(file_path.filename().c_str(), *wxConvCurrent);
-        
-        #if wxMINOR_VERSION < 9
-        ::wxLogMessage(wxT("Found dynamic lib: ") + plugin_name);
-        #else 
-        wxLogMessage(wxT("Found dynamic lib: ") + plugin_name);
-        #endif
+#if BOOST_FILESYSTEM_VERSION > 2
+        string plugin_name(file_path.filename().string());
+#else
+        string plugin_name(file_path.filename());
+#endif
+        ostringstream mes;
+        mes << "Found dynamic lib: " << plugin_name;
+        GILVIEWER_LOG_MESSAGE(mes.str())
         string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
         string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
         if( file_path.filename()!= libgilviewer_name && file_path.filename()!= libtinyxml_name )
@@ -86,19 +87,13 @@ void plugin_manager_model::register_plugins(const std::string &path)
                             (wxObjectEventFunction)&plugin_base::gui,
                             NULL, p );
                     ++nb_of_successfully_loaded_plugins;
-                    #if wxMINOR_VERSION < 9
-                    ::wxLogMessage(wxT("Successfully added plugin ") + plugin_name);
-                    #else
-                    wxLogMessage(wxT("Successfully added plugin ") + plugin_name);
-                    #endif
+                    ostringstream mes;
+                    mes << "Successfully added plugin " << plugin_name;
+                    GILVIEWER_LOG_MESSAGE(mes.str())
                 }
             }
         }
         else
-            #if wxMINOR_VERSION < 9
-            ::wxLogMessage(wxT("Skipping"));
-            #else
-            wxLogMessage(wxT("Skipping"));
-            #endif
+            GILVIEWER_LOG_MESSAGE("Skipping");
     }
 }

@@ -423,12 +423,10 @@ void application_settings::write_config()
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Red"), m_colourPickerInsidePolygons->GetColour().Red());
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), m_colourPickerInsidePolygons->GetColour().Green());
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), m_colourPickerInsidePolygons->GetColour().Blue());
-        #if wxMINOR_VERSION > 8	
+    #if wxMINOR_VERSION > 8	
         pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), (int)wxPENSTYLE_SOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
-	#else
-    pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
-    
-        #endif
-      pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::from_polygon_selection_index_to_wx_style(m_choicePolygons->GetSelection()) );
-
+    #else
+        pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
+    #endif
+    pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::from_polygon_selection_index_to_wx_style(m_choicePolygons->GetSelection()) );
 }
