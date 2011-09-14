@@ -157,8 +157,8 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     }
     catch(const exception &e)
     {
-        GILVIEWER_LOG_EXCEPTION("Exception propagated from ")
-        throw logic_error(oss.str());
+        GILVIEWER_LOG_EXCEPTION("[Exception propagated]")
+        throw logic_error(e.what());
     }
 
     name(layer_name);

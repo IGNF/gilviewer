@@ -210,9 +210,16 @@ private:
 
 void image_layer::init()
 {
+    min_max_visitor mmv;
+    m_minmaxResult = apply_visitor( mmv, m_variant_view->value );
+    intensity_min(m_minmaxResult.first);
+    intensity_max(m_minmaxResult.second);
+
     alpha(255);
+    /*
     intensity_min(0.);
     intensity_max(255.);
+    */
     transparent(false);
     transparency_max(0.);
     transparency_min(0.);
