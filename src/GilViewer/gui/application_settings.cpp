@@ -52,6 +52,8 @@ Authors:
 #include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/choice.h>
+#include <wx/pen.h>
+#include <wx/brush.h>
 
 #include "../gui/application_settings.hpp"
 #include "../gui/vector_layer_settings_control.hpp"
@@ -284,14 +286,22 @@ wxPanel* application_settings::createvector_layer_settings_panel()
     {
         int redLine = 255, blueLine = 0, greenLine = 0;
         int widthLine = 3;
-        int styleLine = wxSOLID;
+		#if wxMINOR_VERSION > 8
+		int styleLine = wxPENSTYLE_SOLID;
+                #else
+                int styleLine = wxSOLID;
+                #endif
         pConfig->Read(wxT("/Options/VectorLayerArc/Color/Red"), &redLine, 255);
         pConfig->Read(wxT("/Options/VectorLayerArc/Color/Green"), &greenLine, 0);
         pConfig->Read(wxT("/Options/VectorLayerArc/Color/Blue"), &blueLine, 0);
         m_colourPickerLines->SetColour( wxColour(redLine,greenLine,blueLine) );
         pConfig->Read(wxT("/Options/VectorLayerArc/Width"), &widthLine, 3);
         m_sliderWidthLines->SetValue( widthLine );
+                #if wxMINOR_VERSION > 8
+		pConfig->Read(wxT("/Options/VectorLayerArc/Style"), &styleLine, wxPENSTYLE_SOLID);
+                #else
         pConfig->Read(wxT("/Options/VectorLayerArc/Style"), &styleLine, wxSOLID);
+                #endif
         m_choiceLines->SetSelection( wxhelper::from_wx_style_to_selection_index(styleLine) );
     }
 
@@ -336,9 +346,16 @@ wxPanel* application_settings::createvector_layer_settings_panel()
         pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), &green, 0);
         pConfig->Read(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), &blue, 0);
         m_colourPickerInsidePolygons->SetColour( wxColour(red,green,blue) );
-        pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
+		#if wxMINOR_VERSION > 8
+                pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxPENSTYLE_SOLID);
+		pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxBRUSHSTYLE_SOLID);
+                #else
+                pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Pen"), &penStyle, wxSOLID);
         pConfig->Read(wxT("/Options/VectorLayerPolygon/Style/Brush"), &brushStyle, wxSOLID);
+        #endif
+
         m_choicePolygons->SetSelection( wxhelper::from_wx_style_to_selection_index(brushStyle) );
+	
     }
 
     mainSizer->Add(boxSizerPoints, 0, wxEXPAND | wxHORIZONTAL, 5);
@@ -406,7 +423,10 @@ void application_settings::write_config()
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Red"), m_colourPickerInsidePolygons->GetColour().Red());
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), m_colourPickerInsidePolygons->GetColour().Green());
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), m_colourPickerInsidePolygons->GetColour().Blue());
-    /// @TODO: wxSOLID --> deprecated!!!
-    //pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
+    #if wxMINOR_VERSION > 8	
+        pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), (int)wxPENSTYLE_SOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
+    #else
+        pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
+    #endif
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::from_polygon_selection_index_to_wx_style(m_choicePolygons->GetSelection()) );
 }

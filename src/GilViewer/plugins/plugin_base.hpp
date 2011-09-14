@@ -16,6 +16,7 @@ public:
     plugin_base();
     plugin_base(const wxString &title);
     virtual void process() = 0;
+    virtual void on_mouse_move(wxMouseEvent &event){};
     virtual wxWindow* gui() = 0;
     void parent(wxWindow* parent);
 

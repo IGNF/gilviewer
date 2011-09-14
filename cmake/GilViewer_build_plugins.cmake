@@ -10,8 +10,14 @@ endif()
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp )
 
-set(rotate_image_plugin_SRCS ./src/GilViewer/plugins/sample_plugin.hpp ./src/GilViewer/plugins/sample_plugin.cpp )
-
-add_library(rotate_image_plugin SHARED ${rotate_image_plugin_SRCS})
-target_link_libraries(rotate_image_plugin GilViewer)
-
+message( STATUS "Scanning plugins :" )
+file( GLOB list "plugins/*" )
+list( SORT list )
+foreach( entry ${list} )
+  if ( IS_DIRECTORY ${entry} )
+    if ( EXISTS ${entry}/CMakeLists.txt )
+      message( STATUS "Configuring  ${entry} plugin" )
+      add_subdirectory( ${entry} )
+    endif()
+  endif()
+endforeach()

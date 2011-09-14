@@ -8,18 +8,18 @@ GIL and wxWidgets.
 
 Homepage: 
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors: 
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
-	
-	
+    
+    
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -69,7 +69,14 @@ public:
                   long style = wxDEFAULT_FRAME_STYLE , const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize );
 
     /// Cette methode permet d'ajouter un calque
-    void add_layer(const layer::ptrLayerType &layer);
+    void add_layer(const layer::ptrLayerType &layer, bool has_transform = false);
+    /// Cette methode permet de supprimer un calque
+    void delete_layer(unsigned int index);
+    void delete_all_layer(){wxCommandEvent event;on_delete_all_rows_button(event);}
+    
+    /// Recuperation d'un calque par son Id
+    layer::ptrLayerType get_layer_with_id(unsigned int id)const;
+    
     ///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
     bool oriented() const {return m_isOrientationSet; }
     ///Recupere l'orientation du viewer
@@ -154,14 +161,14 @@ private:
     /// Cette methode permet d'ajouter une ligne dans le LayerControl (elle est appelee lors de l'ajout d'un calque)
     void add_row(const std::string &name , layer_settings_control *layersettings , const std::string &tooltip = "" );
 
-    wxScrolledWindow 	*m_scroll;
+    wxScrolledWindow    *m_scroll;
 
 protected:
-    wxFlexGridSizer		*m_sizer;
-    wxBoxSizer			*inner_sizer;
-    unsigned int		m_numberOfLayers;
+    wxFlexGridSizer     *m_sizer;
+    wxBoxSizer          *inner_sizer;
+    unsigned int        m_numberOfLayers;
     panel_viewer* m_basicDrawPane;
-    LayerContainerType	m_layers;
+    LayerContainerType  m_layers;
     // La, il faudrait mettre un boost::shared_array ...
     std::vector< boost::shared_ptr<layer_control_row> > m_rows;
 

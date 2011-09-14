@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+        http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+        Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+        Olivier Tournaire, Adrien Chauve
 
 
 
@@ -35,36 +35,31 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
+#ifndef GILVIEWER_FILE_IO_IMAGEIO_HPP
+#define GILVIEWER_FILE_IO_IMAGEIO_HPP
 
-#ifndef __FRAME_VIEWER_HPP__
-#define __FRAME_VIEWER_HPP__
+#include "../config/config.hpp"
 
-#include "GilViewer/layers/layer.hpp"
+#if GILVIEWER_USE_IMAGEIO
 
-#include "GilViewer/gui/basic_viewer_frame.hpp"
-#include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "gilviewer_file_io_image.hpp"
 
-#include "gilviewer_app.hpp"
-
-class panel_viewer;
-class wxStatusBar;
-class wxDialog;
-class wxMenuBar;
-
-class gilviewer_frame : public basic_viewer_frame
+class gilviewer_file_io_imageio : public gilviewer_file_io_image
 {
 public:
-    gilviewer_frame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxT("frame") );
-    virtual ~gilviewer_frame() { wxGetApp().ExitMainLoop(); }
+    virtual ~gilviewer_file_io_imageio() {}
 
-    void AddLayer( const layer::ptrLayerType &layer);
-    void AddLayersFromFiles(const wxArrayString &names);
+    virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
+    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
+
+    virtual std::string build_and_get_infos(const std::string &filename);
+
+    static bool Register();
+    friend boost::shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio();
 
 private:
-    panel_viewer* m_panelviewer;
-
-    DECLARE_EVENT_TABLE();
-    DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
+    gilviewer_file_io_imageio() {}
 };
 
-#endif // __FRAME_VIEWER_HPP__
+#endif // GILVIEWER_USE_IMAGEIO
+#endif // GILVIEWER_FILE_IO_IMAGEIO_HPP

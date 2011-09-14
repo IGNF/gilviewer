@@ -8,18 +8,18 @@ GIL and wxWidgets.
 
 Homepage: 
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors: 
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
-	
-	
+    
+    
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -39,8 +39,10 @@ Authors:
 #include <wx/dc.h>
 #include <wx/pen.h>
 #include <wx/brush.h>
+#include <wx/log.h>
 
 #include "../gui/vector_layer_settings_control.hpp"
+#include "../convenient/wxrealpoint.hpp"
 
 #include "simple_vector_layer.hpp"
 
@@ -49,13 +51,13 @@ Authors:
 using namespace std;
 
 simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_layer(),
-    m_circles(std::vector<CircleType>() ),
-    m_ellipses(std::vector<EllipseType>() ),
-    m_rotatedellipses(std::vector<RotatedEllipseType> ()),
-    m_arcs(std::vector<ArcType> ()),
-    m_points(std::vector<PointType> ()),
-    m_splines(std::vector< std::vector<PointType> > ()),
-    m_polygons(std::vector< std::vector<PointType> > ())
+m_circles(std::vector<CircleType>() ),
+m_ellipses(std::vector<EllipseType>() ),
+m_rotatedellipses(std::vector<RotatedEllipseType> ()),
+m_arcs(std::vector<ArcType> ()),
+m_points(std::vector<PointType> ()),
+m_splines(std::vector< std::vector<PointType> > ()),
+m_polygons(std::vector< std::vector<PointType> > ())
 {
     m_name=layer_name;
 
@@ -67,8 +69,6 @@ simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_
 //void simple_vector_layer::Draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent, double zoomFactor, double translationX, double translationY, double resolution) const
 void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
 {
-    const double delta = 0.5 * resolution();
-
     wxPen pen;
     wxBrush brush;
 
@@ -82,21 +82,17 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetBrush(brush);
     for (unsigned int i = 0; i < m_circles.size(); i++)
     {
-        wxPoint p = simple_vector_layer::from_local(
-                zoom_factor(),translation_x(),translation_y(),delta,
-                m_circles[i].x,m_circles[i].y);
-        wxCoord r = static_cast<wxCoord>(m_circles[i].radius / zoom_factor());
+        wxPoint p = transform().from_local_int(m_circles[i]);
+        wxCoord r = static_cast<wxCoord>(m_circles[i].radius / transform().zoom_factor());
         dc.DrawCircle(p, r);
     }
     // Ellipses alignees
     for (unsigned int i=0;i<m_ellipses.size();++i)
     {
-        wxPoint p = simple_vector_layer::from_local(
-                zoom_factor(),translation_x(),translation_y(),delta,
-                m_ellipses[i].x,m_ellipses[i].y);
+        wxPoint p = transform().from_local_int(m_ellipses[i]);
         wxSize  s(
-                static_cast<wxCoord>(2*m_ellipses[i].a/zoom_factor()),
-                static_cast<wxCoord>(2*m_ellipses[i].b/zoom_factor())
+                static_cast<wxCoord>(2*m_ellipses[i].a/transform().zoom_factor()),
+                static_cast<wxCoord>(2*m_ellipses[i].b/transform().zoom_factor())
                 );
         dc.DrawEllipse(p,s);
         //dc.DrawEllipticArc(p,s,0.,90.);
@@ -108,10 +104,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         points.reserve( m_rotatedellipses[i].controlPoints.size() );
         for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
-            points.push_back( simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    m_rotatedellipses[i].controlPoints[j].x,
-                    m_rotatedellipses[i].controlPoints[j].y ));
+            points.push_back(transform().from_local_int(m_rotatedellipses[i].controlPoints[j]));
         dc.DrawSpline(static_cast<int>(points.size()),&points.front());
     }
     for (unsigned int i=0;i<m_polygons.size();++i)
@@ -119,9 +112,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         std::vector<wxPoint> points;
         points.reserve( m_polygons[i].size() );
         for (unsigned int j=0;j<m_polygons[i].size();++j)
-            points.push_back(simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    m_polygons[i][j].x,m_polygons[i][j].y ));
+            points.push_back(transform().from_local_int(m_polygons[i][j]));
         dc.DrawPolygon( static_cast<int>(points.size()) , &(points.front()) );
     }
 
@@ -135,12 +126,8 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         const ArcType &local_tab = m_arcs[i];
         for (unsigned int j = 0; j < local_tab.arc_points.size() - 1; ++j)
         {
-            wxPoint p = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    local_tab.arc_points[j  ].x,local_tab.arc_points[j  ].y);
-            wxPoint q = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    local_tab.arc_points[j+1].x,local_tab.arc_points[j+1].y);
+            wxPoint p = transform().from_local_int(local_tab.arc_points[j  ]);
+            wxPoint q = transform().from_local_int(local_tab.arc_points[j+1]);
             dc.DrawLine(p,q);
         }
     }
@@ -152,9 +139,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         unsigned int n = static_cast<int>(spline.size());
         for (unsigned int j=0;j<n;++j)
         {
-            wxPoint p = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    spline[j].x,spline[j].y);
+            wxPoint p = transform().from_local_int(spline[j]);
             points.push_back(p);
         }
         dc.DrawSpline(n,&points.front());
@@ -166,9 +151,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetPen(pen);
     for (unsigned int i = 0; i < m_points.size(); i++)
     {
-        wxPoint p = simple_vector_layer::from_local(
-                zoom_factor(),translation_x(),translation_y(),delta,
-                m_points[i].x,m_points[i].y);
+        wxPoint p = transform().from_local_int(m_points[i]);
         //dc.DrawLine(p);
         dc.DrawPoint(p);
     }
@@ -180,9 +163,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         dc.SetPen(pen);
         for (unsigned int i = 0; i < m_texts.size(); i++)
         {
-            wxPoint p = simple_vector_layer::from_local(
-                    zoom_factor(),translation_x(),translation_y(),delta,
-                    m_texts[i].first.x,m_texts[i].first.y);
+            wxPoint p = transform().from_local_int(m_texts[i].first);
             //dc.DrawLine(p);
             dc.DrawText(wxString(m_texts[i].second.c_str(),*wxConvCurrent),p);
         }
@@ -214,7 +195,7 @@ void simple_vector_layer::add_polyline( const std::vector<double> &x , const std
     assert(x.size()==y.size());
     for(unsigned int i=0;i<x.size()-1;++i)
         add_line(x[i  ],y[i  ],
-                x[i+1],y[i+1]);
+                 x[i+1],y[i+1]);
 }
 
 void simple_vector_layer::add_point( double x , double y )
@@ -261,7 +242,7 @@ void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double
     et.b = db;
     et.theta = theta;
     // Construction de la liste des points
-    static const double EToBConst =	0.2761423749154;
+    static const double EToBConst = 0.2761423749154;
     wxSize offset((int)(2*da*EToBConst), (int)(2*db*EToBConst));
 
     wxCoord x_center = (wxCoord) dx_center;
@@ -313,13 +294,6 @@ void simple_vector_layer::clear()
     vector< pair<PointType,string> >().swap(m_texts);
 }
 
-wxPoint simple_vector_layer::from_local(double zoomFactor, double translationX, double translationY, double delta, double x, double y, int coordinates) const {
-        return wxPoint(
-                static_cast<wxCoord>((delta+            x+translationX)/zoomFactor),
-                static_cast<wxCoord>((delta+coordinates*y+translationY)/zoomFactor)
-        );
-    }
-
 string simple_vector_layer::available_formats_wildcard() const
 {
     ostringstream wildcard;
@@ -347,4 +321,102 @@ std::string simple_vector_layer::infos()
     oss << m_polygons.size() << " polygons\n";
     m_infos = oss.str();
     return m_infos;
+}
+
+
+bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
+{
+    wxRealPoint q =  transform().to_local(p);
+    double zoom = transform().zoom_factor();
+    double invzoom2 = 1.0/(zoom*zoom);
+    bool snapped = false;
+
+    if(snap&(SNAP_POINT|SNAP_LINE))
+    {
+        for (unsigned int i = 0; i < m_circles.size(); i++)
+        {
+            wxRealPoint c(m_circles[i].x,m_circles[i].y);
+            double d = squared_distance(q,c)*invzoom2;
+            if((snap&SNAP_POINT) && (d < d2[SNAP_POINT] ))
+            {
+                for(unsigned int j=0; j<SNAP_POINT; ++j) d2[j]=0;
+                d2[SNAP_POINT] = d;
+                psnap = transform().from_local(c);
+                snapped = true;
+            }
+            else
+            {
+                double radius =  std::sqrt(d)*zoom;
+                d =radius-m_circles[i].radius;
+                d = d*d*invzoom2;
+                if((snap&SNAP_LINE) && (d < d2[SNAP_LINE] ))
+                {
+                    for(unsigned int j=0; j<SNAP_LINE; ++j) d2[j]=0;
+                    d2[SNAP_LINE] = d;
+                    psnap = transform().from_local(c+(m_circles[i].radius/radius)*(q-c));
+                    snapped = true;
+                }
+            }
+        }
+    }
+    // Ellipses alignees
+    if(!m_ellipses.empty())
+    {
+        wxLogMessage(wxT("snapping to ellipses not implemented in simple_vector_layer"));
+    }
+    // Ellipses non alignees
+    if(!m_rotatedellipses.empty())
+    {
+        wxLogMessage(wxT("snapping to rotated ellipses not implemented in simple_vector_layer"));
+    }
+
+
+    if(snap&(SNAP_POINT|SNAP_LINE))
+    {
+        for (unsigned int i=0;i<m_polygons.size();++i)
+        {
+            wxRealPoint p0(m_polygons[i].back().x,m_polygons[i].back().y), p1;
+            for (unsigned int j=0;j<m_polygons[i].size();++j, p0=p1)
+            {
+                p1 = wxRealPoint(m_polygons[i][j].x,m_polygons[i][j].y);
+                if(snap&SNAP_POINT) snapped=snapped||snap_point(transform(), invzoom2, d2, q, p1, psnap );
+                if(snap&SNAP_LINE ) snapped=snapped||snap_segment(transform(), invzoom2, d2, q, p0, p1, psnap );
+            }
+        }
+        for (unsigned int i = 0; i < m_arcs.size(); i++)
+        {
+            const ArcType &arc = m_arcs[i];
+            if(!arc.arc_points.empty() && (snap&SNAP_POINT))
+                snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap );
+            for (unsigned int j = 0; j < arc.arc_points.size() - 1; ++j)
+            {
+                if(snap&SNAP_POINT) snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points[j+1], psnap );
+                if(snap&SNAP_LINE ) snapped=snapped||snap_segment(transform(), invzoom2, d2, q, arc.arc_points[j], arc.arc_points[j+1], psnap );
+            }
+        }
+    }
+    if(!m_splines.empty())
+    {
+        wxLogMessage(wxT("snapping to splines not implemented in simple_vector_layer"));
+    }
+
+    // 0D
+    if(snap&SNAP_POINT)
+    {
+
+        for (unsigned int i = 0; i < m_points.size(); i++)
+        {
+            snapped=snapped||snap_point(transform(), invzoom2, d2, q, m_points[i], psnap );
+        }
+
+        // Text
+        if(text_visibility())
+        {
+            for (unsigned int i = 0; i < m_texts.size(); i++)
+            {
+                snapped=snapped||snap_point(transform(), invzoom2, d2, q, m_texts[i].first, psnap );
+            }
+        }
+    }
+    return snapped;
 }

@@ -74,37 +74,6 @@ using namespace boost;
 
 unsigned int image_layer::m_gamma_array_size = 1000;
 
-/*
-image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const view_ptr& v):
-        m_img(image), m_view(v)
-{
-    if(!v) m_view.reset(new view_t( view(m_img->value) ));
-
-    // TODO: remove
-    m_startInput[0] = m_startInput[1] = 0;
-    m_sizeInput[0] = m_sizeInput[1] = 0;
-
-    m_minmaxResult = apply_operation(m_view->value, any_view_min_max());
-
-    name(name_);
-    filename(filename_);
-
-    alpha(255);
-    //TODO
-    intensity_min(m_minmaxResult.first);
-    intensity_max(m_minmaxResult.second);
-    transparent(false);
-    transparency_max(0.);
-    transparency_min(0.);
-    gamma(1.);
-
-    m_cLUT = boost::shared_ptr<color_lookup_table>(new color_lookup_table);
-
-    channels(0,1,2);
-    alpha_channel(false,0);
-}
-*/
-
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/bind.hpp>
@@ -112,19 +81,19 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
 struct min_max_visitor : public boost::static_visitor< pair<float, float> >
 {
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, any_view_min_max()); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, any_view_min_max()); }
 };
 
 struct type_channel_visitor : public boost::static_visitor<string>
 {
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, type_channel_functor()); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, type_channel_functor()); }
 };
 
 struct nb_components_visitor : public boost::static_visitor<unsigned int>
 {
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, nb_components_functor()); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, nb_components_functor()); }
 };
 
 struct histogram_visitor : public boost::static_visitor<shared_ptr<const histogram_functor::histogram_type> >
@@ -132,7 +101,7 @@ struct histogram_visitor : public boost::static_visitor<shared_ptr<const histogr
     histogram_visitor(double &min, double &max) : m_min(min), m_max(max) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, histogram_functor(m_min, m_max)); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, histogram_functor(m_min, m_max)); }
 
 private:
     double m_min, m_max;
@@ -141,13 +110,13 @@ private:
 struct width_visitor : public boost::static_visitor<int>
 {
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return v.width(); }
+            result_type operator()(const ViewType& v) const { return v.width(); }
 };
 
 struct height_visitor : public boost::static_visitor<int>
 {
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return v.height(); }
+            result_type operator()(const ViewType& v) const { return v.height(); }
 };
 
 struct image_position_to_string_visitor : public boost::static_visitor<>
@@ -155,7 +124,7 @@ struct image_position_to_string_visitor : public boost::static_visitor<>
     image_position_to_string_visitor(const int i, const int j, std::ostringstream& oss) : m_i(i), m_j(j), m_oss(oss) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, any_view_image_position_to_string_functor(m_i, m_j, m_oss)); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, any_view_image_position_to_string_functor(m_i, m_j, m_oss)); }
 
 private:
     const int m_i, m_j;
@@ -166,31 +135,27 @@ struct screen_image_visitor : public boost::static_visitor<>
 {
     screen_image_visitor(boost::gil::dev3n8_view_t &screen_view,
                          channel_converter_functor cc,
-                         double z,
-                         double tx,
-                         double ty,
+                         const layer_transform& trans,
                          boost::gil::gray8_view_t& canal_alpha,
                          const double min_alpha,
                          const double max_alpha,
                          const unsigned char alpha,
                          bool isTransparent) : m_screen_view(screen_view),
-                                               m_cc(cc),
-                                               m_z(z),
-                                               m_tx(tx),
-                                               m_ty(ty),
-                                               m_canal_alpha(canal_alpha),
-                                               m_min_alpha(min_alpha),
-                                               m_max_alpha(max_alpha),
-                                               m_alpha(alpha),
-                                               m_is_transparent(isTransparent) {}
+    m_cc(cc),
+    m_transform(trans),
+    m_canal_alpha(canal_alpha),
+    m_min_alpha(min_alpha),
+    m_max_alpha(max_alpha),
+    m_alpha(alpha),
+    m_is_transparent(isTransparent) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return apply_operation(v, screen_image_functor(m_screen_view, m_cc, m_z, m_tx, m_ty, m_canal_alpha, m_min_alpha, m_max_alpha, m_alpha, m_is_transparent)); }
+            result_type operator()(const ViewType& v) const { return apply_operation(v, screen_image_functor(m_screen_view, m_cc, m_transform, m_canal_alpha, m_min_alpha, m_max_alpha, m_alpha, m_is_transparent)); }
 
 private:
     boost::gil::dev3n8_view_t &m_screen_view;
     channel_converter_functor m_cc;
-    double m_z, m_tx, m_ty;
+    layer_transform m_transform;
     boost::gil::gray8_view_t& m_canal_alpha;
     const double m_min_alpha;
     const double m_max_alpha;
@@ -203,7 +168,7 @@ struct subimage_visitor : public boost::static_visitor<image_layer::variant_view
     subimage_visitor(int xMin, int yMin, int width, int height) : m_xmin(xMin), m_ymin(yMin), m_width(width), m_height(height) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { return subimage_view(v, m_xmin, m_ymin, m_width, m_height); }
+            result_type operator()(const ViewType& v) const { return subimage_view(v, m_xmin, m_ymin, m_width, m_height); }
 private:
     int m_xmin, m_ymin, m_width, m_height;
 };
@@ -232,10 +197,10 @@ void image_layer::init()
 }
 
 image_layer::image_layer(const image_ptr &image, const std::string &name_, const std::string &filename_, const variant_view_ptr& v):
-    layer(),
-    m_img(image),
-    m_variant_view(v),
-    m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
+        layer(),
+        m_img(image),
+        m_variant_view(v),
+        m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
 {
     if(!v)
     {
@@ -248,26 +213,9 @@ image_layer::image_layer(const image_ptr &image, const std::string &name_, const
     init();
 }
 
-image_layer::image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_):
-    layer(),
-    m_img( boost::shared_ptr<image_t>()),
-    m_variant_view(variant_view_),
-    m_gamma_array( shared_array<float>(new float[m_gamma_array_size+1]) )
+layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const std::string &name, const std::string &filename, const variant_view_ptr& v)
 {
-    name(name_);
-    filename(filename_);
-
-    init();
-}
-
-layer::ptrLayerType image_layer::create_image_layer(const image_ptr &image, const string &name)
-{
-    return ptrLayerType(new image_layer(image, name));
-}
-
-layer::ptrLayerType image_layer::create_image_layer(const variant_view_ptr &variant_view_, const string &name)
-{
-    return ptrLayerType(new image_layer(variant_view_, name));
+    return ptrLayerType(new image_layer(image,name,filename,v));
 }
 
 void image_layer::update(int width, int height)
@@ -298,11 +246,10 @@ void image_layer::update(int width, int height)
     if(m_blue>=nb_channels)
         m_blue=nb_channels-1;
     channel_converter_functor my_cc(
-		intensity_min(), intensity_max(),
-		m_gamma_array, m_gamma_array_size,
-		*m_cLUT, m_red, m_green, m_blue);
-    //apply_operation( m_view->value, screen_image_functor(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent()));
-    screen_image_visitor siv(screen_view, my_cc, m_zoomFactor, m_translationX, m_translationY, alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
+            intensity_min(), intensity_max(),
+            m_gamma_array, m_gamma_array_size,
+            *m_cLUT, m_red, m_green, m_blue);
+    screen_image_visitor siv(screen_view, my_cc, transform(), alpha_view, m_transparencyMin, m_transparencyMax, m_alpha, transparent());
     apply_visitor( siv, m_variant_view->value );
 
     wxImage monImage(screen_view.width(), screen_view.height(), interleaved_view_get_raw_data(screen_view), true);
@@ -336,15 +283,13 @@ shared_ptr<const layer::histogram_type> image_layer::histogram(double &min, doub
     return apply_visitor(hv, m_variant_view->value);
 }
 
-string image_layer::pixel_value(int i, int j) const
+string image_layer::pixel_value(const wxRealPoint& p) const
 {
     ostringstream oss;
     oss.precision(6);
     oss<<"(";
-    i = static_cast<int>(floor(i*m_zoomFactor-m_translationX));
-    j = static_cast<int>(floor(j*m_zoomFactor-m_translationY));
-    //apply_operation(m_view->value, any_view_image_position_to_string_functor(i,j, oss));
-    image_position_to_string_visitor iptsv(i, j, oss);
+    wxPoint pt=transform().to_local_int(p);
+    image_position_to_string_visitor iptsv(pt.x, pt.y, oss);
     apply_visitor( iptsv, m_variant_view->value );
     oss<<")";
     return oss.str();
@@ -373,32 +318,77 @@ void image_layer::gamma(double gamma)
         m_gamma = 1. / gamma;
         for (unsigned int i=0; i<= m_gamma_array_size; ++i)
             m_gamma_array[i] = std::pow(((double) i)/ m_gamma_array_size, m_gamma);
-		m_gamma = gamma;
+        m_gamma = gamma;
     }
 }
 
-layer::ptrLayerType image_layer::crop(int& x0, int& y0, int& x1, int& y1) const
+
+layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealPoint& p1) const
 {
-    if(x0<0) x0=0;
-    if(y0<0) y0=0;
-    if(x1>apply_visitor( width_visitor(), m_variant_view->value )) x1=apply_visitor( width_visitor(), m_variant_view->value );
-    if(y1>apply_visitor( height_visitor(), m_variant_view->value )) y1=apply_visitor( height_visitor(), m_variant_view->value );
-    if(x0>=x1 || y0>=y1) return ptrLayerType();
-    //view_t::type crop = subimage_view(m_view->value, x0, y0, x1-x0, y1-y0 );
-    subimage_visitor sv(x0, y0, x1-x0, y1-y0);
+    // compute local coordinates
+    wxRealPoint q0=p0;
+    wxRealPoint q1=p1;
+
+    //  q0 = min point, q1 = max point
+    if(q0.x>q1.x) std::swap(q0.x,q1.x);
+    if(q0.y>q1.y) std::swap(q0.y,q1.y);
+
+    // clip to image range
+    int w = width();
+    int h = height();
+    if(q0.x<0) q0.x=0;
+    if(q0.y<0) q0.y=0;
+    if(q1.x>w) q1.x=w;
+    if(q1.y>h) q1.y=h;
+
+    // get integral image coordinates
+    q0.x = floor(q0.x+0.5);
+    q0.y = floor(q0.y+0.5);
+    q1.x = floor(q1.x+0.5);
+    q1.y = floor(q1.y+0.5);
+
+    int x0 = (int)(q0.x);
+    int y0 = (int)(q0.y);
+    int w0  = (int)(q1.x)-x0;
+    int h0  = (int)(q1.y)-y0;
+
+    // abort if trivial range
+    if(w0<=0 || h0<=0) return ptrLayerType();
+    
+    subimage_visitor sv(x0, y0, w0, h0);
     variant_view_t::type crop = apply_visitor( sv, m_variant_view->value );
     //view_ptr crop_ptr(new view_t(crop));
     variant_view_ptr crop_ptr(new variant_view_t(crop));
     boost::filesystem::path file(boost::filesystem::system_complete(filename()));
     std::ostringstream oss;
-    oss << ".crop" <<x0<<"_"<<y0<<"_"<<x1-x0<<"x"<<y1-y0;
-    #if BOOST_FILESYSTEM_VERSION > 2
+    oss << ".crop" <<x0<<"_"<<y0<<"_"<<w0<<"x"<<h0;
+#if BOOST_FILESYSTEM_VERSION > 2
     file.replace_extension(oss.str() + file.extension().string());
-    #else
+#else
     file.replace_extension(oss.str() + file.extension());
-    #endif
+#endif
     std::string name = file.string();
-    return ptrLayerType(new image_layer(m_img, name, file.string(), crop_ptr) );
+
+    image_layer *l = new image_layer(m_img, name, file.string(), crop_ptr);
+
+    // fix "off by 1 pixel transform" errors for rotated images
+    q1.x -= 1;
+    q1.y -= 1;
+
+    wxRealPoint r0 = transform().from_local(q0);
+    wxRealPoint r1 = transform().from_local(q1);
+    if(r0.x>r1.x) std::swap(r0.x,r1.x);
+    if(r0.y>r1.y) std::swap(r0.y,r1.y);
+
+    l->transform() = transform();
+    l->transform().translation_x(0);
+    l->transform().translation_y(0);
+    l->transform().translate(r0);
+    l->transform().orientation(transform().orientation(),w0,h0);
+
+    // todo : handle Orientation2D of if it exists ... ??
+
+    return ptrLayerType(l);
 }
 
 vector<string> image_layer::available_formats_extensions() const
@@ -432,8 +422,31 @@ layer_settings_control* image_layer::build_layer_settings_control(unsigned int i
     return new image_layer_settings_control(index, parent);
 }
 
-//double image_layer::center_x() {return m_view->value.width()/2.;}
-//double image_layer::center_y() {return m_view->value.height()/2.;}
+double image_layer::center_x() {return 0.5*width ();}
+double image_layer::center_y() {return 0.5*height();}
 
-double image_layer::center_x() {return apply_visitor( width_visitor(), m_variant_view->value )/2.;}
-double image_layer::center_y() {return apply_visitor( height_visitor(), m_variant_view->value )/2.;}
+bool image_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
+{
+
+    if(!(snap & SNAP_GRID)) return false;
+
+    wxRealPoint q = transform().to_local(p);
+    int h=height();
+    int w=width();
+    if( q.x < -0.5 || q.y < -0.5 || q.x > w+0.5 || q.y > h+0.5 ) return false;
+
+    wxRealPoint qsnap (floor(q.x+0.5),floor(q.y+0.5));
+
+    wxRealPoint v(q-qsnap);
+    double d = v.x*v.x+v.y*v.y;
+    if(d>=d2[SNAP_GRID]) return false;
+
+    for(unsigned int i=0; i<SNAP_GRID;++i) d2[i]=0;
+    d2[SNAP_GRID]=d;
+    psnap = transform().from_local(qsnap);
+    return true;
+}
+
+unsigned int image_layer::width () const {return apply_visitor(  width_visitor(), m_variant_view->value );}
+unsigned int image_layer::height() const {return apply_visitor( height_visitor(), m_variant_view->value );}
+    

@@ -36,8 +36,8 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef VECTORLAYERGENERIC_H_
-#define VECTORLAYERGENERIC_H_
+#ifndef VECTOR_LAYER_GHOST_HPP
+#define VECTOR_LAYER_GHOST_HPP
 
 #include <utility>
 #include <vector>
@@ -46,56 +46,71 @@ Authors:
 #include <wx/brush.h>
 #include <wx/gdicmn.h>
 
+#include "layer_transform.hpp"
+#include "boost/variant.hpp"
+
 class wxDC;
 class wxPoint;
 
 class vector_layer_ghost
 {
 public:
-    vector_layer_ghost( bool isCarto = false );
 
-    void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
-    inline double zoom_factor() const { return m_zoomFactor; }
-    void translation_x(double dx) { m_translationX = dx; }
-    inline double translation_x() const { return m_translationX; }
-    void translation_y(double dy) { m_translationY = dy; }
-    inline double translation_y() const { return m_translationY; }
+    // constructor
+    vector_layer_ghost();
 
-    // local<->global transforms. Default: pixel-centered
-    wxPoint to_local  (const wxPoint &p, double delta =0.5) const;
-    wxPoint from_local(const wxPoint &p, double delta =0.5) const;
+    // input types
+    struct Nothing {};
+    typedef wxRealPoint Point;
+    typedef std::pair<Point,Point> Rectangle;
+    typedef std::pair<Point,double> Circle;
+    class Polyline : public std::vector<Point> {};
+    class Polygon : public std::vector<Point> {};
+    typedef boost::variant<Nothing,Point,Rectangle,Circle,Polyline,Polygon> variant_input;
 
-    wxRect rectangle() const;
 
+    // input reseting (same input type)
+    void reset();
+    // input reseting to a new given input type
+    template<typename T> void reset()
+    {
+        m_input = T();
+        m_complete = false;
+        m_num_inputs = 0;
+    }
+
+    // drawing and geometry modifications
     void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent);
+    bool add_point(const wxRealPoint& p, bool final = false);
+    void move_relative(const wxRealPoint& p);
+    void move_absolute(const wxRealPoint& p);
+    void update_relative(const wxRealPoint& p);
+    void update_absolute(const wxRealPoint& p);
 
-    wxPoint m_pointPosition;
-    std::pair<wxPoint,wxPoint>  m_rectangleSelection;
-    std::vector<wxPoint> m_linePoints;
-
-    typedef std::pair< wxPoint , double > CircleType;
-    CircleType m_circle;
-
-
-    bool m_isCarto;
-    bool m_drawPointPosition;
-    bool m_drawRectangleSelection;
-    bool m_rectangleSelectionFirstPointSet;
-    bool m_drawCircle;
-    bool m_CircleFirstPointSet; //=center
-    bool m_drawLine;
-    bool m_lineEndCapture; // existance du premier point de la polyligne
-    bool m_lineHasBegun;
-
+    // rendering style
     wxPen m_penPoint, m_penRectangle, m_penCircle, m_penLine;
     wxBrush m_brushRectangle, m_brushCircle;
 
-private:
-    //gestion de la geometrie
-    double m_zoomFactor;
-    double m_translationX, m_translationY;
-    double m_resolution;
+    // transform
+    layer_transform& transform() { return m_layer_transform; }
+    const layer_transform& transform() const { return m_layer_transform; }
 
+    // input is ready for consumption
+    bool complete() const { return m_complete; }
+    inline void complete(bool c) { m_complete = c; }
+    inline unsigned int num_inputs() const { return m_num_inputs; }
+
+    // get the input
+    const variant_input& get() const { return m_input; }
+    template<typename T> inline const T* get() const { return boost::get<T>(&m_input); }
+
+    bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
+
+private:
+    layer_transform m_layer_transform;
+    variant_input m_input;
+    bool m_complete;
+    unsigned int m_num_inputs;
 };
 
-#endif /*VECTORLAYERGENERIC_H_*/
+#endif /*VECTOR_LAYER_GHOST_HPP*/

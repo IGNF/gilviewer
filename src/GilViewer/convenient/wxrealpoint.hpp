@@ -12,11 +12,11 @@ Homepage:
 
 Copyright:
 
-        Institut Geographique National (2009)
+        Institut Geographique National (2011)
 
 Authors:
 
-        Olivier Tournaire, Adrien Chauve
+        Mathieu Brédif
 
 
 
@@ -36,31 +36,48 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef __PLUGIN_MANAGER_HPP__
-#define __PLUGIN_MANAGER_HPP__
-#include <vector>
+#ifndef GILVIEWER_WXREALPOINT_HPP
+#define GILVIEWER_WXREALPOINT_HPP
 
-#include "../tools/pattern_singleton.hpp"
-#include "../tools/pattern_factory.hpp"
-#include "plugin_base.hpp"
+#include <wx/gdicmn.h>
+#include <cmath>
 
-class plugin_manager_model : public PatternFactory<plugin_base>
+// convenience wxRealPoint operators
+#if wxMINOR_VERSION < 9
+inline wxRealPoint& operator+=(wxRealPoint& p, const wxRealPoint&q)
 {
-public:
-    friend class PatternSingleton<plugin_manager_model>;
-    virtual ~plugin_manager_model() {}
-    plugin_base* create_object(const std::string& id);
+    p=p+q;
+    return p;
+}
+#endif
 
-    static void register_plugins(const std::string &path);
-    unsigned int  getNbPlugins()const{ return (unsigned int)m_plugins.size();}
-    plugin_base* getPluginAt(unsigned int i)const{return m_plugins.at(i);}
-private:
-    plugin_manager_model() {}
-    // Le tableau des plugins
-    std::vector<plugin_base*> m_plugins;
-};
+inline wxRealPoint operator-(const wxRealPoint&p)
+{
+    return wxRealPoint(-p.x,-p.y);
+}
 
-typedef PatternSingleton<plugin_manager_model> plugin_manager;
 
-#endif // __PLUGIN_MANAGER_HPP__
+#if wxMINOR_VERSION < 9
+inline wxRealPoint operator*(double d, const wxRealPoint&p)
+{
+    return wxRealPoint(d*p.x,d*p.y);
+}
+#endif
 
+inline double squared_distance(const wxRealPoint& p, const wxRealPoint &q)
+{
+    wxRealPoint diff(q - p);
+    return diff.x * diff.x + diff.y * diff.y;
+}
+
+inline double dot(const wxRealPoint& p, const wxRealPoint &q)
+{
+    return p.x*q.x+p.y*q.y;
+}
+
+inline bool operator<(const wxRealPoint& p, const wxRealPoint &q)
+{
+    return (p.x<q.x) || (p.x==q.x && p.y<q.y);
+}
+
+#endif // GILVIEWER_WXREALPOINT_HPP

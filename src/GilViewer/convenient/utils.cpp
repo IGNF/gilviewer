@@ -24,6 +24,14 @@ vector<string> simple_available_formats_extensions()
     return extensions;
 }
 
+vector<string> cgal_available_formats_extensions()
+{
+    vector<string> extensions;
+    extensions.push_back("cgal");
+    extensions.push_back("CGAL");
+    return extensions;
+}
+
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include "../io/gilviewer_io_factory.hpp"
