@@ -73,7 +73,7 @@ if(WIN32)
         #Visual C++, 32-bit, version 2008        1500 (vc90)
 		#MSVC90  (Visual C++ 2008 SP1) MSVC_VERSION=1500 (Compiler  Version 15.00.30729.01)
 		#MSVC100 (Visual C++ 2010) MSVC_VERSION=1600 (Compiler  Version 16.00.30319.01)
-		MESSAGE(STATUS " MSVC 71 " ${MSVC71})
+		#MESSAGE(STATUS " MSVC 71 " ${MSVC71})
         if(MSVC_VERSION EQUAL 1310 OR MSVC_VERSION EQUAL 1400 OR MSVC_VERSION EQUAL 1500 OR MSVC_VERSION EQUAL 1600 )
         else()
 			aux_source_directory(${SRC_DIR}/gui/msvc SRC_MSVC)
@@ -155,6 +155,9 @@ IF( NOT Boost_FOUND )
 ELSE()
         INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 	link_directories( ${Boost_LIBRARY_DIRS} )
+	if( WIN32 )
+		add_definitions( -DBOOST_ALL_NO_LIB )
+	endif()
 ENDIF()
 
 ####
@@ -202,6 +205,9 @@ INCLUDE_DIRECTORIES( BEFORE  "src/" )
 ADD_DEPENDENCIES( GilViewer tinyxml )
 # Et enfin, le viewer depend de la lib ...
 ADD_DEPENDENCIES( GilViewerApp GilViewer )
+# De meme que les samples ...
+ADD_DEPENDENCIES( sample_vector_layer GilViewer )
+ADD_DEPENDENCIES( sample_subimage GilViewer )
 
 ####
 #### Choice for install mode.

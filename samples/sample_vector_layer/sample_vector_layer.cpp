@@ -62,8 +62,17 @@ using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+    {   wxCMD_LINE_PARAM,
+    NULL,
+    NULL,
+#ifdef __WINDOWS__
+    _("Input files"),
+#else
+    wxT("Input files"),
+#endif
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+    {   wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -131,9 +140,8 @@ bool sample_vector_layer_app::OnInit()
     }
     catch( std::exception &e )
     {
-        GILVIEWER_LOG_EXCEPTION("Exception")
-        wxString message(oss.str().c_str(), *wxConvCurrent);
-	::wxMessageBox( message );
+        GILVIEWER_LOG_EXCEPTION(e.what())
+        wxMessageBox(_("Exception: see log!"), _("Exception!"), wxICON_ERROR);
     }
 
     return true;

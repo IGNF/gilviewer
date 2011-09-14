@@ -172,16 +172,26 @@ Authors:
         oss << "Function: " << __FUNCTION__ << endl;
 
 #define GILVIEWER_LOG_EXCEPTION(txt) \
+    { \
     ostringstream oss; \
-    oss << txt << endl; \
+    oss << "[EXCEPTION]: " << txt << endl; \
     oss << e.what() << endl; \
     INTERNAL_LOG_INFOS() \
-    gilviewer_wx_error_logger::log_message(oss.str());
+    gilviewer_wx_error_logger::log_message(oss.str()); \
+    }
 
 #define GILVIEWER_LOG_ERROR(txt) \
+    { \
     ostringstream oss; \
-    oss << txt << endl; \
-    INTERNAL_LOG_INFOS() \
-    gilviewer_wx_error_logger::log_message(oss.str());
+    oss << "[ERROR]: " << txt << endl; \
+    gilviewer_wx_error_logger::log_message(oss.str()); \
+    }
+
+#define GILVIEWER_LOG_MESSAGE(txt) \
+    { \
+    ostringstream oss; \
+    oss << "[MESSAGE]: " << txt << endl; \
+    gilviewer_wx_error_logger::log_message(oss.str()); \
+    }
 
 #endif /* MACROSGILVIEWER_HPP_ */
