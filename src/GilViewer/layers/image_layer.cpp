@@ -283,7 +283,7 @@ void image_layer::update(int width, int height)
     alpha_image_t::view_t alpha_view = boost::gil::view(*m_alpha_img);
     fill_pixels(alpha_view, 0);
 
-    std::size_t nb_channels = nb_components();
+    unsigned int nb_channels = static_cast<int>(nb_components());
     if(m_red>=nb_channels)
         m_red=nb_channels-1;
     if(m_green>=nb_channels)

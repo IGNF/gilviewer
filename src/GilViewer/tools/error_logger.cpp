@@ -36,6 +36,8 @@ Authors:
 
 ***********************************************************************/
 
+/// @TODO: move from error_logger --> gilviewer_logger
+
 #include "error_logger.hpp"
 
 #include <wx/log.h>

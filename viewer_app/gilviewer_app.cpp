@@ -59,8 +59,17 @@ using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+{   wxCMD_LINE_PARAM,
+    NULL,
+    NULL,
+#ifdef __WINDOWS__
+    _("Input files"),
+#else
+    wxT("Input files"),
+#endif
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+{   wxCMD_LINE_NONE } };
 
 IMPLEMENT_APP(gilviewer_app);
 
@@ -139,7 +148,7 @@ void gilviewer_app::set_langage(unsigned int language_id)
 
         if(! locale->IsOk() )
         {
-            ::wxLogMessage( _("Selected language is wrong!") );
+            GILVIEWER_LOG_MESSAGE("Selected language is wrong!")
             delete locale;
             locale = new wxLocale( wxLANGUAGE_ENGLISH );
             language = wxLANGUAGE_ENGLISH;
@@ -147,7 +156,7 @@ void gilviewer_app::set_langage(unsigned int language_id)
     }
     else
     {
-       	::wxLogMessage( _("The selected langage is not supported by your system. Try installing support for this language.") );
+        GILVIEWER_LOG_MESSAGE("Selected language is wrong!")
         locale = new wxLocale( wxLANGUAGE_ENGLISH );
         language = wxLANGUAGE_ENGLISH;
     }

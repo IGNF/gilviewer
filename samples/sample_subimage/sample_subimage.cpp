@@ -69,8 +69,17 @@ using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxT("Input files"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+    {   wxCMD_LINE_PARAM,
+    NULL,
+    NULL,
+#ifdef __WINDOWS__
+    _("Input files"),
+#else
+    wxT("Input files"),
+#endif
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+    {   wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -108,7 +117,7 @@ bool sample_subimage_app::OnInit()
     }
     catch (const std::exception &e)
     {
-        GILVIEWER_LOG_EXCEPTION("")
+        GILVIEWER_LOG_EXCEPTION("An exception occured")
     }
 
     return true;

@@ -37,6 +37,7 @@ Authors:
 ***********************************************************************/
 
 #include <limits>
+#include <sstream>
 
 #include <boost/filesystem.hpp>
 
@@ -60,6 +61,8 @@ Authors:
 #include "../gui/resources/image_icon.xpm"
 #include "../gui/image_layer_settings_control.hpp"
 #include "../tools/color_lookup_table.hpp"
+
+using namespace std;
 
 BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         EVT_BUTTON(wxID_OK,image_layer_settings_control::on_ok_button)
@@ -424,7 +427,7 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     //Branchement du choix de la CLUT
     if(m_nbComponents == 1)
     {
-        std::string fileLUT(m_filePicker_CLUT->GetPath().mb_str() );
+        string fileLUT(m_filePicker_CLUT->GetPath().mb_str() );
         if(boost::filesystem::exists(fileLUT))
         {
             if ( boost::filesystem::basename(fileLUT) == "random" )
@@ -433,9 +436,7 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
                 layercontrol()->layers()[m_index]->colorlookuptable()->load_from_binary_file( fileLUT );
         }
         else
-        {
-            ::wxLogMessage(_("LUT file does not exist!"));
-        }
+            GILVIEWER_LOG_MESSAGE("LUT file does not exist!");
     }
 
     m_parent->panelviewer()->layercontrol()->layers()[m_index]->needs_update(true);
@@ -625,7 +626,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
     if (m_isInit)
     {
         wxBufferedPaintDC dc(this);
-        if (!dc.Ok())
+        if (!dc.IsOk())
             return;
         dc.Clear();
 
@@ -648,8 +649,8 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
         if (histo.size() == 1)
         {
             dc.SetPen( *wxBLACK_PEN);
-            double max_value = *std::max_element(histo[0].begin(), histo[0].end());
-            double min_value = *std::min_element(histo[0].begin(), histo[0].end());
+            double max_value = *max_element(histo[0].begin(), histo[0].end());
+            double min_value = *min_element(histo[0].begin(), histo[0].end());
             double step_height = window_height / static_cast<double>(max_value-min_value);
 
             wxString min_string, max_string;
@@ -675,12 +676,12 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
         else //nombre de canaux quelconque
         {
             // On calcule l'etendue maximale. On a donc besoin du min des min des n canaux et du max des max des n canaux.
-            double	max_value = std::numeric_limits<double>::min();
-            double min_value = std::numeric_limits<double>::max();
+            double	max_value = numeric_limits<double>::min();
+            double min_value = numeric_limits<double>::max();
             for(unsigned int channel = 0; channel < histo.size(); ++channel)
             {
-                max_value = std::max( max_value, *std::max_element(histo[channel].begin(), histo[channel].end()) );
-                min_value = std::min( min_value, *std::min_element(histo[channel].begin(), histo[channel].end()) );
+                max_value = max( max_value, *max_element(histo[channel].begin(), histo[channel].end()) );
+                min_value = min( min_value, *min_element(histo[channel].begin(), histo[channel].end()) );
             }
 
             double step_height = static_cast<double>(window_height) / (max_value - min_value);
@@ -717,7 +718,7 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
     else
     {
         wxBufferedPaintDC dc(this);
-        if (!dc.Ok())
+        if (!dc.IsOk())
             return;
         dc.Clear();
 
