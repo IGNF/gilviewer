@@ -88,6 +88,25 @@ namespace ign {
 } // namespace ign::imageio
 
 
+template <typename Pixel> struct channel_value_type {};
+template <typename ChannelValue, typename Layout>
+        struct channel_value_type<boost::gil::pixel<ChannelValue,Layout> > { typedef ChannelValue type; };
+
+// value_type -> gil radical metafunction
+template<typename T> struct gil_code {};
+template<> struct gil_code<unsigned char >  { static const char *value; };
+template<> struct gil_code<  signed short>  { static const char *value; };
+template<> struct gil_code<unsigned short>  { static const char *value; };
+template<> struct gil_code<unsigned int  >  { static const char *value; };
+template<> struct gil_code<float         >  { static const char *value; };
+template<> struct gil_code<bool          >  { static const char *value; };
+const char *gil_code<unsigned char >::value = "8";
+const char *gil_code<  signed short>::value = "16s";
+const char *gil_code<unsigned short>::value = "16";
+const char *gil_code<unsigned int  >::value = "32";
+const char *gil_code<float         >::value = "32F";  // not sure... "32f" ??
+const char *gil_code<bool          >::value = "8"; // not sure
+
 struct image_copier : public boost::static_visitor<layer::ptrLayerType>
 {
     int x0, y0, w, h;
@@ -113,12 +132,13 @@ struct image_copier : public boost::static_visitor<layer::ptrLayerType>
         image.Read(x0,y0,0,w,h,bands,1,buf,t,bands,bands*w,1);
         image_layer::image_ptr image_ptr(new image_layer::image_t);
         try {
-           image_ptr->value = img;
+            image_ptr->value = img;
         }
         catch(const std::exception &e){
-           GILVIEWER_LOG_EXCEPTION("ImageIO is unable to pass the image: " << name);
-           GILVIEWER_LOG_EXCEPTION(" try recompile with dev"<<bands<<"n"<<"");
-           return result_type();
+            GILVIEWER_LOG_EXCEPTION("ImageIO is unable to pass this image to GilViewer: " << name << std::endl
+                                    << "Fix this by adding the type dev"<<bands<<"n"<<gil_code<value_type>::value
+                                    <<"_image_t to the device_image_types of GilViewer/layers/image_types.hpp");
+            return result_type();
         }
         return result_type(new image_layer(image_ptr, name, name));
     }
@@ -136,7 +156,7 @@ shared_ptr<layer> gilviewer_file_io_imageio::load(const string &filename, const 
         return shared_ptr<layer>();
     }
     int width  = image_input.Size().real();
-     int height = image_input.Size().imag();
+    int height = image_input.Size().imag();
 
     int x0 = top_left_x;
     int y0 = top_left_y;
@@ -159,10 +179,6 @@ shared_ptr<layer> gilviewer_file_io_imageio::load(const string &filename, const 
     }
     return layer;
 }
-template <typename Pixel> struct channel_value_type {};
-template <typename ChannelValue, typename Layout>
-        struct channel_value_type<boost::gil::pixel<ChannelValue,Layout> > { typedef ChannelValue type; };
-
 
 struct write_imageio_view_visitor : public boost::static_visitor<>
 {
