@@ -4,6 +4,8 @@
 #include "gilviewer_file_io_imageio.hpp"
 #include "gilviewer_io_factory.hpp"
 #include <ign/imageio/ImageInput.h>
+#include <ign/imageio/ImageOutput.h>
+#include <ign/imageio/Exception.h>
 
 using namespace boost;
 using namespace boost::gil;
@@ -63,7 +65,7 @@ namespace ign {
                 case eFloat         : return f.template apply<bands,eFloat        >(image);
                 case eBool          : return f.template apply<bands,eBool         >(image);
                 default /* eOther */: return f.error(image);
-                }
+            }
             };
         }
 
@@ -85,9 +87,9 @@ namespace ign {
     }
 } // namespace ign::imageio
 
-struct image_copier
+
+struct image_copier : public boost::static_visitor<layer::ptrLayerType>
 {
-    typedef layer::ptrLayerType result_type;
     int x0, y0, w, h;
     std::string name;
     image_copier(int x0_, int y0_, int w_, int h_, std::string name_)
@@ -112,7 +114,7 @@ struct image_copier
         int bandspace = 1;
 
         // todo (?): this only works if all bands have the same type : should use image.Type(0), image.Type(1)...
-        void *buf = new char[w*h*bands*size];
+        char *buf = new char[w*h*bands*size];
         image.Read(x0,y0,0,w,h,bands,dezoom,buf,t,bands,linespace,bandspace);
 
         boost::gil::image<pixel_type, false> img(w,h);
@@ -121,6 +123,8 @@ struct image_copier
 
         image_layer::image_ptr image_ptr(new image_layer::image_t);
         image_ptr->value = img;
+
+        delete [] buf;
 
         return result_type(new image_layer(image_ptr, name, name));
     }
@@ -161,16 +165,68 @@ shared_ptr<layer> gilviewer_file_io_imageio::load(const string &filename, const 
     }
     return layer;
 }
+template <typename Pixel> struct channel_value_type {};
+template <typename ChannelValue, typename Layout>
+        struct channel_value_type<boost::gil::pixel<ChannelValue,Layout> > { typedef ChannelValue type; };
+
+
+struct write_imageio_view_visitor : public boost::static_visitor<>
+{
+    std::string m_filename;
+    write_imageio_view_visitor(const std::string& s) : m_filename(s) {}
+    template <typename ViewType>
+            result_type operator()(const ViewType& v) const
+    {
+        int w = v.width();
+        int h = v.height();
+        int c = v.num_channels();
+        typedef typename ViewType::value_type pixel_type;
+        typedef typename channel_value_type<pixel_type>::type value_type;
+        ign::imageio::eTypePixel t = ign::imageio::TypePixel_<value_type>::value;
+
+        pixel_type *buf = new pixel_type[w*h];
+        boost::gil::copy_pixels(v,boost::gil::interleaved_view(w,h,buf,w*sizeof(pixel_type)));
+
+        std::string file = m_filename+".tif";
+        ign::imageio::ImageOutput out(file,w,h,c,t);
+        out.Write(0,0,0,w,h,c,(void *)buf,t,c,w*c,1);
+        delete [] buf;
+    }
+    template <typename T> result_type operator()(const boost::gil::any_image_view<T>& v) const
+    {
+        boost::gil::apply_operation(v,*this);
+    }
+};
 
 void gilviewer_file_io_imageio::save(shared_ptr<layer> layer, const string &filename)
 {
-    //save_gil_view<imageio_tag>(layer, filename);
+    shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
+    if(!imagelayer)
+        throw std::invalid_argument("Bad layer type (not an image layer)!\n");
+
+    try
+    {
+        write_imageio_view_visitor writer(filename);
+        boost::apply_visitor( writer, imagelayer->variant_view()->value );
+    }
+    catch( ign::imageio::Exception &e )
+    {
+        GILVIEWER_LOG_EXCEPTION("Image write error: " + filename);
+    }
 }
 
 string gilviewer_file_io_imageio::build_and_get_infos(const std::string &filename)
 {
-    // TODO
-    return "TODO";
+    ign::imageio::ImageInput img(filename);
+    if (!img.Valide())
+        return "ImageIO is unable to open the file "+filename;
+
+    ostringstream infos_str;
+    infos_str << "Dimensions: " << img.Size().real() << "x" << img.Size().imag() << "\n";
+    infos_str << "Number of components: " << img.NbBands() << "\n";
+    infos_str << "Pixel type: " << ign::imageio::TypeToString(img.Type()) << "\n";
+    return infos_str.str();
+
 }
 
 shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio()

@@ -1,6 +1,5 @@
 set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
                                            ${Boost_LIBRARIES}
-                                           ${TIFF_LIBRARIES}
                                            ${JPEG_LIBRARIES}
                                            tinyxml
                                             )
@@ -71,6 +70,7 @@ endif()
 find_package(TIFF REQUIRED)
 if(TIFF_FOUND)
     include_directories(${TIFF_INCLUDE_DIR})
+    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${TIFF_LIBRARIES} )
 else()
     message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
 endif()
