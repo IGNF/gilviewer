@@ -34,7 +34,8 @@ typedef boost::mpl::vector<
         boost::gil::dev1n8_image_t,
         boost::gil::dev1n16_image_t,
         boost::gil::dev1n32F_image_t,
-        boost::gil::dev3n8_image_t
+        boost::gil::dev3n8_image_t,
+        boost::gil::dev3n16_image_t
 > device_image_types;
 
 // Concatenation of all available image types defined below
