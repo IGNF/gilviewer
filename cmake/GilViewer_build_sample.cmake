@@ -14,9 +14,7 @@ if(UNIX)
                                              ./viewer_app/gilviewer_frame.hpp )
         endif()
         message(STATUS ${GILVIEWER_LINK_EXTERNAL_LIBRARIES})
-        target_link_libraries( GilViewerApp ${GILVIEWER_LINK_EXTERNAL_LIBRARIES}
-            GilViewer
-            )
+        target_link_libraries( GilViewerApp ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
 endif()
 # Si c'est du windows, on lui dit de faire une application windows (et pas une console)
 # On en profite aussi pour ajouter les resources
@@ -28,7 +26,8 @@ if(WIN32)
                                        ./viewer_app/gilviewer_frame.hpp
                                        ./viewer_app/GilViewer.rc )
     # Comme c'est sous visual (a priori ...), il y a l'auto link de Boost, donc pas besoin d'ajouter les libs ...
-    target_link_libraries( GilViewerApp ${wxWidgets_LIBRARIES} GilViewer tinyxml ${GDAL_LIBRARY} )
+    message(STATUS ${GILVIEWER_LINK_EXTERNAL_LIBRARIES})
+    target_link_libraries( GilViewerApp ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
 endif()
 
 message( STATUS "Scanning samples :" )
