@@ -22,17 +22,17 @@ shared_ptr<layer> gilviewer_file_io_pk1::load(const string &filename, const ptrd
 {
     shared_ptr<simple_vector_layer> shr_ptr=shared_ptr<simple_vector_layer>(new simple_vector_layer(filesystem::basename(filename)));
     std::ifstream file(filename.c_str());
+		unsigned int offset=3;
     while(!file.eof()){
         std::string ligne;
         std::getline(file,ligne);
         std::stringstream ss;
         ss<< ligne;
+		if(!ss.good())
+			continue;
         std::string nom;
         double x,y;
-        ss>>nom>>x>>y;
-        if(!ss.good())
-            continue;
-        unsigned int offset=3;
+		ss>>nom>>x>>y;
          shr_ptr->add_line(x-offset,y,x+offset,y);
          shr_ptr->add_line(x,y-offset,x,y+offset);
          shr_ptr->add_text(x,y,nom);

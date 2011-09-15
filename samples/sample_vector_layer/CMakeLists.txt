@@ -11,5 +11,5 @@ if(WIN32)
                                               sample_vector_layer.cpp
                                               sample_vector_layer.hpp
                                               sample_vector_layer.rc )
-    target_link_libraries( sample_vector_layer ${wxWidgets_LIBRARIES} GilViewer tinyxml ${GDAL_LIBRARY} )
+    target_link_libraries( sample_vector_layer ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
 endif()
