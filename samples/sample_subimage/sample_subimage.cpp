@@ -75,7 +75,8 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 #ifdef __WINDOWS__
     _("Input files"),
 #else
-    wxT("Input files"),
+    wxString("Input files", wxConvUTF8),
+   //wxT("Input files"),
 #endif
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL },
