@@ -85,7 +85,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
     SetBackgroundColour(bgcolor);
     ClearBackground();
 
-    m_main_sizer = new wxFlexGridSizer(4,1,0,0);
+    m_main_sizer = new wxFlexGridSizer(6,1,0,0);
     m_main_sizer->AddGrowableCol(0);
     m_main_sizer->AddGrowableRow(0);
 
@@ -125,6 +125,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
     }
     else
     {
+        m_main_sizer->SetRows(7);
         wxStaticBoxSizer *red_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Red"));
         m_textRedChannel = new wxTextCtrl(this,wxID_ANY);
         m_textRedChannel->SetValidator(wxTextValidator(wxFILTER_NUMERIC));

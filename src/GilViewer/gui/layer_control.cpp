@@ -211,6 +211,8 @@ void layer_control::add_row(const string &name, layer_settings_control *layerset
 
     // on ajoute la ligne dans le conteneur
     m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, static_cast<unsigned int>(m_rows.size()), layersettings, tooltip)));
+   
+    m_sizer->SetRows(m_rows.size()+1 );
     // On ajoute a proprement parler les controles de la ligne dans le layer_control
     m_rows.back()->m_nameStaticText->selected(true);
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);

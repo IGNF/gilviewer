@@ -137,7 +137,12 @@ void gilviewer_app::set_langage(unsigned int language_id)
     // Load language if possible, fall back to english otherwise
     if(wxLocale::IsAvailable(language))
     {
-        locale = new wxLocale( language, wxLOCALE_CONV_ENCODING );
+        #if wxUSE_UNICODE ==0 || !wxCHECK_VERSION(2,9,0)
+        int flags = wxLOCALE_LOAD_DEFAULT|wxLOCALE_CONV_ENCODING;
+        #else
+        int flags = wxLOCALE_LOAD_DEFAULT;
+        #endif
+        locale = new wxLocale( language,flags);
 
 #		ifdef __WXGTK__
         // add locale search paths
