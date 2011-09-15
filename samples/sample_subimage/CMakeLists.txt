@@ -11,5 +11,5 @@ if(WIN32)
                                               sample_subimage.cpp
                                               sample_subimage.hpp
                                               sample_subimage.rc )
-    target_link_libraries( sample_subimage ${wxWidgets_LIBRARIES} GilViewer tinyxml ${GDAL_LIBRARY} )
+    target_link_libraries( sample_subimage ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
 endif()

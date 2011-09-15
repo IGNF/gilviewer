@@ -640,7 +640,7 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
                 wxRealPoint q = (*it)->transform().to_local(p);
                 std::ostringstream affichage;
                 affichage << boost::filesystem::basename((*it)->name());
-                affichage << "-" << 100. / (*it)->transform().zoom_factor() << "\% : ";
+                affichage << "-" << 100. / (*it)->transform().zoom_factor() << "% : ";
                 affichage << "("<<q.x<<","<<q.y<<") ";
                 affichage << (*it)->pixel_value(p);
                 m_parent->SetStatusText(wxString(affichage.str().c_str(), *wxConvCurrent), count);

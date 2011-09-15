@@ -174,7 +174,7 @@ Authors:
 #define GILVIEWER_LOG_EXCEPTION(txt) \
     { \
     ostringstream oss; \
-    oss << "[EXCEPTION]: " << txt << endl; \
+    oss << "[EXCEPTION]: " << txt; \
     oss << e.what() << endl; \
     INTERNAL_LOG_INFOS() \
     gilviewer_wx_error_logger::log_message(oss.str()); \
@@ -183,14 +183,14 @@ Authors:
 #define GILVIEWER_LOG_ERROR(txt) \
     { \
     ostringstream oss; \
-    oss << "[ERROR]: " << txt << endl; \
+    oss << "[ERROR]: " << txt; \
     gilviewer_wx_error_logger::log_message(oss.str()); \
     }
 
 #define GILVIEWER_LOG_MESSAGE(txt) \
     { \
     ostringstream oss; \
-    oss << "[MESSAGE]: " << txt << endl; \
+    oss << "[MESSAGE]: " << txt; \
     gilviewer_wx_error_logger::log_message(oss.str()); \
     }
 
