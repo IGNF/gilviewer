@@ -131,7 +131,6 @@ else()
     set(wxWidgets_USE_STATIC OFF)
     find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png expat)
     if(wxWidgets_FOUND)
-        message (STATUS "wxWidgets_DEFINITIONS " "${wxWidgets_DEFINITIONS}")
         #add_definitions(${wxWidgets_DEFINITIONS})
         # not set definitions like that because on MSVC 2010 this add wrong terme on AdditionalOptions flags
         include(${wxWidgets_USE_FILE})
