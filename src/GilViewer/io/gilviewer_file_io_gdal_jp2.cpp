@@ -38,11 +38,7 @@ typedef boost::gil::point2<std::ptrdiff_t> point_t;
     unsigned int height=GDALGetRasterYSize( hDataset );
 
         path path(system_complete(filename));
-        #if BOOST_FILESYSTEM_VERSION > 2
-        string ext(path.extension().string());
-        #else
-        string ext(path.extension());
-        #endif
+    //    string ext(BOOST_FILESYSTEM_STRING(path.extension());
 
         image_layer::image_ptr image(new image_layer::image_t);
         point_t origin( max(top_left_x, (ptrdiff_t)0), max(top_left_y, (ptrdiff_t)0) );
@@ -111,14 +107,8 @@ typedef boost::gil::point2<std::ptrdiff_t> point_t;
             return layer::ptrLayerType();
         }
 
-        #if BOOST_FILESYSTEM_VERSION > 2
-        layer::ptrLayerType layer(new image_layer(image, path.stem().string(), path.string()));
-        #else
-        layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
-        #endif
-        
+        layer::ptrLayerType layer(new image_layer(image, BOOST_FILESYSTEM_STRING(path.stem()), path.string()));
         layer->add_orientation(filename);
-
         layer->infos( build_and_get_infos(filename) );
 
         return layer;
@@ -159,20 +149,14 @@ shared_ptr<gilviewer_file_io_gdal_jp2> create_gilviewer_file_io_gdal_jp2()
     return shared_ptr<gilviewer_file_io_gdal_jp2>(new gilviewer_file_io_gdal_jp2());
 }
 
-bool gilviewer_file_io_gdal_jp2::Register()
+bool gilviewer_file_io_gdal_jp2::Register(gilviewer_io_factory *factory)
 {
-    
-
-
-    gilviewer_io_factory::instance()->Register("jp2", create_gilviewer_file_io_gdal_jp2);
+    factory->Register("jp2", create_gilviewer_file_io_gdal_jp2);
     pair<string,string> familly_description = make_pair<string,string>("Image files","JPEG2000 images");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "jp2", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
-
+    factory->metadata().insert( make_pair( "jp2", familly_description ) );
 
     return true;
 }
 
-bool register_jpg2000_ok = gilviewer_file_io_gdal_jp2::Register();
 
 #endif // GILVIEWER_USE_GDALJP2

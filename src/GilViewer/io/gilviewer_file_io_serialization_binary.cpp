@@ -86,14 +86,11 @@ boost::shared_ptr<gilviewer_file_io_serialization_binary> create_gilviewer_file_
     return shared_ptr<gilviewer_file_io_serialization_binary>(new gilviewer_file_io_serialization_binary());
 }
 
-bool gilviewer_file_io_serialization_binary::Register()
+bool gilviewer_file_io_serialization_binary::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("bin", create_gilviewer_file_io_serialization_binary);
+    factory->Register("bin", create_gilviewer_file_io_serialization_binary);
     pair<string,string> familly_description = make_pair<string,string>("Serialization files","BIN files");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "bin", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert( make_pair( "bin", familly_description ) );
     return true;
 }
-
-bool register_serialization_binary_ok = gilviewer_file_io_serialization_binary::Register();
 

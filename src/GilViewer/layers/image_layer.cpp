@@ -57,6 +57,7 @@ Authors:
 #include "../tools/color_lookup_table.hpp"
 #include "../layers/image_types.hpp"
 #include "../gui/image_layer_settings_control.hpp"
+#include "../convenient/utils.hpp"
 
 #include "image_layer.hpp"
 #include "image_layer_screen_image_functor.hpp"
@@ -362,11 +363,7 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     boost::filesystem::path file(boost::filesystem::system_complete(filename()));
     std::ostringstream oss;
     oss << ".crop" <<x0<<"_"<<y0<<"_"<<w0<<"x"<<h0;
-#if BOOST_FILESYSTEM_VERSION > 2
-    file.replace_extension(oss.str() + file.extension().string());
-#else
-    file.replace_extension(oss.str() + file.extension());
-#endif
+    file.replace_extension(oss.str() + BOOST_FILESYSTEM_STRING(file.extension()));
     std::string name = file.string();
 
     image_layer *l = new image_layer(m_img, name, file.string(), crop_ptr);

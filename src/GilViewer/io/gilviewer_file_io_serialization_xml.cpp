@@ -80,13 +80,10 @@ boost::shared_ptr<gilviewer_file_io_serialization_xml> create_gilviewer_file_io_
     return shared_ptr<gilviewer_file_io_serialization_xml>(new gilviewer_file_io_serialization_xml());
 }
 
-bool gilviewer_file_io_serialization_xml::Register()
+bool gilviewer_file_io_serialization_xml::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("xml", create_gilviewer_file_io_serialization_xml);
+    factory->Register("xml", create_gilviewer_file_io_serialization_xml);
     pair<string,string> familly_description = make_pair<string,string>("Serialization files","XML files");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "xml", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert( make_pair( "xml", familly_description ) );
     return true;
 }
-
-bool register_serialization_xml_ok = gilviewer_file_io_serialization_xml::Register();

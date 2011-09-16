@@ -12,6 +12,8 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
+#include "GilViewer/plugins/plugin_base.hpp"
+IMPLEMENT_IO_PLUGIN(gilviewer_file_io_imageio);
 
 // this should be integrated into ImageIO
 namespace ign {
@@ -243,15 +245,12 @@ shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio()
     return shared_ptr<gilviewer_file_io_imageio>(new gilviewer_file_io_imageio());
 }
 
-bool gilviewer_file_io_imageio::Register()
+bool gilviewer_file_io_imageio::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("imageio", create_gilviewer_file_io_imageio);
+    factory->Register("imageio", create_gilviewer_file_io_imageio);
     pair<string,string> familly_description = make_pair<string,string>("Image files","IMAGEIO images");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "imageio", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert(make_pair( "imageio", familly_description ));
     return true;
 }
-
-bool register_imageio_ok = gilviewer_file_io_imageio::Register();
 
 #endif // GILVIEWER_USE_IMAGEIO

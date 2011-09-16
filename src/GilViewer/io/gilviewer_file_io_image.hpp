@@ -94,11 +94,6 @@ public:
         }
 
         path path(system_complete(filename));
-        #if BOOST_FILESYSTEM_VERSION > 2
-        string ext(path.extension().string());
-        #else
-        string ext(path.extension());
-        #endif
 
         image_layer::image_ptr image(new image_layer::image_t);
 
@@ -121,14 +116,8 @@ public:
             return layer::ptrLayerType();
         }
 
-        #if BOOST_FILESYSTEM_VERSION > 2
-        layer::ptrLayerType layer(new image_layer(image, path.stem().string(), path.string()));
-        #else
-        layer::ptrLayerType layer(new image_layer(image, path.stem(), path.string()));
-        #endif
-        
+        layer::ptrLayerType layer(new image_layer(image, BOOST_FILESYSTEM_STRING(path.stem()), path.string()));
         layer->add_orientation(filename);
-
         layer->infos( build_and_get_infos(filename) );
 
         return layer;

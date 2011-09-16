@@ -492,7 +492,7 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
     /*
 #ifndef _WINDOWS
     for(unsigned int i=0;i<plugin_manager::instance()->getNbPlugins();i=i+1)
-        plugin_manager::instance()->getPluginAt(i)-> on_mouse_move(event);
+        plugin_manager::instance()->at(i)-> on_mouse_move(event);
 #endif // _WINDOWS
 */
     update_statusbar(p);

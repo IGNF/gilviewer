@@ -286,7 +286,7 @@ void layer_control::on_save_button(wxCommandEvent& event)
         to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension);
+            shared_ptr<gilviewer_file_io> file_out = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
             file_out->save(layers()[id],filename);
         }
         catch( std::exception &e )
@@ -335,7 +335,7 @@ void layer_control::on_refresh_button(wxCommandEvent& event)
     to_lower(ext);
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(ext);
+        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(ext);
         m_layers[id] = file->load(m_layers[id]->filename());
     }
     catch(const std::exception &e)
@@ -435,8 +435,6 @@ void layer_control::on_open_layer(wxCommandEvent& event)
     */
     string wild = gilviewer_utils::build_wx_wildcard_from_io_factory();
     wxString wildcard(wild.c_str(), *wxConvCurrent);
-    //wxString str;
-    //wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
     wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
 
     if (fileDialog->ShowModal() == wxID_OK)
@@ -459,15 +457,6 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
     wxProgressDialog *progress = NULL;
     //wxProgressDialog *progressLargeFile = NULL;
 
-    //Liste des formats gérés par le viewer
-    list<string> image_formats;
-    image_formats.push_back(".tif");
-    image_formats.push_back(".tiff");
-    image_formats.push_back(".jpg");
-    image_formats.push_back(".jpeg");
-    image_formats.push_back(".png");
-    image_formats.push_back(".bmp");
-
     if (names.GetCount() >= 2)
         progress = new wxProgressDialog(_("Opening files ..."), _("Reading ..."), static_cast<unsigned int>(names.GetCount()), NULL, wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
 
@@ -487,7 +476,7 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
         to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
+            shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
             add_layer( file->load(filename) );
         }
         catch (const std::exception &e)
@@ -841,7 +830,7 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
+        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
@@ -882,7 +871,7 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
+        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         add_layer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...

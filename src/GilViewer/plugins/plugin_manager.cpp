@@ -1,21 +1,14 @@
+#include <boost/filesystem.hpp>
+#include "../convenient/utils.hpp"
 #include "plugin_manager.hpp"
 #include "../gui/panel_manager.hpp"
 #include "../gui/define_id.hpp"
-//#include "../plugins/sample_plugin_functor.hpp"
 
-#include "../convenient/utils.hpp"
 
 #include "../config/config_plugins.hpp"
 
-#include <boost/filesystem.hpp>
 
 using namespace std;
-
-#ifdef WIN32
-#define DYNAMIC_LIB_EXTENSION ".dll"
-#else
-#define DYNAMIC_LIB_EXTENSION ".so"
-#endif
 
 plugin_base* plugin_manager_model::create_object(const string& id)
 {
@@ -39,25 +32,16 @@ void plugin_manager_model::register_plugins(const std::string &path)
     for(unsigned int i=0;i<all_so_files.size();++i)
     {
         boost::filesystem::path file_path(boost::filesystem::system_complete(all_so_files[i]));
-#if BOOST_FILESYSTEM_VERSION > 2
-        string plugin_name(file_path.filename().string());
-#else
-        string plugin_name(file_path.filename());
-#endif
+        string plugin_name(BOOST_FILESYSTEM_STRING(file_path.filename()));
         ostringstream mes;
         mes << "Found dynamic lib: " << plugin_name;
         GILVIEWER_LOG_MESSAGE(mes.str())
-        string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
-        string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
+        const string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
+        const string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
         if( file_path.filename()!= libgilviewer_name && file_path.filename()!= libtinyxml_name )
         {
-            #if BOOST_FILESYSTEM_VERSION > 2
-            plugin_base::Register(file_path.filename().string(), file_path.parent_path().string());
-            plugin_base *p = plugin_manager::instance()->create_object(file_path.filename().string());
-            #else
-            plugin_base::Register(file_path.filename(), file_path.parent_path().string());
-            plugin_base *p = plugin_manager::instance()->create_object(file_path.filename());
-            #endif
+            plugin_base::Register(file_path);
+            plugin_base *p = plugin_manager::instance()->create_object(file_path.string());
             if(p)
             {
                 if(create_plugin_menu)

@@ -33,15 +33,12 @@ boost::shared_ptr<gilviewer_file_io_cgal> create_gilviewer_file_io_cgal()
     return shared_ptr<gilviewer_file_io_cgal>(new gilviewer_file_io_cgal());
 }
 
-bool gilviewer_file_io_cgal::Register()
+bool gilviewer_file_io_cgal::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("cgal", create_gilviewer_file_io_cgal);
+    factory->Register("cgal", create_gilviewer_file_io_cgal);
     pair<string,string> familly_description = make_pair<string,string>("Vector files","CGAL files");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "cgal", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert( make_pair( "cgal", familly_description ) );
     return true;
 }
-
-bool register_cgal_ok = gilviewer_file_io_cgal::Register();
 
 #endif // GILVIEWER_USE_CGAL

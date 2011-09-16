@@ -50,15 +50,12 @@ boost::shared_ptr<gilviewer_file_io_pk1> create_gilviewer_file_io_pk1()
     return shared_ptr<gilviewer_file_io_pk1>(new gilviewer_file_io_pk1());
 }
 
-bool gilviewer_file_io_pk1::Register()
+bool gilviewer_file_io_pk1::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("pk1", create_gilviewer_file_io_pk1);
+    factory->Register("pk1", create_gilviewer_file_io_pk1);
     pair<string,string> familly_description = make_pair<string,string>("Images Measurments","PK1 files");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "pk1", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert( make_pair( "pk1", familly_description ) );
     return true;
 }
-
-bool register_pk1_ok = gilviewer_file_io_pk1::Register();
 
 

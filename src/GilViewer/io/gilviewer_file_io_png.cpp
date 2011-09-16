@@ -19,8 +19,24 @@ void gilviewer_file_io_png::save(shared_ptr<layer> layer, const string &filename
 
 string gilviewer_file_io_png::build_and_get_infos(const std::string &filename)
 {
-    // TODO
-    return "TODO";
+    image_read_info< png_tag > info = read_image_info(filename, png_tag());
+    ostringstream infos_str;
+    infos_str << "Dimensions: " << info._width << "x" << info._height << "\n";
+    switch(info._interlace_method)
+    {
+    case PNG_INTERLACE_NONE  : infos_str << "Interlacing: None\n"; break;
+    case PNG_INTERLACE_ADAM7 : infos_str << "Interlacing: Adam7"; break;
+    default                  : infos_str << "Interlacing: \?\?\? ("<<info._interlace_method<<")\n"; break;
+    }
+    infos_str << "Bit depth: " << info._bit_depth << " bit(s)\n";
+    infos_str << "Color type: " << info._color_type << "\n";
+    infos_str << "Channel(s): " << (unsigned int) info._num_channels << "\n";
+    infos_str << "Comment(s) : "<<info._num_text<<"\n";
+    for(int i=0; i<info._num_text; ++i)
+        infos_str << info._text[i]._key << " = " << info._text[i]._text << " ("<<info._text[i]._compression<<")\n";
+
+    infos_str << "Further infos: TODO\n";
+    return infos_str.str();
 }
 
 shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
@@ -28,13 +44,10 @@ shared_ptr<gilviewer_file_io_png> create_gilviewer_file_io_png()
     return shared_ptr<gilviewer_file_io_png>(new gilviewer_file_io_png());
 }
 
-bool gilviewer_file_io_png::Register()
+bool gilviewer_file_io_png::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("png", create_gilviewer_file_io_png);
+    factory->Register("png", create_gilviewer_file_io_png);
     pair<string,string> familly_description = make_pair<string,string>("Image files","PNG images");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "png", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert( make_pair( "png", familly_description ) );
     return true;
 }
-
-bool register_png_ok = gilviewer_file_io_png::Register();

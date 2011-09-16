@@ -161,15 +161,12 @@ boost::shared_ptr<gilviewer_file_io_kml> create_gilviewer_file_io_kml()
     return shared_ptr<gilviewer_file_io_kml>(new gilviewer_file_io_kml());
 }
 
-bool gilviewer_file_io_kml::Register()
+bool gilviewer_file_io_kml::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("kml", create_gilviewer_file_io_kml);
+    factory->Register("kml", create_gilviewer_file_io_kml);
     pair<string,string> familly_description = make_pair<string,string>("Vector files","KML files");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "kml", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->metadata().insert( make_pair( "kml", familly_description ) );
     return true;
 }
-
-bool register_kml_ok = gilviewer_file_io_kml::Register();
 
 #endif // GILVIEWER_USE_GDAL

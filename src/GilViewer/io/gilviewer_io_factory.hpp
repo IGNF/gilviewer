@@ -43,13 +43,12 @@ Authors:
 #include "../tools/pattern_factory.hpp"
 #include "gilviewer_file_io.hpp"
 
-typedef PatternSingleton< PatternFactory< gilviewer_file_io,
+class gilviewer_io_factory : public PatternFactory< gilviewer_file_io,
                                           std::string,
                                           boost::function< boost::shared_ptr<gilviewer_file_io> () >,
                                           boost::shared_ptr<gilviewer_file_io>,
                                           std::multimap<std::string, std::pair<std::string, std::string> >
-                                        >
-                        > gilviewer_io_factory;
+                                        > {};
 
 void register_all_image_file_formats();
 void register_all_vector_file_formats();

@@ -59,7 +59,7 @@ Authors:
 * @endcode
 */
 
-template <typename T> class PatternSingleton
+template <typename T> class PatternSingleton : public T
 {
 protected:
     PatternSingleton () {}

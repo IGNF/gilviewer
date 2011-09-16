@@ -39,10 +39,13 @@ Authors:
 #define GILVIEWER_FILE_IO_HPP
 
 #include <boost/shared_ptr.hpp>
+#include <boost/filesystem.hpp>
+#include "../convenient/utils.hpp"
 
 #include <string>
 
 class layer;
+class gilviewer_io_factory;
 
 class gilviewer_file_io
 {
@@ -55,6 +58,7 @@ public:
 
     virtual std::string build_and_get_infos(const std::string &filename) { return ""; }
 
+    virtual bool Register(gilviewer_io_factory *factory) { return false; }
 protected:
     gilviewer_file_io() : m_familly(""), m_description("") {}
     /// This attribute describes the main familly of the reader (e.g. vector, image, ...)

@@ -54,11 +54,11 @@ public:
 
     virtual std::string build_and_get_infos(const std::string &filename);
 
-    static bool Register();
+    virtual bool Register(gilviewer_io_factory *factory);
     friend boost::shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio();
 
 private:
-    gilviewer_file_io_imageio() {}
+    //gilviewer_file_io_imageio() {}
 };
 
 #endif // GILVIEWER_USE_IMAGEIO

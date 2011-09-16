@@ -66,6 +66,8 @@ Authors:
 #include <wx/log.h>
 #include <shapefil.h>
 
+#include "../convenient/utils.hpp"
+
 struct Vertex_data {
     Vertex_data() : selected(false) {}
     bool selected;
@@ -143,11 +145,8 @@ struct Arrangement {
     {
         std::cout << "loading " << filename << std::endl;
         boost::filesystem::path file(boost::filesystem::system_complete(filename));
-        std::string ext = file.extension()
-#if BOOST_FILESYSTEM_VERSION > 2
-                          .string()
-#endif
-                          ;
+
+        std::string ext = BOOST_FILESYSTEM_STRING(file.extension());
         if(ext==".cgal") load_cgal(filename);
         else if(ext==".shp") load_shp(filename);
         else std::cerr << "unknown file type" << std::endl;

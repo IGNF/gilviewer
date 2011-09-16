@@ -92,7 +92,7 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
     m_logWindow->Show(m_isLogWindowVisible);
 
     // Log all available formats ...
-    vector<string> ids = gilviewer_io_factory::instance()->available_identifiers();
+    vector<string> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
     ostringstream mes;
     mes << "Available file formats:";
     for(vector<string>::const_iterator it=ids.begin(); it!=ids.end(); ++it)

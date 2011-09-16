@@ -53,7 +53,7 @@ public:
 
     virtual std::string build_and_get_infos(const std::string &filename);
 
-    static bool Register();
+    virtual bool Register(gilviewer_io_factory *factory);
     friend boost::shared_ptr<gilviewer_file_io_gdal_jp2> create_gilviewer_file_io_gdal_jp2();
 
 private:
