@@ -142,7 +142,7 @@ public:
     virtual void alpha_channel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
     virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 
-    virtual unsigned int nb_components() const { return 0; }
+    virtual size_t nb_components() const { return 0; }
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const { return boost::shared_ptr<const histogram_type>(); }
     virtual std::string pixel_value(const wxRealPoint& p) const { return std::string(); }
     // Fin methodes specifiques ImageLayer
