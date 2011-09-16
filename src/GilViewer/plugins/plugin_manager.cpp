@@ -1,0 +1,83 @@
+#include <boost/filesystem.hpp>
+#include "../convenient/utils.hpp"
+#include "plugin_manager.hpp"
+#include "../gui/panel_manager.hpp"
+#include "../gui/define_id.hpp"
+
+
+#include "../config/config_plugins.hpp"
+
+
+using namespace std;
+
+plugin_base* plugin_manager_model::create_object(const string& id)
+{
+    plugin_base* plugin = PatternFactory<plugin_base>::create_object(id);
+    if(plugin)
+        m_plugins.push_back(plugin);
+    return plugin;
+}
+
+void plugin_manager_model::register_plugins(const std::string &path)
+{
+    vector<string> all_so_files = gilviewer_utils::all_files_from_path(path, "." + plugins_ext);
+
+    // Add a menu plugin if it does not exist
+    panel_viewer* first_panel = panel_manager::instance()->panels_list()[0];
+    wxMenuBar* menus = first_panel->menubar();
+    wxMenu* plugins_menu = NULL;
+
+    unsigned int nb_of_successfully_loaded_plugins = 0;
+    bool create_plugin_menu = true;
+    for(unsigned int i=0;i<all_so_files.size();++i)
+    {
+        boost::filesystem::path file_path(boost::filesystem::system_complete(all_so_files[i]));
+        string plugin_name(BOOST_FILESYSTEM_STRING(file_path.filename()));
+        ostringstream mes;
+        mes << "Found dynamic lib: " << plugin_name;
+        GILVIEWER_LOG_MESSAGE(mes.str())
+        const string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
+        const string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
+        if( file_path.filename()!= libgilviewer_name && file_path.filename()!= libtinyxml_name )
+        {
+            plugin_base::Register(file_path);
+            plugin_base *p = plugin_manager::instance()->create_object(file_path.string());
+            if(p)
+            {
+                if(create_plugin_menu)
+                {
+                    int index_plugins_menu = menus->FindMenu(wxString("Plugins", *wxConvCurrent));
+                    if(index_plugins_menu == wxNOT_FOUND)
+                    {
+                        plugins_menu = new wxMenu;
+                        menus->Insert(menus->GetMenuCount(), plugins_menu, _("Plugins"));
+                    }
+                    else
+                    {
+                        plugins_menu = menus->GetMenu(index_plugins_menu);
+                    }
+                }
+                if( plugins_menu )
+                {
+                    plugins_menu->Append(FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins, wxString(p->menuentry_name().c_str(), *wxConvCurrent));
+                    menus->GetParent()->Connect(
+                        FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins,
+                        wxEVT_COMMAND_MENU_SELECTED,
+                        (wxObjectEventFunction)&plugin_base::gui,
+                        NULL, p );
+                    menus->Connect(
+                            FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins,
+                            wxEVT_COMMAND_MENU_SELECTED,
+                            (wxObjectEventFunction)&plugin_base::gui,
+                            NULL, p );
+                    ++nb_of_successfully_loaded_plugins;
+                    ostringstream mes;
+                    mes << "Successfully added plugin " << plugin_name;
+                    GILVIEWER_LOG_MESSAGE(mes.str())
+                }
+            }
+        }
+        else
+            GILVIEWER_LOG_MESSAGE("Skipping");
+    }
+}
