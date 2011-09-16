@@ -10,7 +10,7 @@ endif()
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config_plugins.hpp )
 
-message( STATUS "Scanning plugins :" )
+message( STATUS "*** Scanning plugins ***" )
 file( GLOB list "plugins/*" )
 list( SORT list )
 foreach( entry ${list} )
@@ -21,3 +21,4 @@ foreach( entry ${list} )
     endif()
   endif()
 endforeach()
+message( STATUS "*** Done ***" )

@@ -35,6 +35,18 @@ FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.hpp )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.hpp )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.hpp )
 FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/*.hpp )
+
+# Creates subdirectories in project for MSVC
+if(WIN32 AND MSVC)
+	source_group( "Header Files\\config" FILES ${ALL_CONFIG_HEADER_FILES} )
+	source_group( "Header Files\\convenient" FILES ${ALL_CONVENIENT_HEADER_FILES} )
+	source_group( "Header Files\\gui" FILES ${ALL_GUI_HEADER_FILES} )
+	source_group( "Header Files\\io" FILES ${ALL_IO_HEADER_FILES} )
+	source_group( "Header Files\\layers" FILES ${ALL_LAYERS_HEADER_FILES} )
+	source_group( "Header Files\\tools" FILES ${ALL_TOOLS_HEADER_FILES} )
+	source_group( "Header Files\\plugins" FILES ${ALL_PLUGINS_HEADER_FILES} )
+endif()
+
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
                         ${ALL_CONVENIENT_HEADER_FILES}
@@ -57,6 +69,19 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS) 
 #AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
 set(SRC_PLUGINS ${SRC_DIR}/plugins/plugin_base.cpp ${SRC_DIR}/plugins/plugin_manager.cpp)
+
+# Creates subdirectories in project for MSVC
+if(WIN32 AND MSVC)
+	source_group( "Source Files\\config" FILES ${SRC_CONFIG} )
+	source_group( "Source Files\\convenient" FILES ${SRC_CONVENIENT} )
+	source_group( "Source Files\\gui" FILES ${SRC_GUI} )
+	source_group( "Source Files\\gui\\wxfb" FILES ${SRC_GUI_WXFB} )
+	source_group( "Source Files\\gui\\resources" FILES ${SRC_DIR}/gui/resources/resources.cpp ${SRC_DIR}/gui/resources/resources.cpp ${SRC_DIR}/gui/resources/resources.xrc )
+	source_group( "Source Files\\io" FILES ${SRC_IO} )
+	source_group( "Source Files\\layers" FILES ${SRC_CALQUES} )
+	source_group( "Source Files\\tools" FILES ${SRC_OUTILS} )
+	source_group( "Source Files\\plugins" FILES ${SRC_PLUGINS} )
+endif()
 
 # Une variable regroupant toutes les sources ...
 SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXFB} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} ${SRC_PLUGINS} )
@@ -204,9 +229,9 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
 
 # Ajout du repertoire d'include des lib externes (pour l'instant,  tinyxml)
-INCLUDE_DIRECTORIES( BEFORE "extern/" )
+#INCLUDE_DIRECTORIES( BEFORE "extern/" )
 # Ajout du repertoire d'include des sources du viewer
-INCLUDE_DIRECTORIES( BEFORE  "src/" )
+#INCLUDE_DIRECTORIES( BEFORE  "src/" )
 
 # Ajout d'une dependance du viewer a tinyxml. Ca permet de compiler tinyxml AVANT le viewer ...
 ADD_DEPENDENCIES( GilViewer tinyxml )

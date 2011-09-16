@@ -466,15 +466,18 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     if(m_nbComponents == 1)
     {
         string fileLUT(m_filePicker_CLUT->GetPath().mb_str() );
-        if(boost::filesystem::exists(fileLUT))
+        if(!fileLUT.empty())
         {
-            if ( boost::filesystem::basename(fileLUT) == "random" )
-                layercontrol()->layers()[m_index]->colorlookuptable()->create_random();
+            if(boost::filesystem::exists(fileLUT))
+            {
+                if ( boost::filesystem::basename(fileLUT) == "random" )
+                    layercontrol()->layers()[m_index]->colorlookuptable()->create_random();
+                else
+                    layercontrol()->layers()[m_index]->colorlookuptable()->load_from_binary_file( fileLUT );
+            }
             else
-                layercontrol()->layers()[m_index]->colorlookuptable()->load_from_binary_file( fileLUT );
+                GILVIEWER_LOG_MESSAGE("LUT file does not exist!");
         }
-        else
-            GILVIEWER_LOG_MESSAGE("LUT file does not exist!");
     }
     
 
