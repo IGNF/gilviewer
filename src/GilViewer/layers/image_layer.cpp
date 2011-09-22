@@ -79,7 +79,7 @@ unsigned int image_layer::m_gamma_array_size = 1000;
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/bind.hpp>
 
-struct min_max_visitor : public boost::static_visitor< pair<float, float> >
+struct min_max_visitor : public boost::static_visitor< pair<double, double> >
 {
     template <typename ViewType>
             result_type operator()(const ViewType& v) const { return apply_operation(v, any_view_min_max()); }
@@ -91,7 +91,7 @@ struct type_channel_visitor : public boost::static_visitor<string>
             result_type operator()(const ViewType& v) const { return apply_operation(v, type_channel_functor()); }
 };
 
-struct nb_components_visitor : public boost::static_visitor<unsigned int>
+struct nb_components_visitor : public boost::static_visitor<size_t>
 {
     template <typename ViewType>
             result_type operator()(const ViewType& v) const { return apply_operation(v, nb_components_functor()); }
@@ -264,7 +264,7 @@ void image_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const
     dc.DrawBitmap(*m_bitmap, x, y, transparent); //-m_translationX+x*m_zoomFactor, -m_translationX+y*m_zoomFactor
 }
 
-unsigned int image_layer::nb_components() const
+size_t image_layer::nb_components() const
 {
     //return apply_operation(m_view->value, nb_components_functor());
     return apply_visitor( nb_components_visitor(), m_variant_view->value );

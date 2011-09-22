@@ -81,7 +81,7 @@ public:
     virtual void update(int width, int height);
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
 
-    virtual unsigned int nb_components() const ;
+    virtual size_t nb_components() const ;
     std::string type_channel() const;
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const;
     virtual std::string pixel_value(const wxRealPoint& p) const;
@@ -156,7 +156,7 @@ public:
 
     double m_dx, m_dy;
 
-    std::pair<float, float> m_minmaxResult;
+    std::pair<double, double> m_minmaxResult;
 
     boost::shared_ptr<wxBitmap> m_bitmap;
     unsigned int m_red, m_green, m_blue;
