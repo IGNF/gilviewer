@@ -68,8 +68,7 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui/wxfb SRC_GUI_WXFB)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS) 
-#AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
-set(SRC_PLUGINS ${SRC_DIR}/plugins/plugin_base.cpp ${SRC_DIR}/plugins/plugin_manager.cpp)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
 
 # Creates subdirectories in project for MSVC
 if(WIN32 AND MSVC)

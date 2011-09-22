@@ -71,6 +71,8 @@
 #include "../plugins/plugin_manager.hpp"
 #include "../convenient/wxrealpoint.hpp"
 
+#include "GilViewer/config/config_plugins.hpp"
+
 
 #ifdef _WINDOWS
 #   include <wx/msw/winundef.h>
@@ -223,6 +225,8 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     wxAcceleratorTable acceleratorTable(3, entries);
     this->SetAcceleratorTable(acceleratorTable);
 
+    m_plugin_manager = new plugin_manager;
+    m_plugin_manager->register_plugins( plugins_dir, m_menuBar );
 }
 
 wxToolBar* panel_viewer::main_toolbar(wxWindow* parent) {
@@ -490,9 +494,9 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
         }//scwith
     }
 
-    for(unsigned int i=0;i<plugin_manager::instance()->size();i=i+1)
+    for(unsigned int i=0;i<m_plugin_manager->size();i=i+1)
     {
-        plugin_base *p = plugin_manager::instance()->at(i);
+        plugin_base *p = m_plugin_manager->at(i);
         if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
             wxp-> on_mouse_move(event);
     }

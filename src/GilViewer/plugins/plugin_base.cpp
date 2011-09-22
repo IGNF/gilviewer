@@ -1,8 +1,6 @@
 #include "plugin_base.hpp"
 #include "plugin_manager.hpp"
 
-#include <boost/bind.hpp>
-
 #include <string>
 #include <iostream>
 
@@ -43,11 +41,6 @@ plugin_base* load_plugin(const boost::filesystem::path &path)
         GILVIEWER_LOG_ERROR("Could not load plugin " << path)
     }
     return NULL;
-}
-
-void register_plugin(const boost::filesystem::path& path)
-{
-    plugin_manager::instance()->Register(path.string(), bind(load_plugin, path));
 }
 
 void wx_plugin_base::parent(wxWindow* parent)

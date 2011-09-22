@@ -38,14 +38,12 @@
 #include <wx/menu.h>
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
+#include <wx/log.h>
 
 #include "GilViewer/gui/layer_control.hpp"
 #include "GilViewer/gui/panel_viewer.hpp"
 #include "GilViewer/gui/define_id.hpp"
 #include "GilViewer/gui/panel_manager.hpp"
-#include "GilViewer/plugins/plugin_manager.hpp"
-
-#include "GilViewer/config/config_plugins.hpp"
 
 #include "gilviewer_frame.hpp"
 
@@ -107,7 +105,4 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 
     SetMenuBar( m_panelviewer->menubar() );
     m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
-
-    // Currently, plugins causes the application to crash on windows... ???
-    plugin_manager::instance()->register_plugins( plugins_dir );
 }

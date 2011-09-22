@@ -113,6 +113,7 @@ bool gilviewer_app::OnInit()
 	    m_frame->AddLayersFromFiles( cmdFiles );
 	    m_frame->Show();
 
+
             // Log all available formats ...
             std::vector<std::string> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
             std::ostringstream mes;

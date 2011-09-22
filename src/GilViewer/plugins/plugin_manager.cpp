@@ -1,4 +1,6 @@
 #include <boost/filesystem.hpp>
+#include <boost/bind.hpp>
+
 #include "../convenient/utils.hpp"
 #include "plugin_manager.hpp"
 #include "../gui/panel_manager.hpp"
@@ -10,7 +12,7 @@
 
 using namespace std;
 
-plugin_base* plugin_manager_model::create_object(const string& id)
+plugin_base* plugin_manager::create_object(const string& id)
 {
     plugin_base* plugin = PatternFactory<plugin_base>::create_object(id);
     if(plugin)
@@ -18,13 +20,16 @@ plugin_base* plugin_manager_model::create_object(const string& id)
     return plugin;
 }
 
-void plugin_manager_model::register_plugins(const std::string &path)
+
+void plugin_manager::register_plugin(const boost::filesystem::path& path)
+{
+    Register(path.string(), boost::bind(load_plugin, path));
+}
+
+
+void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
 {
     vector<string> all_so_files = gilviewer_utils::all_files_from_path(path, "." + plugins_ext);
-
-    // Add a menu plugin if it does not exist
-    panel_viewer* first_panel = panel_manager::instance()->panels_list()[0];
-    wxMenuBar* menus = first_panel->menubar();
     wxMenu* plugins_menu = NULL;
 
     unsigned int nb_of_successfully_loaded_plugins = 0;
@@ -39,7 +44,7 @@ void plugin_manager_model::register_plugins(const std::string &path)
             ostringstream mes;
             mes << "Plugin : " << plugin_name;
             register_plugin(file_path);
-            plugin_base *p = plugin_manager::instance()->create_object(file_path.string());
+            plugin_base *p = create_object(file_path.string());
             if(p)
             {
                 mes << " OK";
