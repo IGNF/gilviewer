@@ -54,7 +54,7 @@ namespace gilviewer_utils
         /*
         typedef multimap<string, pair<string, string> > metadata_type;
         typedef metadata_type::const_iterator metadata_iterator;
-        const multimap<string, pair<string, string> > &metadata = gilviewer_io_factory::instance()->metadata();
+        const multimap<string, pair<string, string> > &metadata = PatternSingleton<gilviewer_io_factory>::instance()->metadata();
         // First, fecth all available families
         map<string,vector<string> > families;
         metadata_iterator it=metadata.begin();

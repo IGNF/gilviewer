@@ -35,10 +35,7 @@ public:
 protected:
     wxWindow* m_parent;
 };
-
-
-void register_plugin(const boost::filesystem::path& path);
-
+plugin_base* load_plugin(const boost::filesystem::path &path);
 
 //define a function pointer type for convenience
 #ifndef __PLUGIN_BASE_FUNCTION__

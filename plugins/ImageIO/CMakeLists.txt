@@ -9,6 +9,7 @@ if(USE_ImageIO)
         add_library(GilViewer-ImageIO SHARED ${SRCS})
         target_link_libraries(GilViewer-ImageIO GilViewer ${ImageIO_LIBRARIES})
 
+	install(TARGETS GilViewer-ImageIO EXPORT GilViewer-targets DESTINATION ${GILVIEWER_PLUGIN_INSTALL_PREFIX} COMPONENT ImageIO ) 
     else()
         message(FATAL_ERROR "ImageIO not found!")
     endif()

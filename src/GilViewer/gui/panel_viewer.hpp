@@ -53,6 +53,7 @@ class wxLogWindow;
 class wxToolBar;
 class wxMenuBar;
 class vector_layer_ghost;
+class plugin_manager;
 
 #if wxUSE_DRAG_AND_DROP
 class gilviewer_file_drop_target;
@@ -211,6 +212,9 @@ protected:
 
     template<typename Event>
     inline wxRealPoint snap(const Event& e) const { return snap(wxRealPoint(e.m_x,e.m_y)); }
+
+private:
+    plugin_manager* m_plugin_manager;
 };
 
 #if wxUSE_DRAG_AND_DROP
