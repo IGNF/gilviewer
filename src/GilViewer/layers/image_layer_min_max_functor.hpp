@@ -61,7 +61,7 @@ struct pixel_compare_less
 
 struct any_view_min_max
 {
-    typedef std::pair<float, float> result_type;
+    typedef std::pair<double, double> result_type;
 
     template <typename ViewType>
     typename boost::enable_if_c<
@@ -71,7 +71,7 @@ struct any_view_min_max
     {
         typedef typename ViewType::iterator iterator;
         std::pair< iterator, iterator > result = boost::minmax_element( v.begin() , v.end() , pixel_compare_less() );
-        return std::make_pair( *(result.first) , *(result.second) );
+        return std::make_pair( static_cast<double>(*(result.first)) , static_cast<double>(*(result.second)) );
     }
 
     template <typename ViewType>

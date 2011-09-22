@@ -109,7 +109,7 @@ protected:
     //Fichier de Color Lookup Table pour les images mono canal
     wxFilePickerCtrl *m_filePicker_CLUT;
 
-    unsigned int m_nbComponents;
+    size_t m_nbComponents;
 
     DECLARE_EVENT_TABLE();
 
