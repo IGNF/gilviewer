@@ -49,10 +49,6 @@ public:
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
-    friend boost::shared_ptr<gilviewer_file_io_serialization_binary> create_gilviewer_file_io_serialization_binary();
-
-private:
-    gilviewer_file_io_serialization_binary() {}
 };
 
 #endif // GILVIEWER_FILE_IO_SERIALIZATION_BINARY_HPP

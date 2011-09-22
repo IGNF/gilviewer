@@ -4,9 +4,9 @@
 #include <wx/wx.h>
 
 #ifdef _WINDOWS
-#   define IMPLEMENT_PLUGIN(name) extern "C" __declspec(dllexport) plugin_base* create_plugin_base() { return new name();};
+#   define IMPLEMENT_PLUGIN(name) extern "C" __declspec(dllexport) plugin_base* create_plugin() { return new name();};
 #else
-#   define IMPLEMENT_PLUGIN(name) extern "C" plugin_base* create_plugin_base() { return new name();};
+#   define IMPLEMENT_PLUGIN(name) extern "C" plugin_base* create_plugin() { return new name();};
 #endif // _WINDOWS
 
 #include <boost/filesystem/path.hpp>
@@ -35,12 +35,9 @@ public:
 protected:
     wxWindow* m_parent;
 };
-plugin_base* load_plugin(const boost::filesystem::path &path);
 
+plugin_base* load_plugin(const boost::filesystem::path &path);
 //define a function pointer type for convenience
-#ifndef __PLUGIN_BASE_FUNCTION__
-#define __PLUGIN_BASE_FUNCTION__
-    typedef plugin_base* ( *create_plugin_base_function)();
-#endif //__PLUGIN_BASE_FUNCTION__
+typedef plugin_base* ( *create_plugin_function)();
 
 #endif // __PLUGIN_BASE_HPP__

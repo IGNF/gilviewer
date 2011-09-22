@@ -51,10 +51,6 @@ public:
     virtual std::string build_and_get_infos(const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
-    friend boost::shared_ptr<gilviewer_file_io_pnm> create_gilviewer_file_io_pnm();
-
-private:
-    gilviewer_file_io_pnm() {}
 };
 
 #endif // GILVIEWER_FILE_IO_PNM_HPP
