@@ -48,10 +48,9 @@ class gilviewer_io_factory : public PatternFactory< gilviewer_file_io,
                                           boost::shared_ptr<gilviewer_file_io>,
                                           std::multimap<std::string, std::pair<std::string, std::string> >
                                         > {};
-/*
-void register_all_image_file_formats();
-void register_all_vector_file_formats();
-void register_all_file_formats();
-*/
+
+void register_all_image_file_formats(gilviewer_io_factory *factory);
+void register_all_vector_file_formats(gilviewer_io_factory *factory);
+void register_all_file_formats(gilviewer_io_factory *factory);
 
 #endif // GILVIEWER_IO_FACTORY_HPP

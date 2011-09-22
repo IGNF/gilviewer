@@ -49,10 +49,6 @@ public:
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
-    friend boost::shared_ptr<gilviewer_file_io_pk1> create_gilviewer_file_io_pk1();
-
-private:
-    gilviewer_file_io_pk1() {}
 };
 
 #endif // gilviewer_file_io_pk1_HPP

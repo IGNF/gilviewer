@@ -51,10 +51,6 @@ public:
     virtual std::string build_and_get_infos(const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
-    friend boost::shared_ptr<gilviewer_file_io_tiff> create_gilviewer_file_io_tiff();
-
-private:
-    gilviewer_file_io_tiff() {}
 };
 
 #endif // GILVIEWER_FILE_IO_TIFF_HPP
