@@ -56,6 +56,7 @@ Authors:
 #include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 #include "sample_subimage_viewer.hpp"
 #include "sample_subimage.hpp"
 
@@ -96,8 +97,6 @@ bool sample_subimage_app::OnInit()
 #ifdef __LINUX__
     setlocale(LC_ALL, "POSIX");
 #endif
-
-    register_all_file_formats();
 
     m_frame = new sample_subimage_viewer((wxFrame *)NULL, wxID_ANY, _("Sample subimage viewer"), wxPoint(50,50), wxSize(800,600));
     m_frame->Show();

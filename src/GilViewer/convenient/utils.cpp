@@ -5,7 +5,8 @@ using namespace std;
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include "../io/gilviewer_io_factory.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 
 using namespace boost::algorithm;
 using namespace boost::filesystem;
@@ -64,7 +65,7 @@ namespace gilviewer_utils
         vector<string> ext = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
         vector<string>::iterator it = ext.begin();
         ostringstream wildcard;
-        wildcard << "All available formats |";
+        wildcard << "Supported files |";
         for(;it!=ext.end();++it)
         {
             string current_ext = *it;
@@ -72,7 +73,7 @@ namespace gilviewer_utils
             to_upper(current_ext);
             wildcard << "*." << current_ext << ";";
         }
-        wildcard << "|" << "Custom format |*.*";
+        wildcard << "|" << "All files |*.*";
         return wildcard.str();
     }
 }

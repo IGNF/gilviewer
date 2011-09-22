@@ -64,7 +64,7 @@ struct rotate_image_plugin_visitor : public boost::static_visitor<void>
     rotate_image_plugin_functor m_functor;
 };
 
-rotate_image_plugin::rotate_image_plugin(const wxString &title) : plugin_base(title) {}
+rotate_image_plugin::rotate_image_plugin(const wxString &title) : wx_plugin_base(title) {}
 
 void rotate_image_plugin::process()
 {

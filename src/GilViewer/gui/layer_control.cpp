@@ -79,6 +79,7 @@ Authors:
 
 #include "../tools/orientation_2d.hpp"
 #include "../tools/color_lookup_table.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 
 #include "../convenient/utils.hpp"
 #include "../convenient/macros_gilviewer.hpp"
@@ -394,48 +395,9 @@ void layer_control::on_reset(wxCommandEvent& event)
 
 void layer_control::on_open_layer(wxCommandEvent& event)
 {
-    // TODO: use extensions registered in the factory
-    /*
-    wxString wildcard;
-    wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT("*.shp;*.kml)");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT("|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT(";*.shp;*.SHP;*.kml;*.KML");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT("|");
-    wildcard << _("Image files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
-    wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff;*.TIF;*.TIFF|");
-    wildcard << wxT("PNG (*.png)|*.png;*.PNG|");
-    wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
-    wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
-    wildcard << _("Vector files ");
-    wildcard << wxT("(*.txt;*.xml;*.bin");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT(";*.shp;*.kml");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT(")|*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT(";*.shp;*.SHP;*.kml;*.KML");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT("|");
-    wildcard << wxT("Serialization text (*.txt)|*.txt;*.TXT|");
-    wildcard << wxT("Serialization xml (*.xml)|*.xml;*.XML|");
-    wildcard << wxT("Serialization binary (*.bin)|*.bin;*.BIN|");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
-        wildcard << wxT("KML (*.kml)|*.kml;*.KML|");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << _("Custom format ");
-    wildcard << wxT("(*)|*");
-    */
     string wild = gilviewer_utils::build_wx_wildcard_from_io_factory();
     wxString wildcard(wild.c_str(), *wxConvCurrent);
-    wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
+    wxFileDialog *fileDialog = new wxFileDialog(this, _("Open file"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
 
     if (fileDialog->ShowModal() == wxID_OK)
     {

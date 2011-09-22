@@ -35,19 +35,15 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#ifndef GILVIEWER_FILE_IO_IMAGEIO_HPP
-#define GILVIEWER_FILE_IO_IMAGEIO_HPP
-
-#include "../config/config.hpp"
-
-#if GILVIEWER_USE_IMAGEIO
+#ifndef GILVIEWER_FILE_IO_PNM_HPP
+#define GILVIEWER_FILE_IO_PNM_HPP
 
 #include "gilviewer_file_io_image.hpp"
 
-class gilviewer_file_io_imageio : public gilviewer_file_io_image
+class gilviewer_file_io_pnm : public gilviewer_file_io_image
 {
 public:
-    virtual ~gilviewer_file_io_imageio() {}
+    virtual ~gilviewer_file_io_pnm() {}
 
     virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
@@ -55,11 +51,10 @@ public:
     virtual std::string build_and_get_infos(const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
-    friend boost::shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio();
+    friend boost::shared_ptr<gilviewer_file_io_pnm> create_gilviewer_file_io_pnm();
 
 private:
-    //gilviewer_file_io_imageio() {}
+    gilviewer_file_io_pnm() {}
 };
 
-#endif // GILVIEWER_USE_IMAGEIO
-#endif // GILVIEWER_FILE_IO_IMAGEIO_HPP
+#endif // GILVIEWER_FILE_IO_PNM_HPP

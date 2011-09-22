@@ -90,11 +90,6 @@ bool sample_vector_layer_app::OnInit()
     setlocale(LC_ALL, "POSIX");
 #endif
 
-    register_all_file_formats();
-#if GILVIEWER_USE_GDAL
-    OGRRegisterAll();
-#endif // GILVIEWER_USE_GDAL
-
     try
     {
         m_frame = new sample_vector_layer_viewer((wxFrame *)NULL, wxID_ANY, _("Sample vector layer viewer"), wxPoint(50,50), wxSize(800,600));
