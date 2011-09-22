@@ -8,6 +8,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 ##
 ################################################
 
+
 #Nom du projet
 PROJECT(GilViewer)
 
@@ -172,6 +173,13 @@ ENDIF()
 #### Ajout du fichier contenant les regles de construction des libs externes : tinyxml
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
+
+#####################################
+###                     recherche des packages optionnels                        ###
+#####################################
+
+find_package(ImageIO)
+option(USE_ImageIO "Build GilViewer with ImageIO" ImageIO_FOUND)
 
 #####################################
 ###                     Fin recherche des packages                         ###

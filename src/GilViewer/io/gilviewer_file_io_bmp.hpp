@@ -35,23 +35,26 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
+#ifndef GILVIEWER_FILE_IO_BMP_HPP
+#define GILVIEWER_FILE_IO_BMP_HPP
 
-#ifndef GILVIEWER_IO_FACTORY_HPP
-#define GILVIEWER_IO_FACTORY_HPP
+#include "gilviewer_file_io_image.hpp"
 
-#include "GilViewer/tools/pattern_factory.hpp"
-#include "gilviewer_file_io.hpp"
+class gilviewer_file_io_bmp : public gilviewer_file_io_image
+{
+public:
+    virtual ~gilviewer_file_io_bmp() {}
 
-class gilviewer_io_factory : public PatternFactory< gilviewer_file_io,
-                                          std::string,
-                                          boost::function< boost::shared_ptr<gilviewer_file_io> () >,
-                                          boost::shared_ptr<gilviewer_file_io>,
-                                          std::multimap<std::string, std::pair<std::string, std::string> >
-                                        > {};
-/*
-void register_all_image_file_formats();
-void register_all_vector_file_formats();
-void register_all_file_formats();
-*/
+    virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
+    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
-#endif // GILVIEWER_IO_FACTORY_HPP
+    virtual std::string build_and_get_infos(const std::string &filename);
+
+    virtual bool Register(gilviewer_io_factory *factory);
+    friend boost::shared_ptr<gilviewer_file_io_bmp> create_gilviewer_file_io_bmp();
+
+private:
+    gilviewer_file_io_bmp() {}
+};
+
+#endif // GILVIEWER_FILE_IO_BMP_HPP

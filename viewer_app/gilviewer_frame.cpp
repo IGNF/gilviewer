@@ -108,8 +108,6 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
     SetMenuBar( m_panelviewer->menubar() );
     m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
 
-    // Currently, plugins causes the application to crash on windows...
-#ifndef _WINDOWS
+    // Currently, plugins causes the application to crash on windows... ???
     plugin_manager::instance()->register_plugins( plugins_dir );
-#endif // _WINDOWS
 }

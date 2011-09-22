@@ -40,14 +40,15 @@ Authors:
 
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem.hpp>
-#include "../convenient/utils.hpp"
+#include "GilViewer/convenient/utils.hpp"
+#include "GilViewer/plugins/plugin_base.hpp"
 
 #include <string>
 
 class layer;
 class gilviewer_io_factory;
 
-class gilviewer_file_io
+class gilviewer_file_io : public plugin_base
 {
 public:
     virtual ~gilviewer_file_io() {}

@@ -16,6 +16,7 @@ using namespace boost;
 using namespace std;
 
 #include <iostream>
+#include <sstream>
 
 shared_ptr<layer> gilviewer_file_io_shp::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {

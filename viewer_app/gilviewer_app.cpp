@@ -42,6 +42,7 @@ Authors:
 #include <wx/log.h>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 #include "gilviewer_frame.hpp"
 #include "gilviewer_app.hpp"
 
@@ -84,11 +85,6 @@ bool gilviewer_app::OnInit()
     setlocale(LC_ALL, "POSIX");
 #endif
 
-    register_all_file_formats();
-#if GILVIEWER_USE_GDAL
-    OGRRegisterAll();
-#endif // GILVIEWER_USE_GDAL
-
     // Langage
     set_langage(wxLANGUAGE_FRENCH);
 
@@ -116,6 +112,15 @@ bool gilviewer_app::OnInit()
         m_frame = new gilviewer_frame((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
 	    m_frame->AddLayersFromFiles( cmdFiles );
 	    m_frame->Show();
+
+            // Log all available formats ...
+            std::vector<std::string> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
+            std::ostringstream mes;
+            mes << "Available file formats:";
+            for(vector<string>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
+                mes << *it << " ";
+            GILVIEWER_LOG_MESSAGE(mes.str());
+
     }
     catch( std::exception &e )
     {

@@ -1,8 +1,5 @@
-#include "../config/config.hpp"
-#if GILVIEWER_USE_IMAGEIO
-
-#include "gilviewer_file_io_imageio.hpp"
-#include "gilviewer_io_factory.hpp"
+#include "ImageIO.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 #include <ign/imageio/ImageInput.h>
 #include <ign/imageio/ImageOutput.h>
 #include <ign/imageio/Exception.h>
@@ -13,7 +10,7 @@ using namespace boost::filesystem;
 using namespace std;
 
 #include "GilViewer/plugins/plugin_base.hpp"
-IMPLEMENT_IO_PLUGIN(gilviewer_file_io_imageio);
+IMPLEMENT_PLUGIN(gilviewer_file_io_imageio);
 
 // this should be integrated into ImageIO
 namespace ign {
@@ -247,10 +244,15 @@ shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio()
 
 bool gilviewer_file_io_imageio::Register(gilviewer_io_factory *factory)
 {
-    factory->Register("imageio", create_gilviewer_file_io_imageio);
-    pair<string,string> familly_description = make_pair<string,string>("Image files","IMAGEIO images");
-    factory->metadata().insert(make_pair( "imageio", familly_description ));
+    const char *ext[]= { "bil", "jp2", "tif", "tiff", "jpg", "jpeg", "png" };
+    const char **it = ext;
+    const char **end = ext + (sizeof(ext)/sizeof(const char *));
+    pair<string,string> familly_description = make_pair<string,string>("Image files","ImageIO images");
+    for(;it!=end;++it)
+    {
+        factory->Register(*it, create_gilviewer_file_io_imageio);
+        factory->metadata().insert(make_pair( *it, familly_description ));
+    }
     return true;
 }
 
-#endif // GILVIEWER_USE_IMAGEIO

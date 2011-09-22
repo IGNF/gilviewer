@@ -3,11 +3,11 @@
 
 #include "GilViewer/plugins/plugin_base.hpp"
 
-class rotate_image_plugin : public plugin_base
+class rotate_image_plugin : public wx_plugin_base
 {
 public:
     /// It is mandatory to provide an empty constructor (used to register the plugin)
-    rotate_image_plugin() : plugin_base() {}
+    rotate_image_plugin() : wx_plugin_base() {}
     rotate_image_plugin(const wxString &title);
     virtual void process();
     virtual wxWindow* gui();

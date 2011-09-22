@@ -489,12 +489,13 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
             break;
         }//scwith
     }
-    /*
-#ifndef _WINDOWS
-    for(unsigned int i=0;i<plugin_manager::instance()->getNbPlugins();i=i+1)
-        plugin_manager::instance()->at(i)-> on_mouse_move(event);
-#endif // _WINDOWS
-*/
+
+    for(unsigned int i=0;i<plugin_manager::instance()->size();i=i+1)
+    {
+        plugin_base *p = plugin_manager::instance()->at(i);
+        if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
+            wxp-> on_mouse_move(event);
+    }
     update_statusbar(p);
     //  SetFocus();
 }
@@ -699,14 +700,6 @@ void panel_viewer::on_quit(wxCommandEvent& event) {
 }
 
 void panel_viewer::snap_shot(wxCommandEvent& event) {
-    wxString wildcard;
-    wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|");
-    wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
-    wildcard << wxT("PNG (*.png)|*.png|");
-    wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
-    wildcard << wxT("BMP (*.bmp)|*.bmp|");
-
     {
         // On recupere le DC, on le met dans un bitmap et on copie ce bitmap (pour le coller ensuite) ...
         wxBufferedPaintDC dc(this);
@@ -717,7 +710,6 @@ void panel_viewer::snap_shot(wxCommandEvent& event) {
         wxBitmap snap = dc.GetSelectedBitmap();
         snap.SetHeight(height);
         snap.SetWidth(width);
-        wxImage im = snap.ConvertToImage();
 
         wxBitmapDataObject *toto = new wxBitmapDataObject(snap);
 

@@ -91,14 +91,6 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
     m_logWindow = new wxLogWindow(this, _("Log window"));
     m_logWindow->Show(m_isLogWindowVisible);
 
-    // Log all available formats ...
-    vector<string> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
-    ostringstream mes;
-    mes << "Available file formats:";
-    for(vector<string>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
-        mes << *it << " ";
-    GILVIEWER_LOG_MESSAGE(mes.str());
-
     //ToolBar
     m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
     m_baseToolBar->AddTool(wxID_ABOUT, wxT("A"), wxXmlResource::Get()->LoadBitmap( wxT("DIALOG-INFORMATION_22x22") ), wxNullBitmap, wxITEM_NORMAL, _("About"));

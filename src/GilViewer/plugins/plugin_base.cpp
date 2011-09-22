@@ -14,8 +14,8 @@
 using namespace std;
 using namespace boost;
 
-plugin_base::plugin_base() : wxFrame(NULL, wxID_ANY, wxString("", *wxConvCurrent)) {}
-plugin_base::plugin_base(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {}
+wx_plugin_base::wx_plugin_base() : wxFrame(NULL, wxID_ANY, wxString("", *wxConvCurrent)) {}
+wx_plugin_base::wx_plugin_base(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {}
 
 plugin_base* load_plugin(const boost::filesystem::path &path)
 {
@@ -24,14 +24,6 @@ plugin_base* load_plugin(const boost::filesystem::path &path)
     dll.Load(wxString(path.string().c_str(), *wxConvCurrent));
     if(dll.IsLoaded())
     {
-        wxDYNLIB_FUNCTION(create_io_plugin_function,create_io_plugin,dll);
-        if(pfncreate_io_plugin)
-        {
-            gilviewer_file_io *io = pfncreate_io_plugin();
-            io->Register(PatternSingleton<gilviewer_io_factory>::instance());
-            delete io;
-        }
-
         //Create a valid function pointer using the function pointer type in plugin.h
         wxDYNLIB_FUNCTION(create_plugin_base_function,create_plugin_base,dll);
         //check if the function is found
@@ -42,6 +34,7 @@ plugin_base* load_plugin(const boost::filesystem::path &path)
             dll.Detach();
             //Create the plugin
             plugin_base* plugin = pfncreate_plugin_base();
+            plugin->Register(PatternSingleton<gilviewer_io_factory>::instance());
             return plugin;
         }
     }
@@ -52,12 +45,12 @@ plugin_base* load_plugin(const boost::filesystem::path &path)
     return NULL;
 }
 
-void plugin_base::Register(const boost::filesystem::path& path)
+void register_plugin(const boost::filesystem::path& path)
 {
     plugin_manager::instance()->Register(path.string(), bind(load_plugin, path));
 }
 
-void plugin_base::parent(wxWindow* parent)
+void wx_plugin_base::parent(wxWindow* parent)
 {
     m_parent = parent;
 }

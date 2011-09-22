@@ -1,3 +1,4 @@
+#if 0
 #include "gilviewer_io_factory.hpp"
 
 #include "gilviewer_file_io_jpg.hpp"
@@ -5,7 +6,7 @@
 #include "gilviewer_file_io_tiff.hpp"
 #include "gilviewer_file_io_bmp.hpp"
 #include "gilviewer_file_io_pnm.hpp"
-#include "gilviewer_file_io_imageio.hpp"
+//#include "gilviewer_file_io_imageio.hpp"
 
 #include "gilviewer_file_io_pk1.hpp"
 //#include "gilviewer_file_io_key.hpp"
@@ -23,10 +24,6 @@
 #endif // GILVIEWER_USE_CGAL
 
 
-
-#include "gilviewer_file_io_serialization_txt.hpp"
-#include "gilviewer_file_io_serialization_xml.hpp"
-#include "gilviewer_file_io_serialization_binary.hpp"
 
 void register_all_image_file_formats(gilviewer_io_factory *factory)
 {
@@ -49,6 +46,10 @@ void register_all_image_file_formats(gilviewer_io_factory *factory)
 #endif
     */
 }
+
+#include "gilviewer_file_io_serialization_txt.hpp"
+#include "gilviewer_file_io_serialization_xml.hpp"
+#include "gilviewer_file_io_serialization_binary.hpp"
 
 void register_all_vector_file_formats(gilviewer_io_factory *factory)
 {
@@ -74,3 +75,5 @@ void register_all_file_formats()
     register_all_image_file_formats(factory);
     register_all_vector_file_formats(factory);
 }
+
+#endif
