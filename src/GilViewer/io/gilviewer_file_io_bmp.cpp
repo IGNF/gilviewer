@@ -34,6 +34,6 @@ bool gilviewer_file_io_bmp::Register(gilviewer_io_factory *factory)
 {
     factory->Register("bmp", create_gilviewer_file_io_bmp);
     pair<string,string> familly_description = make_pair<string,string>("Image files","BMP images");
-    factory->metadata().insert( make_pair( "bmp", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "bmp", familly_description ) );
     return true;
 }

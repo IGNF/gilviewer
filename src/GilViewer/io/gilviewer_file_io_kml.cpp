@@ -166,7 +166,7 @@ bool gilviewer_file_io_kml::Register(gilviewer_io_factory *factory)
 {
     factory->Register("kml", create_gilviewer_file_io_kml);
     pair<string,string> familly_description = make_pair<string,string>("Vector files","KML files");
-    factory->metadata().insert( make_pair( "kml", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "kml", familly_description ) );
     return true;
 }
 

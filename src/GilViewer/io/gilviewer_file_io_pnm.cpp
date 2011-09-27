@@ -49,9 +49,9 @@ bool gilviewer_file_io_pnm::Register(gilviewer_io_factory *factory)
     factory->Register("pgm", create_gilviewer_file_io_pnm);
     factory->Register("ppm", create_gilviewer_file_io_pnm);
     pair<string,string> familly_description = make_pair<string,string>("Image files","PNM images");
-    factory->metadata().insert( make_pair( "pnm", familly_description ) );
-    factory->metadata().insert( make_pair( "pbm", familly_description ) );
-    factory->metadata().insert( make_pair( "pgm", familly_description ) );
-    factory->metadata().insert( make_pair( "ppm", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "pnm", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "pbm", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "pgm", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "ppm", familly_description ) );
     return true;
 }

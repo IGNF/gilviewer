@@ -90,7 +90,7 @@ bool gilviewer_file_io_serialization_binary::Register(gilviewer_io_factory *fact
 {
     factory->Register("bin", create_gilviewer_file_io_serialization_binary);
     pair<string,string> familly_description = make_pair<string,string>("Serialization files","BIN files");
-    factory->metadata().insert( make_pair( "bin", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "bin", familly_description ) );
     return true;
 }
 
