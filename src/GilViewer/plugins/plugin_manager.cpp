@@ -60,6 +60,11 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
                     {
                         plugins_menu = menus->GetMenu(index_plugins_menu);
                     }
+#ifndef _WINDOWS
+                    // On windows, recent modifications of the puglin interface failed to compile. This line in particular:
+                    // (wxObjectEventFunction)&wx_plugin_base::gui
+                    // --> invalid cast ...
+                    // @todo: fix it
                     if( plugins_menu )
                     {
                         plugins_menu->Append(FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
@@ -67,14 +72,15 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
                                 FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins,
                                 wxEVT_COMMAND_MENU_SELECTED,
                                 (wxObjectEventFunction)&wx_plugin_base::gui,
-                                NULL, wxp );
+                                NULL, p );
                         menus->Connect(
                                 FIRST_GILVIEWER_PLUGIN+nb_of_successfully_loaded_plugins,
                                 wxEVT_COMMAND_MENU_SELECTED,
                                 (wxObjectEventFunction)&wx_plugin_base::gui,
-                                NULL, wxp );
+                                NULL, p );
                         ++nb_of_successfully_loaded_plugins;
                     }
+#endif // _WINDOWS
                 }
             }
             else

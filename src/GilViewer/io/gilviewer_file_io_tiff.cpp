@@ -135,7 +135,7 @@ bool gilviewer_file_io_tiff::Register(gilviewer_io_factory *factory)
     factory->Register("tif", create_gilviewer_file_io_tiff);
     factory->Register("tiff", create_gilviewer_file_io_tiff);
     pair<string,string> familly_description = make_pair<string,string>("Image files","TIFF images");
-    factory->metadata().insert( make_pair( "tif", familly_description ) );
-    factory->metadata().insert( make_pair( "tiff", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "tif", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "tiff", familly_description ) );
     return true;
 }

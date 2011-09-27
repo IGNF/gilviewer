@@ -90,6 +90,6 @@ bool gilviewer_file_io_serialization_txt::Register(gilviewer_io_factory *factory
 {
     factory->Register("txt", create_gilviewer_file_io_serialization_txt);
     pair<string,string> familly_description = make_pair<string,string>("Serialization files","TXT files");
-    factory->metadata().insert( make_pair( "txt", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "txt", familly_description ) );
     return true;
 }

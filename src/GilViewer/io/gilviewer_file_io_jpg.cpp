@@ -48,7 +48,7 @@ bool gilviewer_file_io_jpg::Register(gilviewer_io_factory *factory)
     factory->Register("jpg", create_gilviewer_file_io_jpg);
     factory->Register("jpeg", create_gilviewer_file_io_jpg);
     pair<string,string> familly_description = make_pair<string,string>("Image files","JPEG images");
-    factory->metadata().insert(  make_pair( "jpg" , familly_description ) );
-    factory->metadata().insert(  make_pair( "jpeg", familly_description ) );
+    factory->metadata().insert(  make_pair<string,pair<string,string> >( "jpg" , familly_description ) );
+    factory->metadata().insert(  make_pair<string,pair<string,string> >( "jpeg", familly_description ) );
     return true;
 }

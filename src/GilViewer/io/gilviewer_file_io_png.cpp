@@ -48,6 +48,6 @@ bool gilviewer_file_io_png::Register(gilviewer_io_factory *factory)
 {
     factory->Register("png", create_gilviewer_file_io_png);
     pair<string,string> familly_description = make_pair<string,string>("Image files","PNG images");
-    factory->metadata().insert( make_pair( "png", familly_description ) );
+    factory->metadata().insert( make_pair<string,pair<string,string> >( "png", familly_description ) );
     return true;
 }
