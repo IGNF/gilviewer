@@ -150,9 +150,6 @@ shared_ptr<gilviewer_file_io_gdal_jp2> create_gilviewer_file_io_gdal_jp2()
 
 bool gilviewer_file_io_gdal_jp2::Register(gilviewer_io_factory *factory)
 {
-    factory->Register("jp2", create_gilviewer_file_io_gdal_jp2);
-    pair<string,string> familly_description = make_pair<string,string>("Image files","JPEG2000 images");
-    factory->metadata().insert( make_pair<string,pair<string,string> >( "jp2", familly_description ) );
-
+    factory->insert("jp2", "Image", "JPEG2000", create_gilviewer_file_io_gdal_jp2);
     return true;
 }

@@ -54,9 +54,6 @@ public:
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
     virtual void update(int width, int height) {};
 
-    virtual std::string available_formats_wildcard() const;
-    virtual std::vector<std::string> available_formats_extensions() const;
-
     // Accessors
     virtual std::string layer_type_as_string() const {return "Vector";}
     virtual bool saveable() const {return true;}

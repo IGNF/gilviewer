@@ -147,8 +147,7 @@ public:
     virtual std::string pixel_value(const wxRealPoint& p) const { return std::string(); }
     // Fin methodes specifiques ImageLayer
 
-    virtual std::vector<std::string> available_formats_extensions() const { return std::vector<std::string>(); }
-    virtual std::string available_formats_wildcard() const { return std::string(); }
+    virtual std::string available_formats_wildcard() const = 0;
 
     virtual void default_display_parameters() {}
 

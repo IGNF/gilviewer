@@ -57,7 +57,6 @@ Authors:
 *   <li><i>TIdentifierType</i>  : the identifier type to associate with a <i>creator</i>. Defaults to <i>std::string</i></li>
 *   <li><i>TProductCreator</i>  : the <i>creator</i> function. Defaults to <i>boost::function<TAbstractProduct* ()></i></li>
 *   <li><i>ReturnType</i>       : the return type of the creator. Defaults to <i>TAbstractProduct*</i></li>
-*   <li><i>MetadataContainer</i>: the metadata container type. Defaults to <i>std::map<std::string, std::string></i></li>
 * </ul>
 *
 * @todo Policy based error handling
@@ -67,10 +66,14 @@ Authors:
 template < class TAbstractProduct,
            typename TIdentifierType   = std::string,
            typename TProductCreator   = boost::function<TAbstractProduct* ()>,
-           typename ReturnType        = TAbstractProduct*,
-           typename MetadataContainer = std::map<std::string, std::string> > class PatternFactory
+           typename ReturnType        = TAbstractProduct* > class PatternFactory
 {
 public:
+    typedef TAbstractProduct abstract_product_type;
+    typedef TIdentifierType  identifier_type;
+    typedef TProductCreator  product_creator_type;
+    typedef ReturnType       return_type;
+
     virtual ~PatternFactory() {}
 
     /// Register a <i>creator</i> with its <i>identifier</i> in the factory
@@ -104,13 +107,9 @@ public:
         return ids;
     }
 
-    const MetadataContainer& metadata() const { return m_metadata; }
-    MetadataContainer& metadata() { return m_metadata; }
-
 private:
     typedef std::map<TIdentifierType, TProductCreator> AssocMapType;
     AssocMapType associations_;
-    MetadataContainer m_metadata;
 };
 
 #endif /* PATTERNFACTORY_HPP_ */

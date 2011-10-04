@@ -163,8 +163,6 @@ boost::shared_ptr<gilviewer_file_io_shp> create_gilviewer_file_io_shp()
 
 bool gilviewer_file_io_shp::Register(gilviewer_io_factory *factory)
 {
-    factory->Register("shp", create_gilviewer_file_io_shp);
-    pair<string,string> familly_description = make_pair<string,string>("Vector files","SHP files");
-    factory->metadata().insert( make_pair<string,pair<string,string> >( "shp", familly_description ) );
+    factory->insert("shp", "Vector", "GDAL", create_gilviewer_file_io_shp);
     return true;
 }
