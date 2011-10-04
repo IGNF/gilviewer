@@ -1,9 +1,8 @@
-#include "../config/config.hpp"
-#if GILVIEWER_USE_GDALJP2
-
 #include "gilviewer_file_io_gdal_jp2.hpp"
 #include <boost/gil/extension/io_new/jpeg_all.hpp>
-#include "gilviewer_io_factory.hpp"
+
+#include "GilViewer/io/gilviewer_io_factory.hpp"
+
 #include "gdal_priv.h"
 #include <iostream>
 #include <fstream>
@@ -157,6 +156,3 @@ bool gilviewer_file_io_gdal_jp2::Register(gilviewer_io_factory *factory)
 
     return true;
 }
-
-
-#endif // GILVIEWER_USE_GDALJP2

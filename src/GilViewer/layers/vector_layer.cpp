@@ -45,7 +45,7 @@ Authors:
 
 using namespace std;
 
-
+/*
 vector<string> ogr_available_formats_extensions()
 {
     vector<string> extensions;
@@ -75,7 +75,7 @@ vector<string> cgal_available_formats_extensions()
     extensions.push_back("CGAL");
     return extensions;
 }
-
+*/
 
 void vector_layer::default_display_parameters()
 {

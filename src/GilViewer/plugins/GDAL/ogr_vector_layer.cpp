@@ -35,8 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include "../config/config.hpp"
-#if GILVIEWER_USE_GDAL
 
 #include "ogr_vector_layer.hpp"
 
@@ -49,8 +47,8 @@ Authors:
 #include <gdal/ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
-#include "../gui/vector_layer_settings_control.hpp"
-#include "../convenient/macros_gilviewer.hpp"
+#include "GilViewer/gui/vector_layer_settings_control.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
 
 #include "draw_geometry_visitor.hpp"
 
@@ -341,5 +339,3 @@ void ogr_vector_layer::clear()
 }
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...
-
-#endif // GILVIEWER_USE_GDAL

@@ -1,5 +1,5 @@
-#ifndef __SAMPLE_PLUGIN_HPP__
-#define __SAMPLE_PLUGIN_HPP__
+#ifndef __ROTATE_IMAGE_HPP__
+#define __ROTATE_IMAGE_HPP__
 
 #include "GilViewer/plugins/plugin_base.hpp"
 
@@ -18,4 +18,4 @@ public:
     void on_button_90cw(wxCommandEvent& e);
 };
 
-#endif // __SAMPLE_PLUGIN_HPP__
+#endif // __ROTATE_IMAGE_HPP__

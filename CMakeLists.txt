@@ -8,7 +8,6 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 ##
 ################################################
 
-
 #Nom du projet
 PROJECT(GilViewer)
 
@@ -241,12 +240,12 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
 #INCLUDE_DIRECTORIES( BEFORE  "src/" )
 
 # Ajout d'une dependance du viewer a tinyxml. Ca permet de compiler tinyxml AVANT le viewer ...
-ADD_DEPENDENCIES( GilViewer tinyxml )
+#ADD_DEPENDENCIES( GilViewer tinyxml )
 # Et enfin, le viewer depend de la lib ...
-ADD_DEPENDENCIES( GilViewerApp GilViewer )
+#ADD_DEPENDENCIES( GilViewerApp GilViewer )
 # De meme que les samples ...
-ADD_DEPENDENCIES( sample_vector_layer GilViewer )
-ADD_DEPENDENCIES( sample_subimage GilViewer )
+#ADD_DEPENDENCIES( sample_vector_layer GilViewer )
+#ADD_DEPENDENCIES( sample_subimage GilViewer )
 
 ####
 #### Choice for install mode.
