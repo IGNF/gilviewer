@@ -110,9 +110,9 @@ void rotate_image_plugin::process()
     }
 }
 
-wxWindow* rotate_image_plugin::gui()
+void rotate_image_plugin::show(wxCommandEvent&e)
 {
-    GILVIEWER_LOG_MESSAGE("[sample_plugin::gui] start")
+    GILVIEWER_LOG_MESSAGE("[sample_plugin::show] start")
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
     wxBoxSizer* bSizer1;
@@ -127,8 +127,6 @@ wxWindow* rotate_image_plugin::gui()
     m_button1->Connect( wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(rotate_image_plugin::on_button_90cw), NULL, this);
 
     Show(true);
-
-    return this;
 }
 
 void rotate_image_plugin::on_button_90cw(wxCommandEvent& e)

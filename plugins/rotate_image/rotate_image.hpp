@@ -10,7 +10,7 @@ public:
     rotate_image_plugin() : wx_plugin_base() {}
     rotate_image_plugin(const wxString &title);
     virtual void process();
-    virtual wxWindow* gui();
+    virtual void show(wxCommandEvent&);
 
     virtual std::string submenu_name() { return "Image processing"; }
     virtual std::string menuentry_name() { return "Sample"; }
