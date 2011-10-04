@@ -21,9 +21,10 @@ plugin_base* plugin_manager::create_object(const string& id)
 }
 
 
-void plugin_manager::register_plugin(const boost::filesystem::path& path)
+bool plugin_manager::register_plugin(const boost::filesystem::path& path)
 {
-    Register(path.string(), boost::bind(load_plugin, path));
+    return Register(BOOST_FILESYSTEM_STRING(path.filename()),
+                    boost::bind(load_plugin, path));
 }
 
 
@@ -36,42 +37,51 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
     {
         boost::filesystem::path file_path(boost::filesystem::system_complete(all_so_files[i]));
         string plugin_name(BOOST_FILESYSTEM_STRING(file_path.filename()));
+
         const string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
         const string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
-        if( file_path.filename()!= libgilviewer_name && file_path.filename()!= libtinyxml_name )
-        {
-            ostringstream mes;
-            mes << "Plugin : " << plugin_name;
-            register_plugin(file_path);
-            plugin_base *p = create_object(file_path.string());
-            if(!p)
-            {
-                mes << " ERROR!";
-                GILVIEWER_LOG_MESSAGE(mes.str());
-                continue;
-            }
-            if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
-            {
-                mes << " (wx)";
-                if(!plugins_menu)
-                {
-                    plugins_menu = new wxMenu;
-                    menus->Insert(menus->GetMenuCount(), plugins_menu, _("Plugins"));
-                }
-                long id = wxNewId();
-                plugins_menu->Append(id, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
+        if( file_path.filename()== libgilviewer_name || file_path.filename()== libtinyxml_name )
+            continue;
 
-                menus->GetParent()->Connect(
-                        id, wxEVT_COMMAND_MENU_SELECTED,
-                        wxCommandEventHandler(wx_plugin_base::show),
-                        NULL, wxp );
-                menus->Connect(
-                        id, wxEVT_COMMAND_MENU_SELECTED,
-                        wxCommandEventHandler(wx_plugin_base::show),
-                        NULL, wxp );
-            }
-            mes << " OK";
+        ostringstream mes;
+        mes << "Plugin : " << plugin_name;
+
+        if(!register_plugin(file_path))
+        {
+            mes << " is already loaded, skipping!";
             GILVIEWER_LOG_MESSAGE(mes.str());
+            continue;
         }
+
+        plugin_base *p = create_object(plugin_name);
+        if(!p)
+        {
+            mes << " ERROR!";
+            GILVIEWER_LOG_MESSAGE(mes.str());
+            continue;
+        }
+
+        if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
+        {
+            mes << " (wx)";
+            if(!plugins_menu)
+            {
+                plugins_menu = new wxMenu;
+                menus->Insert(menus->GetMenuCount(), plugins_menu, _("Plugins"));
+            }
+            long id = wxNewId();
+            plugins_menu->Append(id, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
+
+            menus->GetParent()->Connect(
+                    id, wxEVT_COMMAND_MENU_SELECTED,
+                    wxCommandEventHandler(wx_plugin_base::show),
+                    NULL, wxp );
+            menus->Connect(
+                    id, wxEVT_COMMAND_MENU_SELECTED,
+                    wxCommandEventHandler(wx_plugin_base::show),
+                    NULL, wxp );
+        }
+        mes << " OK";
+        GILVIEWER_LOG_MESSAGE(mes.str());
     }
 }

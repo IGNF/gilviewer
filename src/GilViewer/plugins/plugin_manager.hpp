@@ -51,7 +51,7 @@ public:
     virtual ~plugin_manager() {}
     plugin_base* create_object(const std::string& id);
 
-    void register_plugin(const boost::filesystem::path& path);
+    bool register_plugin(const boost::filesystem::path& path);
     void register_plugins(const std::string &path, wxMenuBar* menus);
     unsigned int size()const{ return (unsigned int)m_plugins.size();}
     plugin_base* at(unsigned int i) const {return m_plugins.at(i);}
