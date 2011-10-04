@@ -35,26 +35,20 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#ifndef GILVIEWER_FILE_IO_GDAL_JPG2_HPP
-#define GILVIEWER_FILE_IO_GDAL_JPG2_HPP
+#ifndef GILVIEWER_FILE_IO_CGAL_HPP
+#define GILVIEWER_FILE_IO_CGAL_HPP
 
-#include "../config/config.hpp"
-#if GILVIEWER_USE_GDALJP2
+#include "GilViewer/io/gilviewer_file_io.hpp"
 
-#include "gilviewer_file_io_image.hpp"
-
-class gilviewer_file_io_gdal_jp2 : public gilviewer_file_io_image
+class gilviewer_file_io_cgal : public gilviewer_file_io
 {
 public:
-    virtual ~gilviewer_file_io_gdal_jp2() {}
+    virtual ~gilviewer_file_io_cgal() {}
 
     virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
-    virtual std::string build_and_get_infos(const std::string &filename);
-
     virtual bool Register(gilviewer_io_factory *factory);
 };
 
-#endif // GILVIEWER_USE_GDALJP2
-#endif // GILVIEWER_FILE_IO_GDAL_JPG2_HPP
+#endif // GILVIEWER_FILE_IO_CGAL_HPP

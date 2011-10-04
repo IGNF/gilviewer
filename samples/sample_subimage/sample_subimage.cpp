@@ -53,7 +53,6 @@ Authors:
 #include <wx/log.h>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
-#include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
 #include "GilViewer/tools/pattern_singleton.hpp"
@@ -61,9 +60,6 @@ Authors:
 #include "sample_subimage.hpp"
 
 #include "GilViewer/config/config.hpp"
-#if GILVIEWER_USE_GDAL
-#   include <gdal/ogrsf_frmts.h>
-#endif // GILVIEWER_USE_GDAL
 
 using namespace boost;
 using namespace std;
@@ -101,7 +97,7 @@ bool sample_subimage_app::OnInit()
     m_frame = new sample_subimage_viewer((wxFrame *)NULL, wxID_ANY, _("Sample subimage viewer"), wxPoint(50,50), wxSize(800,600));
     m_frame->Show();
 
-    string filename("../data/09-Paris.JPG");
+    string filename("09-Paris.JPG");
     /*
      // You should use this, but, this is not necessary here since everything is know at compile time (and it also saves compile time)
     string extension(filesystem::extension(filename));
@@ -113,6 +109,9 @@ bool sample_subimage_app::OnInit()
         shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object("jpg");
         m_frame->add_layer( file->load(filename) );
         boost::shared_ptr<layer> sublayer = file->load(filename, 1200, 200 , 950, 550);
+
+        if(!sublayer) throw std::exception();
+
         m_frame->add_layer( sublayer );
         sublayer->transform().translation_x(100);
         sublayer->transform().translation_y(250);

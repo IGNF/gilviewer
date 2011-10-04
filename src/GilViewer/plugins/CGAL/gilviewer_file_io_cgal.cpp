@@ -1,14 +1,10 @@
-#include "../config/config.hpp"
-#if GILVIEWER_USE_CGAL
-
 #include "gilviewer_file_io_cgal.hpp"
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/variant/get.hpp>
 
-#include "gilviewer_io_factory.hpp"
-
-#include "../layers/cgal_vector_layer.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/plugins/CGAL/cgal_vector_layer.hpp"
 
 using namespace boost;
 using namespace std;
@@ -41,4 +37,5 @@ bool gilviewer_file_io_cgal::Register(gilviewer_io_factory *factory)
     return true;
 }
 
-#endif // GILVIEWER_USE_CGAL
+#include "GilViewer/plugins/plugin_base.hpp"
+IMPLEMENT_PLUGIN(gilviewer_file_io_cgal);

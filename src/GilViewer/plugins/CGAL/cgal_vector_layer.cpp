@@ -35,9 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#include "../config/config.hpp"
-#if GILVIEWER_USE_CGAL
-
 #include "cgal_vector_layer.hpp"
 
 #include <boost/filesystem.hpp>
@@ -49,6 +46,8 @@ Authors:
 #include "GilViewer/gui/vector_layer_settings_control.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
 #include "GilViewer/convenient/wxrealpoint.hpp"
+#include "GilViewer/convenient/utils.hpp"
+
 
 #include <wx/dc.h>
 #include <wx/pen.h>
@@ -65,8 +64,6 @@ Authors:
 
 #include <wx/log.h>
 #include <shapefil.h>
-
-#include "../convenient/utils.hpp"
 
 struct Vertex_data {
     Vertex_data() : selected(false) {}
@@ -616,5 +613,3 @@ void cgal_vector_layer::select(const wxRealPoint& p)
     d2[SNAP_LINE] = 100;
     m_arrangement->select(transform(),d2,p);
 }
-
-#endif // GILVIEWER_USE_CGAL

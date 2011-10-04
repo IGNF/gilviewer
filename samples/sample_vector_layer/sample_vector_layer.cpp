@@ -46,7 +46,7 @@ Authors:
 #include <wx/log.h>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
-#include "GilViewer/layers/ogr_vector_layer.hpp"
+#include "GilViewer/plugins/GDAL/ogr_vector_layer.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
 #include "sample_vector_layer_viewer.hpp"
