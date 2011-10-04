@@ -26,7 +26,7 @@ public:
     wx_plugin_base();
     wx_plugin_base(const wxString &title);
     virtual void on_mouse_move(wxMouseEvent &event) {};
-    virtual wxWindow* gui() { return NULL; }
+    virtual void show(wxCommandEvent&) {}
     void parent(wxWindow* parent);
 
     virtual std::string submenu_name() = 0;

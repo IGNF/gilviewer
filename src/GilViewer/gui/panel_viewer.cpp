@@ -166,6 +166,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     m_menuBar = new wxMenuBar;
     m_menuBar->Insert(0, m_menuFile, _("File"));
     m_menuBar->Insert(1, m_menuAbout, _("About ..."));
+    m_menuBar->SetParent(parent);
 
 
     m_bgbrush.SetColour(wxColor(200,200,200));
