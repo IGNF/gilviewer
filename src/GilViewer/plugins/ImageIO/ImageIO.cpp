@@ -247,11 +247,9 @@ bool gilviewer_file_io_imageio::Register(gilviewer_io_factory *factory)
     const char *ext[]= { "bil", "jp2", "tif", "tiff", "jpg", "jpeg", "png" };
     const char **it = ext;
     const char **end = ext + (sizeof(ext)/sizeof(const char *));
-    pair<string,string> familly_description = make_pair<string,string>("Image files","ImageIO images");
     for(;it!=end;++it)
     {
-        factory->Register(*it, create_gilviewer_file_io_imageio);
-        factory->metadata().insert(make_pair( *it, familly_description ));
+        factory->insert(*it, "Image","ImageIO", create_gilviewer_file_io_imageio);
     }
     return true;
 }

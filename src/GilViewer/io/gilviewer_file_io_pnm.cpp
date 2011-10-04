@@ -44,14 +44,9 @@ shared_ptr<gilviewer_file_io_pnm> create_gilviewer_file_io_pnm()
 
 bool gilviewer_file_io_pnm::Register(gilviewer_io_factory *factory)
 {
-    factory->Register("pnm", create_gilviewer_file_io_pnm);
-    factory->Register("pbm", create_gilviewer_file_io_pnm);
-    factory->Register("pgm", create_gilviewer_file_io_pnm);
-    factory->Register("ppm", create_gilviewer_file_io_pnm);
-    pair<string,string> familly_description = make_pair<string,string>("Image files","PNM images");
-    factory->metadata().insert( make_pair<string,pair<string,string> >( "pnm", familly_description ) );
-    factory->metadata().insert( make_pair<string,pair<string,string> >( "pbm", familly_description ) );
-    factory->metadata().insert( make_pair<string,pair<string,string> >( "pgm", familly_description ) );
-    factory->metadata().insert( make_pair<string,pair<string,string> >( "ppm", familly_description ) );
+    factory->insert("pnm", "Image","PNM", create_gilviewer_file_io_pnm);
+    factory->insert("pbm", "Image","PNM", create_gilviewer_file_io_pnm);
+    factory->insert("pgm", "Image","PNM", create_gilviewer_file_io_pnm);
+    factory->insert("ppm", "Image","PNM", create_gilviewer_file_io_pnm);
     return true;
 }

@@ -41,8 +41,9 @@ Authors:
 #include <wx/brush.h>
 #include <wx/log.h>
 
-#include "../gui/vector_layer_settings_control.hpp"
-#include "../convenient/wxrealpoint.hpp"
+#include "GilViewer/gui/vector_layer_settings_control.hpp"
+#include "GilViewer/convenient/wxrealpoint.hpp"
+#include "GilViewer/convenient/utils.hpp"
 
 #include "simple_vector_layer.hpp"
 
@@ -296,12 +297,7 @@ void simple_vector_layer::clear()
 
 string simple_vector_layer::available_formats_wildcard() const
 {
-    ostringstream wildcard;
-    wildcard << "All available serialization (*.txt;*.xml;*.bin)|*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN|";
-    wildcard << "Serialization text (*.txt)|*.txt;*.TXT|";
-    wildcard << "Serialization xml (*.xml)|*.xml;*.XML|";
-    wildcard << "Serialization binary (*.bin)|*.bin;*.BIN";
-    return wildcard.str();
+    return gilviewer_utils::build_wx_wildcard_from_io_factory("Vector");
 }
 
 layer_settings_control* simple_vector_layer::build_layer_settings_control(unsigned int index, layer_control* parent)

@@ -49,6 +49,7 @@ Authors:
 
 #include "GilViewer/gui/vector_layer_settings_control.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/convenient/utils.hpp"
 
 #include "draw_geometry_visitor.hpp"
 
@@ -241,11 +242,7 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
 
 string ogr_vector_layer::available_formats_wildcard() const
 {
-    ostringstream wildcard;
-    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.SHP;*.kml;*.KML|";
-    wildcard << "SHP (*.shp)|*.shp;*.SHP|";
-    wildcard << "KML (*.kml)|*.kml;*.KML";
-    return wildcard.str();
+    return gilviewer_utils::build_wx_wildcard_from_io_factory("Vector","GDAL");
 }
 
 const std::vector<std::pair<geometry_types,OGRFeature*> >& ogr_vector_layer::geometries_features() const {return m_geometries_features;}

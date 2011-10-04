@@ -3,6 +3,7 @@
 using namespace std;
 
 
+#include <set>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include "GilViewer/io/gilviewer_io_factory.hpp"
@@ -49,31 +50,66 @@ namespace gilviewer_utils
         return all_files;
     }
 
-    string build_wx_wildcard_from_io_factory()
+    void build_wx_wildcard_from_io_factory_aux(const std::string& family, const std::string& group, const vector<factory_key>& id, ostringstream& wildcard)
     {
-        /*
-        typedef multimap<string, pair<string, string> > metadata_type;
-        typedef metadata_type::const_iterator metadata_iterator;
-        const multimap<string, pair<string, string> > &metadata = PatternSingleton<gilviewer_io_factory>::instance()->metadata();
-        // First, fecth all available families
-        map<string,vector<string> > families;
-        metadata_iterator it=metadata.begin();
-        for(;it!=metadata.end();++it)
-            families.insert()
-            */
-        // Currently simple version without descriptions
-        vector<string> ext = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
-        vector<string>::iterator it = ext.begin();
-        ostringstream wildcard;
-        wildcard << "Supported files |";
-        for(;it!=ext.end();++it)
+        ostringstream oss1;
+        ostringstream oss2;
+        bool first = true;
+        for(vector<factory_key>::const_iterator it = id.begin();it!=id.end();++it)
         {
-            string current_ext = *it;
-            wildcard << "*." << current_ext << ";";
+            if(family!="" && it->family != family) continue;
+            if(group !="" && it->group  != group ) continue;
+            if(!first)
+            {
+                oss1 << " ";
+                oss2 << ";";
+            }
+            string current_ext = it->extension;
+            oss1 << current_ext;
+            oss2 << "*." << current_ext << ";";
             to_upper(current_ext);
-            wildcard << "*." << current_ext << ";";
+            oss2 << "*." << current_ext;
+            first = false;
         }
-        wildcard << "|" << "All files |*.*";
+        if(!first)
+        {
+            if(wildcard.tellp()) wildcard << "|";
+            wildcard << (family==""?(group==""?"Supported":group):family) << " files (" << oss1.str() << ")|" << oss2.str();
+        }
+    }
+
+
+    string build_wx_wildcard_from_io_factory(const std::string& family, const std::string& group)
+    {
+        ostringstream wildcard;
+        vector<factory_key> id = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
+
+        build_wx_wildcard_from_io_factory_aux(family, group, id, wildcard);
+
+        std::set<std::string> families;
+        std::set<std::string> groups;
+
+        for(vector<factory_key>::const_iterator it = id.begin();it!=id.end();++it)
+        {
+            if(family!="" && it->family != family) continue;
+            if(group !="" && it->group  != group ) continue;
+            families.insert(it->family);
+            groups.insert  (it->group);
+        }
+        if(family=="")
+        {
+            for(std::set<std::string>::const_iterator it = families.begin();it!=families.end();++it)
+                build_wx_wildcard_from_io_factory_aux(*it, group, id, wildcard);
+
+        }
+        if(group=="")
+        {
+            for(std::set<std::string>::const_iterator it = groups.begin();it!=groups.end();++it)
+                build_wx_wildcard_from_io_factory_aux("", *it, id, wildcard);
+
+        }
+        if(wildcard.tellp()) wildcard << "|";
+        wildcard << "All files (*)|*.*";
         return wildcard.str();
     }
 }

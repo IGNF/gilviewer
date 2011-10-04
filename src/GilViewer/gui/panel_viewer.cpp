@@ -233,11 +233,11 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     m_plugin_manager->register_plugins( plugins_dir, m_menuBar );
 
     // Log all available formats ...
-    std::vector<std::string> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
+    std::vector<factory_key> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
     std::ostringstream mes;
     mes << "Available file formats:";
-    for(vector<string>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
-        mes << *it << " ";
+    for(vector<factory_key>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
+        mes << it->extension << " ";
     GILVIEWER_LOG_MESSAGE(mes.str());
 }
 

@@ -135,7 +135,6 @@ public:
     virtual image_ptr image() const { return m_img; }
     virtual variant_view_ptr  variant_view() const { return m_variant_view; }
 
-    virtual std::vector<std::string> available_formats_extensions() const;
     virtual std::string available_formats_wildcard() const;
     virtual bool saveable() const {return true;}
     virtual std::string get_layer_type_as_string() const {return "Image";}

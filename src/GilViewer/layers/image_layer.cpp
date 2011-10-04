@@ -388,30 +388,10 @@ layer::ptrLayerType image_layer::crop_local(const wxRealPoint& p0, const wxRealP
     return ptrLayerType(l);
 }
 
-vector<string> image_layer::available_formats_extensions() const
-{
-    vector<string> extensions;
-    extensions.push_back("tif");
-    extensions.push_back("TIF");
-    extensions.push_back("tiff");
-    extensions.push_back("TIFF");
-    extensions.push_back("jpg");
-    extensions.push_back("JPG");
-    extensions.push_back("jpeg");
-    extensions.push_back("JPEG");
-    extensions.push_back("png");
-    extensions.push_back("PNG");
-    return extensions;
-}
 
 string image_layer::available_formats_wildcard() const
 {
-    ostringstream wildcard;
-    wildcard << "All supported image files (*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG|";
-    wildcard << "TIFF (*.tif;*.tiff)|*.tif;*.tiff;*.TIF;*.TIFF|";
-    wildcard << "PNG (*.png)|*.png;*.PNG|";
-    wildcard << "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg;*.JPG;*.JPEG|";
-    return wildcard.str();
+    return gilviewer_utils::build_wx_wildcard_from_io_factory("Image");
 }
 
 layer_settings_control* image_layer::build_layer_settings_control(unsigned int index, layer_control* parent)

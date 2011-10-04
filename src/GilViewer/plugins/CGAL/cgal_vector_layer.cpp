@@ -534,12 +534,7 @@ layer_settings_control* cgal_vector_layer::build_layer_settings_control(unsigned
 
 string cgal_vector_layer::available_formats_wildcard() const
 {
-    ostringstream wildcard;
-    wildcard << "All supported vector files (*.shp;*.kml)|*.shp;*.SHP;*.kml;*.KML;*.cgal;*.CGAL|";
-    wildcard << "SHP (*.shp)|*.shp;*.SHP|";
-    wildcard << "KML (*.kml)|*.kml;*.KML";
-    wildcard << "CGAL (*.cgal)|*.cgal;*.CGAL";
-    return wildcard.str();
+    return gilviewer_utils::build_wx_wildcard_from_io_factory("Vector","CGAL");
 }
 
 void cgal_vector_layer::add_point( double x , double y )

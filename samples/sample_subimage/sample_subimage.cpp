@@ -106,7 +106,8 @@ bool sample_subimage_app::OnInit()
     */
     try
     {
-        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object("jpg");
+        std::string ext = "jpg";
+        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(ext);
         m_frame->add_layer( file->load(filename) );
         boost::shared_ptr<layer> sublayer = file->load(filename, 1200, 200 , 950, 550);
 
