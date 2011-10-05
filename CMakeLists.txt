@@ -200,7 +200,7 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
 ###                     recherche des packages optionnels                        ###
 #####################################
 
-find_package(ImageIO)
+find_package(ImageIO QUIET)
 option(USE_ImageIO "Build GilViewer with ImageIO" ImageIO_FOUND)
 
 #####################################
