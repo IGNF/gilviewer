@@ -68,11 +68,11 @@ rotate_image_plugin::rotate_image_plugin(const wxString &title) : wx_plugin_base
 
 void rotate_image_plugin::process()
 {
-    GILVIEWER_LOG_MESSAGE("[sample_plugin::process] Starting...") 
+    GILVIEWER_LOG_MESSAGE("[rotate_image_plugin::process] Starting...")
     std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
     if(v_pv.empty())
     {
-        GILVIEWER_LOG_ERROR("[sample_plugin::process] Empty panel manager list")
+        GILVIEWER_LOG_ERROR("[rotate_image_plugin::process] Empty panel manager list")
         return;
     }
 
@@ -83,25 +83,20 @@ void rotate_image_plugin::process()
     for(;itb!=ite;++itb,++i)
     {
         bool selected = lc->rows()[i]->m_nameStaticText->selected();
+        ostringstream os;
+        os << "Layer " << (*itb)->filename();
         if(selected)
-        {
-            ostringstream os;
-            os << "Layer " << (*itb)->filename() << " is selected";
-            GILVIEWER_LOG_MESSAGE(os.str())
-        }
+            os << " is selected";
         else
-        {
-            ostringstream os;
-            os << "Layer " << (*itb)->filename() << " is not selected";
-            GILVIEWER_LOG_MESSAGE(oss.str())
-        }
+            os << " is not selected";
+        GILVIEWER_LOG_MESSAGE(oss.str())
 
         shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>((*itb));
 
         if(selected && imagelayer)
         {
             ostringstream os;
-            os << "Layer " << (*itb)->filename() << " is an image layer";
+            os << "Layer " << (*itb)->filename() << " is an image layer and is selected --> applying rotate visitor";
             GILVIEWER_LOG_MESSAGE(os.str())
 
             rotate_image_plugin_visitor spv(imagelayer);
@@ -112,7 +107,7 @@ void rotate_image_plugin::process()
 
 void rotate_image_plugin::show(wxCommandEvent&e)
 {
-    GILVIEWER_LOG_MESSAGE("[sample_plugin::show] start")
+    GILVIEWER_LOG_MESSAGE("[rotate_image_plugin::show] start")
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
     wxBoxSizer* bSizer1;
@@ -131,6 +126,6 @@ void rotate_image_plugin::show(wxCommandEvent&e)
 
 void rotate_image_plugin::on_button_90cw(wxCommandEvent& e)
 {
-    GILVIEWER_LOG_MESSAGE("[sample_plugin::OnButton] start") 
+    GILVIEWER_LOG_MESSAGE("[rotate_image_plugin::on_button_90cw] start")
     process();
 }
