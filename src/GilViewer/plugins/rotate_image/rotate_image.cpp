@@ -80,6 +80,12 @@ void rotate_image_plugin::process()
     layer_control::iterator itb=lc->begin(), ite=lc->end();
     unsigned int i=0;
 
+    if(!lc->rows().size())
+    {
+        GILVIEWER_LOG_MESSAGE("[rotate_image_plugin::process] No layer loaded...")
+        return;
+    }
+
     for(;itb!=ite;++itb,++i)
     {
         bool selected = lc->rows()[i]->m_nameStaticText->selected();
