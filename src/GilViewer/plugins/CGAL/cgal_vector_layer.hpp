@@ -68,8 +68,6 @@ public:
 
     virtual std::string available_formats_wildcard() const;
 
-    //void build_infos(OGRSpatialReference *spatial_reference);
-
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
     virtual void add_point( double x , double y );

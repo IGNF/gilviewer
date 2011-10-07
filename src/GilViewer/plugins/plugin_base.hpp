@@ -25,7 +25,8 @@ class wx_plugin_base : public plugin_base, public wxFrame
 public:
     wx_plugin_base();
     wx_plugin_base(const wxString &title);
-    virtual void on_mouse_move(wxMouseEvent &event) {};
+    virtual void on_mouse_move(wxMouseEvent &event) {}
+    virtual void on_close(wxCloseEvent& event) { Hide(); }
     virtual void show(wxCommandEvent&) {}
     void parent(wxWindow* parent);
 
@@ -34,6 +35,9 @@ public:
 
 protected:
     wxWindow* m_parent;
+
+private:
+    DECLARE_EVENT_TABLE();
 };
 
 plugin_base* load_plugin(const boost::filesystem::path &path);

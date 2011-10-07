@@ -63,7 +63,7 @@ Authors:
 #include <CGAL/squared_distance_2.h>
 
 #include <wx/log.h>
-#include <shapefil.h>
+//#include <shapefil.h>
 
 struct Vertex_data {
     Vertex_data() : selected(false) {}
@@ -137,7 +137,7 @@ struct Arrangement {
     class ObjectCache : public std::map<wxRealPoint,Point_2> {};
 
     Arrangement() : m_pl(m_arrangement) {}
-
+/*
     void load(const std::string& filename)
     {
         std::cout << "loading " << filename << std::endl;
@@ -205,6 +205,8 @@ struct Arrangement {
     }
 
     void load_cgal(const std::string& filename)
+    */
+    void load(const std::string& filename)
     {
         std::cout << "loading as a cgal file " << filename << std::endl;
         std::ifstream f(filename.c_str());

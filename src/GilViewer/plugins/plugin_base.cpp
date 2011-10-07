@@ -47,3 +47,7 @@ void wx_plugin_base::parent(wxWindow* parent)
 {
     m_parent = parent;
 }
+
+BEGIN_EVENT_TABLE(wx_plugin_base, wxFrame)
+EVT_CLOSE(wx_plugin_base::on_close)
+END_EVENT_TABLE()

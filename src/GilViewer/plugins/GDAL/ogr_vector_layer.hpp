@@ -84,8 +84,6 @@ public:
 
     virtual std::string available_formats_wildcard() const;
 
-    void build_infos(OGRSpatialReference *spatial_reference);
-
     virtual layer_settings_control* build_layer_settings_control(unsigned int index, layer_control* parent);
 
     inline virtual double center_x() {return m_center_x;}
@@ -115,6 +113,8 @@ private:
     unsigned int m_nb_geometries;
 
     void compute_center(OGRLayer* layer, int nb_layers);
+    void build_infos(OGRSpatialReference *spatial_reference);
+
 };
 
 #endif // OGR_VECTOR_LAYER_HPP
