@@ -5,11 +5,8 @@
 #include <boost/variant/get.hpp>
 
 
-#include "gilviewer_io_factory.hpp"
-
-
-
-#include "../layers/simple_vector_layer.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/layers/simple_vector_layer.hpp"
 
 using namespace boost;
 using namespace std;
@@ -17,6 +14,9 @@ using namespace std;
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+#include "GilViewer/plugins/plugin_base.hpp"
+IMPLEMENT_PLUGIN(gilviewer_file_io_pk1);
 
 shared_ptr<layer> gilviewer_file_io_pk1::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {

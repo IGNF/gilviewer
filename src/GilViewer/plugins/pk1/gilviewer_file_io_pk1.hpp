@@ -38,7 +38,7 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_PK1_HPP
 #define GILVIEWER_FILE_IO_PK1_HPP
 
-#include "gilviewer_file_io.hpp"
+#include "GilViewer/io/gilviewer_file_io.hpp"
 
 class gilviewer_file_io_pk1 : public gilviewer_file_io
 {
