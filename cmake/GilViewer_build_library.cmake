@@ -27,7 +27,7 @@ endif()
 
 # Option to choose to use CGAL
 # Find CGAL
-find_package(CGAL COMPONENTS Core)
+find_package(CGAL COMPONENTS Core QUIET)
 option(USE_CGAL "Build GilViewer with CGAL" CGAL_FOUND)
 if(USE_CGAL)
     if(CGAL_FOUND)
