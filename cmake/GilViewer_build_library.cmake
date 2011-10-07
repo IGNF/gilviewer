@@ -12,7 +12,7 @@ endif()
 
 # Option to choose to use GDAL/OGR
 # Find GDAL
-find_package(GDAL)
+find_package(GDAL QUIET)
 option(USE_GDAL_OGR "Build GilViewer with GDAL/OGR" GDAL_FOUND)
 if(USE_GDAL_OGR)
     if(GDAL_FOUND)

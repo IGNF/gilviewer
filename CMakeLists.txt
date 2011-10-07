@@ -14,7 +14,7 @@ PROJECT(GilViewer)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 set(BUILD_SHARED_LIBS ON)
-message( STATUS ${CMAKE_BUILD_TYPE} )
+message( STATUS "Building in " ${CMAKE_BUILD_TYPE} " mode" )
  
 IF(UNIX) 
         add_definitions(-Wall -fPIC)
@@ -260,10 +260,20 @@ IF(${INSTALL_MODE} STREQUAL "Install")
     option( INSTALL_LANGAGE_FRENCH "Install french langage support" ON )
         set( LANGAGES_FR_SUPPORT_FILES ${CMAKE_SOURCE_DIR}/languages/fr/libGilViewer.mo ${CMAKE_SOURCE_DIR}/languages/fr/GilViewerApp.mo )
     INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_install.cmake )
-    MESSAGE( STATUS " Install file include " )
+    MESSAGE( STATUS " Install include files" )
 ENDIF(${INSTALL_MODE} STREQUAL "Install")
 IF(${INSTALL_MODE} STREQUAL "Package")
     INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_package.cmake )
     MESSAGE( STATUS " Install file package" )
 ENDIF(${INSTALL_MODE} STREQUAL "Package")
 
+
+
+###
+### Sum up found and not found dependencies
+###
+message( STATUS "**************" )
+message( STATUS "With GDAL        --> " ${USE_GDAL_OGR} )
+message( STATUS "With CGAL        --> " ${USE_CGAL} )
+message( STATUS "With GDAL_JP2 --> " ${USE_GDAL_JP2} )
+message( STATUS "**************" )
