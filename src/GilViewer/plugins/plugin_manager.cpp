@@ -31,7 +31,6 @@ bool plugin_manager::register_plugin(const boost::filesystem::path& path)
 void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
 {
     vector<string> all_so_files = gilviewer_utils::all_files_from_path(path, "." + plugins_ext);
-    wxMenu* plugins_menu = NULL;
 
     for(unsigned int i=0;i<all_so_files.size();++i)
     {
@@ -64,13 +63,17 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
         if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
         {
             mes << " (wx)";
-            if(!plugins_menu)
+            if(menus->FindMenu(_("Plugins"))==wxNOT_FOUND)
             {
-                plugins_menu = new wxMenu;
-                menus->Insert(menus->GetMenuCount(), plugins_menu, _("Plugins"));
+                m_plugins_menu = new wxMenu;
+                size_t menu_pos = menus->GetMenuCount();
+                int about_position = menus->FindMenu(_("About ..."));
+                if(about_position!=wxNOT_FOUND)
+                    menu_pos = about_position;
+                menus->Insert(menu_pos, m_plugins_menu, _("Plugins"));
             }
             long id = wxNewId();
-            plugins_menu->Append(id, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
+            m_plugins_menu->Append(id, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
 
             menus->GetParent()->Connect(
                     id, wxEVT_COMMAND_MENU_SELECTED,

@@ -44,6 +44,7 @@ Authors:
 #include "../tools/pattern_factory.hpp"
 #include "plugin_base.hpp"
 class wxMenuBar;
+class wxMenu;
 
 class plugin_manager : public PatternFactory<plugin_base>
 {
@@ -59,6 +60,7 @@ public:
 private:
     // Le tableau des plugins
     std::vector<plugin_base*> m_plugins;
+    wxMenu* m_plugins_menu;
 };
 
 #endif // __PLUGIN_MANAGER_HPP__
