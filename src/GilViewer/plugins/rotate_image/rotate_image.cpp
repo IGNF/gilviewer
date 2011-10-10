@@ -24,7 +24,7 @@ struct rotate_image_plugin_functor
 {
     typedef void result_type;
 
-    rotate_image_plugin_functor(const shared_ptr<image_layer> &layer) : m_layer(layer) {}
+    rotate_image_plugin_functor(const boost::shared_ptr<image_layer> &layer) : m_layer(layer) {}
 
     template <typename ViewType>
     result_type operator()(ViewType& v)
@@ -33,7 +33,7 @@ struct rotate_image_plugin_functor
 
         any_variant_view_type m_any_variant(m_dest);
         variant_view_type m_variant(m_any_variant);
-        shared_ptr<variant_view_type> m_variant_ptr = shared_ptr<variant_view_type>(new variant_view_type(m_variant));
+        boost::shared_ptr<variant_view_type> m_variant_ptr = boost::shared_ptr<variant_view_type>(new variant_view_type(m_variant));
 
         std::vector<panel_viewer*> v_pv = panel_manager::instance()->panels_list();
         if(v_pv.empty())
@@ -50,13 +50,13 @@ struct rotate_image_plugin_functor
     }
 
     dynamic_xy_step_type<any_view_type>::type m_dest;
-    const shared_ptr<image_layer> m_layer;
+    const boost::shared_ptr<image_layer> m_layer;
 };
 
 struct rotate_image_plugin_visitor : public boost::static_visitor<void>
 {
     typedef void result_type;
-    rotate_image_plugin_visitor(const shared_ptr<image_layer> &layer) : m_functor(layer) {}
+    rotate_image_plugin_visitor(const boost::shared_ptr<image_layer> &layer) : m_functor(layer) {}
 
     template <typename ViewType>
     result_type operator()(ViewType& v) { apply_operation(v, m_functor); }
@@ -97,7 +97,7 @@ void rotate_image_plugin::process()
             os << " is not selected";
         GILVIEWER_LOG_MESSAGE(oss.str())
 
-        shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>((*itb));
+        boost::shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>((*itb));
 
         if(selected && imagelayer)
         {
