@@ -73,7 +73,8 @@ namespace gilviewer_utils
         }
         if(!first)
         {
-            if(wildcard.tellp()) wildcard << "|";
+            long pos = wildcard.tellp();
+            if(pos && pos != -1) wildcard << "|";
             wildcard << (family==""?(group==""?"Supported":group):family) << " files (" << oss1.str() << ")|" << oss2.str();
         }
     }
