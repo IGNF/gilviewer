@@ -97,7 +97,7 @@ struct nb_components_visitor : public boost::static_visitor<size_t>
             result_type operator()(const ViewType& v) const { return apply_operation(v, nb_components_functor()); }
 };
 
-struct histogram_visitor : public boost::static_visitor<shared_ptr<const histogram_functor::histogram_type> >
+struct histogram_visitor : public boost::static_visitor<boost::shared_ptr<const histogram_functor::histogram_type> >
 {
     histogram_visitor(double &min, double &max) : m_min(min), m_max(max) {}
 
@@ -276,7 +276,7 @@ string image_layer::type_channel() const
     return apply_visitor( type_channel_visitor(), m_variant_view->value );
 }
 
-shared_ptr<const layer::histogram_type> image_layer::histogram(double &min, double &max) const
+boost::shared_ptr<const layer::histogram_type> image_layer::histogram(double &min, double &max) const
 {
     min = m_minmaxResult.first;
     max = m_minmaxResult.second;

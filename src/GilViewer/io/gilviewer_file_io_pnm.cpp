@@ -7,12 +7,12 @@ using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
 
-shared_ptr<layer> gilviewer_file_io_pnm::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
+boost::shared_ptr<layer> gilviewer_file_io_pnm::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
     return load_gil_image<pnm_tag>(filename, point_t(top_left_x, top_left_y), point_t(dim_x, dim_y));
 }
 
-void gilviewer_file_io_pnm::save(shared_ptr<layer> layer, const string &filename)
+void gilviewer_file_io_pnm::save(boost::shared_ptr<layer> layer, const string &filename)
 {
     save_gil_view<pnm_tag>(layer, filename);
 }
@@ -37,9 +37,9 @@ string gilviewer_file_io_pnm::build_and_get_infos(const std::string &filename)
     return infos_str.str();
 }
 
-shared_ptr<gilviewer_file_io_pnm> create_gilviewer_file_io_pnm()
+boost::shared_ptr<gilviewer_file_io_pnm> create_gilviewer_file_io_pnm()
 {
-    return shared_ptr<gilviewer_file_io_pnm>(new gilviewer_file_io_pnm());
+    return boost::shared_ptr<gilviewer_file_io_pnm>(new gilviewer_file_io_pnm());
 }
 
 bool gilviewer_file_io_pnm::Register(gilviewer_io_factory *factory)

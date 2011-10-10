@@ -128,7 +128,7 @@ public:
         using namespace boost;
         using namespace std;
 
-        shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
+        boost::shared_ptr<image_layer> imagelayer = dynamic_pointer_cast<image_layer>(layer);
         if(!imagelayer)
             throw invalid_argument("Bad layer type (not an image layer)!\n");
 
