@@ -146,6 +146,9 @@ public:
     void add_polygon( const std::vector<double> &x , const std::vector<double> &y );
     void add_text( double x , double y , const std::string &text , const wxColour &color = *wxRED );
 
+    /// Accessors
+    inline const std::vector< std::vector<PointType> > &polygons() { return m_polygons; }
+
     virtual void clear();
 
     template<class Archive>

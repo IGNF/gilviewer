@@ -16,7 +16,6 @@ class gilviewer_io_factory;
 class plugin_base
 {
 public:
-    virtual ~plugin_base() {}
     virtual bool Register(gilviewer_io_factory *) { return true; }
 };
 
@@ -26,7 +25,6 @@ class wx_plugin_base : public plugin_base, public wxFrame
 public:
     wx_plugin_base();
     wx_plugin_base(const wxString &title);
-    virtual ~wx_plugin_base() {}
 
     virtual void on_mouse_move(wxMouseEvent &event) {}
     virtual void on_close(wxCloseEvent& event) { Hide(); }

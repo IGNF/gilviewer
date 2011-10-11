@@ -58,11 +58,11 @@ typedef boost::variant< any_view_type
                       //, boost::gil::nth_channel_view_type<any_view_type>::type
                       > any_variant_view_type;
 
-struct image_type {
+struct gilviewer_image_type {
   typedef any_image_type type;
   type value;
-  image_type(const type& v) : value(v) {}
-  image_type() {}
+  gilviewer_image_type(const type& v) : value(v) {}
+  gilviewer_image_type() {}
 };
 
 struct view_type {
