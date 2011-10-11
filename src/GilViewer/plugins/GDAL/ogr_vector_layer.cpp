@@ -59,6 +59,11 @@ using namespace boost::filesystem;
 ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename_): vector_layer(),
         m_nb_geometries(0)
 {
+    name(layer_name);
+    filename( system_complete(filename_).string() );
+    default_display_parameters();
+    notifyLayerSettingsControl_();
+
     try
     {
         OGRDataSource *poDS;
@@ -158,11 +163,6 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         GILVIEWER_LOG_EXCEPTION("[Exception propagated]")
         throw logic_error(e.what());
     }
-
-    name(layer_name);
-    filename( system_complete(filename_).string() );
-    default_display_parameters();
-    notifyLayerSettingsControl_();
 }
 
 ogr_vector_layer::~ogr_vector_layer()
@@ -236,7 +236,7 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
     }
     else
     {
-        std::cout << "No spatial reference defined!" << std::endl;
+        GILVIEWER_LOG_MESSAGE( "No spatial reference defined for file " << filename() );
     }
 }
 
