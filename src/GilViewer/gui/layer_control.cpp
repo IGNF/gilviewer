@@ -542,6 +542,15 @@ layer::ptrLayerType layer_control::get_layer_with_id(unsigned int id)const{
     return layer::ptrLayerType() ;
 }
 
+layer::ptrLayerType layer_control::get_layer_with_filename(const string&filename)const
+{
+    for(LayerContainerType::const_iterator it=m_layers.begin();it!=m_layers.end();++it)
+        if((*it)->filename()==filename)
+            return (*it);
+
+    return layer::ptrLayerType() ;
+}
+
     
 void layer_control::delete_layer(unsigned int index){
     if(m_layers.size()<=index)

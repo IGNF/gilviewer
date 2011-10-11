@@ -76,6 +76,7 @@ public:
     
     /// Recuperation d'un calque par son Id
     layer::ptrLayerType get_layer_with_id(unsigned int id)const;
+    layer::ptrLayerType get_layer_with_filename(const std::string& filename)const;
     
     ///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
     bool oriented() const {return m_isOrientationSet; }
