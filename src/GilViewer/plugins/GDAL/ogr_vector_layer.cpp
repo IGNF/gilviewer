@@ -52,6 +52,7 @@ Authors:
 #include "GilViewer/convenient/utils.hpp"
 
 #include "draw_geometry_visitor.hpp"
+#include "get_geometry_visitor.hpp"
 
 using namespace std;
 using namespace boost::filesystem;
@@ -355,6 +356,15 @@ void ogr_vector_layer::clear()
     m_texts.clear();
     vector<pair<geometry_types,OGRFeature*> >().swap(m_geometries_features);
     vector< pair< internal_point_type , string > >().swap(m_texts);
+}
+
+vector<OGRPolygon*> ogr_vector_layer::get_polygons()
+{
+    get_polygons_visitor gpv;
+    gpv.m_polygons.reserve(m_nb_polygons);
+    for(unsigned int i=0;i<m_geometries_features.size();++i)
+        boost::apply_visitor( gpv, m_geometries_features[i].first );
+    return gpv.m_polygons;
 }
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

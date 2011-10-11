@@ -105,6 +105,8 @@ public:
 
     virtual void clear();
 
+    std::vector<OGRPolygon*> get_polygons();
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
     typedef struct __internal_point { double x, y; } internal_point_type;
