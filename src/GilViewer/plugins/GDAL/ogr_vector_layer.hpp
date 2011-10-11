@@ -111,6 +111,13 @@ private:
     std::vector< std::pair< internal_point_type , std::string > > m_texts;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
+    unsigned int m_nb_linear_rings;
+    unsigned int m_nb_line_strings;
+    unsigned int m_nb_multiline_strings;
+    unsigned int m_nb_multipoints;
+    unsigned int m_nb_points;
+    unsigned int m_nb_multipolygons;
+    unsigned int m_nb_polygons;
 
     void compute_center(OGRLayer* layer, int nb_layers);
     void build_infos(OGRSpatialReference *spatial_reference);
