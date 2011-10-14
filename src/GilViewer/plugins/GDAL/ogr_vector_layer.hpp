@@ -105,7 +105,8 @@ public:
 
     virtual void clear();
 
-    std::vector<OGRPolygon*> get_polygons();
+    typedef OGRPolygon* polygon_type;
+    std::vector<OGRPolygon*> polygons() const;
 
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;

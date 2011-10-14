@@ -358,7 +358,7 @@ void ogr_vector_layer::clear()
     vector< pair< internal_point_type , string > >().swap(m_texts);
 }
 
-vector<OGRPolygon*> ogr_vector_layer::get_polygons()
+vector<OGRPolygon*> ogr_vector_layer::polygons() const
 {
     get_polygons_visitor gpv;
     gpv.m_polygons.reserve(m_nb_polygons);

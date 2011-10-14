@@ -52,13 +52,13 @@ Authors:
 using namespace std;
 
 simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_layer(),
-m_circles(std::vector<CircleType>() ),
-m_ellipses(std::vector<EllipseType>() ),
-m_rotatedellipses(std::vector<RotatedEllipseType> ()),
-m_arcs(std::vector<ArcType> ()),
-m_points(std::vector<PointType> ()),
-m_splines(std::vector< std::vector<PointType> > ()),
-m_polygons(std::vector< std::vector<PointType> > ())
+m_circles(std::vector<circle_type>() ),
+m_ellipses(std::vector<ellipse_type>() ),
+m_rotatedellipses(std::vector<rotated_ellipse_type> ()),
+m_arcs(std::vector<arc_type> ()),
+m_points(std::vector<point_type> ()),
+m_splines(std::vector< spline_type > ()),
+m_polygons(std::vector< polygon_type > ())
 {
     m_name=layer_name;
 
@@ -124,7 +124,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetPen(pen);
     for (unsigned int i = 0; i < m_arcs.size(); i++)
     {
-        const ArcType &local_tab = m_arcs[i];
+        const arc_type &local_tab = m_arcs[i];
         for (unsigned int j = 0; j < local_tab.arc_points.size() - 1; ++j)
         {
             wxPoint p = transform().from_local_int(local_tab.arc_points[j  ]);
@@ -135,7 +135,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     // Splines
     for (unsigned int i=0;i<m_splines.size();++i)
     {
-        const std::vector<PointType>& spline = m_splines[i];
+        const spline_type& spline = m_splines[i];
         std::vector<wxPoint> points;
         unsigned int n = static_cast<int>(spline.size());
         for (unsigned int j=0;j<n;++j)
@@ -173,7 +173,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 
 void simple_vector_layer::add_circle(double x, double y, double radius)
 {
-    CircleType ct;
+    circle_type ct;
     ct.x = x;
     ct.y = y;
     ct.radius = radius;
@@ -182,8 +182,8 @@ void simple_vector_layer::add_circle(double x, double y, double radius)
 
 void simple_vector_layer::add_line(double x1, double y1, double x2, double y2)
 {
-    ArcType unArc;
-    PointType unPoint;
+    arc_type unArc;
+    point_type unPoint;
     unPoint.x = x1; unPoint.y = y1;
     unArc.arc_points.push_back(unPoint);
     unPoint.x = x2; unPoint.y = y2;
@@ -201,12 +201,12 @@ void simple_vector_layer::add_polyline( const std::vector<double> &x , const std
 
 void simple_vector_layer::add_point( double x , double y )
 {
-    PointType pt;
+    point_type pt;
     pt.x=x; pt.y=y;
     m_points.push_back(pt);
 }
 
-void simple_vector_layer::add_spline( std::vector<PointType> points )
+void simple_vector_layer::add_spline( spline_type points )
 {
     m_splines.push_back( points );
 }
@@ -217,7 +217,7 @@ void simple_vector_layer::add_polygon( const std::vector<double> &x , const std:
     m_polygons.resize(m_polygons.size()+1);
     for (unsigned int j=0;j<x.size();++j)
     {
-        PointType pt;
+        point_type pt;
         pt.x=x[j]; pt.y=y[j];
         m_polygons.back().push_back(pt);
     }
@@ -226,7 +226,7 @@ void simple_vector_layer::add_polygon( const std::vector<double> &x , const std:
 
 void simple_vector_layer::add_ellipse(double x_center, double y_center, double a, double b)
 {
-    EllipseType et;
+    ellipse_type et;
     et.x = x_center-a;
     et.y = y_center-b;
     et.a = a;
@@ -236,7 +236,7 @@ void simple_vector_layer::add_ellipse(double x_center, double y_center, double a
 
 void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double da, double db, double theta)
 {
-    RotatedEllipseType et;
+    rotated_ellipse_type et;
     et.x = dx_center;
     et.y = dy_center;
     et.a = da;
@@ -269,9 +269,9 @@ void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double
 
 void simple_vector_layer::add_text( double x , double y , const std::string &text , const wxColour &color )
 {
-    PointType pt;
+    point_type pt;
     pt.x=x; pt.y=y;
-    m_texts.push_back( make_pair<PointType,string>(pt,text) );
+    m_texts.push_back( make_pair<point_type,string>(pt,text) );
 }
 
 void simple_vector_layer::clear()
@@ -285,14 +285,14 @@ void simple_vector_layer::clear()
     m_polygons.clear();
     m_texts.clear();
     // deallocate memory
-    vector<CircleType>().        swap(m_circles);
-    vector<EllipseType>().       swap(m_ellipses);
-    vector<RotatedEllipseType>().swap(m_rotatedellipses);
-    vector<ArcType>().           swap(m_arcs);
-    vector<PointType>().         swap(m_points);
-    vector<vector<PointType> >().swap(m_splines);
-    vector<vector<PointType> >().swap(m_polygons);
-    vector< pair<PointType,string> >().swap(m_texts);
+    vector<circle_type>().        swap(m_circles);
+    vector<ellipse_type>().       swap(m_ellipses);
+    vector<rotated_ellipse_type>().swap(m_rotatedellipses);
+    vector<arc_type>().           swap(m_arcs);
+    vector<point_type>().         swap(m_points);
+    vector<spline_type>().swap(m_splines);
+    vector<polygon_type>().swap(m_polygons);
+    vector<text_type>().swap(m_texts);
 }
 
 string simple_vector_layer::available_formats_wildcard() const
@@ -381,7 +381,7 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
         }
         for (unsigned int i = 0; i < m_arcs.size(); i++)
         {
-            const ArcType &arc = m_arcs[i];
+            const arc_type &arc = m_arcs[i];
             if(!arc.arc_points.empty() && (snap&SNAP_POINT))
                 snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap );
             for (unsigned int j = 0; j < arc.arc_points.size() - 1; ++j)
