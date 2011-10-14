@@ -59,7 +59,8 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
             GILVIEWER_LOG_MESSAGE(mes.str());
             continue;
         }
-
+		// Currently, wx based plugins crash when loaded in windows...
+#ifndef _WINDOWS
         if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
         {
             mes << " (wx)";
@@ -84,6 +85,7 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
                     wxCommandEventHandler(wx_plugin_base::show),
                     NULL, wxp );
         }
+#endif // _WINDOWS
         mes << " OK";
         GILVIEWER_LOG_MESSAGE(mes.str());
     }

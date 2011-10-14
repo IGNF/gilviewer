@@ -229,8 +229,10 @@ panel_viewer::panel_viewer(wxFrame* parent) :
 
     register_all_file_formats(PatternSingleton<gilviewer_io_factory>::instance());
     m_plugin_manager = new plugin_manager;
+#ifndef _WINDOWS
     m_plugin_manager->register_plugins( ".", m_menuBar );
     m_plugin_manager->register_plugins( plugins_dir, m_menuBar );
+#endif // _WINDOWS
 
     // Log all available formats ...
     std::vector<factory_key> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
