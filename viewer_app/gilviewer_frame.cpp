@@ -83,30 +83,6 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
     m_panelviewer->main_toolbar(this,&m_dockManager);
     m_panelviewer->mode_and_geometry_toolbar(this,&m_dockManager);
 
-/*
-    wxAuiPaneInfo toolbarInfo;
-    toolbarInfo.ToolbarPane();
-    toolbarInfo.Caption( _("Main Toolbar") );
-    toolbarInfo.TopDockable();
-    toolbarInfo.Top();
-    toolbarInfo.Fixed();
-    toolbarInfo.Resizable(false);
-    toolbarInfo.CloseButton(false);
-    toolbarInfo.CaptionVisible(false);
-    m_dockManager.AddPane( m_panelviewer->main_toolbar(this), toolbarInfo );
-
-    wxAuiPaneInfo modeAndGeometryToolbarInfo;
-    modeAndGeometryToolbarInfo.ToolbarPane();
-    modeAndGeometryToolbarInfo.Caption( _("Mode and geometry Toolbar") );
-    modeAndGeometryToolbarInfo.TopDockable();
-    modeAndGeometryToolbarInfo.Top();
-    modeAndGeometryToolbarInfo.Fixed();
-    modeAndGeometryToolbarInfo.Resizable(false);
-    modeAndGeometryToolbarInfo.CloseButton(false);
-    modeAndGeometryToolbarInfo.CaptionVisible(false);
-    m_dockManager.AddPane( m_panelviewer->mode_and_geometry_toolbar(this), modeAndGeometryToolbarInfo );
-*/
-
     m_dockManager.Update();
 
     SetMenuBar( m_panelviewer->menubar() );

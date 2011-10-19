@@ -432,26 +432,30 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
             progress->Update(i, m);
         }
 
-        string filename((const char*) (names[i].mb_str()) );
-        string extension(filesystem::extension(filename));
-        extension = extension.substr(1,extension.size()-1);
-        to_lower(extension);
-        try
-        {
-            shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
-            add_layer( file->load(filename) );
-        }
-        catch (const std::exception &e)
-        {
-            if (progress)
-                progress->Destroy();
-            GILVIEWER_LOG_EXCEPTION(e.what())
-        }
+        add_layer_from_file(names[i]);
     }
 
-    m_basicDrawPane->Refresh();
     if (progress) progress->Destroy();
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
+}
+
+
+void layer_control::add_layer_from_file( const wxString &name )
+{
+    string filename((const char*) (name.mb_str()) );
+    string extension(filesystem::extension(filename));
+    extension = extension.substr(1,extension.size()-1);
+    to_lower(extension);
+    try
+    {
+        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+        add_layer( file->load(filename) );
+        m_basicDrawPane->Refresh();
+    }
+    catch (const std::exception &e)
+    {
+        GILVIEWER_LOG_EXCEPTION(e.what());
+    }
 }
 
 void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transform)
