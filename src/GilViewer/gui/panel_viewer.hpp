@@ -72,7 +72,7 @@ public:
 
     virtual ~panel_viewer() {}
 
-    void add_layer( const layer::ptrLayerType &layer );
+    void add_layer( const layer::ptrLayerType &layer, bool has_transform = false);
     void delete_layer( unsigned int index);
     layer::ptrLayerType get_layer_with_id(unsigned int id)const;
 
