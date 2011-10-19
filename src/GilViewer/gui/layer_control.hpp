@@ -39,6 +39,7 @@ Authors:
 #define __LAYER_CONTROL_HPP__
 
 #include <vector>
+#include <set>
 
 #include <wx/frame.h>
 
@@ -53,7 +54,7 @@ class global_settings_control;
 class vector_layer_ghost;
 class orientation_2d;
 class panel_viewer;
-class VectorLayer;
+class wxControlWithItems;
 
 /**
 * @brief Classe de gestion des differents calques.
@@ -123,6 +124,15 @@ public:
 
     ///Calque ghost
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
+
+public:
+    template<typename T>
+    void update_control(wxControlWithItems *control, bool notified = true);
+    layer::ptrLayerType selected_layer(wxControlWithItems *control) const;
+
+private:
+    std::vector<boost::function<void()> > m_notifications;
+    void notify();
 
 private:
     void on_close_window(wxCloseEvent& event);

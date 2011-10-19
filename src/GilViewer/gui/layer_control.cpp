@@ -95,24 +95,24 @@ using namespace boost::filesystem;
 using namespace std;
 
 BEGIN_EVENT_TABLE(layer_control, wxFrame)
-    EVT_TOOL(wxID_OPEN,layer_control::on_open_layer)
-    EVT_CLOSE(layer_control::on_close_window)
-    EVT_BUTTON(ID_INFO,layer_control::on_info_button)
-    EVT_BUTTON(ID_SAVE,layer_control::on_save_button)
-    EVT_BUTTON(ID_DELETE,layer_control::on_delete_button)
-    EVT_TOOL(wxID_RESET,layer_control::on_reset)
-    EVT_BUTTON(wxID_UP,layer_control::on_layer_up)
-    EVT_BUTTON(wxID_DOWN,layer_control::on_layer_down)
-    EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::on_visibility_button)
-    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::on_transformation_button)
-    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::on_global_settings_button)
-    EVT_BUTTON(wxID_SAVE,layer_control::on_save_display_config_button)
-    EVT_BUTTON(wxID_OPEN,layer_control::on_load_display_config_button)
-    EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
-END_EVENT_TABLE()
+        EVT_TOOL(wxID_OPEN,layer_control::on_open_layer)
+        EVT_CLOSE(layer_control::on_close_window)
+        EVT_BUTTON(ID_INFO,layer_control::on_info_button)
+        EVT_BUTTON(ID_SAVE,layer_control::on_save_button)
+        EVT_BUTTON(ID_DELETE,layer_control::on_delete_button)
+        EVT_TOOL(wxID_RESET,layer_control::on_reset)
+        EVT_BUTTON(wxID_UP,layer_control::on_layer_up)
+        EVT_BUTTON(wxID_DOWN,layer_control::on_layer_down)
+        EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::on_visibility_button)
+        EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::on_transformation_button)
+        EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::on_global_settings_button)
+        EVT_BUTTON(wxID_SAVE,layer_control::on_save_display_config_button)
+        EVT_BUTTON(wxID_OPEN,layer_control::on_load_display_config_button)
+        EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
+        END_EVENT_TABLE()
 
-layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
+        layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
+        wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
 {
     m_layers.reserve(100);
 
@@ -212,7 +212,7 @@ void layer_control::add_row(const string &name, layer_settings_control *layerset
 
     // on ajoute la ligne dans le conteneur
     m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, static_cast<unsigned int>(m_rows.size()), layersettings, tooltip)));
-   
+
     m_sizer->SetRows(static_cast<int>(m_rows.size())+1 );
     // On ajoute a proprement parler les controles de la ligne dans le layer_control
     m_rows.back()->m_nameStaticText->selected(true);
@@ -230,6 +230,7 @@ void layer_control::add_row(const string &name, layer_settings_control *layerset
     m_sizer->Add(m_rows.back()->m_boxSizer, wxGROW);
     m_sizer->Fit(m_scroll);
     m_scroll->Layout();
+    notify();
 }
 
 void layer_control::init_toolbar(wxToolBar* toolBar)
@@ -250,6 +251,7 @@ void layer_control::update()
         m_rows[id]->m_transformationCheckBox->SetValue( m_layers[id]->transformable() );
         m_rows[id]->m_visibilityCheckBox->SetValue( m_layers[id]->visible() );
     }
+    notify();
 }
 
 void layer_control::on_info_button(wxCommandEvent& event)
@@ -272,13 +274,13 @@ void layer_control::on_save_button(wxCommandEvent& event)
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
     string file = m_layers[id]->filename();
 
-    #if wxMINOR_VERSION < 9
+#if wxMINOR_VERSION < 9
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
-        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
-    #else
+                                                wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+#else
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
-        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
-    #endif
+                                                wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
+#endif
     if (fileDialog->ShowModal() == wxID_OK)
     {
         string filename(fileDialog->GetFilename().To8BitData());
@@ -293,7 +295,7 @@ void layer_control::on_save_button(wxCommandEvent& event)
         catch( std::exception &e )
         {
             GILVIEWER_LOG_EXCEPTION(e.what())
-        }
+                }
     }
 }
 
@@ -342,7 +344,7 @@ void layer_control::on_refresh_button(wxCommandEvent& event)
     catch(const std::exception &e)
     {
         GILVIEWER_LOG_EXCEPTION("Unable to refresh layer!")
-        return;
+                return;
     }
 
     m_layers[id]->needs_update(true);
@@ -535,6 +537,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     Refresh();
     m_parent->Refresh();
     m_basicDrawPane->Refresh();
+    notify();
 }
 
 
@@ -542,7 +545,7 @@ layer::ptrLayerType layer_control::get_layer_with_id(unsigned int id)const{
     for(LayerContainerType::const_iterator it=m_layers.begin();it!=m_layers.end();++it)
         if((*it)->getId()==id)
             return (*it);
-            
+
     return layer::ptrLayerType() ;
 }
 
@@ -555,7 +558,7 @@ layer::ptrLayerType layer_control::get_layer_with_filename(const string&filename
     return layer::ptrLayerType() ;
 }
 
-    
+
 void layer_control::delete_layer(unsigned int index){
     if(m_layers.size()<=index)
         return;
@@ -594,8 +597,9 @@ void layer_control::delete_layer(unsigned int index){
     if (m_layers.empty())
         m_isOrientationSet = false;
 
+    notify();
 }
-    
+
 boost::shared_ptr<orientation_2d> layer_control::orientation() const
 {
     return m_ori;
@@ -678,6 +682,7 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
         m_rows[firstRow]->m_saveButton->Enable( m_layers[firstRow]->saveable() );
         m_rows[secondRow]->m_saveButton->Enable( m_layers[secondRow]->saveable() );
     }
+    notify();
 }
 
 void layer_control::on_layer_up(wxCommandEvent& WXUNUSED(event))
@@ -792,7 +797,7 @@ void layer_control::on_delete_all_rows_button(wxCommandEvent& event)
     while( m_rows.size() > 0 )
     {
         wxCommandEvent event;
-        event.SetInt(static_cast<unsigned int>(m_rows.size()));
+        event.SetId(static_cast<unsigned int> (m_rows.size()+ID_DELETE));
         on_delete_button(event);
     }
 }
@@ -835,7 +840,7 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
     catch (const std::exception &e)
     {
         GILVIEWER_LOG_EXCEPTION(e.what())
-    }
+            }
 }
 
 void layer_control::create_new_vector_layer_with_parameters(const VectorLayerParameters &parameters)
@@ -887,5 +892,73 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
     catch (std::exception &e)
     {
         GILVIEWER_LOG_EXCEPTION(e.what())
+            }
+}
+
+class idClientData : public wxClientData
+{
+    unsigned int m_id;
+public:
+    idClientData(unsigned int id) : m_id(id) {}
+    inline unsigned int id() const { return m_id; }
+};
+
+
+template void layer_control::update_control<vector_layer>(wxControlWithItems *control, bool notified);
+template void layer_control::update_control<image_layer >(wxControlWithItems *control, bool notified);
+
+template<typename T>
+void layer_control::update_control(wxControlWithItems *control, bool notified)
+{
+    std::cout << "update_control - "<<typeid(T).name() << std::endl;
+    // get the layer_id of the currently selected layer
+    int layer_id = -1;
+    int control_id = control->GetSelection();
+    if(control_id!=wxNOT_FOUND)
+    {
+        idClientData * icd = static_cast<idClientData *>( control->GetClientData(control_id) );
+        if(icd) layer_id = icd->id();
     }
+    // clear the control
+    control->Clear();
+
+    // add the matching layers to the control, while selecting in the control the selected layer, if still present
+    control_id = 0;
+    layer_control::const_iterator itb=begin(), ite=end();
+    for(unsigned int i=0;itb!=ite;++itb,++i)
+    {
+        if(!rows()[i]->m_nameStaticText->selected()) continue;
+        if(!dynamic_pointer_cast<T>((*itb))) continue;
+        unsigned int id = (*itb)->getId();
+        wxString text((*itb)->filename().c_str(), *wxConvCurrent);
+        idClientData *data = new idClientData(id);
+        int appended_id = control->Append(text, data);
+        if(layer_id==(int) id) control_id = appended_id;
+    }
+    if(!control->IsEmpty()) control->SetSelection(control_id);
+    if(notified)
+        m_notifications.push_back(boost::bind(&layer_control::update_control<T>,this,control,false));
+}
+
+void layer_control::notify()
+{
+    std::cout << "notifying " << m_notifications.size() << std::endl;
+    for(std::vector<boost::function<void()> >::iterator it=m_notifications.begin(); it!=m_notifications.end(); ++it)
+    {
+        (*it)();
+    }
+}
+
+
+layer::ptrLayerType layer_control::selected_layer(wxControlWithItems *control) const
+{
+    int id_control = control->GetSelection();
+    if(id_control==wxNOT_FOUND)
+    {
+        GILVIEWER_LOG_MESSAGE("[rectangles2footprints_plugin::process] You must select an image layer");
+        return layer::ptrLayerType() ;
+    }
+    // Now, retrieve the layers in the layer_control from their ids
+    unsigned int id_layer = static_cast<idClientData *>( control->GetClientData(id_control) )->id();
+    return get_layer_with_id( id_layer );
 }

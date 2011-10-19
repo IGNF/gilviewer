@@ -692,6 +692,7 @@ void panel_viewer::zoom(double zoom_factor, wxMouseEvent &event) {
  }
  */
 
+
 void panel_viewer::add_layer(const layer::ptrLayerType &layer, bool has_transform) {
     try {
         m_layerControl->add_layer(layer, has_transform);
