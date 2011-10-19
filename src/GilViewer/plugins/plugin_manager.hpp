@@ -45,6 +45,7 @@ Authors:
 #include "plugin_base.hpp"
 class wxMenuBar;
 class wxMenu;
+class wxAuiManager;
 
 class plugin_manager : public PatternFactory<plugin_base>
 {
@@ -53,7 +54,7 @@ public:
     plugin_base* create_object(const std::string& id);
 
     bool register_plugin(const boost::filesystem::path& path);
-    void register_plugins(const std::string &path, wxMenuBar* menus);
+    void register_plugins(const std::string &path, wxMenuBar* menus, wxAuiManager *manager, wxWindow *parent);
     unsigned int size()const{ return (unsigned int)m_plugins.size();}
     plugin_base* at(unsigned int i) const {return m_plugins.at(i);}
 

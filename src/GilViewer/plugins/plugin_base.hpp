@@ -11,6 +11,7 @@
 
 #include <boost/filesystem/path.hpp>
 class gilviewer_io_factory;
+class wxAuiManager;
 
 //the plugin interface (a.k.a. abstract class)
 class plugin_base
@@ -30,16 +31,19 @@ public:
     virtual void on_close(wxCloseEvent& event) { Hide(); }
     virtual void show(wxCommandEvent&) {}
     void parent(wxWindow* parent);
+    void manager(wxAuiManager *manager);
 
     virtual std::string submenu_name() = 0;
     virtual std::string menuentry_name() = 0;
 
 protected:
     wxWindow* m_parent;
+    wxAuiManager *m_manager;
 
 private:
     DECLARE_EVENT_TABLE();
 };
+
 
 plugin_base* load_plugin(const boost::filesystem::path &path);
 //define a function pointer type for convenience

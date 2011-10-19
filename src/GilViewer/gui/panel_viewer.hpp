@@ -42,6 +42,7 @@ Authors:
 #include <wx/dnd.h>
 #include <wx/panel.h>
 #include <wx/brush.h>
+#include <wx/aui/framemanager.h>
 
 #include "../layers/layer.hpp"
 
@@ -66,7 +67,7 @@ public:
     friend class gilviewer_file_drop_target;
 #endif // wxUSE_DRAG_AND_DROP
 
-    static void Register(wxFrame* parent);
+    static void Register(wxFrame* parent, wxAuiManager *dockmanager);
 
 
     virtual ~panel_viewer() {}
@@ -81,8 +82,8 @@ public:
     // On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
     DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 
-    wxToolBar* main_toolbar(wxWindow* parent);
-    wxToolBar* mode_and_geometry_toolbar(wxWindow* parent);
+    wxToolBar* main_toolbar(wxWindow* parent, wxAuiManager *dockmanager);
+    wxToolBar* mode_and_geometry_toolbar(wxWindow* parent, wxAuiManager *dockmanager);
     wxMenuBar* menubar();
     bool init_toolbar();
 
@@ -135,6 +136,7 @@ protected:
 */
     wxToolBar* m_mainToolbar;
     wxToolBar* m_modeAndGeometryToolbar;
+
     /// The main menu bar
     wxMenuBar* m_menuBar;
     /// The menu 'File'
@@ -204,8 +206,8 @@ protected:
     void update_if_transformable();
 
     ///pour ne créer des panels qu'à partir de la factory (PanelManager)
-    panel_viewer(wxFrame* parent);
-    friend panel_viewer* create_panel_viewer(wxFrame* parent);
+    panel_viewer(wxFrame* parent, wxAuiManager *dockmanager);
+    friend panel_viewer* create_panel_viewer(wxFrame* parent, wxAuiManager *dockmanager);
 
     
     wxRealPoint snap(const wxRealPoint& p) const;

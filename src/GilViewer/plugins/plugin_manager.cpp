@@ -28,7 +28,7 @@ bool plugin_manager::register_plugin(const boost::filesystem::path& path)
 }
 
 
-void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
+void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus, wxAuiManager *manager, wxWindow *parent)
 {
     vector<string> all_so_files = gilviewer_utils::all_files_from_path(path, "." + plugins_ext);
 
@@ -64,6 +64,8 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
         if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
         {
             mes << " (wx)";
+            wxp->parent(parent);
+            wxp->manager(manager);
             if(menus->FindMenu(_("Plugins"))==wxNOT_FOUND)
             {
                 m_plugins_menu = new wxMenu;

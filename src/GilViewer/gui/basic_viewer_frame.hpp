@@ -54,6 +54,8 @@ public:
     basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame"));
     virtual ~basic_viewer_frame();
 
+    wxAuiManager *dockManager() { return &m_dockManager; }
+
 protected:
     wxStatusBar* m_statusBar;
 

@@ -47,6 +47,10 @@ void wx_plugin_base::parent(wxWindow* parent)
 {
     m_parent = parent;
 }
+void wx_plugin_base::manager(wxAuiManager *manager)
+{
+    m_manager = manager;
+}
 
 BEGIN_EVENT_TABLE(wx_plugin_base, wxFrame)
 EVT_CLOSE(wx_plugin_base::on_close)
