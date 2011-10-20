@@ -910,17 +910,20 @@ template void layer_control::update_control<image_layer >(wxControlWithItems *co
 template<typename T>
 void layer_control::update_control(wxControlWithItems *control, bool notified)
 {
-    std::cout << "update_control - "<<typeid(T).name() << std::endl;
     // get the layer_id of the currently selected layer
     int layer_id = -1;
+    wxArrayString non_layers;
     int control_id = control->GetSelection();
-    if(control_id!=wxNOT_FOUND)
+    for(unsigned int i= 0;i<control->GetCount();++i)
     {
-        idClientData * icd = static_cast<idClientData *>( control->GetClientData(control_id) );
-        if(icd) layer_id = icd->id();
+        idClientData * icd = static_cast<idClientData*>( control->GetClientData(i) );
+        if(!icd) non_layers.Add(control->GetString(i));
+        else if(control_id == (int) i) layer_id = icd->id();
     }
+
     // clear the control
     control->Clear();
+    control->Append(non_layers);
 
     // add the matching layers to the control, while selecting in the control the selected layer, if still present
     control_id = 0;
@@ -942,11 +945,8 @@ void layer_control::update_control(wxControlWithItems *control, bool notified)
 
 void layer_control::notify()
 {
-    std::cout << "notifying " << m_notifications.size() << std::endl;
     for(std::vector<boost::function<void()> >::iterator it=m_notifications.begin(); it!=m_notifications.end(); ++it)
-    {
         (*it)();
-    }
 }
 
 

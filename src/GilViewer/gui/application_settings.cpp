@@ -59,12 +59,14 @@ Authors:
 #include "../gui/vector_layer_settings_control.hpp"
 
 #include "../convenient/wxhelper.hpp"
+#include "../config/config_plugins.hpp"
 
 
 
 BEGIN_EVENT_TABLE(application_settings, wxDialog)
         EVT_CLOSE(application_settings::on_close_window)
         EVT_BUTTON(wxID_APPLY,application_settings::on_apply_button)
+        EVT_BUTTON(wxID_RESET,application_settings::on_reset_plugins)
         END_EVENT_TABLE()
 
         application_settings::application_settings(wxWindow *parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
@@ -148,13 +150,12 @@ wxPanel* application_settings::create_paths_settings_panel()
     mainSizer->Add(boxSizerWD, 0, wxEXPAND | wxHORIZONTAL, 5);
 
     // Plugins directory
-    pConfig->Read(wxT("/Paths/Plugins"), &str, ::wxGetCwd());
+    pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
     wxStaticBoxSizer *boxSizerPlugins = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Plugins directory"));
     dirPickerPlugins = new wxDirPickerCtrl(panel, wxID_ANY, str, _("Select plugins directory"), wxDefaultPosition, wxDefaultSize, /*wxDIRP_USE_TEXTCTRL | */wxDIRP_DIR_MUST_EXIST);
     boxSizerPlugins->Add(dirPickerPlugins, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
+    boxSizerPlugins->Add(new wxButton(panel, wxID_RESET, _("Reset")), 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 5);
     mainSizer->Add(boxSizerPlugins, 0, wxEXPAND | wxHORIZONTAL, 5);
-
-
     mainSizer->Add(new wxButton(panel, wxID_APPLY, wxT("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
     mainSizer->SetSizeHints(panel);
@@ -162,6 +163,11 @@ wxPanel* application_settings::create_paths_settings_panel()
     panel->Layout();
 
     return panel;
+}
+
+void application_settings::on_reset_plugins(wxCommandEvent&)
+{
+    dirPickerPlugins->SetPath(wxString(plugins_dir.c_str(), *wxConvCurrent));
 }
 
 wxPanel* application_settings::create_options_settings_panel()

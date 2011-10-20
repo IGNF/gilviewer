@@ -20,6 +20,13 @@ plugin_base* plugin_manager::create_object(const string& id)
     return plugin;
 }
 
+void plugin_manager::clear()
+{
+    for(std::vector<plugin_base*>::iterator it=m_plugins.begin(); it!=m_plugins.end(); ++it)
+        delete *it;
+    m_plugins.clear();
+}
+
 
 bool plugin_manager::register_plugin(const boost::filesystem::path& path)
 {
@@ -37,11 +44,6 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus,
         boost::filesystem::path file_path(boost::filesystem::system_complete(all_so_files[i]));
         string plugin_name(BOOST_FILESYSTEM_STRING(file_path.filename()));
 
-        const string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
-        const string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
-        if( file_path.filename()== libgilviewer_name || file_path.filename()== libtinyxml_name )
-            continue;
-
         ostringstream mes;
         mes << "Plugin : " << plugin_name;
 
@@ -53,12 +55,8 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus,
         }
 
         plugin_base *p = create_object(plugin_name);
-        if(!p)
-        {
-            mes << " ERROR!";
-            GILVIEWER_LOG_MESSAGE(mes.str());
-            continue;
-        }
+        if(!p) continue;
+
 		// Currently, wx based plugins crash when loaded in windows...
 #ifndef _WINDOWS
         if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))

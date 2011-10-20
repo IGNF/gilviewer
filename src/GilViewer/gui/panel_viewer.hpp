@@ -48,7 +48,6 @@ Authors:
 
 #include "../convenient/macros_gilviewer.hpp"
 
-class application_settings;
 class layer_control;
 class wxLogWindow;
 class wxToolBar;
@@ -77,7 +76,6 @@ public:
     layer::ptrLayerType get_layer_with_id(unsigned int id)const;
 
     layer_control* layercontrol() const;
-    application_settings* applicationsettings() const;
 
     // On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
     DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
@@ -153,7 +151,6 @@ protected:
 
     // Le controle des couches
     layer_control* m_layerControl;
-    application_settings* m_applicationSettings;
 
     //ref sur le ghostLayer du LayerControl
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;

@@ -61,7 +61,6 @@
 
 #include "../layers/vector_layer_ghost.hpp"
 #include "../layers/vector_layer.hpp"
-#include "../gui/application_settings.hpp"
 #include "../gui/layer_control_utils.hpp"
 #include "../gui/layer_control.hpp"
 #include "../gui/define_id.hpp"
@@ -128,9 +127,6 @@ layer_control* panel_viewer::layercontrol() const {
     return m_layerControl;
 }
 
-application_settings* panel_viewer::applicationsettings() const {
-    return m_applicationSettings;
-}
 
 panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
         wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
@@ -143,9 +139,8 @@ panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL) {
-    if (panel_manager::instance()->panels_list().size() == 0)
-        m_applicationSettings = new application_settings(this, wxID_ANY);
+        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL)
+{
 
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new gilviewer_file_drop_target(this));
@@ -229,9 +224,12 @@ panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
 
     register_all_file_formats(PatternSingleton<gilviewer_io_factory>::instance());
     m_plugin_manager = new plugin_manager;
+
 #ifndef _WINDOWS
-    m_plugin_manager->register_plugins( ".", m_menuBar, dockmanager, m_parent);
-    m_plugin_manager->register_plugins( plugins_dir, m_menuBar, dockmanager, m_parent);
+    wxConfigBase *pConfig = wxConfigBase::Get();
+    wxString str;
+    pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
+    m_plugin_manager->register_plugins( (const char *) str.mb_str(), m_menuBar, dockmanager, m_parent);
 #endif // _WINDOWS
 
     // Log all available formats ...

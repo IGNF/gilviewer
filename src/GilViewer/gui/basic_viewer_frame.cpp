@@ -45,6 +45,7 @@ Authors:
 #include <wx/dialog.h>
 #include <wx/html/htmlwin.h>
 
+#include "../gui/application_settings.hpp"
 #include "../gui/define_id.hpp"
 #include "../io/gilviewer_io_factory.hpp"
 #include "../convenient/macros_gilviewer.hpp"
@@ -59,7 +60,7 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
         EVT_TOOL(wxID_ABOUT, basic_viewer_frame::on_about)
         EVT_TOOL(wxID_HELP, basic_viewer_frame::on_help)
         EVT_TOOL(ID_SHOW_HIDE_LOG_WINDOW, basic_viewer_frame::on_show_hide_log_window)
-        //EVT_TOOL(wxID_PREFERENCES, basic_viewer_frame::OnApplicationSettings)
+        EVT_TOOL(wxID_PREFERENCES, basic_viewer_frame::on_application_settings)
         END_EVENT_TABLE()
 
         basic_viewer_frame::basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
@@ -110,8 +111,9 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
 
     m_dockManager.Update();
 
-    CenterOnScreen();
+    m_settings = new application_settings(this, wxID_ANY);
 
+    CenterOnScreen();
 }
 
 basic_viewer_frame::~basic_viewer_frame()
@@ -135,16 +137,16 @@ void basic_viewer_frame::on_help(wxCommandEvent& event)
     help()->Show(true);
 }
 
-//void BasicViewerFrame::OnApplicationSettings(wxCommandEvent& event)
-//{
-//	variablePanelViewer->GetApplicationSettings()->Show(true);
-//}
-
+void basic_viewer_frame::on_application_settings(wxCommandEvent& event)
+{
+    settings()->Show(true);
+}
 
 wxAboutDialogInfo basic_viewer_frame::about_info() const
 {
     wxAboutDialogInfo info;
     info.AddDeveloper(_("Authors:"));
+    info.AddDeveloper(wxT("Mathieu Brédif"));
     info.AddDeveloper(wxT("Olivier Tournaire"));
     info.AddDeveloper(wxT("Adrien Chauve"));
     info.AddDeveloper(wxT(""));
