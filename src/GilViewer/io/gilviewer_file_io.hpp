@@ -39,8 +39,6 @@ Authors:
 #define GILVIEWER_FILE_IO_HPP
 
 #include <boost/shared_ptr.hpp>
-#include <boost/filesystem.hpp>
-#include "GilViewer/convenient/utils.hpp"
 #include "GilViewer/plugins/plugin_base.hpp"
 
 #include <string>

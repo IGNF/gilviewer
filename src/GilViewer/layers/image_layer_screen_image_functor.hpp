@@ -42,7 +42,8 @@ Authors:
 #include "image_layer_transparency_functor.hpp"
 #include "layer_transform.hpp"
 
-#include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
+#include <boost/gil/typedefs.hpp>
+#include <boost/gil/color_base.hpp>
 #include <boost/gil/image_view_factory.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
