@@ -58,6 +58,8 @@ public:
     unsigned int size()const{ return (unsigned int)m_plugins.size();}
     plugin_base* at(unsigned int i) const {return m_plugins.at(i);}
 
+    void clear();
+
 private:
     // Le tableau des plugins
     std::vector<plugin_base*> m_plugins;
