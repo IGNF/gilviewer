@@ -367,4 +367,16 @@ vector<OGRPolygon*> ogr_vector_layer::polygons() const
     return gpv.m_polygons;
 }
 
+unsigned int ogr_vector_layer::num_polygons() const { return m_nb_polygons; }
+
+void ogr_vector_layer::get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
+{
+    vector<OGRPolygon*> p = polygons();
+    for(int j=0; j<p[i]->getExteriorRing()->getNumPoints(); ++j)
+    {
+        x.push_back(p[i]->getExteriorRing()->getX(j));
+        y.push_back(p[i]->getExteriorRing()->getY(j));
+    }
+}
+
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

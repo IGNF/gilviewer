@@ -108,6 +108,9 @@ public:
     typedef OGRPolygon* polygon_type;
     std::vector<OGRPolygon*> polygons() const;
 
+    virtual unsigned int num_polygons() const;
+    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
     typedef struct __internal_point { double x, y; } internal_point_type;

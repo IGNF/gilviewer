@@ -151,7 +151,8 @@ public:
     void add_text( double x , double y , const std::string &text , const wxColour &color = *wxRED );
 
     /// Accessors
-    inline const std::vector<polygon_type> &polygons() { return m_polygons; }
+    virtual unsigned int num_polygons() const;
+    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
 
     virtual void clear();
 

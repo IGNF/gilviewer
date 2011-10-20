@@ -416,3 +416,13 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
     }
     return snapped;
 }
+
+unsigned int simple_vector_layer::num_polygons() const { return m_polygons.size(); }
+void simple_vector_layer::get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
+{
+    for(unsigned int j=0; j<m_polygons[i].size(); ++j)
+    {
+        x.push_back(m_polygons[i][j].x);
+        y.push_back(m_polygons[i][j].y);
+    }
+}
