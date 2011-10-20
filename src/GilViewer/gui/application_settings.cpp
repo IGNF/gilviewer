@@ -46,7 +46,6 @@ Authors:
 #include <wx/imaglist.h>
 #include <wx/textctrl.h>
 #include <wx/toolbook.h>
-#include <wx/notebook.h>
 #include <wx/clrpicker.h>
 #include <wx/filepicker.h>
 #include <wx/checkbox.h>
@@ -60,8 +59,6 @@ Authors:
 
 #include "../convenient/wxhelper.hpp"
 #include "../config/config_plugins.hpp"
-
-
 
 BEGIN_EVENT_TABLE(application_settings, wxDialog)
         EVT_CLOSE(application_settings::on_close_window)

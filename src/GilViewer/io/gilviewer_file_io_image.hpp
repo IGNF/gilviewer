@@ -41,8 +41,7 @@ Authors:
 #include "gilviewer_file_io.hpp"
 
 #include <boost/gil/utilities.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
@@ -50,15 +49,15 @@ Authors:
 #include <boost/gil/extension/io_new/detail/read_image.hpp>
 #include <boost/gil/extension/io_new/detail/read_image_info.hpp>
 
-#include <algorithm>
+//#include <xutility>
 #if _WINDOWS
 #   include <boost/config/platform/win32.hpp>
 #endif
 
 #include "../layers/image_layer.hpp"
 #include "../layers/image_types.hpp"
-#include "../tools/error_logger.hpp"
 #include "../convenient/macros_gilviewer.hpp"
+#include "../convenient/utils.hpp"
 
 template <class TagType> struct write_gil_view_visitor : public boost::static_visitor<>
 {

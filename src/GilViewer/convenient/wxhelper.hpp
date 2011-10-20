@@ -39,11 +39,6 @@ Authors:
 #ifndef __WXHELPER_HPP__
 #define __WXHELPER_HPP__
 
-#include <wx/string.h>
-
-#include <vector>
-#include <string>
-
 namespace wxhelper
 {
     /// Cette fonction permet de retourner l'indice dans la liste a partir d'un style WX
