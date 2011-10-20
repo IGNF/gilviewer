@@ -42,7 +42,7 @@ Authors:
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 
-#include "../layers/layer.hpp"
+#include "layer.hpp"
 
 class orientation_2d;
 class color_lookup_table;

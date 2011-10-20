@@ -42,7 +42,6 @@ Authors:
 #include "GilViewer/tools/pattern_factory.hpp"
 #include "gilviewer_file_io.hpp"
 
-
 struct factory_key {
     std::string extension;
     std::string family;

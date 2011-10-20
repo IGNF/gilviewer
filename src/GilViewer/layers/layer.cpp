@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include <wx/gdicmn.h>
+
 layer::layer(const boost::function<void()> &notifyLayerControl, const boost::function<void()> &notifyLayerSettingsControl):
         notifyLayerControl_(notifyLayerControl),
         notifyLayerSettingsControl_(notifyLayerSettingsControl),
