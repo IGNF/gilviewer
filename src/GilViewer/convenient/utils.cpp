@@ -100,13 +100,11 @@ namespace gilviewer_utils
         {
             for(std::set<std::string>::const_iterator it = families.begin();it!=families.end();++it)
                 build_wx_wildcard_from_io_factory_aux(*it, group, id, wildcard);
-
         }
         if(group=="")
         {
             for(std::set<std::string>::const_iterator it = groups.begin();it!=groups.end();++it)
                 build_wx_wildcard_from_io_factory_aux("", *it, id, wildcard);
-
         }
         if(wildcard.tellp()>0) wildcard << "|";
         wildcard << "All files (*)|*.*";
