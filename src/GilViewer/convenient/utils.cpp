@@ -73,7 +73,7 @@ namespace gilviewer_utils
         }
         if(!first)
         {
-            if(wildcard.tellp()) wildcard << "|";
+            if(wildcard.tellp()>0) wildcard << "|";
             wildcard << (family==""?(group==""?"Supported":group):family) << " files (" << oss1.str() << ")|" << oss2.str();
         }
     }
@@ -108,7 +108,7 @@ namespace gilviewer_utils
                 build_wx_wildcard_from_io_factory_aux("", *it, id, wildcard);
 
         }
-        if(wildcard.tellp()) wildcard << "|";
+        if(wildcard.tellp()>0) wildcard << "|";
         wildcard << "All files (*)|*.*";
         return wildcard.str();
     }
