@@ -39,7 +39,6 @@ Authors:
 #define __LAYER_CONTROL_HPP__
 
 #include <vector>
-#include <set>
 
 #include <wx/frame.h>
 
