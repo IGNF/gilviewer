@@ -113,8 +113,6 @@ BEGIN_EVENT_TABLE(layer_control, wxFrame)
 
 layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size):
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
-    , m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane)
-    , m_ori(shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
 {
     m_layers.reserve(100);
 
