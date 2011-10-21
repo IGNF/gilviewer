@@ -12,8 +12,8 @@ public:
     virtual void process();
     virtual void show(wxCommandEvent&);
 
-    virtual std::string submenu_name() { return "Image processing"; }
-    virtual std::string menuentry_name() { return "Sample"; }
+    virtual std::string submenu_name() { return "Image manipulation"; }
+    virtual std::string menuentry_name() { return "Rotate image"; }
 
     void on_button_90cw(wxCommandEvent& e);
 };

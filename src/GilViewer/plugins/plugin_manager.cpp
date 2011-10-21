@@ -20,6 +20,13 @@ plugin_base* plugin_manager::create_object(const string& id)
     return plugin;
 }
 
+void plugin_manager::clear()
+{
+    for(std::vector<plugin_base*>::iterator it=m_plugins.begin(); it!=m_plugins.end(); ++it)
+        delete *it;
+    m_plugins.clear();
+}
+
 
 bool plugin_manager::register_plugin(const boost::filesystem::path& path)
 {
@@ -28,20 +35,14 @@ bool plugin_manager::register_plugin(const boost::filesystem::path& path)
 }
 
 
-void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
+void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus, wxAuiManager *manager, wxWindow *parent)
 {
     vector<string> all_so_files = gilviewer_utils::all_files_from_path(path, "." + plugins_ext);
-    wxMenu* plugins_menu = NULL;
 
     for(unsigned int i=0;i<all_so_files.size();++i)
     {
         boost::filesystem::path file_path(boost::filesystem::system_complete(all_so_files[i]));
         string plugin_name(BOOST_FILESYSTEM_STRING(file_path.filename()));
-
-        const string libgilviewer_name = plugins_pre + "GilViewer." + plugins_ext;
-        const string libtinyxml_name = plugins_pre + "tinyxml." + plugins_ext;
-        if( file_path.filename()== libgilviewer_name || file_path.filename()== libtinyxml_name )
-            continue;
 
         ostringstream mes;
         mes << "Plugin : " << plugin_name;
@@ -54,23 +55,26 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
         }
 
         plugin_base *p = create_object(plugin_name);
-        if(!p)
-        {
-            mes << " ERROR!";
-            GILVIEWER_LOG_MESSAGE(mes.str());
-            continue;
-        }
+        if(!p) continue;
 
+		// Currently, wx based plugins crash when loaded in windows...
+#ifndef _WINDOWS
         if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
         {
             mes << " (wx)";
-            if(!plugins_menu)
+            wxp->parent(parent);
+            wxp->manager(manager);
+            if(menus->FindMenu(_("Plugins"))==wxNOT_FOUND)
             {
-                plugins_menu = new wxMenu;
-                menus->Insert(menus->GetMenuCount(), plugins_menu, _("Plugins"));
+                m_plugins_menu = new wxMenu;
+                size_t menu_pos = menus->GetMenuCount();
+                int about_position = menus->FindMenu(_("About ..."));
+                if(about_position!=wxNOT_FOUND)
+                    menu_pos = about_position;
+                menus->Insert(menu_pos, m_plugins_menu, _("Plugins"));
             }
             long id = wxNewId();
-            plugins_menu->Append(id, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
+            m_plugins_menu->Append(id, wxString(wxp->menuentry_name().c_str(), *wxConvCurrent));
 
             menus->GetParent()->Connect(
                     id, wxEVT_COMMAND_MENU_SELECTED,
@@ -81,6 +85,7 @@ void plugin_manager::register_plugins(const std::string &path, wxMenuBar* menus)
                     wxCommandEventHandler(wx_plugin_base::show),
                     NULL, wxp );
         }
+#endif // _WINDOWS
         mes << " OK";
         GILVIEWER_LOG_MESSAGE(mes.str());
     }

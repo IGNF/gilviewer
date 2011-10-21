@@ -64,6 +64,9 @@ public:
 
     virtual void clear();
 
+    virtual unsigned int num_polygons() const { return 0; }
+    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const {}
+
 private:
     // Textx display
     bool m_is_text_visible;

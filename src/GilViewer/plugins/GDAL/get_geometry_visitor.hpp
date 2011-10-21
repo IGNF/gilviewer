@@ -36,35 +36,36 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef __PLUGIN_MANAGER_HPP__
-#define __PLUGIN_MANAGER_HPP__
-#include <vector>
+#ifndef GET_GEOMETRY_VISITOR_HPP
+#define GET_GEOMETRY_VISITOR_HPP
 
-#include "../tools/pattern_singleton.hpp"
-#include "../tools/pattern_factory.hpp"
-#include "plugin_base.hpp"
-class wxMenuBar;
-class wxMenu;
-class wxAuiManager;
+#include <boost/variant/static_visitor.hpp>
 
-class plugin_manager : public PatternFactory<plugin_base>
+#include <iostream>
+
+#include <gdal/ogrsf_frmts.h>
+
+#include "ogr_vector_layer.hpp"
+
+class get_polygons_visitor : public boost::static_visitor<>
 {
 public:
-    virtual ~plugin_manager() {}
-    plugin_base* create_object(const std::string& id);
+    get_polygons_visitor() {}
 
-    bool register_plugin(const boost::filesystem::path& path);
-    void register_plugins(const std::string &path, wxMenuBar* menus, wxAuiManager *manager, wxWindow *parent);
-    unsigned int size()const{ return (unsigned int)m_plugins.size();}
-    plugin_base* at(unsigned int i) const {return m_plugins.at(i);}
+    template <typename T>
+    void operator()(T* operand)
+    {
+        //throw std::invalid_argument("Unhandled geometry type!");
+        //std::cout << "[draw_geometry_visitor] Unhandled geometry type!" << std::endl;
+    }
 
-    void clear();
-
-private:
-    // Le tableau des plugins
-    std::vector<plugin_base*> m_plugins;
-    wxMenu* m_plugins_menu;
+    std::vector<OGRPolygon*> m_polygons;
 };
 
-#endif // __PLUGIN_MANAGER_HPP__
+template <>
+void get_polygons_visitor::operator()(OGRPolygon* operand)
+{
+    m_polygons.push_back(operand);
+}
 
+#endif // GET_GEOMETRY_VISITOR_HPP

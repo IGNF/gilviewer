@@ -42,13 +42,13 @@ Authors:
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 
-#include "../layers/layer.hpp"
+#include "layer.hpp"
 
 class orientation_2d;
 class color_lookup_table;
 
 // forward declaration of image types
-struct image_type;
+struct gilviewer_image_type;
 struct view_type;
 struct variant_view_type;
 class alpha_image_type;
@@ -61,7 +61,7 @@ class image_layer : public layer
 public:
 
 
-    typedef image_type       image_t;
+    typedef gilviewer_image_type       image_t;
     typedef variant_view_type variant_view_t;
     typedef alpha_image_type alpha_image_t;
     typedef boost::shared_ptr<image_t      > image_ptr;

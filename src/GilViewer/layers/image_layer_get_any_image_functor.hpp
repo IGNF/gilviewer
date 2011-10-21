@@ -39,7 +39,7 @@ Authors:
 #ifndef __GET_ANY_IMAGE_FUNCTOR__
 #define __GET_ANY_IMAGE_FUNCTOR__
 
-#include "../layers/ImageLayer.hpp"
+#include "../layers/image_layer.hpp"
 
 struct get_any_image_functor
 {

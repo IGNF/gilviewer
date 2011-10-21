@@ -47,12 +47,16 @@ class wxLogWindow;
 class wxStatusBar;
 class wxToolBar;
 class wxDialog;
+class application_settings;
 
 class basic_viewer_frame : public wxFrame
 {
 public:
     basic_viewer_frame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE, const wxString& name = _("frame"));
     virtual ~basic_viewer_frame();
+
+    wxAuiManager *dockManager() { return &m_dockManager; }
+    application_settings* settings() const { return m_settings; }
 
 protected:
     wxStatusBar* m_statusBar;
@@ -63,6 +67,7 @@ protected:
     wxAuiManager m_dockManager;
 
     wxToolBar* m_baseToolBar;
+    application_settings* m_settings;
 
     virtual wxAboutDialogInfo about_info() const;
     virtual wxDialog* help() const;

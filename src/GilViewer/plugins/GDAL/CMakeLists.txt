@@ -14,7 +14,7 @@ if(USE_GDAL_OGR)
             DESTINATION ${GILVIEWER_PLUGIN_INSTALL_PREFIX}
             COMPONENT GDAL )
 
-        INSTALL(FILES ogr_vector_layer.hpp DESTINATION ${GilViewer_INCLUDE_PATH}/plugins/GDAL/ )
+        INSTALL(FILES ogr_vector_layer.hpp DESTINATION ${GilViewer_INCLUDE_PATH}/plugins/GDAL/ COMPONENT GDAL)
 
     else(GDAL_FOUND)
         message(FATAL_ERROR "GDAL not found!")

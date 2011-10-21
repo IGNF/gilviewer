@@ -117,8 +117,8 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
 
         //Choix de la LUT
         wxStaticBoxSizer *fileLUT_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Choose LUT"));
-        wxString str;
-        wxConfigBase::Get()->Read(wxT("/Paths/LUT"), &str, ::wxGetCwd());
+        wxString str = wxConfigBase::Get()->Read(wxT("/Paths/LUT"), ::wxGetCwd());
+        // Default path cannot work (it is stored as a path to a **directory** in the preferences): wxFilePickerCtrl expects a path to a **file**
         m_filePicker_CLUT = new wxFilePickerCtrl(this, wxID_ANY, str, _("Select a CLUT file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE);
         fileLUT_sizer->Add(m_filePicker_CLUT, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
         m_main_sizer->Add(fileLUT_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
