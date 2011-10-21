@@ -73,7 +73,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
    #endif
 #endif
     wxCMD_LINE_VAL_STRING,
-    wxCMD_LINE_PARAM_OPTIONAL },
+    wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
 {   wxCMD_LINE_NONE } };
 
 
@@ -113,7 +113,7 @@ bool gilviewer_app::OnInit()
 	    m_frame->AddLayersFromFiles( cmdFiles );
 	    m_frame->Show();
     }
-    catch( std::exception &e )
+    catch( const std::exception &e )
     {
         GILVIEWER_LOG_EXCEPTION(e.what())
         wxString message(e.what(), *wxConvCurrent);

@@ -61,7 +61,6 @@
 
 #include "../layers/vector_layer_ghost.hpp"
 #include "../layers/vector_layer.hpp"
-#include "../gui/application_settings.hpp"
 #include "../gui/layer_control_utils.hpp"
 #include "../gui/layer_control.hpp"
 #include "../gui/define_id.hpp"
@@ -128,11 +127,8 @@ layer_control* panel_viewer::layercontrol() const {
     return m_layerControl;
 }
 
-application_settings* panel_viewer::applicationsettings() const {
-    return m_applicationSettings;
-}
 
-panel_viewer::panel_viewer(wxFrame* parent) :
+panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
         wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
         //m_menuMain(NULL),
         m_mouseMovementStarted(false), m_translationDrag(0, 0),
@@ -143,9 +139,8 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL) {
-    if (panel_manager::instance()->panels_list().size() == 0)
-        m_applicationSettings = new application_settings(this, wxID_ANY);
+        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL)
+{
 
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new gilviewer_file_drop_target(this));
@@ -229,8 +224,13 @@ panel_viewer::panel_viewer(wxFrame* parent) :
 
     register_all_file_formats(PatternSingleton<gilviewer_io_factory>::instance());
     m_plugin_manager = new plugin_manager;
-    m_plugin_manager->register_plugins( ".", m_menuBar );
-    m_plugin_manager->register_plugins( plugins_dir, m_menuBar );
+
+#ifndef _WINDOWS
+    wxConfigBase *pConfig = wxConfigBase::Get();
+    wxString str;
+    pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
+    m_plugin_manager->register_plugins( (const char *) str.mb_str(), m_menuBar, dockmanager, m_parent);
+#endif // _WINDOWS
 
     // Log all available formats ...
     std::vector<factory_key> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
@@ -241,7 +241,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     GILVIEWER_LOG_MESSAGE(mes.str());
 }
 
-wxToolBar* panel_viewer::main_toolbar(wxWindow* parent) {
+wxToolBar* panel_viewer::main_toolbar(wxWindow* parent, wxAuiManager *dockmanager) {
 
     if (!m_mainToolbar) {
         m_mainToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
@@ -254,33 +254,25 @@ wxToolBar* panel_viewer::main_toolbar(wxWindow* parent) {
         m_mainToolbar->AddTool(wxID_PREFERENCES, wxT("AS"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS-SYSTEM_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
         m_mainToolbar->AddTool(wxID_HELP, wxT("AS"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Help"));
-
-        //  m_toolBar->AddSeparator();
-        //  m_toolBar->AddTool(ID_MODE_NAVIGATION, wxT("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
-        //  m_toolBar->AddTool(ID_MODE_CAPTURE, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
-        //  m_toolBar->AddTool(ID_MODE_EDITION, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
-        //  m_toolBar->AddTool(ID_MODE_GEOMETRY_MOVING, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
-        //  m_toolBar->AddTool(ID_MODE_SELECTION, wxT("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
-
-        //  m_toolBar->AddSeparator();
-        //  m_toolBar->AddTool(ID_GEOMETRY_NULL, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_POINT, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_LINE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, wxT("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
-
-        //  m_toolBar->AddSeparator();
-        //  m_toolBar->AddTool(ID_SINGLE_CROP, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
-        //  m_toolBar->AddTool(ID_MULTI_CROP, wxT("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
-
         m_mainToolbar->Realize();
+
+        wxAuiPaneInfo info;
+        info.ToolbarPane();
+        info.Caption( _("Main Toolbar") );
+        info.TopDockable();
+        info.Top();
+        info.Fixed();
+        info.Resizable(false);
+        info.CloseButton(false);
+        info.CaptionVisible(false);
+
+        dockmanager->AddPane(m_mainToolbar,info);
     }
 
     return m_mainToolbar;
 }
 
-wxToolBar* panel_viewer::mode_and_geometry_toolbar(wxWindow* parent) {
+wxToolBar* panel_viewer::mode_and_geometry_toolbar(wxWindow* parent, wxAuiManager *dockmanager) {
     if (!m_modeAndGeometryToolbar) {
         m_modeAndGeometryToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
@@ -302,6 +294,18 @@ wxToolBar* panel_viewer::mode_and_geometry_toolbar(wxWindow* parent) {
         m_modeAndGeometryToolbar->AddTool(ID_CROP, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("CROP_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Crop raster"));
 
         m_modeAndGeometryToolbar->Realize();
+
+        wxAuiPaneInfo info;
+        info.ToolbarPane();
+        info.Caption( _("Mode and geometry Toolbar") );
+        info.TopDockable();
+        info.Top();
+        info.Fixed();
+        info.Resizable(false);
+        info.CloseButton(false);
+        info.CaptionVisible(false);
+
+        dockmanager->AddPane(m_modeAndGeometryToolbar,info);
     }
 
     return m_modeAndGeometryToolbar;
@@ -686,9 +690,10 @@ void panel_viewer::zoom(double zoom_factor, wxMouseEvent &event) {
  }
  */
 
-void panel_viewer::add_layer(const layer::ptrLayerType &layer) {
+
+void panel_viewer::add_layer(const layer::ptrLayerType &layer, bool has_transform) {
     try {
-        m_layerControl->add_layer(layer);
+        m_layerControl->add_layer(layer, has_transform);
     } catch (const std::exception &e) {
         GILVIEWER_LOG_EXCEPTION(e.what())
             }
@@ -796,12 +801,12 @@ void panel_viewer::geometry_end() {
     execute_mode();
 }
 
-panel_viewer* create_panel_viewer(wxFrame* parent) {
-    return new panel_viewer(parent);
+panel_viewer* create_panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) {
+    return new panel_viewer(parent,dockmanager);
 }
 
-void panel_viewer::Register(wxFrame* parent) {
-    panel_manager::instance()->Register("PanelViewer", boost::bind(create_panel_viewer, parent));
+void panel_viewer::Register(wxFrame* parent, wxAuiManager *dockmanager) {
+    panel_manager::instance()->Register("PanelViewer", boost::bind(create_panel_viewer, parent, dockmanager));
 }
 
 #if wxUSE_DRAG_AND_DROP

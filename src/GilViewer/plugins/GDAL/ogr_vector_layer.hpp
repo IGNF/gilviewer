@@ -105,12 +105,25 @@ public:
 
     virtual void clear();
 
+    typedef OGRPolygon* polygon_type;
+    std::vector<OGRPolygon*> polygons() const;
+
+    virtual unsigned int num_polygons() const;
+    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
+
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;
     typedef struct __internal_point { double x, y; } internal_point_type;
     std::vector< std::pair< internal_point_type , std::string > > m_texts;
     double m_center_x, m_center_y;
     unsigned int m_nb_geometries;
+    unsigned int m_nb_linear_rings;
+    unsigned int m_nb_line_strings;
+    unsigned int m_nb_multiline_strings;
+    unsigned int m_nb_multipoints;
+    unsigned int m_nb_points;
+    unsigned int m_nb_multipolygons;
+    unsigned int m_nb_polygons;
 
     void compute_center(OGRLayer* layer, int nb_layers);
     void build_infos(OGRSpatialReference *spatial_reference);

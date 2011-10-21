@@ -39,12 +39,10 @@ Authors:
 #ifndef VECTOR_LAYER_GHOST_HPP
 #define VECTOR_LAYER_GHOST_HPP
 
-#include <utility>
 #include <vector>
 
 #include <wx/pen.h>
 #include <wx/brush.h>
-#include <wx/gdicmn.h>
 
 #include "layer_transform.hpp"
 #include "boost/variant.hpp"

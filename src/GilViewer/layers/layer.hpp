@@ -45,9 +45,6 @@ Authors:
 #include <vector>
 #include <cmath>
 
-#include <wx/gdicmn.h>
-#include <wx/colour.h>
-#include <wx/font.h>
 #include <wx/colour.h>
 
 #include "layer_transform.hpp"

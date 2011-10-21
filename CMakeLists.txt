@@ -230,11 +230,6 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_library.cmake )
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 
-####
-#### Construction des plugins
-####
-INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
-
 # Ajout du repertoire d'include des lib externes (pour l'instant,  tinyxml)
 #INCLUDE_DIRECTORIES( BEFORE "extern/" )
 # Ajout du repertoire d'include des sources du viewer
@@ -269,6 +264,11 @@ IF(${INSTALL_MODE} STREQUAL "Package")
 ENDIF(${INSTALL_MODE} STREQUAL "Package")
 
 
+
+####
+#### Construction des plugins
+####
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
 
 ###
 ### Sum up found and not found dependencies

@@ -52,13 +52,26 @@ Authors:
 #include "GilViewer/convenient/utils.hpp"
 
 #include "draw_geometry_visitor.hpp"
+#include "get_geometry_visitor.hpp"
 
 using namespace std;
 using namespace boost::filesystem;
 
 ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename_): vector_layer(),
-        m_nb_geometries(0)
+        m_nb_geometries(0),
+    m_nb_linear_rings(0),
+    m_nb_line_strings(0),
+    m_nb_multiline_strings(0),
+    m_nb_multipoints(0),
+    m_nb_points(0),
+    m_nb_multipolygons(0),
+    m_nb_polygons(0)
 {
+    name(layer_name);
+    filename( system_complete(filename_).string() );
+    default_display_parameters();
+    notifyLayerSettingsControl_();
+
     try
     {
         OGRDataSource *poDS;
@@ -77,7 +90,6 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
 
             // TODO: handle spatial reference
             OGRSpatialReference *spatref = poLayer->GetSpatialRef();
-            build_infos(spatref);
 
             // TODO: compute extent to get center
             compute_center(poLayer,poDS->GetLayerCount());
@@ -109,22 +121,26 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
                 {
                     m_geometries_features.push_back(std::make_pair<OGRLinearRing*,OGRFeature*>(poLine,poFeature));
                     m_nb_geometries+=poLine->getNumPoints();
+                    ++m_nb_linear_rings;
                 }
                 else if(OGRLineString *poLine = dynamic_cast<OGRLineString*>(poFeature->GetGeometryRef()) )
                 {
                     m_geometries_features.push_back(std::make_pair<OGRLineString*,OGRFeature*>(poLine,poFeature));
                     m_nb_geometries+=poLine->getNumPoints();
+                    ++m_nb_line_strings;
                 }
                 else if(OGRMultiLineString* poMLine = dynamic_cast<OGRMultiLineString*>(poFeature->GetGeometryRef()))
                 {
                     m_geometries_features.push_back(std::make_pair<OGRMultiLineString*,OGRFeature*>(poMLine,poFeature));
                     for(int i=0;i<poMLine->getNumGeometries();++i)
                         m_nb_geometries+=((OGRLineString*)(poMLine->getGeometryRef(i)))->getNumPoints();
+                    ++m_nb_multiline_strings;
                 }
                 else if(OGRMultiPoint* poMPoint = dynamic_cast<OGRMultiPoint*>(poFeature->GetGeometryRef()))
                 {
                     m_geometries_features.push_back(std::make_pair<OGRMultiPoint*,OGRFeature*>(poMPoint,poFeature));
                     m_nb_geometries+=poMPoint->getNumGeometries();
+                    ++m_nb_multipoints;
                 }
                 else if(OGRMultiPolygon* poMPolygon = dynamic_cast<OGRMultiPolygon*>(poFeature->GetGeometryRef()))
                 {
@@ -136,11 +152,13 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
                         for(int i=0;i<one_polygon->getNumInteriorRings();++i)
                             m_nb_geometries+=one_polygon->getInteriorRing(i)->getNumPoints();
                     }
+                    ++m_nb_multipolygons;
                 }
                 else if( OGRPoint *poPoint = dynamic_cast<OGRPoint*>(poFeature->GetGeometryRef()) )
                 {
                     m_geometries_features.push_back(std::make_pair<OGRPoint*,OGRFeature*>(poPoint,poFeature));
                     ++m_nb_geometries;
+                    ++m_nb_points;
                 }
                 else if(OGRPolygon *poPolygon = dynamic_cast<OGRPolygon*>(poFeature->GetGeometryRef()))
                 {
@@ -148,8 +166,10 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
                     m_nb_geometries+=poPolygon->getExteriorRing()->getNumPoints();
                     for(int i=0;i<poPolygon->getNumInteriorRings();++i)
                         m_nb_geometries+=poPolygon->getInteriorRing(i)->getNumPoints();
+                    ++m_nb_polygons;
                 }
             }
+            build_infos(spatref);
         }
         OGRDataSource::DestroyDataSource( poDS );
     }
@@ -158,11 +178,6 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
         GILVIEWER_LOG_EXCEPTION("[Exception propagated]")
         throw logic_error(e.what());
     }
-
-    name(layer_name);
-    filename( system_complete(filename_).string() );
-    default_display_parameters();
-    notifyLayerSettingsControl_();
 }
 
 ogr_vector_layer::~ogr_vector_layer()
@@ -232,12 +247,20 @@ void ogr_vector_layer::build_infos(OGRSpatialReference *spatial_reference)
         oss << "DATUM -> " << spatial_reference->GetAttrValue("DATUM") << std::endl;
         oss << "SPHEROID -> " << spatial_reference->GetAttrValue("SPHEROID") << std::endl;
         oss << "PROJECTION -> " << spatial_reference->GetAttrValue("PROJECTION") << std::endl;
-        m_infos = oss.str();
+        oss << "-------------------" << std::endl;
     }
     else
     {
-        std::cout << "No spatial reference defined!" << std::endl;
+        GILVIEWER_LOG_MESSAGE( "No spatial reference defined for file " << filename() );
     }
+    oss << "# Linear rings = " << m_nb_linear_rings << std::endl;
+    oss << "# Line strings = " << m_nb_line_strings << std::endl;
+    oss << "# Multiline strings = " << m_nb_multiline_strings << std::endl;
+    oss << "# Multi points = " << m_nb_multipoints << std::endl;
+    oss << "# Points = " << m_nb_points << std::endl;
+    oss << "# Multi polygons = " << m_nb_multipolygons << std::endl;
+    oss << "# Polygons = " << m_nb_polygons << std::endl;
+    m_infos = oss.str();
 }
 
 string ogr_vector_layer::available_formats_wildcard() const
@@ -333,6 +356,27 @@ void ogr_vector_layer::clear()
     m_texts.clear();
     vector<pair<geometry_types,OGRFeature*> >().swap(m_geometries_features);
     vector< pair< internal_point_type , string > >().swap(m_texts);
+}
+
+vector<OGRPolygon*> ogr_vector_layer::polygons() const
+{
+    get_polygons_visitor gpv;
+    gpv.m_polygons.reserve(m_nb_polygons);
+    for(unsigned int i=0;i<m_geometries_features.size();++i)
+        boost::apply_visitor( gpv, m_geometries_features[i].first );
+    return gpv.m_polygons;
+}
+
+unsigned int ogr_vector_layer::num_polygons() const { return m_nb_polygons; }
+
+void ogr_vector_layer::get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
+{
+    vector<OGRPolygon*> p = polygons();
+    for(int j=0; j<p[i]->getExteriorRing()->getNumPoints(); ++j)
+    {
+        x.push_back(p[i]->getExteriorRing()->getX(j));
+        y.push_back(p[i]->getExteriorRing()->getY(j));
+    }
 }
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

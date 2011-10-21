@@ -78,7 +78,7 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 	SetIcon(wxICON(LOGO_MATIS_small));
 #endif
 
-	panel_viewer::Register(this);
+        panel_viewer::Register(this,&m_dockManager);
         m_drawPane = panel_manager::instance()->create_object("PanelViewer");
 
 	m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
@@ -92,27 +92,8 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
 	paneInfoDrawPane.CaptionVisible(false);
 	m_dockManager.AddPane( m_drawPane, paneInfoDrawPane );
 
-	wxAuiPaneInfo toolbarInfo;
-	toolbarInfo.ToolbarPane();
-	toolbarInfo.Caption( _("Main Toolbar") );
-	toolbarInfo.TopDockable();
-	toolbarInfo.Top();
-	toolbarInfo.Fixed();
-	toolbarInfo.Resizable(false);
-	toolbarInfo.CloseButton(false);
-	toolbarInfo.CaptionVisible(false);
-        m_dockManager.AddPane( m_drawPane->main_toolbar(this), toolbarInfo );
-
-	wxAuiPaneInfo modeAndGeometryToolbarInfo;
-	modeAndGeometryToolbarInfo.ToolbarPane();
-	modeAndGeometryToolbarInfo.Caption( _("Mode and geometry Toolbar") );
-	modeAndGeometryToolbarInfo.TopDockable();
-	modeAndGeometryToolbarInfo.Top();
-	modeAndGeometryToolbarInfo.Fixed();
-	modeAndGeometryToolbarInfo.Resizable(false);
-	modeAndGeometryToolbarInfo.CloseButton(false);
-	modeAndGeometryToolbarInfo.CaptionVisible(false);
-        m_dockManager.AddPane( m_drawPane->mode_and_geometry_toolbar(this), modeAndGeometryToolbarInfo );
+        m_drawPane->main_toolbar(this,&m_dockManager);
+        m_drawPane->mode_and_geometry_toolbar(this,&m_dockManager);
 
 	m_dockManager.Update();
 
