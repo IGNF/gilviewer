@@ -73,18 +73,23 @@ private:
 
 class layer;
 
+template <class TagType>
 class gilviewer_file_io_image : public gilviewer_file_io
 {
 public:
+    gilviewer_file_io_image() : _info_read(false) {}
     virtual ~gilviewer_file_io_image() {}
 
     typedef boost::gil::point2<std::ptrdiff_t> point_t;
-    template <class TagType> boost::shared_ptr<layer> load_gil_image(const std::string &filename, const point_t &top_left, const point_t &dim)
+    boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x, const std::ptrdiff_t top_left_y, const std::ptrdiff_t dim_x, const std::ptrdiff_t dim_y)
     {
         using namespace boost;
         using namespace boost::gil;
         using namespace boost::filesystem;
         using namespace std;
+
+        point_t top_left(top_left_x, top_left_y);
+        point_t dim(dim_x, dim_y);
 
         if ( !exists(filename) )
         {
@@ -96,11 +101,12 @@ public:
 
         image_layer::image_ptr image(new image_layer::image_t);
 
-        image_read_info<TagType> info = read_image_info(filename , TagType() );
+        _info = read_image_info(filename , TagType() );
+        _info_read = true;
         point_t origin( max(top_left.x, (ptrdiff_t)0), max(top_left.y, (ptrdiff_t)0) );
         point_t size = dim;
         if(dim.x==-1 && dim.y==-1)
-            size = point_t(info._width, info._height);
+            size = point_t(_info._width, _info._height);
         image_read_settings<TagType> settings(origin, size );
 
         try
@@ -117,12 +123,12 @@ public:
 
         layer::ptrLayerType layer(new image_layer(image, BOOST_FILESYSTEM_STRING(path.stem()), path.string()));
         layer->add_orientation(filename);
-        layer->infos( build_and_get_infos(filename) );
+        layer->infos( get_infos(filename) );
 
         return layer;
     }
 
-    template <class TagType> void save_gil_view(boost::shared_ptr<layer> layer, const std::string &filename)
+    void save(boost::shared_ptr<layer> layer, const std::string &filename)
     {
         using namespace boost;
         using namespace std;
@@ -141,6 +147,10 @@ public:
             GILVIEWER_LOG_EXCEPTION("Image write error: " + filename);
         }
     }
+protected:
+    bool _info_read;
+    boost::gil::image_read_info<TagType> _info;
+
 };
 
 #endif // GILVIEWER_FILE_IO_IMAGE_HPP
