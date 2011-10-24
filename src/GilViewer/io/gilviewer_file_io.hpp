@@ -55,7 +55,7 @@ public:
 
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename)=0;
 
-    virtual std::string build_and_get_infos(const std::string &filename) { return ""; }
+    virtual std::string get_infos(const std::string &filename) { return ""; }
 
     virtual bool Register(gilviewer_io_factory *factory) { return false; }
 protected:
