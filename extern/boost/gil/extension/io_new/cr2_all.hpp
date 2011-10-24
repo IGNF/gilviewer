@@ -1,0 +1,16 @@
+#ifndef BOOST_GIL_EXTENSION_IO_CR2_ALL_HPP
+#define BOOST_GIL_EXTENSION_IO_CR2_ALL_HPP
+
+////////////////////////////////////////////////////////////////////////////////////////
+/// \file
+/// \brief
+/// \author Olivier tournaire \n
+///
+/// \date   20118 \n
+///
+////////////////////////////////////////////////////////////////////////////////////////
+
+#include "cr2_read.hpp"
+#include "cr2_write.hpp"
+
+#endif // BOOST_GIL_EXTENSION_IO_CR2_ALL_HPP
