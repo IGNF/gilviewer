@@ -7,7 +7,7 @@ if(WIN32)
 else()
     set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES}
                                            ${PNG_LIBRARIES}
-                                           ${ZLIB_LIBRARIES})
+                                           ${ZLIB_LIBRARIES} )
 endif()
 
 # Option to choose to use GDAL/OGR

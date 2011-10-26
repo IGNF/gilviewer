@@ -25,3 +25,6 @@ glob:src/GilViewer/io/gilviewer_file_io_stereoV2_jp2.cpp_
 glob:data/bertrand/Mairie-090708_0645-22-00001_0000479.pk1
 glob:data/bertrand/*
 glob:src/GilViewer/config/config_plugins.hpp
+glob:build-debug
+glob:build-release
+glob:build
