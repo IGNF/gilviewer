@@ -13,9 +13,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
 /// \brief
-/// \author Christian Henning \n
+/// \author Olivier Tournaire \n
 ///
-/// \date 2008 \n
+/// \date 2011 \n
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,39 +79,42 @@ public:
 
     image_read_info< cr2_tag > get_info()
     {
+        _io_dev.get_mem_image_format(&_info._width
+                                    ,&_info._height
+                                    ,&_info._samples_per_pixel
+                                    ,&_info._bits_per_pixel);
+
         // iparams
-        std::cout << _io_dev.get_camera_manufacturer() << std::endl;
-        std::cout << _io_dev.get_camera_model() << std::endl;
-        std::cout << _io_dev.get_raw_count() << std::endl;
-        std::cout << _io_dev.get_dng_version() << std::endl;
-        std::cout << _io_dev.get_colors() << std::endl;
-        std::cout << _io_dev.get_filters() << std::endl;
-        std::cout << _io_dev.get_cdesc() << std::endl;
-        std::cout << std::endl;
+        _info._camera_manufacturer = _io_dev.get_camera_manufacturer();
+        _info._camera_model        = _io_dev.get_camera_model();
+        _info._raw_images_count    = _io_dev.get_raw_count();
+        _info._dng_version         = _io_dev.get_dng_version();
+        _info._number_colors       = _io_dev.get_colors();
+        //_io_dev.get_filters();
+        _info._colors_description  = _io_dev.get_cdesc();
 
         // image_sizes
-        std::cout << _io_dev.get_raw_width() << std::endl;
-        std::cout << _io_dev.get_raw_height() << std::endl;
-        std::cout << _io_dev.get_image_width() << std::endl;
-        std::cout << _io_dev.get_image_height() << std::endl;
-        std::cout << _io_dev.get_top_margin() << std::endl;
-        std::cout << _io_dev.get_left_margin() << std::endl;
-        std::cout << _io_dev.get_iwidth() << std::endl;
-        std::cout << _io_dev.get_iheight() << std::endl;
-        std::cout << _io_dev.get_pixel_aspect() << std::endl;
-        std::cout << _io_dev.get_flip() << std::endl;
-        std::cout << std::endl;
+        _info._raw_width      = _io_dev.get_raw_width();
+        _info._raw_height     = _io_dev.get_raw_height();
+        _info._visible_width  = _io_dev.get_image_width();
+        _info._visible_height = _io_dev.get_image_height();
+        _info._top_margin     = _io_dev.get_top_margin();
+        _info._left_margin    = _io_dev.get_left_margin();
+        _info._output_width   = _io_dev.get_iwidth();
+        _info._output_height  = _io_dev.get_iheight();
+        _info._pixel_aspect   = _io_dev.get_pixel_aspect();
+        _info._flip           = _io_dev.get_flip();
 
         // imgother
-        std::cout << _io_dev.get_iso_speed() << std::endl;
-        std::cout << _io_dev.get_shutter() << std::endl;
-        std::cout << _io_dev.get_aperture() << std::endl;
-        std::cout << _io_dev.get_focal_len() << std::endl;
-        std::cout << _io_dev.get_timestamp() << std::endl;
-        std::cout << _io_dev.get_shot_order() << std::endl;
-        std::cout << _io_dev.get_gpsdata() << std::endl;
-        std::cout << _io_dev.get_desc() << std::endl;
-        std::cout << _io_dev.get_artist() << std::endl;
+        _info._iso_speed         = _io_dev.get_iso_speed();
+        _info._shutter           = _io_dev.get_shutter();
+        _info._aperture          = _io_dev.get_aperture();
+        _info._focal_length      = _io_dev.get_focal_len();
+        _info._timestamp         = _io_dev.get_timestamp();
+        _info._shot_order        = _io_dev.get_shot_order();
+        //_io_dev.get_gpsdata();
+        _info._image_description = _io_dev.get_desc();
+        _info._artist            = _io_dev.get_artist();
 
         _info._valid = true;
 
@@ -121,11 +124,56 @@ public:
     template< typename View >
     void apply( const View& dst_view )
     {
-        // TODO
         if( !_info._valid )
         {
             get_info();
         }
+
+        typedef typename is_same< ConversionPolicy
+                                , read_and_no_convert
+                                >::type is_read_and_convert_t;
+
+        io_error_if( !is_allowed< View >( this->_info
+                                        , is_read_and_convert_t()
+                                        )
+                   , "Image types aren't compatible." );
+
+        // TODO: better error handling based on return code
+        int return_code = _io_dev.unpack();
+        io_error_if( return_code != LIBRAW_SUCCESS, "Unable to unpack image" );
+        std::cout << "data unpacked ..." << std::endl;
+
+        return_code = _io_dev.dcraw_process();
+        io_error_if( return_code != LIBRAW_SUCCESS, "Unable to emulate behavior dcraw to process image" );
+        std::cout << "dcraw_processed ..." << std::endl;
+
+        libraw_processed_image_t* processed_image = _io_dev.dcraw_make_mem_image(&return_code);
+        io_error_if( return_code != LIBRAW_SUCCESS, "Unable to dcraw_make_mem_image" );
+        std::cout << "dcraw_make_mem_imageed ..." << std::endl;
+
+        if(processed_image->colors!=1 && processed_image->colors!=3)
+            io_error( "Image is neither gray nor RGB" );
+
+        if(processed_image->bits==8)
+        {
+            rgb8_view_t build = boost::gil::interleaved_view(processed_image->width,
+                                                             processed_image->height,
+                                                             (rgb8_pixel_t*)processed_image->data,
+                                                             processed_image->colors*processed_image->width);
+
+            this->_cc_policy.read( build.begin(), build.end(), dst_view.begin() );
+        }
+        else if(processed_image->bits==16)
+        {
+            rgb16_view_t build = boost::gil::interleaved_view(processed_image->width,
+                                                              processed_image->height,
+                                                              (rgb16_pixel_t*)processed_image->data,
+                                                              2*processed_image->colors*processed_image->width);
+
+            this->_cc_policy.read( build.begin(), build.end(), dst_view.begin() );
+        }
+        else
+            io_error( "Image is neither 8bit nor 16bit" );
     }
 
 protected:
@@ -134,6 +182,28 @@ protected:
 };
 
 /////////////////////////////////// dynamic image
+
+
+struct cr2_type_format_checker
+{
+    cr2_type_format_checker( const image_read_info< cr2_tag >& info )
+    : _info( info )
+    {}
+
+    template< typename Image >
+    bool apply()
+    {
+        typedef typename Image::view_t view_t;
+
+        return is_allowed< view_t >( _info
+                                   , mpl::true_()
+                                   );
+    }
+
+private:
+
+    const image_read_info< cr2_tag >& _info;
+};
 
 struct cr2_read_is_supported
 {
@@ -172,6 +242,35 @@ public:
     template< typename Images >
     void apply( any_image< Images >& images )
     {
+        cr2_type_format_checker format_checker( this->_info );
+
+        if( !construct_matched( images
+                               , format_checker
+                               ))
+        {
+            std::ostringstream error_message;
+            error_message << "No matching image type between those of the given any_image and that of the file.\n";
+            error_message << "Image type must be {gray||rgb}{8||16} unsigned for RAW image files.";
+            io_error( error_message.str() );
+        }
+        else
+        {
+            if( !this->_info._valid )
+            {
+                this->get_info();
+            }
+            init_image( images
+                       , this->_info
+                       );
+
+            dynamic_io_fnobj< cr2_read_is_supported
+                    , parent_t
+                    > op( this );
+
+            apply_operation( view( images )
+                            , op
+                            );
+        }
     }
 };
 

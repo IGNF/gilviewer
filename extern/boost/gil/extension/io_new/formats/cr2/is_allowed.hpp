@@ -13,11 +13,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
 /// \brief
-/// \author Christian Henning \n
+/// \author Olivier Tournaire \n
 ///
-/// \date 2008 \n
+/// \date 2011 \n
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
+
+#include <boost/gil/extension/io_new/detail/base.hpp>
+#include <iostream>
 
 namespace boost { namespace gil { namespace detail {
 
@@ -26,7 +29,17 @@ bool is_allowed( const image_read_info< cr2_tag >& info
                , mpl::true_   // is read_and_no_convert
                )
 {
-    return true;
+    typedef typename get_pixel_type< View >::type pixel_t;
+    typedef typename num_channels< pixel_t >::value_type num_channel_t;
+    typedef typename channel_traits< typename element_type< typename View::value_type >::type >::value_type channel_t;
+
+    const num_channel_t dst_samples_per_pixel = num_channels< pixel_t >::value;
+    const unsigned int  dst_bits_per_pixel    = detail::unsigned_integral_num_bits< channel_t >::value;
+    const bool          is_type_signed        = boost::is_signed< channel_t >::value;
+
+    return( dst_samples_per_pixel == info._samples_per_pixel &&
+            dst_bits_per_pixel    == static_cast<unsigned int>(info._bits_per_pixel) &&
+            !is_type_signed );
 }
 
 template< typename View >

@@ -71,6 +71,12 @@ public:
     std::string get_desc()    { return std::string(m_libraw_processor.imgdata.other.desc); }
     std::string get_artist()  { return std::string(m_libraw_processor.imgdata.other.artist); }
 
+    void get_mem_image_format(int *widthp, int *heightp, int *colorsp, int *bpp) { m_libraw_processor.get_mem_image_format(widthp, heightp, colorsp, bpp); }
+
+    int unpack()                                                         { return m_libraw_processor.unpack(); }
+    int dcraw_process()                                                  { return m_libraw_processor.dcraw_process(); }
+    libraw_processed_image_t* dcraw_make_mem_image(int* error_code=NULL) { return m_libraw_processor.dcraw_make_mem_image(error_code); }
+
 protected:
     LibRaw m_libraw_processor;
 };
