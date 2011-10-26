@@ -38,6 +38,16 @@ struct cr2_read_support : read_support_false {};
 
 template<>
 struct cr2_read_support< bits8
+                       , gray_t
+                       > : read_support_true {};
+
+template<>
+struct cr2_read_support< bits16
+                       , gray_t
+                       > : read_support_true {};
+
+template<>
+struct cr2_read_support< bits8
                        , rgb_t
                        > : read_support_true {};
 
@@ -46,14 +56,9 @@ struct cr2_read_support< bits16
                        , rgb_t
                        > : read_support_true {};
 
-template<>
-struct cr2_read_support< bits32
-                       , rgb_t
-                       > : read_support_true {};
-
 // Write support
 
-struct cr2_write_support : write_support_true {};
+struct cr2_write_support : write_support_false {};
 
 } // namespace detail
 
