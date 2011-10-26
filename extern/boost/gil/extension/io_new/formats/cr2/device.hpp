@@ -83,7 +83,7 @@ protected:
 
 /*!
  *
- * file_stream_device specialization for tiff images, which are based on TIFF*.
+ * file_stream_device specialization for cr2 images
  */
 template<>
 class file_stream_device< cr2_tag > : public cr2_device_base
@@ -101,14 +101,6 @@ public:
     file_stream_device( std::string const& file_name, write_tag )
     {
         /// TODO
-        /*
-        TIFF* tiff;
-
-        io_error_if( ( tiff = TIFFOpen( file_name.c_str(), "w" )) == NULL
-                   , "file_stream_device: failed to open file" );
-
-        _tiff_file = tiff_file_t( tiff, TIFFClose );
-        */
     }
 
     file_stream_device( const LibRaw& processor ) : cr2_device_base( processor ) {}
@@ -116,7 +108,7 @@ public:
 
 /*!
  *
- * ostream_device specialization for tiff images.
+ * ostream_device specialization for cr2 images.
  */
 template<>
 class ostream_device< cr2_tag > : public cr2_device_base
@@ -125,18 +117,6 @@ public:
     ostream_device( std::ostream & out ) : _out( out )
     {
         /// TODO
-        /*
-        TIFF* tiff;
-
-        io_error_if( ( tiff = TIFFStreamOpen( ""
-                                            , &_out
-                                            )
-                      ) == NULL
-                   , "ostream_device: failed to stream"
-                   );
-
-        _tiff_file = tiff_file_t( tiff, TIFFClose );
-        */
     }
 
 private:
@@ -145,7 +125,7 @@ private:
 
 /*!
  *
- * ostream_device specialization for tiff images.
+ * istream_device specialization for cr2 images.
  */
 template<>
 class istream_device< cr2_tag > : public cr2_device_base
@@ -154,51 +134,11 @@ public:
     istream_device( std::istream & in ) : _in( in )
     {
         /// TODO
-        /*
-        TIFF* tiff;
-
-        io_error_if( ( tiff = TIFFStreamOpen( ""
-                                            , &_in
-                                            )
-                     ) == NULL
-                   , "istream_device: failed to stream"
-                   );
-
-        _tiff_file = tiff_file_t( tiff, TIFFClose );
-        */
     }
 
 private:
     std::istream& _in;
 };
-
-/*
-template< typename T, typename D >
-struct is_adaptable_input_device< tiff_tag, T, D > : mpl::false_{};
-*/
-
-/// TODO???
-/*
-template< typename FormatTag >
-struct is_adaptable_input_device< FormatTag
-                                , TIFF*
-                                , void
-                                >
-    : mpl::true_
-{
-    typedef file_stream_device< FormatTag > device_type;
-};
-
-template< typename FormatTag >
-struct is_adaptable_output_device< FormatTag
-                                 , TIFF*
-                                 , void
-                                 >
-    : mpl::true_
-{
-    typedef file_stream_device< FormatTag > device_type;
-};
-*/
 
 } // namespace detail
 } // namespace gil
