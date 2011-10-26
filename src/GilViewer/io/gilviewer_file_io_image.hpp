@@ -46,10 +46,12 @@ Authors:
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
+#include <boost/gil/extension/io_new/detail/base.hpp>
 #include <boost/gil/extension/io_new/detail/read_image.hpp>
 #include <boost/gil/extension/io_new/detail/read_image_info.hpp>
+#include <boost/gil/extension/io_new/detail/io_device.hpp>
+#include <boost/gil/extension/io_new/detail/write_view.hpp>
 
-//#include <xutility>
 #if _WINDOWS
 #   include <boost/config/platform/win32.hpp>
 #endif
@@ -61,14 +63,15 @@ Authors:
 
 template <class TagType> struct write_gil_view_visitor : public boost::static_visitor<>
 {
-    write_gil_view_visitor(const std::string& filename) : m_filename(filename), m_tag(TagType()) {}
+    write_gil_view_visitor(const std::string& filename, boost::gil::image_write_info<TagType> info) : m_filename(filename), m_tag(TagType()), m_info(info) {}
 
     template <typename ViewType>
-    result_type operator()(const ViewType& v) const { write_view( m_filename , v, m_tag ); }
+    result_type operator()(const ViewType& v) const { boost::gil::write_view( m_filename , v, m_tag ); }
 
 private:
     std::string m_filename;
     TagType m_tag;
+    boost::gil::image_write_info<TagType> m_info;
 };
 
 class layer;
@@ -122,7 +125,7 @@ public:
         return layer;
     }
 
-    template <class TagType> void save_gil_view(boost::shared_ptr<layer> layer, const std::string &filename)
+    template <class TagType> void save_gil_view(boost::shared_ptr<layer> layer, const std::string &filename, boost::gil::image_write_info<TagType> info = boost::gil::image_write_info<TagType>() )
     {
         using namespace boost;
         using namespace std;
@@ -131,7 +134,7 @@ public:
         if(!imagelayer)
             throw invalid_argument("Bad layer type (not an image layer)!\n");
 
-        write_gil_view_visitor<TagType> writer(filename);
+        write_gil_view_visitor<TagType> writer(filename, info);
         try
         {
             apply_visitor( writer, imagelayer->variant_view()->value );
