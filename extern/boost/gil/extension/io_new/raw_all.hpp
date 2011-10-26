@@ -1,5 +1,5 @@
-#ifndef BOOST_GIL_EXTENSION_IO_CR2_ALL_HPP
-#define BOOST_GIL_EXTENSION_IO_CR2_ALL_HPP
+#ifndef BOOST_GIL_EXTENSION_IO_RAW_ALL_HPP
+#define BOOST_GIL_EXTENSION_IO_RAW_ALL_HPP
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
@@ -10,7 +10,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "cr2_read.hpp"
-#include "cr2_write.hpp"
+#include "raw_read.hpp"
+#include "raw_write.hpp"
 
-#endif // BOOST_GIL_EXTENSION_IO_CR2_ALL_HPP
+#endif // BOOST_GIL_EXTENSION_IO_RAW_ALL_HPP

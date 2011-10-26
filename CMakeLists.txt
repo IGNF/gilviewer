@@ -20,7 +20,7 @@ IF(UNIX)
         add_definitions(-Wall -fPIC)
         SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG" CACHE STRING "Flags used by the compiler during debug builds." FORCE)
         #add_definitions(-pedantic)
-ENDIF(UNIX) 
+ENDIF(UNIX)
 
 SET(CMAKE_CONFIG_DIR cmake)
 
