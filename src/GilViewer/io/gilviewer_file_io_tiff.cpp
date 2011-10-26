@@ -1,6 +1,6 @@
 #include "gilviewer_file_io_tiff.hpp"
 #include "gilviewer_io_factory.hpp"
-#include "../gui/tiff_write_parameters_gui_impl.h"
+//#include "../gui/tiff_write_parameters_gui_impl.h"
 
 using namespace boost;
 using namespace boost::gil;
