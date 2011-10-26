@@ -1,0 +1,10 @@
+#ifndef __CONFIG_PLUGINS_GILVIEWER_HPP__
+#define __CONFIG_PLUGINS_GILVIEWER_HPP__
+
+#include <string>
+
+const static std::string plugins_dir = "@GILVIEWER_PLUGINS_DIR@";
+const static std::string plugins_ext = "@PLUGINS_EXT@";
+const static std::string plugins_pre = "@PLUGINS_PRE@";
+
+#endif /*__CONFIG_PLUGINS_GILVIEWER_HPP__*/
