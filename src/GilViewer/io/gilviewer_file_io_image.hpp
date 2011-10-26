@@ -81,7 +81,8 @@ public:
     virtual ~gilviewer_file_io_image() {}
 
     typedef boost::gil::point2<std::ptrdiff_t> point_t;
-    boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x, const std::ptrdiff_t top_left_y, const std::ptrdiff_t dim_x, const std::ptrdiff_t dim_y)
+
+    virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x, const std::ptrdiff_t top_left_y, const std::ptrdiff_t dim_x, const std::ptrdiff_t dim_y)
     {
         using namespace boost;
         using namespace boost::gil;
@@ -128,7 +129,7 @@ public:
         return layer;
     }
 
-    void save(boost::shared_ptr<layer> layer, const std::string &filename)
+    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename)
     {
         using namespace boost;
         using namespace std;

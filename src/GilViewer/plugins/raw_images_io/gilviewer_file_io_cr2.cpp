@@ -11,12 +11,16 @@ IMPLEMENT_PLUGIN(gilviewer_file_io_cr2);
 
 string gilviewer_file_io_cr2::get_infos(const std::string &filename)
 {
-    // TODO: complete
     if(!_info_read)
         _info = read_image_info(filename, cr2_tag());
     ostringstream infos_str;
     infos_str << "Dimensions: " << _info._width << "x" << _info._height << "\n";
     return "";
+}
+
+void gilviewer_file_io_cr2::save(boost::shared_ptr<layer> layer, const std::string &filename)
+{
+    GILVIEWER_LOG_ERROR("cr2 format cannot be written!");
 }
 
 shared_ptr<gilviewer_file_io_cr2> create_gilviewer_file_io_cr2()
