@@ -36,20 +36,13 @@ class writer< Device
             >
 {
 public:
-
-    writer( Device& file )
-    : _out( file )
-    {
-    }
-
-    ~writer()
-    {
-    }
+    writer( Device& file ) : _out( file ) {}
+    ~writer() {}
 
     template<typename View>
     void apply( const View& view )
     {
-        write( view );
+        io_error( "cr2 format cannot be written!" );
     }
 
     template<typename View>
@@ -57,42 +50,11 @@ public:
               , const image_write_info< cr2_tag >& /* info */
               )
     {
-        // Add code here, once image_write_info< cr2_tag > isn't empty anymore.
-
-        write( view );
+        io_error( "cr2 format cannot be written!" );
     }
 
 private:
-
-    template< typename View >
-    void write( const View& view )
-    {
-    }
-
-
-    template< typename View
-            , typename cr2_View
-            >
-    void write_image( const View&       view
-                    , const std::size_t spn
-                    )
-    {
-    }
-
-private:
-
     Device& _out;
-};
-
-
-struct cr2_write_is_supported
-{
-    template< typename View >
-    struct apply
-        : public is_write_supported< typename get_pixel_type< View >::type
-                                   , cr2_tag
-                                   >
-    {};
 };
 
 template< typename Device >
@@ -109,18 +71,12 @@ class dynamic_image_writer< Device
 
 public:
 
-    dynamic_image_writer( Device& file )
-    : parent_t( file )
-    {}
+    dynamic_image_writer( Device& file ) : parent_t( file ) {}
 
     template< typename Views >
     void apply( const any_image_view< Views >& views )
     {
-        dynamic_io_fnobj< cr2_write_is_supported
-                        , parent_t
-                        > op( this );
-
-        apply_operation( views, op );
+        io_error( "cr2 format cannot be written!" );
     }
 };
 

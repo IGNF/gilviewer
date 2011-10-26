@@ -10,6 +10,7 @@ public:
     virtual ~gilviewer_file_io_cr2() {}
 
     virtual std::string get_infos(const std::string &filename);
+    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
 };
