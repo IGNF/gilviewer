@@ -18,7 +18,7 @@ string gilviewer_file_io_cr2::get_infos(const std::string &filename)
     return "";
 }
 
-void gilviewer_file_io_cr2::save(boost::shared_ptr<layer> layer, const std::string &filename)
+void gilviewer_file_io_cr2::save(boost::shared_ptr<layer> /*layer*/, const std::string &/*filename*/)
 {
     GILVIEWER_LOG_ERROR("cr2 format cannot be written!");
 }

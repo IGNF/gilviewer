@@ -61,7 +61,8 @@ Authors:
 #include "../convenient/macros_gilviewer.hpp"
 #include "../convenient/utils.hpp"
 
-template <class TagType> struct write_gil_view_visitor : public boost::static_visitor<>
+template <class TagType>
+struct write_gil_view_visitor : public boost::static_visitor<>
 {
     write_gil_view_visitor(const std::string& filename, boost::gil::image_write_info<TagType> info) : m_filename(filename), m_tag(TagType()), m_info(info) {}
 
@@ -132,7 +133,12 @@ public:
         return layer;
     }
 
-    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename)
+    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename )
+    {
+        save( layer, filename, boost::gil::image_write_info<TagType>() );
+    }
+
+    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename, const boost::gil::image_write_info<TagType> info )
     {
         using namespace boost;
         using namespace std;
