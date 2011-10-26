@@ -1,10 +1,13 @@
 #include "gilviewer_file_io_cr2.hpp"
-#include "gilviewer_io_factory.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 
 using namespace boost;
 using namespace boost::gil;
 using namespace boost::filesystem;
 using namespace std;
+
+#include "GilViewer/plugins/plugin_base.hpp"
+IMPLEMENT_PLUGIN(gilviewer_file_io_cr2);
 
 string gilviewer_file_io_cr2::get_infos(const std::string &filename)
 {
