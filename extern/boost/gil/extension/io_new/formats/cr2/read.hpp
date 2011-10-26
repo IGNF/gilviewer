@@ -141,19 +141,19 @@ public:
         // TODO: better error handling based on return code
         int return_code = _io_dev.unpack();
         io_error_if( return_code != LIBRAW_SUCCESS, "Unable to unpack image" );
-        std::cout << "data unpacked ..." << std::endl;
 
         return_code = _io_dev.dcraw_process();
-        io_error_if( return_code != LIBRAW_SUCCESS, "Unable to emulate behavior dcraw to process image" );
-        std::cout << "dcraw_processed ..." << std::endl;
+        io_error_if( return_code != LIBRAW_SUCCESS, "Unable to emulate dcraw behavior to process image" );
 
         libraw_processed_image_t* processed_image = _io_dev.dcraw_make_mem_image(&return_code);
         io_error_if( return_code != LIBRAW_SUCCESS, "Unable to dcraw_make_mem_image" );
-        std::cout << "dcraw_make_mem_imageed ..." << std::endl;
 
         if(processed_image->colors!=1 && processed_image->colors!=3)
             io_error( "Image is neither gray nor RGB" );
 
+        // TODO
+        // Here, we should use a metafunction to reduce code size
+        // We should also use processed_image->colors to choose RGB or GRAY image
         if(processed_image->bits==8)
         {
             rgb8_view_t build = boost::gil::interleaved_view(processed_image->width,
