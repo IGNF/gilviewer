@@ -2,7 +2,7 @@
 #define GILVIEWER_FILE_IO_CR2_HPP
 
 #include <boost/gil/extension/io_new/cr2_all.hpp>
-#include "gilviewer_file_io_image.hpp"
+#include "GilViewer/io/gilviewer_file_io_image.hpp"
 
 class gilviewer_file_io_cr2 : public gilviewer_file_io_image<boost::gil::cr2_tag>
 {
