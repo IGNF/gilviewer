@@ -3,6 +3,7 @@
 #include <boost/gil/extension/io_new/tiff_all.hpp>
 
 #include "gilviewer_io_factory.hpp"
+#include "../gui/tiff_write_parameters_gui_impl.h"
 
 using namespace boost;
 using namespace boost::gil;
@@ -16,7 +17,8 @@ boost::shared_ptr<layer> gilviewer_file_io_tiff::load(const string &filename, co
 
 void gilviewer_file_io_tiff::save(boost::shared_ptr<layer> layer, const string &filename)
 {
-    save_gil_view<tiff_tag>(layer, filename);
+    tiff_write_parameters_gui_impl* param_gui = new tiff_write_parameters_gui_impl(NULL, this, layer, filename);
+    param_gui->Show();
 }
 
 string gilviewer_file_io_tiff::build_and_get_infos(const std::string &filename)
