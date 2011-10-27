@@ -1,5 +1,5 @@
-#ifndef BOOST_GIL_EXTENSION_IO_CR2_WRITE_HPP
-#define BOOST_GIL_EXTENSION_IO_CR2_WRITE_HPP
+#ifndef BOOST_GIL_EXTENSION_IO_RAW_WRITE_HPP
+#define BOOST_GIL_EXTENSION_IO_RAW_WRITE_HPP
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
@@ -10,10 +10,10 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "cr2_tags.hpp"
-#include "formats/cr2/supported_types.hpp"
-#include "formats/cr2/write.hpp"
+#include "raw_tags.hpp"
+#include "formats/raw/supported_types.hpp"
+#include "formats/raw/write.hpp"
 
 #include "detail/write_view.hpp"
 
-#endif // BOOST_GIL_EXTENSION_IO_CR2_WRITE_HPP
+#endif // BOOST_GIL_EXTENSION_IO_RAW_WRITE_HPP

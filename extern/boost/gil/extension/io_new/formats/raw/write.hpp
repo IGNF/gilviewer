@@ -7,8 +7,8 @@
 
 /*************************************************************************************************/
 
-#ifndef BOOST_GIL_EXTENSION_IO_CR2_IO_WRITE_HPP_INCLUDED
-#define BOOST_GIL_EXTENSION_IO_CR2_IO_WRITE_HPP_INCLUDED
+#ifndef BOOST_GIL_EXTENSION_IO_RAW_IO_WRITE_HPP_INCLUDED
+#define BOOST_GIL_EXTENSION_IO_RAW_IO_WRITE_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
@@ -24,7 +24,7 @@
 #include <boost/gil/extension/io_new/detail/base.hpp>
 #include <boost/gil/extension/io_new/detail/io_device.hpp>
 
-#include <boost/gil/extension/io_new/cr2_tags.hpp>
+#include <boost/gil/extension/io_new/raw_tags.hpp>
 
 #include "device.hpp"
 
@@ -32,7 +32,7 @@ namespace boost { namespace gil { namespace detail {
 
 template< typename Device >
 class writer< Device
-            , cr2_tag
+            , raw_tag
             >
 {
 public:
@@ -42,15 +42,15 @@ public:
     template<typename View>
     void apply( const View& view )
     {
-        io_error( "cr2 format cannot be written!" );
+        io_error( "raw format cannot be written!" );
     }
 
     template<typename View>
     void apply( const View&                           view
-              , const image_write_info< cr2_tag >& /* info */
+              , const image_write_info< raw_tag >& /* info */
               )
     {
-        io_error( "cr2 format cannot be written!" );
+        io_error( "raw format cannot be written!" );
     }
 
 private:
@@ -59,14 +59,14 @@ private:
 
 template< typename Device >
 class dynamic_image_writer< Device
-                          , cr2_tag
+                          , raw_tag
                           >
     : public writer< Device
-                   , cr2_tag
+                   , raw_tag
                    >
 {
     typedef writer< Device
-                  , cr2_tag
+                  , raw_tag
                   > parent_t;
 
 public:
@@ -76,7 +76,7 @@ public:
     template< typename Views >
     void apply( const any_image_view< Views >& views )
     {
-        io_error( "cr2 format cannot be written!" );
+        io_error( "raw format cannot be written!" );
     }
 };
 
@@ -84,4 +84,4 @@ public:
 } // gil
 } // boost
 
-#endif // BOOST_GIL_EXTENSION_IO_CR2_IO_WRITE_HPP_INCLUDED
+#endif // BOOST_GIL_EXTENSION_IO_RAW_IO_WRITE_HPP_INCLUDED

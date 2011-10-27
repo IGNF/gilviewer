@@ -7,8 +7,8 @@
 
 /*************************************************************************************************/
 
-#ifndef BOOST_GIL_EXTENSION_IO_CR2_IO_READ_HPP_INCLUDED
-#define BOOST_GIL_EXTENSION_IO_CR2_IO_READ_HPP_INCLUDED
+#ifndef BOOST_GIL_EXTENSION_IO_RAW_IO_READ_HPP_INCLUDED
+#define BOOST_GIL_EXTENSION_IO_RAW_IO_READ_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
@@ -21,7 +21,7 @@
 
 #include <cstdio>
 #include <vector>
-#include <boost/gil/extension/io_new/cr2_tags.hpp>
+#include <boost/gil/extension/io_new/raw_tags.hpp>
 
 #include <boost/gil/extension/io_new/detail/base.hpp>
 #include <boost/gil/extension/io_new/detail/bit_operations.hpp>
@@ -39,15 +39,24 @@
 
 namespace boost { namespace gil { namespace detail {
 
+#define BUILD_INTERLEAVED_VIEW(color_layout, bits_per_pixel) \
+{ \
+    color_layout##bits_per_pixel##_view_t build = boost::gil::interleaved_view(processed_image->width, \
+                                                                             processed_image->height, \
+                                                                             (color_layout##bits_per_pixel##_pixel_t*)processed_image->data, \
+                                                                             processed_image->colors*processed_image->width*processed_image->bits/8); \
+    this->_cc_policy.read( build.begin(), build.end(), dst_view.begin() ); \
+} \
+
 
 template< typename Device
         , typename ConversionPolicy
         >
 class reader< Device
-            , cr2_tag
+            , raw_tag
             , ConversionPolicy
             >
-    : public reader_base< cr2_tag
+    : public reader_base< raw_tag
                         , ConversionPolicy
                         >
 {
@@ -58,26 +67,26 @@ private:
 public:
 
     reader( Device&                               device
-          , const image_read_settings< cr2_tag >& settings
+          , const image_read_settings< raw_tag >& settings
           )
-    : reader_base< cr2_tag
+    : reader_base< raw_tag
                  , ConversionPolicy >( settings )
     , _io_dev( device )
     {}
 
     reader( Device&                               device
           , const cc_t&                           cc
-          , const image_read_settings< cr2_tag >& settings
+          , const image_read_settings< raw_tag >& settings
           )
     : _io_dev( device )
-    , reader_base< cr2_tag
+    , reader_base< raw_tag
                  , ConversionPolicy
                  >( cc
                   , settings
                   )
     {}
 
-    image_read_info< cr2_tag > get_info()
+    image_read_info< raw_tag > get_info()
     {
         _io_dev.get_mem_image_format(&_info._width
                                     ,&_info._height
@@ -116,6 +125,8 @@ public:
         _info._image_description = _io_dev.get_desc();
         _info._artist            = _io_dev.get_artist();
 
+        _info._libraw_version = _io_dev.get_version();
+
         _info._valid = true;
 
         return _info;
@@ -141,6 +152,7 @@ public:
         // TODO: better error handling based on return code
         int return_code = _io_dev.unpack();
         io_error_if( return_code != LIBRAW_SUCCESS, "Unable to unpack image" );
+        _info._unpack_function_name = _io_dev.get_unpack_function_name();
 
         return_code = _io_dev.dcraw_process();
         io_error_if( return_code != LIBRAW_SUCCESS, "Unable to emulate dcraw behavior to process image" );
@@ -151,42 +163,34 @@ public:
         if(processed_image->colors!=1 && processed_image->colors!=3)
             io_error( "Image is neither gray nor RGB" );
 
+        if(processed_image->bits!=8 && processed_image->bits!=16)
+            io_error( "Image is neither 8bit nor 16bit" );
+
         // TODO
-        // Here, we should use a metafunction to reduce code size
-        // We should also use processed_image->colors to choose RGB or GRAY image
+        // Here, we should use a metafunction to reduce code size and avoid a (compile time) macro
         if(processed_image->bits==8)
         {
-            rgb8_view_t build = boost::gil::interleaved_view(processed_image->width,
-                                                             processed_image->height,
-                                                             (rgb8_pixel_t*)processed_image->data,
-                                                             processed_image->colors*processed_image->width);
-
-            this->_cc_policy.read( build.begin(), build.end(), dst_view.begin() );
+            if(processed_image->colors==1){ BUILD_INTERLEAVED_VIEW(gray, 8); }
+            else                          { BUILD_INTERLEAVED_VIEW(rgb,  8); }
         }
         else if(processed_image->bits==16)
         {
-            rgb16_view_t build = boost::gil::interleaved_view(processed_image->width,
-                                                              processed_image->height,
-                                                              (rgb16_pixel_t*)processed_image->data,
-                                                              2*processed_image->colors*processed_image->width);
-
-            this->_cc_policy.read( build.begin(), build.end(), dst_view.begin() );
+            if(processed_image->colors==1){ BUILD_INTERLEAVED_VIEW(gray, 16); }
+            else                          { BUILD_INTERLEAVED_VIEW(rgb,  16); }
         }
-        else
-            io_error( "Image is neither 8bit nor 16bit" );
     }
 
 protected:
     Device& _io_dev;
-    image_read_info< cr2_tag > _info;
+    image_read_info< raw_tag > _info;
 };
 
 /////////////////////////////////// dynamic image
 
 
-struct cr2_type_format_checker
+struct raw_type_format_checker
 {
-    cr2_type_format_checker( const image_read_info< cr2_tag >& info )
+    raw_type_format_checker( const image_read_info< raw_tag >& info )
     : _info( info )
     {}
 
@@ -202,14 +206,14 @@ struct cr2_type_format_checker
 
 private:
 
-    const image_read_info< cr2_tag >& _info;
+    const image_read_info< raw_tag >& _info;
 };
 
-struct cr2_read_is_supported
+struct raw_read_is_supported
 {
     template< typename View >
     struct apply : public is_read_supported< typename get_pixel_type< View >::type
-                                           , cr2_tag
+                                           , raw_tag
                                            >
     {};
 };
@@ -217,22 +221,22 @@ struct cr2_read_is_supported
 template< typename Device
         >
 class dynamic_image_reader< Device
-                          , cr2_tag
+                          , raw_tag
                           >
     : public reader< Device
-                   , cr2_tag
+                   , raw_tag
                    , detail::read_and_no_convert
                    >
 {
     typedef reader< Device
-                  , cr2_tag
+                  , raw_tag
                   , detail::read_and_no_convert
                   > parent_t;
 
 public:
 
     dynamic_image_reader( Device&                               device
-                        , const image_read_settings< cr2_tag >& settings
+                        , const image_read_settings< raw_tag >& settings
                         )
     : parent_t( device
               , settings
@@ -242,7 +246,7 @@ public:
     template< typename Images >
     void apply( any_image< Images >& images )
     {
-        cr2_type_format_checker format_checker( this->_info );
+        raw_type_format_checker format_checker( this->_info );
 
         if( !construct_matched( images
                                , format_checker
@@ -263,7 +267,7 @@ public:
                        , this->_info
                        );
 
-            dynamic_io_fnobj< cr2_read_is_supported
+            dynamic_io_fnobj< raw_read_is_supported
                     , parent_t
                     > op( this );
 
@@ -278,4 +282,4 @@ public:
 } // gil
 } // boost
 
-#endif // BOOST_GIL_EXTENSION_IO_CR2_IO_READ_HPP_INCLUDED
+#endif // BOOST_GIL_EXTENSION_IO_RAW_IO_READ_HPP_INCLUDED
