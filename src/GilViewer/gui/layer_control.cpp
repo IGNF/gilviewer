@@ -68,7 +68,7 @@ Authors:
 #include "../gui/vector_layer_settings_control.hpp"
 #include "../gui/image_layer_settings_control.hpp"
 #include "../gui/global_settings_control.hpp"
-#include "../gui/layer_infos_control_impl.h"
+#include "../gui/simple_text_window_impl.h"
 #include "../gui/layer_control_utils.hpp"
 #include "../gui/panel_viewer.hpp"
 #include "../gui/define_id.hpp"
@@ -262,9 +262,10 @@ void layer_control::on_info_button(wxCommandEvent& event)
     wxString title(_("Infos: "));
     title << wxString(m_layers[id]->name().c_str(), *wxConvCurrent);
     //layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
-    layer_infos_control_impl *lic = new layer_infos_control_impl(this);
-    lic->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
-    lic->Show();
+    simple_text_window_impl *layer_info_window = new simple_text_window_impl(this);
+    layer_info_window->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
+    layer_info_window->SetSize(layer_info_window->GetMinSize());
+    layer_info_window->Show();
 }
 
 void layer_control::on_save_button(wxCommandEvent& event)
