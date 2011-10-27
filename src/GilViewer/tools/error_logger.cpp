@@ -36,11 +36,17 @@ Authors:
 
 ***********************************************************************/
 
+/// @TODO: move from error_logger --> gilviewer_logger
+
 #include "error_logger.hpp"
 
 #include <wx/log.h>
 
 void gilviewer_wx_error_logger::log_message(const std::string& message)
 {
-    wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
+    #if wxMINOR_VERSION < 9
+        ::wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
+    #else
+        wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
+    #endif
 }

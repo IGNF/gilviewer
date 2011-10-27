@@ -287,8 +287,6 @@ private:
                                                    , blue
                                                    , sizeof( bits16 ) * num_colors );
 
-      typename rgb16_planar_view_t::x_iterator palette_it = palette.row_begin( 0 );
-
       for( typename rgb16_view_t::y_coord_t y = 0; y < dst_view.height(); ++y )
       {
          typename rgb16_view_t::x_iterator it  = dst_view.row_begin( y );

@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -41,17 +41,19 @@ Authors:
 
 #include <wx/dnd.h>
 #include <wx/panel.h>
+#include <wx/brush.h>
+#include <wx/aui/framemanager.h>
 
 #include "../layers/layer.hpp"
 
 #include "../convenient/macros_gilviewer.hpp"
 
-class application_settings;
 class layer_control;
 class wxLogWindow;
 class wxToolBar;
 class wxMenuBar;
 class vector_layer_ghost;
+class plugin_manager;
 
 #if wxUSE_DRAG_AND_DROP
 class gilviewer_file_drop_target;
@@ -64,21 +66,22 @@ public:
     friend class gilviewer_file_drop_target;
 #endif // wxUSE_DRAG_AND_DROP
 
-    static void Register(wxFrame* parent);
+    static void Register(wxFrame* parent, wxAuiManager *dockmanager);
 
 
     virtual ~panel_viewer() {}
 
-    void add_layer( const layer::ptrLayerType &layer );
+    void add_layer( const layer::ptrLayerType &layer, bool has_transform = false);
+    void delete_layer( unsigned int index);
+    layer::ptrLayerType get_layer_with_id(unsigned int id)const;
 
     layer_control* layercontrol() const;
-    application_settings* applicationsettings() const;
 
     // On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
     DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 
-    wxToolBar* main_toolbar(wxWindow* parent);
-    wxToolBar* mode_and_geometry_toolbar(wxWindow* parent);
+    wxToolBar* main_toolbar(wxWindow* parent, wxAuiManager *dockmanager);
+    wxToolBar* mode_and_geometry_toolbar(wxWindow* parent, wxAuiManager *dockmanager);
     wxMenuBar* menubar();
     bool init_toolbar();
 
@@ -113,18 +116,8 @@ public:
         MODE_SELECTION //sélection raster
     };
 
-    enum eGEOMETRY //choix de primitives
-    {
-        GEOMETRY_NULL,
-        GEOMETRY_POINT,
-        GEOMETRY_CIRCLE,
-        GEOMETRY_RECTANGLE,
-        GEOMETRY_LINE,
-        GEOMETRY_POLYGONE
-    };
-
-    inline eMode mode() { return m_mode; }
-    inline eGEOMETRY geometry() { return m_geometry; }
+    template<typename Event> eMode mode(Event& event) const;
+    inline eSNAP snap() { return m_snap; }
     inline boost::shared_ptr<vector_layer_ghost> vectorlayerghost() { return m_ghostLayer; }
 
     DECLARE_EVENT_TABLE();
@@ -134,12 +127,14 @@ protected:
 
     void show_layer_control(bool show) const;
 
+    /*
     ///Recuperer les coord images du pointeur souris par rapport a la premiere couche image
     bool coord_image(const int mouseX, const int mouseY, int &i, int &j) const;
     bool subpix_coord_image(const int mouseX, const int mouseY, double &i, double&j) const;
-
+*/
     wxToolBar* m_mainToolbar;
     wxToolBar* m_modeAndGeometryToolbar;
+
     /// The main menu bar
     wxMenuBar* m_menuBar;
     /// The menu 'File'
@@ -147,15 +142,15 @@ protected:
     /// The menu 'About'
     wxMenu *m_menuAbout;
 
-    bool m_mouseMovementStarted;
-    float m_mouseMovementInitX;
-    float m_mouseMovementInitY;
+    wxBrush m_bgbrush;
 
-    wxPoint m_translationDrag;
+    bool m_mouseMovementStarted;
+    wxRealPoint m_mouseMovementInit;
+
+    wxRealPoint m_translationDrag;
 
     // Le controle des couches
     layer_control* m_layerControl;
-    application_settings* m_applicationSettings;
 
     //ref sur le ghostLayer du LayerControl
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
@@ -169,28 +164,27 @@ protected:
 
     /// Flag indiquant le mode navigation, saisie, ...)
     eMode m_mode;
-    ///Flag indiquant la primitive géométrique en cours quand on n'est pas en mode navigation (point, rectangle, ...)
-    eGEOMETRY m_geometry;
+    ///Flag indiquant le mode de snap courant
+    eSNAP m_snap;
 
     ///Ajoute un point à la géométrie courante
-    void geometry_add_point(const wxPoint& pt);
+    void geometry_add_point(const wxRealPoint& pt, bool final=false);
     ///Mets à jour la géométrie avec le point sous la souris lors d'un MouseMove, sans le sélectionner définitivement
-    void geometry_update_absolute(const wxPoint& pt);
-    void geometry_update_relative(const wxPoint& translation);
+    void geometry_update_absolute(const wxRealPoint& pt);
+    void geometry_update_relative(const wxRealPoint& translation);
     ///Fin du clic, on ferme (ou pas ?) la géométrie et on exécute les traitements
     void geometry_end();
 
     ///Déplacement de la géométrie
-    void geometry_move_absolute(const wxPoint& pt);
-    void geometry_move_relative(const wxPoint& translation);
+    void geometry_move_absolute(const wxRealPoint& pt);
+    void geometry_move_relative(const wxRealPoint& translation);
 
     ///Déplacement de la scene
-    void scene_move(const wxPoint& translation);
+    void scene_move(const wxRealPoint& translation);
 
     void on_paint(wxPaintEvent& evt);
-    void update_statusbar(const int i, const int j);
+    void update_statusbar(const wxRealPoint& p);
     void on_size( wxSizeEvent &e );
-
     // Mouse events
     void on_mouse_move(wxMouseEvent &event);
     void on_left_down(wxMouseEvent &event);
@@ -209,9 +203,17 @@ protected:
     void update_if_transformable();
 
     ///pour ne créer des panels qu'à partir de la factory (PanelManager)
-    panel_viewer(wxFrame* parent);
-    friend panel_viewer* create_panel_viewer(wxFrame* parent);
+    panel_viewer(wxFrame* parent, wxAuiManager *dockmanager);
+    friend panel_viewer* create_panel_viewer(wxFrame* parent, wxAuiManager *dockmanager);
 
+    
+    wxRealPoint snap(const wxRealPoint& p) const;
+
+    template<typename Event>
+    inline wxRealPoint snap(const Event& e) const { return snap(wxRealPoint(e.m_x,e.m_y)); }
+
+private:
+    plugin_manager* m_plugin_manager;
 };
 
 #if wxUSE_DRAG_AND_DROP

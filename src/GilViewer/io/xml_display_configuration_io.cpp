@@ -51,7 +51,9 @@ Authors:
 #include "../tools/orientation_2d.hpp"
 #include "../tools/color_lookup_table.hpp"
 
-void xml_display_configuration_io::read( layer_control* layerControl , const std::string filename )
+using namespace std;
+
+void xml_display_configuration_io::read( layer_control* layerControl , const string filename )
 {
     TiXmlDocument doc( filename.c_str() );
     if ( !doc.LoadFile() )
@@ -77,9 +79,9 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
     double zoom_factor = -1., translation_x = -1., translation_y = -1.;
     int alpha_channel = -1;
     bool use_alpha_channel = false;
-    std::string lut_path;
+    string lut_path;
     int red = 0, green = 0, blue = 0;
-    std::string path;
+    string path;
     int points_red, points_green, points_blue, points_alpha;
     int points_width;
     int lines_red, lines_green, lines_blue, lines_alpha;
@@ -95,59 +97,59 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
     TiXmlNode *child = 0;
     while( (child = elem->IterateChildren( child )) )
     {
-        if ( std::string(child->Value()) == "Layers" )
+        if ( string(child->Value()) == "Layers" )
         {
             // La, il faut iterer sur l'ensemble des layers de la configuration
             TiXmlNode *childLayers = 0;
             while( (childLayers = child->IterateChildren( childLayers )) )
             {
                 is_image = false;
-                if ( std::string(childLayers->Value()) == "Layer" )
+                if ( string(childLayers->Value()) == "Layer" )
                 {
                     // La, il faut iterer sur les differents aspects du layer
                     TiXmlNode *childLayer = 0;
                     while( (childLayer = childLayers->IterateChildren( childLayer )) )
                     {
-                        if ( std::string(childLayer->Value()) == "Type" )
+                        if ( string(childLayer->Value()) == "Type" )
                         {
-                            std::string type = childLayer->ToElement()->Attribute( "value" );
+                            string type = childLayer->ToElement()->Attribute( "value" );
                             if ( type == "Image" )
                                 is_image = true;
                             else if ( type != "Vector" )
                             {
-                                wxString mes;
-                                mes << _("Invalid attribute for the layer type: ") << wxString(type.c_str(), *wxConvCurrent);
-                                wxLogMessage( mes );
+                                ostringstream mes;
+                                mes << "Invalid attribute for the layer type: " << type;
+                                GILVIEWER_LOG_ERROR( mes.str() );
                                 return;
                             }
                         }
-                        else if ( std::string(childLayer->Value()) == "Path" )
+                        else if ( string(childLayer->Value()) == "Path" )
                         {
                             path = childLayer->ToElement()->Attribute( "value" );
                             if ( !boost::filesystem::exists(path) )
                             {
-                                wxString mes;
-                                mes << _("File ") << wxString(path.c_str(), *wxConvCurrent) << _(" does not exist!");
-                                wxLogMessage( mes );
+                                ostringstream mes;
+                                mes << "File " << path << " does not exist!";
+                                GILVIEWER_LOG_ERROR( mes );
                                 return;
                             }
                         }
-                        else if ( std::string(childLayer->Value()) == "Appearance" )
+                        else if ( string(childLayer->Value()) == "Appearance" )
                         {
                             // La, il faut iterer sur les noeuds enfants, en prenant en compte le type de layer
                             TiXmlNode *childAppearance = 0;
                             while( (childAppearance = childLayer->IterateChildren( childAppearance )) )
                             {
                                 // Quelque soit le type de layer, il y a toujours les noeuds 'Visibility' et 'Transformability'
-                                if ( std::string(childAppearance->Value()) == "Visibility" )
+                                if ( string(childAppearance->Value()) == "Visibility" )
                                 {
                                     childAppearance->ToElement()->Attribute( "value" , &i );
-                                    wxString mes;
+                                    ostringstream mes;
                                     mes << i;
-				wxLogMessage( mes );
+                                    GILVIEWER_LOG_MESSAGE(mes.str())
                                     if ( !(i == 0 || i == 1) )
                                     {
-                                        wxLogMessage( _("[Node Layer - Appearance - Visibility] Error while reading attribute 'value'!") );
+                                        GILVIEWER_LOG_ERROR("[Node Layer - Appearance - Visibility] Error while reading attribute 'value'!")
                                         return;
                                     }
                                     if ( i == 0 )
@@ -155,12 +157,12 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                     else
                                         is_visible = true;
                                 }
-                                else if ( std::string(childAppearance->Value()) == "Transformability" )
+                                else if ( string(childAppearance->Value()) == "Transformability" )
                                 {
                                     childAppearance->ToElement()->Attribute( "value" , &i );
                                     if ( !(i == 0 || i == 1) )
                                     {
-										wxLogMessage( _("[Node Layer - Appearance - Transformability] Error while reading attribute 'value' !") );
+                                        GILVIEWER_LOG_ERROR("[Node Layer - Appearance - Transformability] Error while reading attribute 'value' !")
                                         return;
                                     }
                                     if ( i == 0 )
@@ -168,20 +170,20 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                     else
                                         is_transformable = true;
                                 }
-                                else if ( std::string(childAppearance->Value()) == "ZoomFactor" )
+                                else if ( string(childAppearance->Value()) == "ZoomFactor" )
                                 {
                                     childAppearance->ToElement()->Attribute( "value" , &zoom_factor );
                                     if ( zoom_factor < 0 )
                                     {
-										wxLogMessage( _("[Node Layer - Appearance - ZoomFactor] Error while reading attribute 'value' !") );
+                                        GILVIEWER_LOG_ERROR("[Node Layer - Appearance - ZoomFactor] Error while reading attribute 'value' !")
                                         return;
                                     }
                                 }
-                                else if ( std::string(childAppearance->Value()) == "TranslationX" )
+                                else if ( string(childAppearance->Value()) == "TranslationX" )
                                 {
                                     childAppearance->ToElement()->Attribute( "value" , &translation_x );
                                 }
-                                else if ( std::string(childAppearance->Value()) == "TranslationY" )
+                                else if ( string(childAppearance->Value()) == "TranslationY" )
                                 {
                                     childAppearance->ToElement()->Attribute( "value" , &translation_y );
                                 }
@@ -189,38 +191,38 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                 if ( is_image )
                                 {
                                     // Alpha
-                                    if ( std::string(childAppearance->Value()) == "Alpha" )
+                                    if ( string(childAppearance->Value()) == "Alpha" )
                                     {
                                         childAppearance->ToElement()->Attribute( "value" , &alpha );
                                         if ( alpha < 0 || alpha > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Alpha] Error while reading attribute 'value' !") );
+                                            GILVIEWER_LOG_ERROR("[Node Layer - Appearance - Alpha] Error while reading attribute 'value' !")
                                             return;
                                         }
                                     }
                                     // Gamma
-                                    else if ( std::string(childAppearance->Value()) == "Gamma" )
+                                    else if ( string(childAppearance->Value()) == "Gamma" )
                                     {
                                         childAppearance->ToElement()->Attribute( "value" , &gamma );
                                         if ( gamma < 0 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Gamma] Error while reading attribute 'value' !") );
+                                            GILVIEWER_LOG_ERROR("[Node Layer - Appearance - Gamma] Error while reading attribute 'value' !")
                                             return;
                                         }
                                     }
                                     // Intensities
-                                    else if ( std::string(childAppearance->Value()) == "Intensities" )
+                                    else if ( string(childAppearance->Value()) == "Intensities" )
                                     {
                                         childAppearance->ToElement()->Attribute( "min" , &min_intensities );
                                         childAppearance->ToElement()->Attribute( "max" , &max_intensities );
                                     }
                                     // Transparency
-                                    else if ( std::string(childAppearance->Value()) == "Transparency" )
+                                    else if ( string(childAppearance->Value()) == "Transparency" )
                                     {
                                         childAppearance->ToElement()->Attribute( "value" , &i );
                                         if ( !(i == 0 || i == 1) )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Transparency] Error while reading attribute 'min' !") );
+                                            GILVIEWER_LOG_ERROR("[Node Layer - Appearance - Transparency] Error while reading attribute 'min' !")
                                             return;
                                         }
                                         if ( i == 0 )
@@ -231,14 +233,14 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                         childAppearance->ToElement()->Attribute( "max" , &max_transparency );
                                     }
                                     // Channels
-                                    else if ( std::string(childAppearance->Value()) == "Channels" )
+                                    else if ( string(childAppearance->Value()) == "Channels" )
                                     {
                                         childAppearance->ToElement()->Attribute( "red" , &red );
                                         childAppearance->ToElement()->Attribute( "green" , &green );
                                         childAppearance->ToElement()->Attribute( "blue" , &blue );
                                     }
                                     // Alpha channel
-                                    else if ( std::string(childAppearance->Value()) == "AlphaChannel" )
+                                    else if ( string(childAppearance->Value()) == "AlphaChannel" )
                                     {
                                         childAppearance->ToElement()->Attribute( "value" , &i );
 										use_alpha_channel = i ? true : false;
@@ -246,7 +248,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                         alpha_channel = i;
                                     }
                                     // LUT
-                                    else if ( std::string(childAppearance->Value()) == "LUT" )
+                                    else if ( string(childAppearance->Value()) == "LUT" )
                                     {
                                         lut_path = childAppearance->ToElement()->Attribute( "path" );
                                     }
@@ -254,143 +256,143 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                                 else
                                 {
                                     // Points
-                                    if ( std::string(childAppearance->Value()) == "Points" )
+                                    if ( string(childAppearance->Value()) == "Points" )
                                     {
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &points_red );
                                         if ( points_red < 0 || points_red > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'red' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'red' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &points_green );
                                         if ( points_green < 0 || points_green > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &points_blue );
                                         if ( points_blue < 0 || points_blue > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &points_alpha );
                                         if ( points_alpha < 0 || points_alpha > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Width" )->ToElement()->Attribute( "value" , &points_width );
                                         if ( points_width < 0 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Points - Width] Error while reading attribute 'width' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'width' !" );
                                             return;
                                         }
                                     }
                                     // Lines
-                                    else if ( std::string(childAppearance->Value()) == "Lines" )
+                                    else if ( string(childAppearance->Value()) == "Lines" )
                                     {
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &lines_red );
                                         if ( lines_red < 0 || lines_red > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'red' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'red' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &lines_green );
                                         if ( lines_green < 0 || lines_green > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'green' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &lines_blue );
                                         if ( lines_blue < 0 || lines_blue > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'blue' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &lines_alpha );
                                         if ( lines_alpha < 0 || lines_alpha > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Lines - Colour] Error while reading attribute 'alpha' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Width" )->ToElement()->Attribute( "value" , &lines_width );
                                         if ( lines_width < 0 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Lines - Width] Error while reading attribute 'width' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'width' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Style" )->ToElement()->Attribute( "value" , &lines_style );
                                         if ( lines_style < 0 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Lines - Style] Error while reading attribute 'style' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'style' !" );
                                             return;
                                         }
                                     }
                                     // Polygons
-                                    else if ( std::string(childAppearance->Value()) == "Polygons" )
+                                    else if ( string(childAppearance->Value()) == "Polygons" )
                                     {
                                         childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &polygons_rings_red );
                                         if ( polygons_rings_red < 0 || polygons_rings_red > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'red' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'red' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &polygons_rings_green );
                                         if ( polygons_rings_green < 0 || polygons_rings_green > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'green' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &polygons_rings_blue );
                                         if ( polygons_rings_blue < 0 || polygons_rings_blue > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'blue' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Rings" )->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &polygons_rings_alpha );
                                         if ( polygons_rings_alpha < 0 || polygons_rings_alpha > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Rings - Color] Error while reading attribute 'alpha' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Rings" )->FirstChild( "Style" )->ToElement()->Attribute( "value" , &polygons_rings_style );
                                         if ( polygons_rings_style < 0 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Style] Error while reading attribute 'style' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'style' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Rings" )->FirstChild( "Width" )->ToElement()->Attribute( "value" , &polygons_rings_width );
                                         childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "red" , &polygons_inside_red );
                                         if ( polygons_inside_red < 0 || polygons_inside_red > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'red' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'ed' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "green" , &polygons_inside_green );
                                         if ( polygons_inside_green < 0 || polygons_inside_green > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'green' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'green' !" );
                                             return;
                                         }
                                         childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "blue" , &polygons_inside_blue );
                                         if ( polygons_inside_blue < 0 || polygons_inside_blue > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'blue' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'blue' !" );
                                             return;
                                         }
                                         // J'en ai marre de coder a peu pres proprement, je me mets en mode goret
                                         childAppearance->FirstChild( "Inside" )->FirstChild( "Colour" )->ToElement()->Attribute( "alpha" , &polygons_inside_alpha );
                                         if ( polygons_inside_alpha < 0 || polygons_inside_alpha > 255 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Inside - Color] Error while reading attribute 'alpha' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'alpha' !" );
                                             return;
                                         }
                                         // J'en ai marre de coder a peu pres proprement, je me mets en mode goret
                                         childAppearance->FirstChild( "Inside" )->FirstChild( "Style" )->ToElement()->Attribute( "value" , &polygons_inside_style );
                                         if ( polygons_inside_style < 0 )
                                         {
-											wxLogMessage( _("[Node Layer - Appearance - Polygons - Style] Error while reading attribute 'style' !") );
+                                            GILVIEWER_LOG_ERROR( "[Node Layer - Appearance - Points - Colour] Error while reading attribute 'style' !" );
                                             return;
                                         }
                                     }
@@ -400,9 +402,9 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                         // Tout le reste est invalide, sauf si c'est un commentaire ...
                         else if ( dynamic_cast<TiXmlComment*>( childLayer ) == NULL )
                         {
-                            wxString mes;
-                            mes << _("[Layer] Invalid node: ") << wxString(childLayer->Value(), *wxConvCurrent);
-							wxLogMessage( mes );
+                            ostringstream mes;
+                            mes << "[Layer] Invalid node: " << childLayer->Value();
+                            GILVIEWER_LOG_ERROR(mes.str());
                             return;
                         }
                     }
@@ -410,9 +412,9 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                 // Tout le reste est invalide, sauf si c'est un commentaire ...
                 else if ( dynamic_cast<TiXmlComment*>( childLayers ) == NULL )
                 {
-                    wxString mes;
-                    mes << _("Invalid node: ") << wxString(childLayers->Value(), *wxConvCurrent);
-					wxLogMessage( mes );
+                    ostringstream mes;
+                    mes << "[Layer] Invalid node: " << childLayers->Value();
+                    GILVIEWER_LOG_ERROR(mes.str());
                     return;
                 }
 
@@ -422,32 +424,6 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
 
                 if ( is_image )
                 {
-                    // Si on est arrive ici, on a tout ce qu'il faut pour creer un calque image
-                    // On fait un petit log avec tous les parametres ...
-                    /*
-					wxString messsage;
-					messsage << _("Image layer\n");
-					messsage << _("   Path = ") << wxString(path.c_str(), *wxConvCurrent) << _("\n");
-					messsage << _("   Appearance\n");
-					messsage << _("      Visibility = ") << is_visible << _("\n");
-					messsage << _("      Transformability = ") << is_transformable << _("\n");
-					messsage << _("      ZoomFactor = ") << zoom_factor << _("\n");
-					messsage << _("      TranslationX = ") << translation_x << _("\n");
-					messsage << _("      TranslationY = ") << translation_y << _("\n");
-					messsage << _("      Alpha = ") << alpha << _("\n");
-					messsage << _("      Gamma = ") << gamma << _("\n");
-					messsage << _("      Red = ") << red << _("\n");
-					messsage << _("      Green = ") << green << _("\n");
-					messsage << _("      Blue = ") << blue << _("\n");
-					messsage << _("      Intensities\n");
-					messsage << _("         min = ") << min_intensities << _("\n");
-					messsage << _("         max = ") << max_intensities << _("\n");
-					messsage << _("      Transparency = ") << is_transparent << _("\n");
-					messsage << _("         min = ") << min_transparency << _("\n");
-					messsage << _("         max = ") << max_transparency << _("\n\n");
-					::wxLogMessage( messsage );
-					*/
-
                     ImageLayerParameters parameters;
                     parameters.path = path;
                     parameters.visible = is_visible;
@@ -473,26 +449,6 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                 }
                 else
                 {
-                    /*
-					wxString messsage;
-					messsage << _("Vector layer\n");
-					messsage << _("   Path = ") << wxString(path.c_str(), *wxConvCurrent) << _("\n");
-					messsage << _("   Appearance\n");
-					messsage << _("      Visibility = ") << is_visible << _("\n");
-					messsage << _("      Transformability = ") << is_transformable << _("\n");
-					messsage << _("      ZoomFactor = ") << zoom_factor << _("\n");
-					messsage << _("      TranslationX = ") << translation_x << _("\n");
-					messsage << _("      TranslationY = ") << translation_y << _("\n");
-					messsage << _("   Points\n");
-					messsage << _("      color = (") << points_red << _(",") << points_green << _(",") << points_blue << _(")\n");
-					messsage << _("      width = ") << points_width << _("\n");
-					messsage << _("   Lines\n");
-					messsage << _("      color = (") << lines_red << _(",") << lines_green << _(",") << lines_blue << _(")\n");
-					messsage << _("      width = ") << lines_width << _("\n");
-					messsage << _("      style = ") << lines_style << _("\n");
-					::wxLogMessage( messsage );
-					*/
-
                     VectorLayerParameters parameters;
                     parameters.path = path;
                     parameters.visible = is_visible;
@@ -517,73 +473,70 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
                 is_image = false;
             }
         }
-        else if ( std::string(child->Value()) == "Orientation" )
+        else if ( string(child->Value()) == "Orientation" )
         {
             // On check les valeurs de l'orientation du viewer
             TiXmlNode *childOrientation = 0;
             while( (childOrientation = child->IterateChildren( childOrientation )) )
             {
-                if ( std::string(childOrientation->Value()) == "IsSet" )
+                if ( string(childOrientation->Value()) == "IsSet" )
                 {
                     int i;
                     childOrientation->ToElement()->Attribute( "value" , &i );
                     if ( !(i == 0 || i == 1) )
                     {
-						wxLogMessage( _("[Node Orientation - IsSet] Error while reading attribute value' !") );
+                        GILVIEWER_LOG_ERROR("[Node Orientation - IsSet] Error while reading attribute value' !");
                         return;
                     }
                     if ( i == 0 )
                         layerControl->m_isOrientationSet = false;
                     else
                         layerControl->m_isOrientationSet = true;
-                    wxString mes;
-                    mes << _("Node 'IsSet': ") << i;
-					wxLogMessage( mes );
                 }
-                else if ( std::string(childOrientation->Value()) == "ViewerOrientation" )
+                else if ( string(childOrientation->Value()) == "ViewerOrientation" )
                 {
-                    wxString mes;
+                    ostringstream mes;
                     double d;
                     int i;
-                    mes << _("Node 'ViewerOrientation' : \n");
+                    mes << "Node 'ViewerOrientation' : \n";
                     // OriginX
                     childOrientation->ToElement()->Attribute( "originX" , &d );
                     layerControl->m_ori->origin_x(d);
-                    mes << _("   Attribute 'originX' : ") << d << wxT("\n");
+                    mes << "   Attribute 'originX' : " << d << "\n";
                     // OriginY
                     childOrientation->ToElement()->Attribute( "originY" , &d );
                     layerControl->m_ori->origin_y(d);
-                    mes << _("   Attribute 'originY' : ") << d << wxT("\n");
+                    mes << "   Attribute 'originY' : " << d << "\n";
                     // SizeX
                     childOrientation->ToElement()->Attribute( "sizeX" , &i );
                     layerControl->m_ori->size_x(i);
-                    mes << _("   Attribute 'sizeX' : ") << i << wxT("\n");
+                    mes << "   Attribute 'sizeX' : " << i << "\n";
                     //SizeY
                     childOrientation->ToElement()->Attribute( "sizeY" , &i );
                     layerControl->m_ori->size_y(i);
-                    mes << _("   Attribute 'sizeY' : ") << i << wxT("\n");
+                    mes << "   Attribute 'sizeY' : " << i << "\n";
                     // Step
                     childOrientation->ToElement()->Attribute( "step" , &d );
                     if ( d < 0. )
                     {
-						wxLogMessage( _("[Node Orientation - ViewerOrientation] Error while reading attribute 'step' !") );
+                        GILVIEWER_LOG_ERROR("[Node Orientation - ViewerOrientation] Error while reading attribute 'step' !");
                         return;
                     }
                     layerControl->m_ori->step(d);
-                    mes << _("   Attribute 'Step' : ") << d << wxT("\n");
+                    mes << "   Attribute 'Step' : " << d <<"\n";
                     // Zone carto
                     childOrientation->ToElement()->Attribute( "ZoneCarto" , &i );
                     layerControl->m_ori->zone_carto(i);
-                    mes << _("   Attribute 'ZoneCarto' : ") << i << wxT("\n");
+                    mes << "   Attribute 'ZoneCarto' : " << i;
 
-					wxLogMessage( mes );
+                    GILVIEWER_LOG_MESSAGE( mes.str() );
                 }
                 // Tout le reste est invalide, sauf si c'est un commentaire ...
                 else if ( dynamic_cast<TiXmlComment*>( childOrientation ) == NULL )
                 {
-                    wxString mes;
-                    mes << _("Invalid node: ") << wxString(childOrientation->Value(), *wxConvCurrent);
-					wxLogMessage( mes );
+                    ostringstream mes;
+                    mes << "Invalid node: " << childOrientation->Value();
+                    GILVIEWER_LOG_ERROR( mes.str() );
                     return;
                 }
             }
@@ -591,9 +544,9 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
         // Tout le reste est invalide, sauf si c'est un commentaire ...
         else if ( dynamic_cast<TiXmlComment*>( child ) == NULL )
         {
-            wxString mes;
-            mes << _("Invalid node: ") << wxString(child->Value(), *wxConvCurrent);
-			wxLogMessage( mes );
+            ostringstream mes;
+            mes << "Invalid node: " << child->Value();
+            GILVIEWER_LOG_ERROR( mes.str() );
             return;
         }
     }
@@ -601,7 +554,7 @@ void xml_display_configuration_io::read( layer_control* layerControl , const std
     layerControl->m_basicDrawPane->Refresh();
 }
 
-void xml_display_configuration_io::write( const layer_control* layerControl , const std::string filename )
+void xml_display_configuration_io::write( const layer_control* layerControl , const string filename )
 {
     if ( layerControl->rows().size() == 0 )
     {
@@ -631,7 +584,7 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
         if ( (*it)->filename() == "" )
             continue;
         bool is_image = false;
-        std::ostringstream oss;
+        ostringstream oss;
         oss << "Layer " << i;
         TiXmlComment *commentLayer = new TiXmlComment( oss.str().c_str() );
         elementLayers->LinkEndChild( commentLayer );
@@ -671,15 +624,15 @@ void xml_display_configuration_io::write( const layer_control* layerControl , co
         // Zoom
         TiXmlElement *elemZoom = new TiXmlElement( "ZoomFactor" );
         elemAppearance->LinkEndChild( elemZoom );
-        elemZoom->SetDoubleAttribute("value",(*it)->zoom_factor());
+        elemZoom->SetDoubleAttribute("value",(*it)->transform().zoom_factor());
 
         // Translations
         TiXmlElement *elemTranslationX = new TiXmlElement( "TranslationX" );
         elemAppearance->LinkEndChild( elemTranslationX );
-        elemTranslationX->SetDoubleAttribute("value",(*it)->translation_x());
+        elemTranslationX->SetDoubleAttribute("value",(*it)->transform().translation_x());
         TiXmlElement *elemTranslationY = new TiXmlElement( "TranslationY" );
         elemAppearance->LinkEndChild( elemTranslationY );
-        elemTranslationY->SetDoubleAttribute("value",(*it)->translation_y());
+        elemTranslationY->SetDoubleAttribute("value",(*it)->transform().translation_y());
 
         // Ca, ca n'est valable que si le calque est une image
         if (is_image)

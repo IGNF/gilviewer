@@ -39,20 +39,33 @@ Authors:
 #ifndef GILVIEWER_IO_FACTORY_HPP
 #define GILVIEWER_IO_FACTORY_HPP
 
-#include "../tools/pattern_singleton.hpp"
-#include "../tools/pattern_factory.hpp"
+#include "GilViewer/tools/pattern_factory.hpp"
 #include "gilviewer_file_io.hpp"
 
-typedef PatternSingleton< PatternFactory< gilviewer_file_io,
-                                          std::string,
-                                          boost::function< boost::shared_ptr<gilviewer_file_io> () >,
-                                          boost::shared_ptr<gilviewer_file_io>,
-                                          std::multimap<std::string, std::pair<std::string, std::string> >
-                                        >
-                        > gilviewer_io_factory;
+struct factory_key {
+    std::string extension;
+    std::string family;
+    std::string group;
 
-void register_all_image_file_formats();
-void register_all_vector_file_formats();
-void register_all_file_formats();
+    factory_key(const std::string& e, const std::string& f="", const std::string& g="") : extension(e), family(f), group(g) {}
+    inline bool operator<(const factory_key& k) const { return extension<k.extension; }
+};
+
+class gilviewer_io_factory : public PatternFactory< gilviewer_file_io,
+                                          factory_key,
+                                          boost::function< boost::shared_ptr<gilviewer_file_io> () >,
+                                          boost::shared_ptr<gilviewer_file_io>
+                                        >
+{
+public:
+    inline bool insert(const std::string& e, const std::string& f, const std::string& g, product_creator_type creator)
+    {
+        return Register(factory_key(e,f,g),creator);
+    }
+};
+
+void register_all_image_file_formats(gilviewer_io_factory *factory);
+void register_all_vector_file_formats(gilviewer_io_factory *factory);
+void register_all_file_formats(gilviewer_io_factory *factory);
 
 #endif // GILVIEWER_IO_FACTORY_HPP

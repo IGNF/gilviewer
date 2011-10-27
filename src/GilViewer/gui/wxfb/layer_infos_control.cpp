@@ -30,7 +30,7 @@ layer_infos_control::layer_infos_control( wxWindow* parent, wxWindowID id, const
 	m_std_buttons_sizerOK = new wxButton( this, wxID_OK );
 	m_std_buttons_sizer->AddButton( m_std_buttons_sizerOK );
 	m_std_buttons_sizer->Realize();
-	m_flex_grid_sizer->Add( m_std_buttons_sizer, 1, wxALIGN_RIGHT, 5 );
+	m_flex_grid_sizer->Add( m_std_buttons_sizer, 1, wxALIGN_RIGHT|wxALL, 5 );
 	
 	m_box_sizer->Add( m_flex_grid_sizer, 1, wxEXPAND, 5 );
 	

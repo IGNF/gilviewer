@@ -2,31 +2,12 @@
 
 using namespace std;
 
-vector<string> ogr_available_formats_extensions()
-{
-    vector<string> extensions;
-    extensions.push_back("shp");
-    extensions.push_back("SHP");
-    extensions.push_back("kml");
-    extensions.push_back("KML");
-    return extensions;
-}
 
-vector<string> simple_available_formats_extensions()
-{
-    vector<string> extensions;
-    extensions.push_back("txt");
-    extensions.push_back("TXT");
-    extensions.push_back("xml");
-    extensions.push_back("XML");
-    extensions.push_back("bin");
-    extensions.push_back("BIN");
-    return extensions;
-}
-
+#include <set>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include "../io/gilviewer_io_factory.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 
 using namespace boost::algorithm;
 using namespace boost::filesystem;
@@ -69,31 +50,64 @@ namespace gilviewer_utils
         return all_files;
     }
 
-    string build_wx_wildcard_from_io_factory()
+    void build_wx_wildcard_from_io_factory_aux(const std::string& family, const std::string& group, const vector<factory_key>& id, ostringstream& wildcard)
     {
-        /*
-        typedef multimap<string, pair<string, string> > metadata_type;
-        typedef metadata_type::const_iterator metadata_iterator;
-        const multimap<string, pair<string, string> > &metadata = gilviewer_io_factory::instance()->metadata();
-        // First, fecth all available families
-        map<string,vector<string> > families;
-        metadata_iterator it=metadata.begin();
-        for(;it!=metadata.end();++it)
-            families.insert()
-            */
-        // Currently simple version without descriptions
-        vector<string> ext = gilviewer_io_factory::instance()->available_identifiers();
-        vector<string>::iterator it = ext.begin();
-        ostringstream wildcard;
-        wildcard << "All available formats |";
-        for(;it!=ext.end();++it)
+        ostringstream oss1;
+        ostringstream oss2;
+        bool first = true;
+        for(vector<factory_key>::const_iterator it = id.begin();it!=id.end();++it)
         {
-            string current_ext = *it;
-            wildcard << "*." << current_ext << ";";
+            if(family!="" && it->family != family) continue;
+            if(group !="" && it->group  != group ) continue;
+            if(!first)
+            {
+                oss1 << " ";
+                oss2 << ";";
+            }
+            string current_ext = it->extension;
+            oss1 << current_ext;
+            oss2 << "*." << current_ext << ";";
             to_upper(current_ext);
-            wildcard << "*." << current_ext << ";";
+            oss2 << "*." << current_ext;
+            first = false;
         }
-        wildcard << "|" << "Custom format |*.*";
+        if(!first)
+        {
+            if(wildcard.tellp()>0) wildcard << "|";
+            wildcard << (family==""?(group==""?"Supported":group):family) << " files (" << oss1.str() << ")|" << oss2.str();
+        }
+    }
+
+
+    string build_wx_wildcard_from_io_factory(const std::string& family, const std::string& group)
+    {
+        ostringstream wildcard;
+        vector<factory_key> id = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
+
+        build_wx_wildcard_from_io_factory_aux(family, group, id, wildcard);
+
+        std::set<std::string> families;
+        std::set<std::string> groups;
+
+        for(vector<factory_key>::const_iterator it = id.begin();it!=id.end();++it)
+        {
+            if(family!="" && it->family != family) continue;
+            if(group !="" && it->group  != group ) continue;
+            families.insert(it->family);
+            groups.insert  (it->group);
+        }
+        if(family=="")
+        {
+            for(std::set<std::string>::const_iterator it = families.begin();it!=families.end();++it)
+                build_wx_wildcard_from_io_factory_aux(*it, group, id, wildcard);
+        }
+        if(group=="")
+        {
+            for(std::set<std::string>::const_iterator it = groups.begin();it!=groups.end();++it)
+                build_wx_wildcard_from_io_factory_aux("", *it, id, wildcard);
+        }
+        if(wildcard.tellp()>0) wildcard << "|";
+        wildcard << "All files (*)|*.*";
         return wildcard.str();
     }
 }

@@ -38,23 +38,17 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_JPG_HPP
 #define GILVIEWER_FILE_IO_JPG_HPP
 
+#include <boost/gil/extension/io_new/jpeg_all.hpp>
 #include "gilviewer_file_io_image.hpp"
 
-class gilviewer_file_io_jpg : public gilviewer_file_io_image
+class gilviewer_file_io_jpg : public gilviewer_file_io_image<boost::gil::jpeg_tag>
 {
 public:
     virtual ~gilviewer_file_io_jpg() {}
 
-    virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
-    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
+    virtual std::string get_infos(const std::string &filename);
 
-    virtual std::string build_and_get_infos(const std::string &filename);
-
-    static bool Register();
-    friend boost::shared_ptr<gilviewer_file_io_jpg> create_gilviewer_file_io_jpg();
-
-private:
-    gilviewer_file_io_jpg() {}
+    virtual bool Register(gilviewer_io_factory *factory);
 };
 
 #endif // GILVIEWER_FILE_IO_JPG_HPP

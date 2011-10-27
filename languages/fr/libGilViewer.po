@@ -387,7 +387,7 @@ msgstr "Ouvrir une couche"
 
 #: gui/PanelViewer.cpp:282
 msgid "Show / Hide layer control"
-msgstr "Afficher / Cacher le contre des couches"
+msgstr "Afficher / Cacher le contrôle des couches"
 
 #: gui/PanelViewer.cpp:284
 msgid "Snapshot"
@@ -395,7 +395,7 @@ msgstr "Copie d'écran"
 
 #: gui/PanelViewer.cpp:286
 msgid "Application settings"
-msgstr "Préférences des l'application"
+msgstr "Préférences de l'application"
 
 #: gui/PanelViewer.cpp:319
 msgid "Navigation"
@@ -505,7 +505,7 @@ msgstr "Point et tiret"
 #: gui/VectorLayerSettingsControl.cpp:122
 #: gui/ApplicationSettings.cpp:244
 msgid "Points settings"
-msgstr "Rglages des points"
+msgstr "Réglages des points"
 
 #: gui/VectorLayerSettingsControl.cpp:124
 #: gui/VectorLayerSettingsControl.cpp:147

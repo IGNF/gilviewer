@@ -7,6 +7,10 @@
 #include "../tools/color_lookup_table.hpp"
 #include "../gui/layer_settings_control.hpp"
 
+#include <iostream>
+
+#include <wx/gdicmn.h>
+
 layer::layer(const boost::function<void()> &notifyLayerControl, const boost::function<void()> &notifyLayerSettingsControl):
         notifyLayerControl_(notifyLayerControl),
         notifyLayerSettingsControl_(notifyLayerSettingsControl),
@@ -15,8 +19,6 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_hasToBeUpdated(true),
         m_name("Default layer name"),
         m_filename(""),
-        m_zoomFactor(1.),
-        m_translationX(0.), m_translationY(0.),
         m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)),
         m_hasOri(false),
         m_infos(""),
@@ -24,7 +26,12 @@ layer::layer(const boost::function<void()> &notifyLayerControl, const boost::fun
         m_line_style(wxSOLID),
         m_polygon_border_width(3),
         m_polygon_border_style(wxSOLID), m_polygon_inner_style(wxSOLID),
-        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {}
+        m_point_color(*wxRED), m_line_color(*wxBLUE), m_polygon_border_color(*wxLIGHT_GREY), m_polygon_inner_color(*wxGREEN), m_text_color(*wxRED) {
+    
+    static unsigned int countId=0;
+    ++countId;
+    m_id=countId;
+}
 
 const boost::shared_ptr<orientation_2d> &layer::orientation() const
 {
@@ -51,4 +58,12 @@ void layer::add_orientation( const std::string &image_filename )
     }
     else
         this->has_ori(false);
+}
+
+layer::ptrLayerType layer::crop(const wxRealPoint& p0, const wxRealPoint& p1) const {
+    // compute local coordinates
+    wxRealPoint q0 = transform().to_local(p0);
+    wxRealPoint q1 = transform().to_local(p1);
+
+    return crop_local(q0,q1);
 }
