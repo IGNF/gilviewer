@@ -53,15 +53,13 @@ Authors:
 class draw_geometry_visitor : public boost::static_visitor<>
 {
 public:
-    draw_geometry_visitor(wxDC &dc, wxPen point_pen, wxPen line_pen, wxPen poly_pen, wxBrush poly_brush, wxCoord x, wxCoord y, bool transparent, double r, double z, double tx, double ty, int coordinates):
+    draw_geometry_visitor(wxDC &dc, wxPen point_pen, wxPen line_pen, wxPen poly_pen, wxBrush poly_brush, wxCoord x, wxCoord y, bool transparent, const layer_transform& trans):
             m_dc(dc),
             m_point_pen(point_pen), m_line_pen(line_pen), m_polygon_pen(poly_pen),
             m_polygon_brush(poly_brush),
             m_x(x), m_y(y),
             m_transparent(transparent),
-            m_r(r), m_z(z), m_tx(tx), m_ty(ty),
-            m_delta(0.5*r),
-            m_coordinates(coordinates)
+            m_trans(trans)
     {}
 
     template <typename T>
@@ -76,11 +74,8 @@ private:
     wxBrush m_polygon_brush;
     wxCoord m_x, m_y;
     bool m_transparent;
-    double m_r, m_z, m_tx, m_ty, m_delta;
-    int m_coordinates;
+    layer_transform m_trans;
 };
-
-// TODO: use (implement) from_local
 
 template <>
 void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
@@ -89,8 +84,8 @@ void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
     // Merge with ()(OGRLineString*)?
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
-        wxPoint p1=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getX(j),operand->getY(j),m_coordinates);
-        wxPoint p2=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getX(j+1),operand->getY(j+1),m_coordinates);
+        wxPoint p1=m_trans.from_local_int(operand->getX(j),operand->getY(j));
+        wxPoint p2=m_trans.from_local_int(operand->getX(j+1),operand->getY(j+1));
         m_dc.DrawLine(p1,p2);
     }
 }
@@ -101,8 +96,8 @@ void draw_geometry_visitor::operator()(OGRLineString* operand) const
     m_dc.SetPen(m_line_pen);
     for(int j=0;j<operand->getNumPoints()-1;++j)
     {
-        wxPoint p1=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getX(j),operand->getY(j),m_coordinates);
-        wxPoint p2=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getX(j+1),operand->getY(j+1),m_coordinates);
+        wxPoint p1=m_trans.from_local_int(operand->getX(j),operand->getY(j));
+        wxPoint p2=m_trans.from_local_int(operand->getX(j+1),operand->getY(j+1));
         m_dc.DrawLine(p1,p2);
     }
 }
@@ -119,7 +114,7 @@ template <>
 void draw_geometry_visitor::operator()(OGRPoint* operand) const
 {
     m_dc.SetPen(m_point_pen);
-    wxPoint p1=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getX(),operand->getY(),m_coordinates);
+    wxPoint p1=m_trans.from_local_int(operand->getX(),operand->getY());
     m_dc.DrawLine(p1,p1);
 }
 
@@ -140,7 +135,7 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
     std::vector<wxPoint> points;
     for(int j=0;j<operand->getExteriorRing()->getNumPoints();++j)
     {
-        wxPoint p=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getExteriorRing()->getX(j),operand->getExteriorRing()->getY(j),m_coordinates);
+        wxPoint p=m_trans.from_local_int(operand->getExteriorRing()->getX(j),operand->getExteriorRing()->getY(j));
         points.push_back(p);
     }
     m_dc.DrawPolygon(points.size(),&points.front());
@@ -149,7 +144,7 @@ void draw_geometry_visitor::operator()(OGRPolygon* operand) const
         std::vector<wxPoint> points;
         for(int j=0;j<operand->getInteriorRing(i)->getNumPoints();++j)
         {
-            wxPoint p=ogr_vector_layer::from_local(m_z,m_tx,m_ty,m_delta,operand->getInteriorRing(i)->getX(j),operand->getInteriorRing(i)->getY(j),m_coordinates);
+            wxPoint p=m_trans.from_local_int(operand->getInteriorRing(i)->getX(j),operand->getInteriorRing(i)->getY(j));
             points.push_back(p);
         }
         m_dc.DrawPolygon(points.size(),&points.front());

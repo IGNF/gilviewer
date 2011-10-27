@@ -35,29 +35,20 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-#ifndef GILVIEWER_FILE_IO_SHP_HPP
-#define GILVIEWER_FILE_IO_SHP_HPP
+#ifndef GILVIEWER_FILE_IO_CGAL_HPP
+#define GILVIEWER_FILE_IO_CGAL_HPP
 
-#include "../config/config.hpp"
-#if GILVIEWER_USE_GDAL
+#include "GilViewer/io/gilviewer_file_io.hpp"
 
-#include "gilviewer_file_io.hpp"
-
-class gilviewer_file_io_shp : public gilviewer_file_io
+class gilviewer_file_io_cgal : public gilviewer_file_io
 {
 public:
-    virtual ~gilviewer_file_io_shp() {}
+    virtual ~gilviewer_file_io_cgal() {}
 
     virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
     virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
 
-    static bool Register();
-    friend boost::shared_ptr<gilviewer_file_io_shp> create_gilviewer_file_io_shp();
-
-private:
-    gilviewer_file_io_shp() {}
+    virtual bool Register(gilviewer_io_factory *factory);
 };
 
-#endif // GILVIEWER_FILE_IO_SHP_HPP
-
-#endif // GILVIEWER_USE_GDAL
+#endif // GILVIEWER_FILE_IO_CGAL_HPP

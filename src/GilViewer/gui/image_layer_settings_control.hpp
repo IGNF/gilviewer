@@ -8,18 +8,18 @@ GIL and wxWidgets.
 
 Homepage: 
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors: 
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
-	
-	
+    
+    
 
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -51,6 +51,7 @@ class wxTextCtrl;
 class wxCheckBox;
 class wxFilePickerCtrl;
 class wxFlexGridSizer;
+class wxRadioBox;
 
 class image_layer_settings_control : public layer_settings_control
 {
@@ -102,11 +103,13 @@ protected:
 
     wxCheckBox* m_checkAlphaRange;
     wxCheckBox* m_checkAlphaChannel;
+    
+    wxRadioBox* m_radioBoxRotation;
 
     //Fichier de Color Lookup Table pour les images mono canal
     wxFilePickerCtrl *m_filePicker_CLUT;
 
-    unsigned int m_nbComponents;
+    size_t m_nbComponents;
 
     DECLARE_EVENT_TABLE();
 

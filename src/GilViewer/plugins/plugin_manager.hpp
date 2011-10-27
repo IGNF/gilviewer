@@ -43,23 +43,28 @@ Authors:
 #include "../tools/pattern_singleton.hpp"
 #include "../tools/pattern_factory.hpp"
 #include "plugin_base.hpp"
+class wxMenuBar;
+class wxMenu;
+class wxAuiManager;
 
-class plugin_manager_model : public PatternFactory<plugin_base>
+class plugin_manager : public PatternFactory<plugin_base>
 {
 public:
-    friend class PatternSingleton<plugin_manager_model>;
-    virtual ~plugin_manager_model() {}
+    virtual ~plugin_manager() {}
     plugin_base* create_object(const std::string& id);
 
-    static void register_plugins(const std::string &path);
+    bool register_plugin(const boost::filesystem::path& path);
+    void register_plugins(const std::string &path, wxMenuBar* menus, wxAuiManager *manager, wxWindow *parent);
+    unsigned int size()const{ return (unsigned int)m_plugins.size();}
+    plugin_base* at(unsigned int i) const {return m_plugins.at(i);}
+
+    void clear();
 
 private:
-    plugin_manager_model() {}
     // Le tableau des plugins
     std::vector<plugin_base*> m_plugins;
+    wxMenu* m_plugins_menu;
 };
-
-typedef PatternSingleton<plugin_manager_model> plugin_manager;
 
 #endif // __PLUGIN_MANAGER_HPP__
 
