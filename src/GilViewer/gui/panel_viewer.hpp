@@ -49,7 +49,6 @@ Authors:
 #include "../convenient/macros_gilviewer.hpp"
 
 class layer_control;
-class wxLogWindow;
 class wxToolBar;
 class wxMenuBar;
 class vector_layer_ghost;
