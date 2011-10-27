@@ -15,6 +15,8 @@ public:
 	/** Constructor */
         simple_text_window_impl( wxWindow* parent ) : simple_text_window( parent ) {}
 
+        wxTextCtrl* get_text_control() { return m_text_control; }
+
         virtual void OnOKButtonClick( wxCommandEvent& event ) {Close();}
 
         friend class layer_control;
