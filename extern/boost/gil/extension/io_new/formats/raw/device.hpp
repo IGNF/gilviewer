@@ -7,8 +7,8 @@
 
 /*************************************************************************************************/
 
-#ifndef BOOST_GIL_EXTENSION_IO_DETAIL_CR2_IO_DEVICE_HPP_INCLUDED
-#define BOOST_GIL_EXTENSION_IO_DETAIL_CR2_IO_DEVICE_HPP_INCLUDED
+#ifndef BOOST_GIL_EXTENSION_IO_DETAIL_RAW_IO_DEVICE_HPP_INCLUDED
+#define BOOST_GIL_EXTENSION_IO_DETAIL_RAW_IO_DEVICE_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
@@ -29,12 +29,12 @@
 
 namespace boost { namespace gil { namespace detail {
 
-class cr2_device_base
+class raw_device_base
 {
 public:
 
-    cr2_device_base() {}
-    cr2_device_base( const LibRaw& processor ) : m_libraw_processor(processor) {}
+    raw_device_base() {}
+    raw_device_base( const LibRaw& processor ) : m_libraw_processor(processor) {}
 
     // iparams getters
     std::string get_camera_manufacturer() { return std::string(m_libraw_processor.imgdata.idata.make);  }
@@ -71,6 +71,9 @@ public:
     std::string get_desc()    { return std::string(m_libraw_processor.imgdata.other.desc); }
     std::string get_artist()  { return std::string(m_libraw_processor.imgdata.other.artist); }
 
+    std::string get_version()               { return std::string(m_libraw_processor.version()); }
+    std::string get_unpack_function_name()  { return std::string(m_libraw_processor.unpack_function_name()); }
+
     void get_mem_image_format(int *widthp, int *heightp, int *colorsp, int *bpp) { m_libraw_processor.get_mem_image_format(widthp, heightp, colorsp, bpp); }
 
     int unpack()                                                         { return m_libraw_processor.unpack(); }
@@ -83,10 +86,10 @@ protected:
 
 /*!
  *
- * file_stream_device specialization for cr2 images
+ * file_stream_device specialization for raw images
  */
 template<>
-class file_stream_device< cr2_tag > : public cr2_device_base
+class file_stream_device< raw_tag > : public raw_device_base
 {
 public:
 
@@ -103,15 +106,15 @@ public:
         /// TODO
     }
 
-    file_stream_device( const LibRaw& processor ) : cr2_device_base( processor ) {}
+    file_stream_device( const LibRaw& processor ) : raw_device_base( processor ) {}
 };
 
 /*!
  *
- * ostream_device specialization for cr2 images.
+ * ostream_device specialization for raw images.
  */
 template<>
-class ostream_device< cr2_tag > : public cr2_device_base
+class ostream_device< raw_tag > : public raw_device_base
 {
 public:
     ostream_device( std::ostream & out ) : _out( out )
@@ -125,10 +128,10 @@ private:
 
 /*!
  *
- * istream_device specialization for cr2 images.
+ * istream_device specialization for raw images.
  */
 template<>
-class istream_device< cr2_tag > : public cr2_device_base
+class istream_device< raw_tag > : public raw_device_base
 {
 public:
     istream_device( std::istream & in ) : _in( in )
@@ -144,4 +147,4 @@ private:
 } // namespace gil
 } // namespace boost
 
-#endif // BOOST_GIL_EXTENSION_IO_DETAIL_CR2_IO_DEVICE_HPP_INCLUDED
+#endif // BOOST_GIL_EXTENSION_IO_DETAIL_RAW_IO_DEVICE_HPP_INCLUDED

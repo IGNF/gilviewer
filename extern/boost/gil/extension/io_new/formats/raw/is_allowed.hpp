@@ -7,8 +7,8 @@
 
 /*************************************************************************************************/
 
-#ifndef BOOST_GIL_EXTENSION_IO_CR2_IO_IS_ALLOWED_HPP_INCLUDED
-#define BOOST_GIL_EXTENSION_IO_CR2_IO_IS_ALLOWED_HPP_INCLUDED
+#ifndef BOOST_GIL_EXTENSION_IO_RAW_IO_IS_ALLOWED_HPP_INCLUDED
+#define BOOST_GIL_EXTENSION_IO_RAW_IO_IS_ALLOWED_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// \file
@@ -25,7 +25,7 @@
 namespace boost { namespace gil { namespace detail {
 
 template< typename View >
-bool is_allowed( const image_read_info< cr2_tag >& info
+bool is_allowed( const image_read_info< raw_tag >& info
                , mpl::true_   // is read_and_no_convert
                )
 {
@@ -43,7 +43,7 @@ bool is_allowed( const image_read_info< cr2_tag >& info
 }
 
 template< typename View >
-bool is_allowed( const image_read_info< cr2_tag >& /* info */
+bool is_allowed( const image_read_info< raw_tag >& /* info */
                , mpl::false_  // is read_and_convert
                )
 {
@@ -54,4 +54,4 @@ bool is_allowed( const image_read_info< cr2_tag >& /* info */
 } // namespace gil
 } // namespace boost
 
-#endif // BOOST_GIL_EXTENSION_IO_CR2_IO_IS_ALLOWED_HPP_INCLUDED
+#endif // BOOST_GIL_EXTENSION_IO_RAW_IO_IS_ALLOWED_HPP_INCLUDED
