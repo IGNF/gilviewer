@@ -55,7 +55,6 @@
 #include <wx/msgdlg.h>
 #include <wx/image.h>
 #include <wx/menu.h>
-#include <wx/log.h>
 #include <wx/statusbr.h>
 #include <wx/filedlg.h>
 

@@ -36,7 +36,6 @@ Authors:
 
 ***********************************************************************/
 #include <wx/statusbr.h>
-#include <wx/log.h>
 #include <wx/toolbar.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/aboutdlg.h>
@@ -44,6 +43,7 @@ Authors:
 #include <wx/image.h>
 #include <wx/dialog.h>
 #include <wx/html/htmlwin.h>
+#include <wx/log.h>
 
 #include "../gui/application_settings.hpp"
 #include "../gui/define_id.hpp"
@@ -89,8 +89,10 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
 
     //Construction de la log window
     wxLog::SetActiveTarget(NULL);
+    //m_logWindow = new simple_text_window_impl(this);
     m_logWindow = new wxLogWindow(this, _("Log window"));
     m_logWindow->Show(m_isLogWindowVisible);
+    wxLog::SetActiveTarget(m_logWindow);
 
     //ToolBar
     m_baseToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
