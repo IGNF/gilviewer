@@ -39,7 +39,7 @@ class simple_text_window : public wxFrame
 	
 	public:
 		
-		simple_text_window( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,337 ), long style = wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE|wxMAXIMIZE_BOX|wxTAB_TRAVERSAL );
+		simple_text_window( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,337 ), long style = wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE_BOX|wxTAB_TRAVERSAL );
 		~simple_text_window();
 	
 };
