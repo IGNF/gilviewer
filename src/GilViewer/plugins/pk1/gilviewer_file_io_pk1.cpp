@@ -1,9 +1,6 @@
-
 #include "gilviewer_file_io_pk1.hpp"
 
 #include <boost/filesystem/convenience.hpp>
-#include <boost/variant/get.hpp>
-
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
