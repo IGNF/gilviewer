@@ -38,9 +38,10 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_GDAL_JPG2_HPP
 #define GILVIEWER_FILE_IO_GDAL_JPG2_HPP
 
-#include "GilViewer/io/gilviewer_file_io_image.hpp"
+#include "GilViewer/io/gilviewer_file_io.hpp"
+//#include "GilViewer/io/gilviewer_file_io_image.hpp"
 
-class gilviewer_file_io_gdal_jp2 : public gilviewer_file_io_image
+class gilviewer_file_io_gdal_jp2 : public gilviewer_file_io 
 {
 public:
     virtual ~gilviewer_file_io_gdal_jp2() {}
