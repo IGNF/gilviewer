@@ -1,5 +1,7 @@
 #include "gilviewer_file_io_gdal_jp2.hpp"
-#include <boost/gil/extension/io_new/jpeg_all.hpp>
+#include "GilViewer/io/gilviewer_file_io_image.hpp"
+
+//#include <boost/gil/extension/io_new/jpeg_all.hpp>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
 
@@ -116,7 +118,8 @@ typedef boost::gil::point2<std::ptrdiff_t> point_t;
 
 void gilviewer_file_io_gdal_jp2::save(shared_ptr<layer> layer, const string &filename)
 {
-    save_gil_view<jpeg_tag>(layer, filename);
+	std::cout<<"TO DO"<<std::endl;
+    //save_gil_view<jpeg_tag>(layer, filename);
 }
 
 string gilviewer_file_io_gdal_jp2::build_and_get_infos(const std::string &filename)
