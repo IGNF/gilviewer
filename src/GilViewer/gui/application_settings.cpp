@@ -46,7 +46,6 @@ Authors:
 #include <wx/imaglist.h>
 #include <wx/textctrl.h>
 #include <wx/toolbook.h>
-#include <wx/notebook.h>
 #include <wx/clrpicker.h>
 #include <wx/filepicker.h>
 #include <wx/checkbox.h>
@@ -59,12 +58,12 @@ Authors:
 #include "../gui/vector_layer_settings_control.hpp"
 
 #include "../convenient/wxhelper.hpp"
-
-
+#include "../config/config_plugins.hpp"
 
 BEGIN_EVENT_TABLE(application_settings, wxDialog)
         EVT_CLOSE(application_settings::on_close_window)
         EVT_BUTTON(wxID_APPLY,application_settings::on_apply_button)
+        EVT_BUTTON(wxID_RESET,application_settings::on_reset_plugins)
         END_EVENT_TABLE()
 
         application_settings::application_settings(wxWindow *parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
@@ -148,13 +147,12 @@ wxPanel* application_settings::create_paths_settings_panel()
     mainSizer->Add(boxSizerWD, 0, wxEXPAND | wxHORIZONTAL, 5);
 
     // Plugins directory
-    pConfig->Read(wxT("/Paths/Plugins"), &str, ::wxGetCwd());
+    pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
     wxStaticBoxSizer *boxSizerPlugins = new wxStaticBoxSizer(wxHORIZONTAL, panel, _("Plugins directory"));
     dirPickerPlugins = new wxDirPickerCtrl(panel, wxID_ANY, str, _("Select plugins directory"), wxDefaultPosition, wxDefaultSize, /*wxDIRP_USE_TEXTCTRL | */wxDIRP_DIR_MUST_EXIST);
     boxSizerPlugins->Add(dirPickerPlugins, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER_HORIZONTAL, 5);
+    boxSizerPlugins->Add(new wxButton(panel, wxID_RESET, _("Reset")), 0, wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 5);
     mainSizer->Add(boxSizerPlugins, 0, wxEXPAND | wxHORIZONTAL, 5);
-
-
     mainSizer->Add(new wxButton(panel, wxID_APPLY, wxT("Apply")), 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
     mainSizer->SetSizeHints(panel);
@@ -162,6 +160,11 @@ wxPanel* application_settings::create_paths_settings_panel()
     panel->Layout();
 
     return panel;
+}
+
+void application_settings::on_reset_plugins(wxCommandEvent&)
+{
+    dirPickerPlugins->SetPath(wxString(plugins_dir.c_str(), *wxConvCurrent));
 }
 
 wxPanel* application_settings::create_options_settings_panel()
@@ -423,12 +426,10 @@ void application_settings::write_config()
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Red"), m_colourPickerInsidePolygons->GetColour().Red());
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Green"), m_colourPickerInsidePolygons->GetColour().Green());
     pConfig->Write(wxT("/Options/VectorLayerPolygon/Shape/Color/Blue"), m_colourPickerInsidePolygons->GetColour().Blue());
-        #if wxMINOR_VERSION > 8	
+    #if wxMINOR_VERSION > 8	
         pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), (int)wxPENSTYLE_SOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
-	#else
-    pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
-    
-        #endif
-      pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::from_polygon_selection_index_to_wx_style(m_choicePolygons->GetSelection()) );
-
+    #else
+        pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Pen"), wxSOLID); // pour l'instant, le choix n'est pas possible, donc on le laisse en dur
+    #endif
+    pConfig->Write(wxT("/Options/VectorLayerPolygon/Style/Brush"), wxhelper::from_polygon_selection_index_to_wx_style(m_choicePolygons->GetSelection()) );
 }

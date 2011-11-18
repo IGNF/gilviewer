@@ -55,13 +55,11 @@
 #include <wx/msgdlg.h>
 #include <wx/image.h>
 #include <wx/menu.h>
-#include <wx/log.h>
 #include <wx/statusbr.h>
 #include <wx/filedlg.h>
 
 #include "../layers/vector_layer_ghost.hpp"
 #include "../layers/vector_layer.hpp"
-#include "../gui/application_settings.hpp"
 #include "../gui/layer_control_utils.hpp"
 #include "../gui/layer_control.hpp"
 #include "../gui/define_id.hpp"
@@ -70,6 +68,9 @@
 #include "../tools/orientation_2d.hpp"
 #include "../plugins/plugin_manager.hpp"
 #include "../convenient/wxrealpoint.hpp"
+
+#include "GilViewer/config/config_plugins.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 
 
 #ifdef _WINDOWS
@@ -114,22 +115,19 @@ void panel_viewer::mode_geometry_moving() { m_mode = MODE_GEOMETRY_MOVING; }
 void panel_viewer::mode_edition        () { m_mode = MODE_EDITION; }
 void panel_viewer::mode_selection      () { m_mode = MODE_SELECTION; }
 
-void panel_viewer::geometry_null     () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Nothing>  (); Refresh(); }
-void panel_viewer::geometry_point    () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Point>    (); Refresh(); }
-void panel_viewer::geometry_circle   () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Circle>   (); Refresh(); }
-void panel_viewer::geometry_rectangle() { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Rectangle>(); Refresh(); }
-void panel_viewer::geometry_line     () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Polyline> (); Refresh(); }
-void panel_viewer::geometry_polygon  () { mode_capture(); m_ghostLayer->reset<vector_layer_ghost::Polygon>  (); Refresh(); }
+void panel_viewer::geometry_null     () { m_ghostLayer->reset<vector_layer_ghost::Nothing>  (); Refresh(); }
+void panel_viewer::geometry_point    () { m_ghostLayer->reset<vector_layer_ghost::Point>    (); Refresh(); }
+void panel_viewer::geometry_circle   () { m_ghostLayer->reset<vector_layer_ghost::Circle>   (); Refresh(); }
+void panel_viewer::geometry_rectangle() { m_ghostLayer->reset<vector_layer_ghost::Rectangle>(); Refresh(); }
+void panel_viewer::geometry_line     () { m_ghostLayer->reset<vector_layer_ghost::Polyline> (); Refresh(); }
+void panel_viewer::geometry_polygon  () { m_ghostLayer->reset<vector_layer_ghost::Polygon>  (); Refresh(); }
 
 layer_control* panel_viewer::layercontrol() const {
     return m_layerControl;
 }
 
-application_settings* panel_viewer::applicationsettings() const {
-    return m_applicationSettings;
-}
 
-panel_viewer::panel_viewer(wxFrame* parent) :
+panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
         wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
         //m_menuMain(NULL),
         m_mouseMovementStarted(false), m_translationDrag(0, 0),
@@ -140,9 +138,8 @@ panel_viewer::panel_viewer(wxFrame* parent) :
         //reference au ghostLayer du LayerControl
         m_ghostLayer(layercontrol()->m_ghostLayer),
         //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_snap(layer::SNAP_ALL) {
-    if (panel_manager::instance()->panels_list().size() == 0)
-        m_applicationSettings = new application_settings(this, wxID_ANY);
+        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL)
+{
 
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new gilviewer_file_drop_target(this));
@@ -163,6 +160,7 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     m_menuBar = new wxMenuBar;
     m_menuBar->Insert(0, m_menuFile, _("File"));
     m_menuBar->Insert(1, m_menuAbout, _("About ..."));
+    m_menuBar->SetParent(parent);
 
 
     m_bgbrush.SetColour(wxColor(200,200,200));
@@ -223,9 +221,26 @@ panel_viewer::panel_viewer(wxFrame* parent) :
     wxAcceleratorTable acceleratorTable(3, entries);
     this->SetAcceleratorTable(acceleratorTable);
 
+    register_all_file_formats(PatternSingleton<gilviewer_io_factory>::instance());
+    m_plugin_manager = new plugin_manager;
+
+#ifndef _WINDOWS
+    wxConfigBase *pConfig = wxConfigBase::Get();
+    wxString str;
+    pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
+    m_plugin_manager->register_plugins( (const char *) str.mb_str(), m_menuBar, dockmanager, m_parent);
+#endif // _WINDOWS
+
+    // Log all available formats ...
+    std::vector<factory_key> ids = PatternSingleton<gilviewer_io_factory>::instance()->available_identifiers();
+    std::ostringstream mes;
+    mes << "Available file formats:";
+    for(vector<factory_key>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
+        mes << it->extension << " ";
+    GILVIEWER_LOG_MESSAGE(mes.str());
 }
 
-wxToolBar* panel_viewer::main_toolbar(wxWindow* parent) {
+wxToolBar* panel_viewer::main_toolbar(wxWindow* parent, wxAuiManager *dockmanager) {
 
     if (!m_mainToolbar) {
         m_mainToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
@@ -238,33 +253,25 @@ wxToolBar* panel_viewer::main_toolbar(wxWindow* parent) {
         m_mainToolbar->AddTool(wxID_PREFERENCES, wxT("AS"), wxXmlResource::Get()->LoadBitmap(wxT("APPLICATIONS-SYSTEM_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
 
         m_mainToolbar->AddTool(wxID_HELP, wxT("AS"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Help"));
-
-        //  m_toolBar->AddSeparator();
-        //  m_toolBar->AddTool(ID_MODE_NAVIGATION, wxT("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
-        //  m_toolBar->AddTool(ID_MODE_CAPTURE, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
-        //  m_toolBar->AddTool(ID_MODE_EDITION, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
-        //  m_toolBar->AddTool(ID_MODE_GEOMETRY_MOVING, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
-        //  m_toolBar->AddTool(ID_MODE_SELECTION, wxT("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
-
-        //  m_toolBar->AddSeparator();
-        //  m_toolBar->AddTool(ID_GEOMETRY_NULL, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("None"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_POINT, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POINTS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Point"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, wxT("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_LINE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYLINES_16x16")), wxNullBitmap, wxITEM_RADIO, _("Line"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, wxT("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-        //  m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("POLYGONS_16x16")), wxNullBitmap, wxITEM_RADIO, _("Polygone"));
-
-        //  m_toolBar->AddSeparator();
-        //  m_toolBar->AddTool(ID_SINGLE_CROP, wxT("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
-        //  m_toolBar->AddTool(ID_MULTI_CROP, wxT("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
-
         m_mainToolbar->Realize();
+
+        wxAuiPaneInfo info;
+        info.ToolbarPane();
+        info.Caption( _("Main Toolbar") );
+        info.TopDockable();
+        info.Top();
+        info.Fixed();
+        info.Resizable(false);
+        info.CloseButton(false);
+        info.CaptionVisible(false);
+
+        dockmanager->AddPane(m_mainToolbar,info);
     }
 
     return m_mainToolbar;
 }
 
-wxToolBar* panel_viewer::mode_and_geometry_toolbar(wxWindow* parent) {
+wxToolBar* panel_viewer::mode_and_geometry_toolbar(wxWindow* parent, wxAuiManager *dockmanager) {
     if (!m_modeAndGeometryToolbar) {
         m_modeAndGeometryToolbar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
@@ -286,6 +293,18 @@ wxToolBar* panel_viewer::mode_and_geometry_toolbar(wxWindow* parent) {
         m_modeAndGeometryToolbar->AddTool(ID_CROP, wxT("MN"), wxXmlResource::Get()->LoadBitmap(wxT("CROP_22x22")), wxNullBitmap, wxITEM_NORMAL, _("Crop raster"));
 
         m_modeAndGeometryToolbar->Realize();
+
+        wxAuiPaneInfo info;
+        info.ToolbarPane();
+        info.Caption( _("Mode and geometry Toolbar") );
+        info.TopDockable();
+        info.Top();
+        info.Fixed();
+        info.Resizable(false);
+        info.CloseButton(false);
+        info.CaptionVisible(false);
+
+        dockmanager->AddPane(m_modeAndGeometryToolbar,info);
     }
 
     return m_modeAndGeometryToolbar;
@@ -318,8 +337,8 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
                 try {
                     (*it)->update(tailleImage.GetX(), tailleImage.GetY());
                 } catch (const std::exception &e) {
-                    GILVIEWER_LOG_EXCEPTION("")
-                            wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent), _("Error!"), wxICON_ERROR);
+                    GILVIEWER_LOG_EXCEPTION(e.what())
+                    wxMessageBox( _("Exception: see log!"), _("Exception!"), wxICON_ERROR);
                     return;
                 }
                 (*it)->needs_update(false);
@@ -387,8 +406,7 @@ void panel_viewer::on_right_down(wxMouseEvent &event) {
 
     switch(mode(event))
     {
-    case MODE_NAVIGATION :
-        break;
+    case MODE_SELECTION :
     case MODE_CAPTURE :
         geometry_add_point(snap(event),true);
         break;
@@ -490,12 +508,13 @@ void panel_viewer::on_mouse_move(wxMouseEvent &event) {
             break;
         }//scwith
     }
-    /*
-#ifndef _WINDOWS
-    for(unsigned int i=0;i<plugin_manager::instance()->getNbPlugins();i=i+1)
-        plugin_manager::instance()->getPluginAt(i)-> on_mouse_move(event);
-#endif // _WINDOWS
-*/
+
+    for(unsigned int i=0;i<m_plugin_manager->size();i=i+1)
+    {
+        plugin_base *p = m_plugin_manager->at(i);
+        if(wx_plugin_base *wxp = dynamic_cast<wx_plugin_base *>(p))
+            wxp-> on_mouse_move(event);
+    }
     update_statusbar(p);
     //  SetFocus();
 }
@@ -613,7 +632,6 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
         m_parent->GetStatusBar()->SetFieldsCount(nb + 2); //+1 pour les coord en pixels
 
         unsigned int count = 0;
-        bool affichagePixelDone = false;
         bool affichageCartoDone = false;
 
 
@@ -626,45 +644,36 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
                     m_parent->SetStatusText(wxString(coordGlob.str().c_str(), *wxConvCurrent), count);
                     ++count;
                     
+        {
+            std::ostringstream coordPixel;
+            wxRealPoint q = m_ghostLayer->transform().to_local(p);
+            coordPixel << "Global (" << q.x << "," << q.y << ")";
+            m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
+            ++count;
+
+            if (!affichageCartoDone && m_layerControl->oriented()) {
+                // MB : coordonnées carto du ghost layer, a vérifier....
+                affichageCartoDone = true;
+                std::ostringstream coordCarto;
+                coordCarto << "Carto : (";
+                coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-m_ghostLayer->transform().translation_x() + p.x * m_ghostLayer->transform().zoom_factor()));
+                coordCarto << ",";
+                coordCarto << static_cast<int> (ori->origin_y() + ori->step() * (m_ghostLayer->transform().translation_y() - p.y * m_ghostLayer->transform().zoom_factor()));
+                coordCarto << ")";
+                m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
+                ++count;
+            }
+        }
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-            std::string affichage;
-
-            if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
+            if ((*it)->visible())
             {
-                if (!affichagePixelDone) {
-                    //std::cout << "affichagePixel ";
-                    affichagePixelDone = true;
-                    std::ostringstream coordPixel;
-                    wxPoint plocal_int = (*it)->transform().to_local_int(p);
-                    wxRealPoint plocal = (*it)->transform().to_local(p);
-                    coordPixel << "(" << p.x << "," << p.y << ")";
-                    coordPixel << "Local coordinates: (" << plocal_int.x << "," << plocal_int.y << ")";
-                    coordPixel << " - (" << plocal.x << "," << plocal.y << ")";
-                    wxRealPoint pglobal = (*it)->transform().from_local(plocal);
-                    coordPixel << "(" << pglobal.x << "," << pglobal.y << ")";
-                    m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
-                    ++count;
-                }
-                if (!affichageCartoDone && m_layerControl->oriented()) {
-                    //std::cout << "affichageCarto ";
-                    affichageCartoDone = true;
-                    std::ostringstream coordCarto;
-                    coordCarto << "Coord carto : (";
-                    coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-(*it)->transform().translation_x() + p.x * (*it)->transform().zoom_factor()));
-                    coordCarto << ",";
-                    coordCarto << static_cast<int> (ori->origin_y() + ori->step() * ((*it)->transform().translation_y() - p.y * (*it)->transform().zoom_factor()));
-                    coordCarto << ")";
-                    m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
-                    ++count;
-                }
-
-                //std::cout << "pixel_value : ";
-                affichage += boost::filesystem::basename((*it)->name()) + " : ";
-                affichage += (*it)->pixel_value(p);
-                std::ostringstream oss;
-                oss << 100. / (*it)->transform().zoom_factor();
-                affichage += "-" + oss.str() + "%";
-                m_parent->SetStatusText(wxString(affichage.c_str(), *wxConvCurrent), count);
+                wxRealPoint q = (*it)->transform().to_local(p);
+                std::ostringstream affichage;
+                affichage << boost::filesystem::basename((*it)->name());
+                affichage << "-" << 100. / (*it)->transform().zoom_factor() << "% : ";
+                affichage << "("<<q.x<<","<<q.y<<") ";
+                affichage << (*it)->pixel_value(p);
+                m_parent->SetStatusText(wxString(affichage.str().c_str(), *wxConvCurrent), count);
                 ++count;
             }
         }
@@ -690,11 +699,12 @@ void panel_viewer::zoom(double zoom_factor, wxMouseEvent &event) {
  }
  */
 
-void panel_viewer::add_layer(const layer::ptrLayerType &layer) {
+
+void panel_viewer::add_layer(const layer::ptrLayerType &layer, bool has_transform) {
     try {
-        m_layerControl->add_layer(layer);
+        m_layerControl->add_layer(layer, has_transform);
     } catch (const std::exception &e) {
-        GILVIEWER_LOG_EXCEPTION("")
+        GILVIEWER_LOG_EXCEPTION(e.what())
             }
 }
 
@@ -720,14 +730,6 @@ void panel_viewer::on_quit(wxCommandEvent& event) {
 }
 
 void panel_viewer::snap_shot(wxCommandEvent& event) {
-    wxString wildcard;
-    wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp)|*.tif;*.tiff;*.png*.jpg;*.jpeg;*.bmp|");
-    wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff|");
-    wildcard << wxT("PNG (*.png)|*.png|");
-    wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|");
-    wildcard << wxT("BMP (*.bmp)|*.bmp|");
-
     {
         // On recupere le DC, on le met dans un bitmap et on copie ce bitmap (pour le coller ensuite) ...
         wxBufferedPaintDC dc(this);
@@ -738,7 +740,6 @@ void panel_viewer::snap_shot(wxCommandEvent& event) {
         wxBitmap snap = dc.GetSelectedBitmap();
         snap.SetHeight(height);
         snap.SetWidth(width);
-        wxImage im = snap.ConvertToImage();
 
         wxBitmapDataObject *toto = new wxBitmapDataObject(snap);
 
@@ -771,39 +772,35 @@ void panel_viewer::execute_mode() {
     }
 }
 
-void panel_viewer::execute_mode_navigation() {
-
-}
-void panel_viewer::execute_mode_geometry_moving() {
-
-}
-void panel_viewer::execute_mode_capture() {
-
-}
-void panel_viewer::execute_mode_edition() {
-
-}
-void panel_viewer::execute_mode_selection() {
-
-}
+void panel_viewer::execute_mode_navigation     () {}
+void panel_viewer::execute_mode_geometry_moving() {}
+void panel_viewer::execute_mode_capture        () {}
+void panel_viewer::execute_mode_edition        () {}
+void panel_viewer::execute_mode_selection      () {}
 
 wxRealPoint panel_viewer::snap(const wxRealPoint& p) const
 {
     wxRealPoint q=p;
     if(m_snap)
     {
-        double d2[layer::SNAP_MAX_ID];
-        if(m_snap&layer::SNAP_GRID ) d2[layer::SNAP_GRID ]=10*10; // squared snap tolerance in [grid steps squared]
-        if(m_snap&layer::SNAP_POINT) d2[layer::SNAP_POINT]=10*10; // squared snap tolerance in [screen pixels squared]
-        if(m_snap&layer::SNAP_LINE ) d2[layer::SNAP_LINE ]=10*10; // squared snap tolerance in [screen pixels squared]
+        double d2[SNAP_MAX_ID];
+        if(m_snap&SNAP_GRID ) d2[SNAP_GRID ]=10*10; // squared snap tolerance in [grid steps squared]
+        if(m_snap&SNAP_POINT) d2[SNAP_POINT]=10*10; // squared snap tolerance in [screen pixels squared]
+        if(m_snap&SNAP_LINE ) d2[SNAP_LINE ]=10*10; // squared snap tolerance in [screen pixels squared]
         for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
             (*it)->snap(m_snap,d2,p,q);
         }
+        m_ghostLayer->snap(m_snap,d2,p,q);
     }
     return q;
 }
 
-void panel_viewer::geometry_add_point(const wxRealPoint& p, bool final) { if(m_ghostLayer->add_point(p,final)) geometry_end(); Refresh(); }
+void panel_viewer::geometry_add_point(const wxRealPoint& p, bool final)
+{
+    if(vectorlayerghost()->complete()) vectorlayerghost()->reset();
+    if(m_ghostLayer->add_point(p,final)) geometry_end();
+    Refresh();
+}
 void panel_viewer::geometry_move_relative  (const wxRealPoint& p) { m_ghostLayer->move_relative(p); execute_mode(); }
 void panel_viewer::geometry_move_absolute  (const wxRealPoint& p) { m_ghostLayer->move_absolute(p); execute_mode(); }
 void panel_viewer::geometry_update_absolute(const wxRealPoint& p) { m_ghostLayer->update_absolute(p); execute_mode(); }
@@ -813,12 +810,12 @@ void panel_viewer::geometry_end() {
     execute_mode();
 }
 
-panel_viewer* create_panel_viewer(wxFrame* parent) {
-    return new panel_viewer(parent);
+panel_viewer* create_panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) {
+    return new panel_viewer(parent,dockmanager);
 }
 
-void panel_viewer::Register(wxFrame* parent) {
-    panel_manager::instance()->Register("PanelViewer", boost::bind(create_panel_viewer, parent));
+void panel_viewer::Register(wxFrame* parent, wxAuiManager *dockmanager) {
+    panel_manager::instance()->Register("PanelViewer", boost::bind(create_panel_viewer, parent, dockmanager));
 }
 
 #if wxUSE_DRAG_AND_DROP
@@ -831,9 +828,9 @@ bool gilviewer_file_drop_target::OnDropFiles(wxCoord x, wxCoord y, const wxArray
 #endif // wxUSE_DRAG_AND_DROP
 void panel_viewer::crop() {
     // On recherche le calque selectionne
-    unsigned int i = 0, size = m_layerControl->rows().size();
+    unsigned int i = 0;
     std::vector<layer::ptrLayerType> selected_layers;
-    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < size; ++it, ++i) {
+    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end() && i < static_cast<unsigned int>(m_layerControl->rows().size()); ++it, ++i) {
         if (m_layerControl->rows()[i]->m_nameStaticText->selected()) {
             selected_layers.push_back(*it);
         }
@@ -849,8 +846,8 @@ void panel_viewer::crop() {
             m_layerControl->add_layer(layer,true);
 
         } catch (std::exception &e) {
-            GILVIEWER_LOG_EXCEPTION("")
-                    wxMessageBox(wxString(oss.str().c_str(), *wxConvCurrent));
+            GILVIEWER_LOG_EXCEPTION(e.what())
+                wxMessageBox(_("Exception: see log!"), _("Exception!"), wxICON_ERROR);
         }
     }
 }

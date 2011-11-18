@@ -38,14 +38,12 @@
 #include <wx/menu.h>
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>
+#include <wx/log.h>
 
 #include "GilViewer/gui/layer_control.hpp"
 #include "GilViewer/gui/panel_viewer.hpp"
 #include "GilViewer/gui/define_id.hpp"
 #include "GilViewer/gui/panel_manager.hpp"
-#include "GilViewer/plugins/plugin_manager.hpp"
-
-#include "GilViewer/config/config_plugins.hpp"
 
 #include "gilviewer_frame.hpp"
 
@@ -69,7 +67,7 @@ void gilviewer_frame::AddLayersFromFiles(const wxArrayString &names)
 gilviewer_frame::gilviewer_frame(wxWindow* parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) :
 basic_viewer_frame(parent, id, title, pos, size, style, name)
 {
-    panel_viewer::Register(this);
+    panel_viewer::Register(this,&m_dockManager);
     m_panelviewer = panel_manager::instance()->create_object("PanelViewer");
 
     wxAuiPaneInfo paneInfoDrawPane;
@@ -81,35 +79,12 @@ basic_viewer_frame(parent, id, title, pos, size, style, name)
     paneInfoDrawPane.CaptionVisible(false);
     m_dockManager.AddPane( m_panelviewer, paneInfoDrawPane );
 
-    wxAuiPaneInfo toolbarInfo;
-    toolbarInfo.ToolbarPane();
-    toolbarInfo.Caption( _("Main Toolbar") );
-    toolbarInfo.TopDockable();
-    toolbarInfo.Top();
-    toolbarInfo.Fixed();
-    toolbarInfo.Resizable(false);
-    toolbarInfo.CloseButton(false);
-    toolbarInfo.CaptionVisible(false);
-    m_dockManager.AddPane( m_panelviewer->main_toolbar(this), toolbarInfo );
-
-    wxAuiPaneInfo modeAndGeometryToolbarInfo;
-    modeAndGeometryToolbarInfo.ToolbarPane();
-    modeAndGeometryToolbarInfo.Caption( _("Mode and geometry Toolbar") );
-    modeAndGeometryToolbarInfo.TopDockable();
-    modeAndGeometryToolbarInfo.Top();
-    modeAndGeometryToolbarInfo.Fixed();
-    modeAndGeometryToolbarInfo.Resizable(false);
-    modeAndGeometryToolbarInfo.CloseButton(false);
-    modeAndGeometryToolbarInfo.CaptionVisible(false);
-    m_dockManager.AddPane( m_panelviewer->mode_and_geometry_toolbar(this), modeAndGeometryToolbarInfo );
+    //create toolbars
+    m_panelviewer->main_toolbar(this,&m_dockManager);
+    m_panelviewer->mode_and_geometry_toolbar(this,&m_dockManager);
 
     m_dockManager.Update();
 
     SetMenuBar( m_panelviewer->menubar() );
     m_statusBar->SetStatusText(wxT("GilViewer - Adrien Chauve & Olivier Tournaire"));
-
-    // Currently, plugins causes the application to crash on windows...
-#ifndef _WINDOWS
-    plugin_manager::instance()->register_plugins( plugins_dir );
-#endif // _WINDOWS
 }

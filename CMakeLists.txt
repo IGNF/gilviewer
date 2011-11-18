@@ -14,13 +14,13 @@ PROJECT(GilViewer)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 set(BUILD_SHARED_LIBS ON)
-message( STATUS ${CMAKE_BUILD_TYPE} )
+message( STATUS "Building in " ${CMAKE_BUILD_TYPE} " mode" )
  
 IF(UNIX) 
-        add_definitions(-Wall)
+        add_definitions(-Wall -fPIC)
         SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG" CACHE STRING "Flags used by the compiler during debug builds." FORCE)
         #add_definitions(-pedantic)
-ENDIF(UNIX) 
+ENDIF(UNIX)
 
 SET(CMAKE_CONFIG_DIR cmake)
 
@@ -35,6 +35,18 @@ FILE( GLOB ALL_IO_HEADER_FILES ${SRC_DIR}/io/*.hpp )
 FILE( GLOB ALL_LAYERS_HEADER_FILES ${SRC_DIR}/layers/*.hpp )
 FILE( GLOB ALL_TOOLS_HEADER_FILES ${SRC_DIR}/tools/*.hpp )
 FILE( GLOB ALL_PLUGINS_HEADER_FILES ${SRC_DIR}/plugins/*.hpp )
+
+# Creates subdirectories in project for MSVC
+if(WIN32 AND MSVC)
+	source_group( "Header Files\\config" FILES ${ALL_CONFIG_HEADER_FILES} )
+	source_group( "Header Files\\convenient" FILES ${ALL_CONVENIENT_HEADER_FILES} )
+	source_group( "Header Files\\gui" FILES ${ALL_GUI_HEADER_FILES} )
+	source_group( "Header Files\\io" FILES ${ALL_IO_HEADER_FILES} )
+	source_group( "Header Files\\layers" FILES ${ALL_LAYERS_HEADER_FILES} )
+	source_group( "Header Files\\tools" FILES ${ALL_TOOLS_HEADER_FILES} )
+	source_group( "Header Files\\plugins" FILES ${ALL_PLUGINS_HEADER_FILES} )
+endif()
+
 # Une variable regroupant tous les headers
 SET( ALL_VIEWER_HEADERS ${ALL_CONFIG_HEADER_FILES}
                         ${ALL_CONVENIENT_HEADER_FILES}
@@ -55,8 +67,20 @@ AUX_SOURCE_DIRECTORY(${SRC_DIR}/gui/wxfb SRC_GUI_WXFB)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/io SRC_IO)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/layers SRC_CALQUES)
 AUX_SOURCE_DIRECTORY(${SRC_DIR}/tools SRC_OUTILS) 
-#AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
-set(SRC_PLUGINS ${SRC_DIR}/plugins/plugin_base.cpp ${SRC_DIR}/plugins/plugin_manager.cpp)
+AUX_SOURCE_DIRECTORY(${SRC_DIR}/plugins SRC_PLUGINS)
+
+# Creates subdirectories in project for MSVC
+if(WIN32 AND MSVC)
+	source_group( "Source Files\\config" FILES ${SRC_CONFIG} )
+	source_group( "Source Files\\convenient" FILES ${SRC_CONVENIENT} )
+	source_group( "Source Files\\gui" FILES ${SRC_GUI} )
+	source_group( "Source Files\\gui\\wxfb" FILES ${SRC_GUI_WXFB} )
+	source_group( "Source Files\\gui\\resources" FILES ${SRC_DIR}/gui/resources/resources.cpp ${SRC_DIR}/gui/resources/resources.cpp ${SRC_DIR}/gui/resources/resources.xrc )
+	source_group( "Source Files\\io" FILES ${SRC_IO} )
+	source_group( "Source Files\\layers" FILES ${SRC_CALQUES} )
+	source_group( "Source Files\\tools" FILES ${SRC_OUTILS} )
+	source_group( "Source Files\\plugins" FILES ${SRC_PLUGINS} )
+endif()
 
 # Une variable regroupant toutes les sources ...
 SET( ALL_VIEWER_SOURCES ${SRC_CONFIG} ${SRC_CONVENIENT} ${SRC_GUI} ${SRC_GUI_WXFB} ${SRC_IO} ${SRC_CALQUES} ${SRC_OUTILS} ${SRC_PLUGINS} )
@@ -66,7 +90,6 @@ if(WIN32)
         # Remove gil iterator related warnings...
         add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
         add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-        #message( STATUS "MSVC_VERSION: " ${MSVC_VERSION} )
         #Visual C++, 32-bit, version 6.0         1200
         #Visual C++, 32-bit, version .net 2002   1300
         #Visual C++, 32-bit, version .net 2003   1310
@@ -75,14 +98,16 @@ if(WIN32)
         #Visual C++, 32-bit, version 2008        1500 (vc90)
         #MSVC90  (Visual C++ 2008 SP1) MSVC_VERSION=1500 (Compiler  Version 15.00.30729.01)
         #MSVC100 (Visual C++ 2010) MSVC_VERSION=1600 (Compiler  Version 16.00.30319.01)
-        MESSAGE(STATUS " MSVC 71 " ${MSVC71})
-        if(MSVC_VERSION EQUAL 1310 OR MSVC_VERSION EQUAL 1400 OR MSVC_VERSION EQUAL 1500 OR MSVC_VERSION EQUAL 1600 )
-        else()
-            aux_source_directory(${SRC_DIR}/gui/msvc SRC_MSVC)
-            set( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${SRC_MSVC} )
-        endif()
-        if(MSVC_VERSION EQUAL 1600)
-            add_definitions( -D_HAS_CPP0X=0)
+		#MESSAGE(STATUS " MSVC 71 " ${MSVC71})
+		if(${MSVC_VERSION} NOT EQUAL "")
+			if(${MSVC_VERSION} EQUAL 1310 OR ${MSVC_VERSION} EQUAL 1400 OR ${MSVC_VERSION} EQUAL 1500 OR ${MSVC_VERSION} EQUAL 1600 )
+			else()
+				aux_source_directory(${SRC_DIR}/gui/msvc SRC_MSVC)
+				set( ALL_VIEWER_SOURCES ${ALL_VIEWER_SOURCES} ${SRC_MSVC} )
+			endif()
+		endif()
+        if(${MSVC10})
+            #add_definitions( -D_HAS_CPP0X=0)
         endif()
     endif(MSVC)
 endif(WIN32)
@@ -94,13 +119,6 @@ endif(WIN32)
 if(WIN32)
     set(CMAKE_PREFIX_PATH "C:/Program Files/MATIS/")
 endif(WIN32)
-
-find_package(TIFF REQUIRED)
-if(TIFF_FOUND)
-    include_directories(${TIFF_INCLUDE_DIR})
-else()
-    message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
-endif()
 
 find_package(JPEG REQUIRED)
 if(JPEG_FOUND)
@@ -116,12 +134,14 @@ if(NOT WIN32)
     else()
         message(FATAL_ERROR "PNG not found ! Please set PNG path ...")
     endif()
+
     find_package(ZLIB REQUIRED)
     if(ZLIB_FOUND)
         include_directories(${ZLIB_INCLUDE_DIR})
     else()
         message(FATAL_ERROR "ZLIB not found ! Please set ZLIB path ...")
     endif()
+
     #Find wxWidgets
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
         find_package(wxWidgets REQUIRED adv base core xml aui xrc html)
@@ -136,9 +156,8 @@ else()
     set(wxWidgets_USE_STATIC OFF)
     find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png expat)
     if(wxWidgets_FOUND)
-        message (STATUS "wxWidgets_DEFINITIONS " "${wxWidgets_DEFINITIONS}")
         #add_definitions(${wxWidgets_DEFINITIONS})
-        # not set definitions like that becaause on MSVC 2010 this add wrong terme on AdditionalOptions flags
+        # not set definitions like that because on MSVC 2010 this add wrong terme on AdditionalOptions flags
         include(${wxWidgets_USE_FILE})
         include_directories( ${wxWidgets_ROOT_DIR}/src/png )
         include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
@@ -156,6 +175,7 @@ set( Boost_ADDITIONAL_VERSIONS
             "1.43.0" "1.43" 
             "1.44.0" "1.44"
             "1.46" "1.46.1"
+           "1.47" "1.47.0"
      )
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use boost static lib")
 set(Boost_USE_MULTITHREAD ON CACHE BOOL "use boost multi thread lib")
@@ -167,12 +187,27 @@ IF( NOT Boost_FOUND )
 ELSE()
         INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
     link_directories( ${Boost_LIBRARY_DIRS} )
+	if( WIN32 )
+		add_definitions( -DBOOST_ALL_NO_LIB )
+	endif()
 ENDIF()
 
 ####
 #### Ajout du fichier contenant les regles de construction des libs externes : tinyxml
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_external_lib.cmake )
+
+#####################################
+###                     recherche des packages optionnels                        ###
+#####################################
+
+find_package(ImageIO QUIET)
+option(USE_ImageIO "Build GilViewer with ImageIO" ImageIO_FOUND)
+if(USE_ImageIO)
+    set( GILVIEWER_USE_IMAGEIO 1 )
+else()
+    set( GILVIEWER_USE_IMAGEIO 0 )
+endif()
 
 #####################################
 ###                     Fin recherche des packages                         ###
@@ -200,20 +235,18 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_library.cmake )
 ####
 INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_sample.cmake )
 
-####
-#### Construction des plugins
-####
-INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
-
 # Ajout du repertoire d'include des lib externes (pour l'instant,  tinyxml)
-INCLUDE_DIRECTORIES( BEFORE "extern/" )
+#INCLUDE_DIRECTORIES( BEFORE "extern/" )
 # Ajout du repertoire d'include des sources du viewer
-INCLUDE_DIRECTORIES( BEFORE  "src/" )
+#INCLUDE_DIRECTORIES( BEFORE  "src/" )
 
 # Ajout d'une dependance du viewer a tinyxml. Ca permet de compiler tinyxml AVANT le viewer ...
-ADD_DEPENDENCIES( GilViewer tinyxml )
+#ADD_DEPENDENCIES( GilViewer tinyxml )
 # Et enfin, le viewer depend de la lib ...
-ADD_DEPENDENCIES( GilViewerApp GilViewer )
+#ADD_DEPENDENCIES( GilViewerApp GilViewer )
+# De meme que les samples ...
+#ADD_DEPENDENCIES( sample_vector_layer GilViewer )
+#ADD_DEPENDENCIES( sample_subimage GilViewer )
 
 ####
 #### Choice for install mode.
@@ -228,10 +261,25 @@ IF(${INSTALL_MODE} STREQUAL "Install")
     option( INSTALL_LANGAGE_FRENCH "Install french langage support" ON )
         set( LANGAGES_FR_SUPPORT_FILES ${CMAKE_SOURCE_DIR}/languages/fr/libGilViewer.mo ${CMAKE_SOURCE_DIR}/languages/fr/GilViewerApp.mo )
     INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_install.cmake )
-    MESSAGE( STATUS " Install file include " )
+    MESSAGE( STATUS " Install include files" )
 ENDIF(${INSTALL_MODE} STREQUAL "Install")
 IF(${INSTALL_MODE} STREQUAL "Package")
     INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_package.cmake )
     MESSAGE( STATUS " Install file package" )
 ENDIF(${INSTALL_MODE} STREQUAL "Package")
 
+
+
+####
+#### Construction des plugins
+####
+INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
+
+###
+### Sum up found and not found dependencies
+###
+message( STATUS "**************" )
+message( STATUS "With GDAL     --> " ${USE_GDAL_OGR} )
+message( STATUS "With CGAL     --> " ${USE_CGAL} )
+message( STATUS "With GDAL_JP2 --> " ${USE_GDAL_JP2} )
+message( STATUS "**************" )

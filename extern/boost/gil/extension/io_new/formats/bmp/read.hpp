@@ -433,7 +433,7 @@ private:
         byte_vector_t row( pitch );
 
         // read the color masks
-        color_mask mask = { 0 };
+        color_mask mask = {{ 0 }};
         if( _info._compression == bmp_compression::_bitfield )
         {
             mask.red.mask    = _io_dev.read_int32();

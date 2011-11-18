@@ -107,16 +107,19 @@ struct vlg_point_adder : public boost::static_visitor<void>
     bool m_final;
 
     void operator()(vector_layer_ghost::Nothing&) { }
-    void operator()(vector_layer_ghost::Point& p) { p = m_p; }
+    void operator()(vector_layer_ghost::Point& p) {
+        m_layer.complete(true);
+        p = m_p;
+    }
     void operator()(vector_layer_ghost::Rectangle& r)
     {
-        m_layer.complete(!m_layer.complete());
+        m_layer.complete(m_layer.num_inputs()>1);
         r.second = m_p;
         if(!m_layer.complete()) r.first  = m_p;
     }
     void operator()(vector_layer_ghost::Circle& c)
     {
-        m_layer.complete(!m_layer.complete());
+        m_layer.complete(m_layer.num_inputs()>1);
         if (m_layer.complete()) {
             c.second = std::sqrt(squared_distance(c.first, m_p));
         } else {
@@ -129,16 +132,14 @@ struct vlg_point_adder : public boost::static_visitor<void>
         m_layer.complete(m_final);
         // at first, insert twice to enable the absolute updating on the second vertex
         if(poly.empty()) poly.push_back(m_p);
-        poly.push_back(m_p);
+        if(!m_final) poly.push_back(m_p);
     }
 };
 
 struct vlg_absolute_mover : public boost::static_visitor<void>
 {
-    vlg_absolute_mover(vector_layer_ghost& layer, const wxRealPoint& p)
-        : m_layer(layer), m_p(p) {}
+    vlg_absolute_mover(const wxRealPoint& p) : m_p(p) {}
 
-    vector_layer_ghost& m_layer;
     wxRealPoint m_p;
 
     void operator()(vector_layer_ghost::Nothing& ) const { }
@@ -170,11 +171,11 @@ struct vlg_absolute_updater : public boost::static_visitor<void>
     void operator()(vector_layer_ghost::Nothing& ) const { }
     void operator()(vector_layer_ghost::Point& p ) const { }
     void operator()(vector_layer_ghost::Circle& c) const {
-        if(!m_layer.complete()) c.second = std::sqrt(squared_distance(c.first, m_p));
+        if(m_layer.num_inputs()==1) c.second = std::sqrt(squared_distance(c.first, m_p));
     }
     void operator()(vector_layer_ghost::Rectangle& r) const
     {
-        if(!m_layer.complete()) r.second = m_p;
+        if(m_layer.num_inputs()==1) r.second = m_p;
     }
     template<typename Poly> void operator()(Poly& poly) const
     {
@@ -199,10 +200,8 @@ struct vlg_relative_updater : public boost::static_visitor<void>
 
 struct vlg_relative_mover : public boost::static_visitor<void>
 {
-    vlg_relative_mover(vector_layer_ghost& layer, const wxRealPoint& p)
-        : m_layer(layer), m_p(p) {}
+    vlg_relative_mover(const wxRealPoint& p) : m_p(p) {}
 
-    vector_layer_ghost& m_layer;
     wxRealPoint m_p;
 
     void operator()(vector_layer_ghost::Nothing& ) const { }
@@ -210,7 +209,7 @@ struct vlg_relative_mover : public boost::static_visitor<void>
     void operator()(vector_layer_ghost::Circle& c) const { c.first += m_p; }
     void operator()(vector_layer_ghost::Rectangle& r) const
     {
-        r.first += m_p;
+        r.first  += m_p;
         r.second += m_p;
     }
     template<typename Poly> void operator()(Poly& poly) const
@@ -219,11 +218,53 @@ struct vlg_relative_mover : public boost::static_visitor<void>
     }
 };
 
+struct vlg_snapper : public boost::static_visitor<bool>
+{
+    vlg_snapper(eSNAP snap, double *d2, const wxRealPoint& p, wxRealPoint& m_psnap, const layer_transform& trans )
+        :  m_snap(snap), m_p(trans.to_local(p)), m_psnap(m_psnap), m_trans(trans), m_d2(d2)
+    {
+        double zoom = m_trans.zoom_factor();
+        m_invzoom2 = 1.0/(zoom*zoom);
+    }
+
+    eSNAP m_snap;
+    wxRealPoint m_p;
+    wxRealPoint& m_psnap;
+    layer_transform m_trans;
+    double *m_d2, m_invzoom2;
+
+    bool operator()(const vector_layer_ghost::Nothing& ) const { return false; }
+    bool operator()(const vector_layer_ghost::Point& p ) {
+        return (m_snap&SNAP_POINT) && snap_point(m_trans,m_invzoom2,m_d2,m_p,p,m_psnap);
+    }
+    bool operator()(const vector_layer_ghost::Circle& c) const { return false; }
+    bool operator()(const vector_layer_ghost::Rectangle& r) const { return false; }
+
+
+    // the last point is the currently edited point moved with the mouse, snap only to the polyline [0..n-1]
+    template<typename Poly>
+    bool operator()(const Poly& p) const
+    {
+        if(p.size()<2) return false;
+        wxRealPoint p0(p.front().x,p.front().y), p1;
+        bool snapped = false;
+        if(m_snap&SNAP_POINT) snapped=snapped||snap_point(m_trans, m_invzoom2, m_d2, m_p, p0, m_psnap );
+        for (unsigned int j=1;j<p.size()-1;++j, p0=p1)
+        {
+            p1 = wxRealPoint(p[j].x,p[j].y);
+            if(m_snap&SNAP_POINT) snapped=snapped||snap_point(m_trans, m_invzoom2, m_d2, m_p, p1, m_psnap );
+            if(m_snap&SNAP_LINE ) snapped=snapped||snap_segment(m_trans, m_invzoom2, m_d2, m_p, p0, p1, m_psnap );
+        }
+        return snapped;
+    }
+};
+
 // vector_layer_ghost methods
 
 vector_layer_ghost::vector_layer_ghost() :
         m_input(Nothing()),
-        m_complete(true)
+        m_complete(true),
+        m_num_inputs(0)
 {
     m_penCircle = wxPen(*wxBLUE, 2);
     m_brushCircle = wxBrush(*wxBLUE, wxTRANSPARENT);
@@ -239,14 +280,14 @@ void vector_layer_ghost::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 }
 bool vector_layer_ghost::add_point(const wxRealPoint& p, bool final)
 {
-    if(complete()) reset();
+    ++m_num_inputs;
     vlg_point_adder v(*this,transform().to_local(p),final);
     boost::apply_visitor(v,m_input);
     return complete();
 }
 void vector_layer_ghost::move_absolute(const wxRealPoint& p)
 {
-    boost::apply_visitor(vlg_absolute_mover(*this,transform().to_local(p)),m_input);
+    boost::apply_visitor(vlg_absolute_mover(transform().to_local(p)),m_input);
 }
 void vector_layer_ghost::update_absolute(const wxRealPoint& p)
 {
@@ -254,7 +295,7 @@ void vector_layer_ghost::update_absolute(const wxRealPoint& p)
 }
 void vector_layer_ghost::move_relative(const wxRealPoint& p)
 {
-    boost::apply_visitor(vlg_relative_mover(*this,p),m_input);
+    boost::apply_visitor(vlg_relative_mover(p),m_input);
 }
 void vector_layer_ghost::update_relative(const wxRealPoint& p)
 {
@@ -270,5 +311,13 @@ struct vlg_reseter : public boost::static_visitor<void> {
 void vector_layer_ghost::reset() {
     vlg_reseter c;
     boost::apply_visitor(c,m_input);
-    m_complete = true;
+    m_complete = false;
+    m_num_inputs = 0;
+}
+
+
+bool vector_layer_ghost::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
+{
+    vlg_snapper snapper(snap,d2,p,psnap,transform());
+    return boost::apply_visitor(snapper,m_input);
 }

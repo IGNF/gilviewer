@@ -53,24 +53,34 @@ Authors:
 #include <wx/log.h>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
-#include "GilViewer/layers/ogr_vector_layer.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 #include "sample_subimage_viewer.hpp"
 #include "sample_subimage.hpp"
 
 #include "GilViewer/config/config.hpp"
-#if GILVIEWER_USE_GDAL
-#   include <gdal/ogrsf_frmts.h>
-#endif // GILVIEWER_USE_GDAL
 
 using namespace boost;
 using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxString("Input files", wxConvUTF8), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+    {   wxCMD_LINE_PARAM,
+    NULL,
+    NULL,
+#ifdef _WINDOWS
+    _("Input files"),
+#else
+  #if wxCHECK_VERSION(2,9,0)
+   "Input files",
+   #else
+   wxT("Input files"),
+   #endif
+#endif
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+    {   wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -84,12 +94,10 @@ bool sample_subimage_app::OnInit()
     setlocale(LC_ALL, "POSIX");
 #endif
 
-    register_all_file_formats();
-
     m_frame = new sample_subimage_viewer((wxFrame *)NULL, wxID_ANY, _("Sample subimage viewer"), wxPoint(50,50), wxSize(800,600));
     m_frame->Show();
 
-    string filename("../data/09-Paris.JPG");
+    string filename("09-Paris.JPG");
     /*
      // You should use this, but, this is not necessary here since everything is know at compile time (and it also saves compile time)
     string extension(filesystem::extension(filename));
@@ -98,9 +106,13 @@ bool sample_subimage_app::OnInit()
     */
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object("jpg");
+        std::string ext = "jpg";
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(ext);
         m_frame->add_layer( file->load(filename) );
         boost::shared_ptr<layer> sublayer = file->load(filename, 1200, 200 , 950, 550);
+
+        if(!sublayer) throw std::exception();
+
         m_frame->add_layer( sublayer );
         sublayer->transform().translation_x(100);
         sublayer->transform().translation_y(250);
@@ -108,7 +120,7 @@ bool sample_subimage_app::OnInit()
     }
     catch (const std::exception &e)
     {
-        GILVIEWER_LOG_EXCEPTION("")
+        GILVIEWER_LOG_EXCEPTION("An exception occured")
     }
 
     return true;

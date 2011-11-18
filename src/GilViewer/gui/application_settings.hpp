@@ -62,10 +62,12 @@ public:
 
     void on_close_window(wxCloseEvent& event);
     void on_apply_button(wxCommandEvent &event);
+    void on_reset_plugins(wxCommandEvent &event);
 
     void write_config();
 
     DECLARE_EVENT_TABLE();
+
 
 private:
     wxPanel *m_panel;

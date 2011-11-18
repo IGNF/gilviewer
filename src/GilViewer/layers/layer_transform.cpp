@@ -31,11 +31,6 @@ void layer_transform::to_local(double gx, double gy, double& lx, double& ly) con
     double rx =                m_zoomFactor*gx -m_translationX;
     double ry = m_coordinates*(m_zoomFactor*gy -m_translationY); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
     rotated_coordinate_to_local(rx,ry,lx,ly);
-
-    double gx2, gy2;
-    from_local(lx, ly, gx2, gy2);
-    //std::cout << "to_local" << gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx2 << " "<< gy2 << std::endl;
-
 }
 
 void layer_transform::from_local_int(double lx, double ly, double& gx, double& gy, double delta) const
@@ -51,8 +46,4 @@ void layer_transform::to_local_int(double gx, double gy, double& lx, double& ly,
     double rx =                m_zoomFactor*gx -m_translationX-delta;
     double ry = m_coordinates*(m_zoomFactor*gy -m_translationY-delta); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
     rotated_coordinate_to_local(rx,ry,lx,ly);
-
-    double gx2, gy2;
-    from_local(lx, ly, gx2, gy2);
-    //std::cout << "to_local_int" << gx << " "<< gy << " "<< lx << " "<< ly <<" "<< gx2 << " "<< gy2 << std::endl;
 }

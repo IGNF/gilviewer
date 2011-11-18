@@ -37,6 +37,7 @@ Authors:
 ***********************************************************************/
 
 #include <limits>
+#include <sstream>
 
 #include <boost/filesystem.hpp>
 
@@ -63,6 +64,8 @@ Authors:
 #include "../layers/image_layer.hpp"
 #include "../tools/color_lookup_table.hpp"
 
+using namespace std;
+
 BEGIN_EVENT_TABLE(image_layer_settings_control, wxDialog)
         EVT_BUTTON(wxID_OK,image_layer_settings_control::on_ok_button)
         EVT_BUTTON(wxID_CANCEL,image_layer_settings_control::on_cancel_button)
@@ -82,7 +85,7 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
     SetBackgroundColour(bgcolor);
     ClearBackground();
 
-    m_main_sizer = new wxFlexGridSizer(4,1,0,0);
+    m_main_sizer = new wxFlexGridSizer(6,1,0,0);
     m_main_sizer->AddGrowableCol(0);
     m_main_sizer->AddGrowableRow(0);
 
@@ -114,14 +117,15 @@ image_layer_settings_control::image_layer_settings_control(unsigned int index, l
 
         //Choix de la LUT
         wxStaticBoxSizer *fileLUT_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Choose LUT"));
-        wxString str;
-        wxConfigBase::Get()->Read(wxT("/Paths/LUT"), &str, ::wxGetCwd());
+        wxString str = wxConfigBase::Get()->Read(wxT("/Paths/LUT"), ::wxGetCwd());
+        // Default path cannot work (it is stored as a path to a **directory** in the preferences): wxFilePickerCtrl expects a path to a **file**
         m_filePicker_CLUT = new wxFilePickerCtrl(this, wxID_ANY, str, _("Select a CLUT file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE);
         fileLUT_sizer->Add(m_filePicker_CLUT, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
         m_main_sizer->Add(fileLUT_sizer, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL, 5);
     }
     else
     {
+        m_main_sizer->SetRows(7);
         wxStaticBoxSizer *red_sizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Red"));
         m_textRedChannel = new wxTextCtrl(this,wxID_ANY);
         m_textRedChannel->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
@@ -445,14 +449,7 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     unsigned int w= d_->width();
     unsigned int h= d_->height();
     //orientation
-    if( m_radioBoxRotation->GetSelection() ==0)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_0,w,h );
-    if( m_radioBoxRotation->GetSelection() ==1)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_90,w,h );
-    if( m_radioBoxRotation->GetSelection() ==2)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_180,w,h );
-    if( m_radioBoxRotation->GetSelection() ==3)
-        layercontrol()->layers()[m_index]->transform().orientation( layer_transform::LO_270,w,h );
+    layercontrol()->layers()[m_index]->transform().orientation( (layer_transform::layerOrientation) m_radioBoxRotation->GetSelection(),w,h );
     
     // La, il faut brancher le range pour la transparence : alphaRangeMin et alphaRangeMax
     if (m_checkAlphaRange->IsChecked() )
@@ -468,17 +465,18 @@ void image_layer_settings_control::on_apply_button(wxCommandEvent &event)
     //Branchement du choix de la CLUT
     if(m_nbComponents == 1)
     {
-        std::string fileLUT(m_filePicker_CLUT->GetPath().mb_str() );
-        if(boost::filesystem::exists(fileLUT))
+        string fileLUT(m_filePicker_CLUT->GetPath().mb_str() );
+        if(!fileLUT.empty())
         {
-            if ( boost::filesystem::basename(fileLUT) == "random" )
-                layercontrol()->layers()[m_index]->colorlookuptable()->create_random();
+            if(boost::filesystem::exists(fileLUT))
+            {
+                if ( boost::filesystem::basename(fileLUT) == "random" )
+                    layercontrol()->layers()[m_index]->colorlookuptable()->create_random();
+                else
+                    layercontrol()->layers()[m_index]->colorlookuptable()->load_from_binary_file( fileLUT );
+            }
             else
-                layercontrol()->layers()[m_index]->colorlookuptable()->load_from_binary_file( fileLUT );
-        }
-        else
-        {
-            wxLogMessage(_("LUT file does not exist!"));
+                GILVIEWER_LOG_MESSAGE("LUT file does not exist!");
         }
     }
     
@@ -698,8 +696,8 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
         if (histo.size() == 1)
         {
             dc.SetPen( *wxBLACK_PEN);
-            double max_value = *std::max_element(histo[0].begin(), histo[0].end());
-            double min_value = *std::min_element(histo[0].begin(), histo[0].end());
+            double max_value = *max_element(histo[0].begin(), histo[0].end());
+            double min_value = *min_element(histo[0].begin(), histo[0].end());
             double step_height = window_height / static_cast<double>(max_value-min_value);
 
             wxString min_string, max_string;
@@ -725,12 +723,12 @@ void histogram_plotter::on_paint(wxPaintEvent &event)
         else //nombre de canaux quelconque
         {
             // On calcule l'etendue maximale. On a donc besoin du min des min des n canaux et du max des max des n canaux.
-            double  max_value = std::numeric_limits<double>::min();
-            double min_value = std::numeric_limits<double>::max();
+            double max_value = std::numeric_limits<double>::min();
+            double min_value = numeric_limits<double>::max();
             for(unsigned int channel = 0; channel < histo.size(); ++channel)
             {
-                max_value = std::max( max_value, *std::max_element(histo[channel].begin(), histo[channel].end()) );
-                min_value = std::min( min_value, *std::min_element(histo[channel].begin(), histo[channel].end()) );
+                max_value = max( max_value, *max_element(histo[channel].begin(), histo[channel].end()) );
+                min_value = min( min_value, *min_element(histo[channel].begin(), histo[channel].end()) );
             }
 
             double step_height = static_cast<double>(window_height) / (max_value - min_value);

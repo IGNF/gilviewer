@@ -42,6 +42,7 @@ Authors:
 #include <wx/log.h>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 #include "gilviewer_frame.hpp"
 #include "gilviewer_app.hpp"
 
@@ -59,9 +60,22 @@ using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxString("Input files",wxConvUTF8), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } 
-};
+{   wxCMD_LINE_PARAM,
+    NULL,
+    NULL,
+#ifdef _WINDOWS
+    _("Input files"),
+#else
+  #if wxCHECK_VERSION(2,9,0)
+   "Input files",
+   #else
+   wxT("Input files"),
+   #endif
+#endif
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
+{   wxCMD_LINE_NONE } };
+
 
 IMPLEMENT_APP(gilviewer_app);
 
@@ -70,11 +84,6 @@ bool gilviewer_app::OnInit()
 #ifdef __LINUX__
     setlocale(LC_ALL, "POSIX");
 #endif
-
-    register_all_file_formats();
-#if GILVIEWER_USE_GDAL
-    OGRRegisterAll();
-#endif // GILVIEWER_USE_GDAL
 
     // Langage
     set_langage(wxLANGUAGE_FRENCH);
@@ -104,9 +113,9 @@ bool gilviewer_app::OnInit()
 	    m_frame->AddLayersFromFiles( cmdFiles );
 	    m_frame->Show();
     }
-    catch( std::exception &e )
+    catch( const std::exception &e )
     {
-        GILVIEWER_LOG_EXCEPTION("Exception")
+        GILVIEWER_LOG_EXCEPTION(e.what())
         wxString message(e.what(), *wxConvCurrent);
 	wxMessageBox( message );
     }
@@ -124,7 +133,12 @@ void gilviewer_app::set_langage(unsigned int language_id)
     // Load language if possible, fall back to english otherwise
     if(wxLocale::IsAvailable(language))
     {
-        locale = new wxLocale( language, wxLOCALE_CONV_ENCODING );
+        #if wxUSE_UNICODE ==0 || !wxCHECK_VERSION(2,9,0)
+        int flags = wxLOCALE_LOAD_DEFAULT|wxLOCALE_CONV_ENCODING;
+        #else
+        int flags = wxLOCALE_LOAD_DEFAULT;
+        #endif
+        locale = new wxLocale( language,flags);
 
 #		ifdef __WXGTK__
         // add locale search paths
@@ -140,7 +154,7 @@ void gilviewer_app::set_langage(unsigned int language_id)
 
         if(! locale->IsOk() )
         {
-        	wxLogMessage( _("Selected language is wrong!") );
+            GILVIEWER_LOG_MESSAGE("Selected language is wrong!")
             delete locale;
             locale = new wxLocale( wxLANGUAGE_ENGLISH );
             language = wxLANGUAGE_ENGLISH;
@@ -148,7 +162,7 @@ void gilviewer_app::set_langage(unsigned int language_id)
     }
     else
     {
-       	wxLogMessage( _("The selected langage is not supported by your system. Try installing support for this language.") );
+        GILVIEWER_LOG_MESSAGE("Selected language is wrong!")
         locale = new wxLocale( wxLANGUAGE_ENGLISH );
         language = wxLANGUAGE_ENGLISH;
     }

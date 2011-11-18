@@ -39,6 +39,7 @@ Authors:
 #ifndef __LAYER_TRANSFORM_HPP__
 #define __LAYER_TRANSFORM_HPP__
 
+
 #include <iostream>
 #include <wx/gdicmn.h>
 class layer_transform {
@@ -46,13 +47,13 @@ class layer_transform {
     void rotated_coordinate_from_local(double lx, double ly, double& gx, double& gy) const;
 
 public:
-  enum layerOrientation{
-      LO_0,
-      LO_90,
-      LO_180,
-      LO_270
-      };
-      
+    enum layerOrientation{
+        LO_0 = 0,
+        LO_90 = 1,
+        LO_180 = 2,
+        LO_270 = 3
+             };
+
     layer_transform() :
             m_zoomFactor(1.),
             m_translationX(0.), m_translationY(0.),
@@ -66,11 +67,11 @@ public:
             m_h(l.m_h),m_w(l.m_w),m_layer_orientation(l.m_layer_orientation)
     {}
     layer_transform& operator =(const layer_transform& l){
-            m_zoomFactor=l.m_zoomFactor;
-            m_translationX=l.m_translationX;m_translationY=l.m_translationY;
-            m_coordinates=l.m_coordinates;
-            m_h=l.m_h;m_w=l.m_w;m_layer_orientation=l.m_layer_orientation;
-            return *this;
+        m_zoomFactor=l.m_zoomFactor;
+        m_translationX=l.m_translationX;m_translationY=l.m_translationY;
+        m_coordinates=l.m_coordinates;
+        m_h=l.m_h;m_w=l.m_w;m_layer_orientation=l.m_layer_orientation;
+        return *this;
     }
 
     void zoom_factor(double zoomFactor) { m_zoomFactor = zoomFactor; }
@@ -154,5 +155,52 @@ private:
     unsigned int m_w;
     layerOrientation m_layer_orientation;
 };
+
+
+/// snapping ///
+
+#include "../convenient/wxrealpoint.hpp"
+// should be moved to its own header?...
+enum eSNAP //snap modes (may be bitwise-combined using the '&' operator)
+{
+    SNAP_NONE = 0,
+    SNAP_GRID = 1,
+    SNAP_LINE = 2,
+    SNAP_INTERSECTION = 4,
+    SNAP_POINT = 8,
+    SNAP_ALL = 15,
+    SNAP_MAX_ID = SNAP_ALL+1,
+};
+
+template<typename P>
+bool snap_segment(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p0, const P& _p1, wxRealPoint& psnap)
+{
+    wxRealPoint p0(_p0.x,_p0.y), p1(_p1.x,_p1.y);
+    wxRealPoint u(q -p0);
+    wxRealPoint v(p1-p0);
+    double t = dot(u,v)/dot(v,v);
+    if(t<0 || t> 1) return false;
+    wxRealPoint proj(p0+t*v);
+    double d = squared_distance(q,proj)*invzoom2;
+    if(d >= d2[SNAP_LINE] ) return false;
+    for(unsigned int k=0; k<SNAP_LINE; ++k) d2[k]=0;
+    d2[SNAP_LINE] = d;
+    psnap = trans.from_local(proj);
+    return true;
+
+}
+
+template<typename P>
+bool snap_point(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p, wxRealPoint& psnap )
+{
+    wxRealPoint p(_p.x,_p.y);
+    double d = squared_distance(q,p)*invzoom2;
+    if(d >= d2[SNAP_POINT] ) return false;
+    for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
+    d2[SNAP_POINT] = d;
+    psnap = trans.from_local(p);
+    return true;
+}
+
 
 #endif // __LAYER_TRANSFORM_HPP__
