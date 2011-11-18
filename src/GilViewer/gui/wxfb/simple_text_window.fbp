@@ -34,7 +34,7 @@
             <property name="name">simple_text_window</property>
             <property name="pos"></property>
             <property name="size">371,337</property>
-            <property name="style">wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE|wxMAXIMIZE_BOX</property>
+            <property name="style">wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE_BOX</property>
             <property name="subclass"></property>
             <property name="title"></property>
             <property name="tooltip"></property>

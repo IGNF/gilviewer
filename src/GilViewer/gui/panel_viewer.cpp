@@ -630,11 +630,21 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
             ori = m_layerControl->orientation();
         }
 
-        m_parent->GetStatusBar()->SetFieldsCount(nb + 1); //+1 pour les coord en pixels
+        m_parent->GetStatusBar()->SetFieldsCount(nb + 2); //+1 pour les coord en pixels
 
         unsigned int count = 0;
         bool affichageCartoDone = false;
 
+
+        std::ostringstream coordGlob;
+                    coordGlob << "Coord Glob : (";
+                    coordGlob << p.x;
+                    coordGlob << ",";
+                    coordGlob << p.y;
+                    coordGlob << ")";
+                    m_parent->SetStatusText(wxString(coordGlob.str().c_str(), *wxConvCurrent), count);
+                    ++count;
+                    
         {
             std::ostringstream coordPixel;
             wxRealPoint q = m_ghostLayer->transform().to_local(p);

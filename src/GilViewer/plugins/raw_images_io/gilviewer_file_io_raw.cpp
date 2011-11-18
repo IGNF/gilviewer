@@ -66,8 +66,15 @@ bool gilviewer_file_io_raw::Register(gilviewer_io_factory *factory)
     factory->insert("nef", "Image", "RAW", create_gilviewer_file_io_raw); // nikon
     factory->insert("pef", "Image", "RAW", create_gilviewer_file_io_raw); // pentax
     factory->insert("sr2", "Image", "RAW", create_gilviewer_file_io_raw); // sony
-    factory->insert("raw", "Image", "RAW", create_gilviewer_file_io_raw); //
-    factory->insert("dng", "Image", "RAW", create_gilviewer_file_io_raw); //
-    //factory->insert("3fr", "Image", "RAW", create_gilviewer_file_io_raw); // hasselblad // does not work: begins with a number?
+    factory->insert("arw", "Image", "RAW", create_gilviewer_file_io_raw); // sony
+    factory->insert("raw", "Image", "RAW", create_gilviewer_file_io_raw); // leica, panasonic (and others?)
+    factory->insert("dng", "Image", "RAW", create_gilviewer_file_io_raw); // leica
+    factory->insert("dcr", "Image", "RAW", create_gilviewer_file_io_raw); // kodak
+    factory->insert("kdc", "Image", "RAW", create_gilviewer_file_io_raw); // kodak
+    factory->insert("orf", "Image", "RAW", create_gilviewer_file_io_raw); // olympus
+    factory->insert("raf", "Image", "RAW", create_gilviewer_file_io_raw); // fuji  --> does not work
+    factory->insert("x3f", "Image", "RAW", create_gilviewer_file_io_raw); // sigma --> does not work
+    factory->insert("mrw", "Image", "RAW", create_gilviewer_file_io_raw); // minolta
+    factory->insert("3fr", "Image", "RAW", create_gilviewer_file_io_raw); // hasselblad
     return true;
 }
