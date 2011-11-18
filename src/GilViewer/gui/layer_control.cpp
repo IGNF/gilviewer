@@ -68,7 +68,7 @@ Authors:
 #include "../gui/vector_layer_settings_control.hpp"
 #include "../gui/image_layer_settings_control.hpp"
 #include "../gui/global_settings_control.hpp"
-#include "../gui/layer_infos_control_impl.h"
+#include "../gui/simple_text_window_impl.h"
 #include "../gui/layer_control_utils.hpp"
 #include "../gui/panel_viewer.hpp"
 #include "../gui/define_id.hpp"
@@ -79,6 +79,7 @@ Authors:
 
 #include "../tools/orientation_2d.hpp"
 #include "../tools/color_lookup_table.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
 
 #include "../convenient/utils.hpp"
 #include "../convenient/macros_gilviewer.hpp"
@@ -94,24 +95,24 @@ using namespace boost::filesystem;
 using namespace std;
 
 BEGIN_EVENT_TABLE(layer_control, wxFrame)
-    EVT_TOOL(wxID_OPEN,layer_control::on_open_layer)
-    EVT_CLOSE(layer_control::on_close_window)
-    EVT_BUTTON(ID_INFO,layer_control::on_info_button)
-    EVT_BUTTON(ID_SAVE,layer_control::on_save_button)
-    EVT_BUTTON(ID_DELETE,layer_control::on_delete_button)
-    EVT_TOOL(wxID_RESET,layer_control::on_reset)
-    EVT_BUTTON(wxID_UP,layer_control::on_layer_up)
-    EVT_BUTTON(wxID_DOWN,layer_control::on_layer_down)
-    EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::on_visibility_button)
-    EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::on_transformation_button)
-    EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::on_global_settings_button)
-    EVT_BUTTON(wxID_SAVE,layer_control::on_save_display_config_button)
-    EVT_BUTTON(wxID_OPEN,layer_control::on_load_display_config_button)
-    EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
-END_EVENT_TABLE()
+        EVT_TOOL(wxID_OPEN,layer_control::on_open_layer)
+        EVT_CLOSE(layer_control::on_close_window)
+        EVT_BUTTON(ID_INFO,layer_control::on_info_button)
+        EVT_BUTTON(ID_SAVE,layer_control::on_save_button)
+        EVT_BUTTON(ID_DELETE,layer_control::on_delete_button)
+        EVT_TOOL(wxID_RESET,layer_control::on_reset)
+        EVT_BUTTON(wxID_UP,layer_control::on_layer_up)
+        EVT_BUTTON(wxID_DOWN,layer_control::on_layer_down)
+        EVT_BUTTON(ID_VISIBILITY_BUTTON,layer_control::on_visibility_button)
+        EVT_BUTTON(ID_TRANSFORMATION_BUTTON,layer_control::on_transformation_button)
+        EVT_BUTTON(ID_GLOBAL_SETTINGS_BUTTON,layer_control::on_global_settings_button)
+        EVT_BUTTON(wxID_SAVE,layer_control::on_save_display_config_button)
+        EVT_BUTTON(wxID_OPEN,layer_control::on_load_display_config_button)
+        EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
+        END_EVENT_TABLE();
 
-layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
+layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size):
+wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
 {
     m_layers.reserve(100);
 
@@ -203,15 +204,16 @@ void layer_control::on_close_window(wxCloseEvent& WXUNUSED(event))
     Hide();
 }
 
-void layer_control::add_row(const std::string &name, layer_settings_control *layersettings, const std::string &tooltip)
+void layer_control::add_row(const string &name, layer_settings_control *layersettings, const string &tooltip)
 {
     // Le nom du layer a une longueur maximale de 20 caracteres
     wxString layerName(name.substr(0, 50).c_str(), *wxConvCurrent);
-    std::string ln((const char*)(layerName.mb_str()) );
+    string ln((const char*)(layerName.mb_str()) );
 
     // on ajoute la ligne dans le conteneur
-    unsigned int nb = m_rows.size();
-    m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, nb, layersettings, tooltip)));
+    m_rows.push_back(boost::shared_ptr<layer_control_row>(new layer_control_row(this, ln, static_cast<unsigned int>(m_rows.size()), layersettings, tooltip)));
+
+    m_sizer->SetRows(static_cast<int>(m_rows.size())+1 );
     // On ajoute a proprement parler les controles de la ligne dans le layer_control
     m_rows.back()->m_nameStaticText->selected(true);
     m_sizer->Add(m_rows.back()->m_nameStaticText, 0, wxTOP | wxALIGN_LEFT, 5);
@@ -228,6 +230,7 @@ void layer_control::add_row(const std::string &name, layer_settings_control *lay
     m_sizer->Add(m_rows.back()->m_boxSizer, wxGROW);
     m_sizer->Fit(m_scroll);
     m_scroll->Layout();
+    notify();
 }
 
 void layer_control::init_toolbar(wxToolBar* toolBar)
@@ -248,6 +251,7 @@ void layer_control::update()
         m_rows[id]->m_transformationCheckBox->SetValue( m_layers[id]->transformable() );
         m_rows[id]->m_visibilityCheckBox->SetValue( m_layers[id]->visible() );
     }
+    notify();
 }
 
 void layer_control::on_info_button(wxCommandEvent& event)
@@ -258,9 +262,10 @@ void layer_control::on_info_button(wxCommandEvent& event)
     wxString title(_("Infos: "));
     title << wxString(m_layers[id]->name().c_str(), *wxConvCurrent);
     //layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
-    layer_infos_control_impl *lic = new layer_infos_control_impl(this);
-    lic->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
-    lic->Show();
+    simple_text_window_impl *layer_info_window = new simple_text_window_impl(this);
+    layer_info_window->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
+    layer_info_window->SetSize(layer_info_window->GetMinSize());
+    layer_info_window->Show();
 }
 
 void layer_control::on_save_button(wxCommandEvent& event)
@@ -268,15 +273,15 @@ void layer_control::on_save_button(wxCommandEvent& event)
     // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
-    std::string file = m_layers[id]->filename();
+    string file = m_layers[id]->filename();
 
-    #if wxMINOR_VERSION < 9
+#if wxMINOR_VERSION < 9
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
-        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
-    #else
+                                                wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
+#else
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
-        wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
-    #endif
+                                                wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
+#endif
     if (fileDialog->ShowModal() == wxID_OK)
     {
         string filename(fileDialog->GetFilename().To8BitData());
@@ -285,13 +290,13 @@ void layer_control::on_save_button(wxCommandEvent& event)
         to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file_out = gilviewer_io_factory::instance()->create_object(extension);
+            boost::shared_ptr<gilviewer_file_io> file_out = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
             file_out->save(layers()[id],filename);
         }
         catch( std::exception &e )
         {
-            GILVIEWER_LOG_EXCEPTION("")
-        }
+            GILVIEWER_LOG_EXCEPTION(e.what())
+                }
     }
 }
 
@@ -334,13 +339,13 @@ void layer_control::on_refresh_button(wxCommandEvent& event)
     to_lower(ext);
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(ext);
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(ext);
         m_layers[id] = file->load(m_layers[id]->filename());
     }
     catch(const std::exception &e)
     {
         GILVIEWER_LOG_EXCEPTION("Unable to refresh layer!")
-        return;
+                return;
     }
 
     m_layers[id]->needs_update(true);
@@ -393,50 +398,9 @@ void layer_control::on_reset(wxCommandEvent& event)
 
 void layer_control::on_open_layer(wxCommandEvent& event)
 {
-    // TODO: use extensions registered in the factory
-    /*
-    wxString wildcard;
-    wildcard << _("All supported files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp;*.txt;*.xml;*.bin");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT("*.shp;*.kml)");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT("|*.tif;*.tiff;*.TIF;*.TIFF;*.png;*.PNG;*.jpg;*.jpeg;*.JPG;*.JPEG;*.bmp;*.BMP;*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT(";*.shp;*.SHP;*.kml;*.KML");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT("|");
-    wildcard << _("Image files ");
-    wildcard << wxT("(*.tif;*.tiff;*.png;*.jpg;*.jpeg)|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|");
-    wildcard << wxT("TIFF (*.tif;*.tiff)|*.tif;*.tiff;*.TIF;*.TIFF|");
-    wildcard << wxT("PNG (*.png)|*.png;*.PNG|");
-    wildcard << wxT("JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg;*.JPG;*.JPEG|");
-    wildcard << wxT("BMP (*.bmp)|*.bmp;*.BMP|");
-    wildcard << _("Vector files ");
-    wildcard << wxT("(*.txt;*.xml;*.bin");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT(";*.shp;*.kml");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT(")|*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT(";*.shp;*.SHP;*.kml;*.KML");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << wxT("|");
-    wildcard << wxT("Serialization text (*.txt)|*.txt;*.TXT|");
-    wildcard << wxT("Serialization xml (*.xml)|*.xml;*.XML|");
-    wildcard << wxT("Serialization binary (*.bin)|*.bin;*.BIN|");
-#   if GILVIEWER_USE_GDAL
-        wildcard << wxT("Shapefile (*.shp)|*.shp;*.SHP|");
-        wildcard << wxT("KML (*.kml)|*.kml;*.KML|");
-#   endif // GILVIEWER_USE_GDAL
-    wildcard << _("Custom format ");
-    wildcard << wxT("(*)|*");
-    */
     string wild = gilviewer_utils::build_wx_wildcard_from_io_factory();
     wxString wildcard(wild.c_str(), *wxConvCurrent);
-    //wxString str;
-    //wxConfigBase::Get()->Read(_T("/Paths/WorkingDirectory"), &str, ::wxGetCwd());
-    wxFileDialog *fileDialog = new wxFileDialog(this, _("Open image or shapefile"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
+    wxFileDialog *fileDialog = new wxFileDialog(this, _("Open file"), wxT(""), wxT(""), wildcard, wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_MULTIPLE );
 
     if (fileDialog->ShowModal() == wxID_OK)
     {
@@ -458,17 +422,8 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
     wxProgressDialog *progress = NULL;
     //wxProgressDialog *progressLargeFile = NULL;
 
-    //Liste des formats gérés par le viewer
-    std::list<std::string> image_formats;
-    image_formats.push_back(".tif");
-    image_formats.push_back(".tiff");
-    image_formats.push_back(".jpg");
-    image_formats.push_back(".jpeg");
-    image_formats.push_back(".png");
-    image_formats.push_back(".bmp");
-
     if (names.GetCount() >= 2)
-        progress = new wxProgressDialog(_("Opening files ..."), _("Reading ..."), names.GetCount(), NULL, wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
+        progress = new wxProgressDialog(_("Opening files ..."), _("Reading ..."), static_cast<unsigned int>(names.GetCount()), NULL, wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
 
     for (i = 0; i < names.GetCount(); ++i)
     {
@@ -480,32 +435,30 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
             progress->Update(i, m);
         }
 
-        string filename((const char*) (names[i].mb_str()) );
-        string extension(filesystem::extension(filename));
-        extension = extension.substr(1,extension.size()-1);
-        to_lower(extension);
-        try
-        {
-            shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
-            add_layer( file->load(filename) );
-        }
-        catch (const std::exception &e)
-        {
-            if (progress)
-                progress->Destroy();
-            GILVIEWER_LOG_EXCEPTION("")
-        }
-        //else
-        //{
-        //c'est un format supporté par une appli dérivée du viewer -> on redirige vers PanelViewer::OpenCustomFormat
-        // m_basicDrawPane->OpenCustomFormat(string(names[i].fn_str()));
-        // !!!!!!!!!!! You now have to register the format in the factory !!!!!!!!!!!
-        //}
+        add_layer_from_file(names[i]);
     }
 
-    m_basicDrawPane->Refresh();
     if (progress) progress->Destroy();
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
+}
+
+
+void layer_control::add_layer_from_file( const wxString &name )
+{
+    string filename((const char*) (name.mb_str()) );
+    string extension(filesystem::extension(filename));
+    extension = extension.substr(1,extension.size()-1);
+    to_lower(extension);
+    try
+    {
+            boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+        add_layer( file->load(filename) );
+        m_basicDrawPane->Refresh();
+    }
+    catch (const std::exception &e)
+    {
+        GILVIEWER_LOG_EXCEPTION(e.what());
+    }
 }
 
 void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transform)
@@ -513,12 +466,12 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     if (!layer) return;
 
     // On ajoute le calque dans le conteneur
-    layer->notify_layer_control( bind( &layer_control::update, this ) );
+    layer->notify_layer_control( boost::bind( &layer_control::update, this ) );
     m_layers.push_back(layer);
 
     // On construit le SettingsControl en fonction du type de calque ajoute
-    layer_settings_control *settingscontrol = layer->build_layer_settings_control(m_layers.size()-1, this);
-    layer->notify_layer_settings_control( bind( &layer_settings_control::update, settingscontrol ) );
+    layer_settings_control *settingscontrol = layer->build_layer_settings_control(static_cast<unsigned int>(m_layers.size())-1, this);
+    layer->notify_layer_settings_control( boost::bind( &layer_settings_control::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     add_row(layer->name(), settingscontrol, layer->filename());
 
@@ -527,15 +480,15 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     {
         m_ori = layer->orientation();
         m_isOrientationSet = true;
-        wxLogMessage(_("Viewer orientation has been set!"));
+        GILVIEWER_LOG_MESSAGE("Viewer orientation has been set!");
     }
     else if (!m_isOrientationSet && m_layers.size() > 1 && layer->has_ori())
     {
-        wxLogMessage(_("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!"));
+        GILVIEWER_LOG_MESSAGE("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!");
     }
     else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori() && !has_transform)
     {
-        wxLogMessage(_("Image layer position initialised with respect to first image!"));
+        GILVIEWER_LOG_MESSAGE("Image layer position initialised with respect to first image!");
         layer->transform()=m_ghostLayer->transform();
 
     }
@@ -544,7 +497,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     //sa position initiale et son zoom
     if (m_isOrientationSet && layer->has_ori())
     {
-        wxLogMessage(_("Image layer position initialised with respect to global orientation!"));
+        GILVIEWER_LOG_MESSAGE("Image layer position initialised with respect to global orientation!");
 
         const boost::shared_ptr<orientation_2d> &oriLayer = layer->orientation();
 
@@ -560,7 +513,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     //Si il y a une orientation definie pour le viewer et qu'on a affaire a une couche vecteur :
     if (m_isOrientationSet && layer->layer_type_as_string() == "Vector")
     {
-        wxLogMessage(_("Vector layer position initialised with respect to global orientation!"));
+        GILVIEWER_LOG_MESSAGE("Vector layer position initialised with respect to global orientation!");
 
         double translationInitX =-m_ori->origin_x();
         double translationInitY = m_ori->origin_y();
@@ -585,6 +538,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     Refresh();
     m_parent->Refresh();
     m_basicDrawPane->Refresh();
+    notify();
 }
 
 
@@ -592,11 +546,20 @@ layer::ptrLayerType layer_control::get_layer_with_id(unsigned int id)const{
     for(LayerContainerType::const_iterator it=m_layers.begin();it!=m_layers.end();++it)
         if((*it)->getId()==id)
             return (*it);
-            
+
     return layer::ptrLayerType() ;
 }
 
-    
+layer::ptrLayerType layer_control::get_layer_with_filename(const string&filename)const
+{
+    for(LayerContainerType::const_iterator it=m_layers.begin();it!=m_layers.end();++it)
+        if((*it)->filename()==filename)
+            return (*it);
+
+    return layer::ptrLayerType() ;
+}
+
+
 void layer_control::delete_layer(unsigned int index){
     if(m_layers.size()<=index)
         return;
@@ -635,8 +598,9 @@ void layer_control::delete_layer(unsigned int index){
     if (m_layers.empty())
         m_isOrientationSet = false;
 
+    notify();
 }
-    
+
 boost::shared_ptr<orientation_2d> layer_control::orientation() const
 {
     return m_ori;
@@ -646,29 +610,19 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
 {
     if (firstRow < 0 || secondRow < 0)
     {
-        std::ostringstream oss;
-        oss << "You passed a negative index for a row !" << std::endl;
-        oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << std::endl;
-        oss << "File : " << __FILE__ << std::endl;
-        oss << "Line : " << __LINE__ << std::endl;
-        oss << "Function : " << __FUNCTION__ << std::endl;
-        std::string mess(oss.str());
-        wxString mes(mess.c_str(), *wxConvCurrent);
-        wxLogMessage(mes);
+        ostringstream os;
+        os << "You passed a negative index for a row !" << endl;
+        os << "firstRow = " << firstRow << "  --  secondRow = " << secondRow;
+        GILVIEWER_LOG_ERROR(os.str());
         return;
     }
     else if (firstRow >= m_rows.size() || secondRow >= m_rows.size())
     {
-        std::ostringstream oss;
-        oss << "You passed an invalid index for a row !" << std::endl;
-        oss << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << std::endl;
-        oss << "m_numberOfLayers = " << m_rows.size() << std::endl;
-        oss << "File : " << __FILE__ << std::endl;
-        oss << "Line : " << __LINE__ << std::endl;
-        oss << "Function : " << __FUNCTION__ << std::endl;
-        std::string mess(oss.str());
-        wxString mes(mess.c_str(), *wxConvCurrent);
-        wxLogMessage(mes);
+        ostringstream os;
+        os << "You passed an invalid index for a row !" << endl;
+        os << "firstRow = " << firstRow << "  --  secondRow = " << secondRow << endl;
+        os << "m_numberOfLayers = " << m_rows.size();
+        GILVIEWER_LOG_ERROR(os.str());
         return;
     }
 
@@ -729,6 +683,7 @@ void layer_control::swap_rows(const unsigned int firstRow, const unsigned int se
         m_rows[firstRow]->m_saveButton->Enable( m_layers[firstRow]->saveable() );
         m_rows[secondRow]->m_saveButton->Enable( m_layers[secondRow]->saveable() );
     }
+    notify();
 }
 
 void layer_control::on_layer_up(wxCommandEvent& WXUNUSED(event))
@@ -805,7 +760,7 @@ void layer_control::on_save_display_config_button(wxCommandEvent& event)
     wxFileDialog* fd = new wxFileDialog(this, _("Save display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
     if (fd->ShowModal() == wxID_OK)
     {
-        std::string savename((const char*) (fd->GetPath().mb_str()) );
+        string savename((const char*) (fd->GetPath().mb_str()) );
         if (filesystem::extension(savename) != ".xml")
             filesystem::change_extension(savename, ".xml");
 
@@ -820,14 +775,14 @@ void layer_control::on_load_display_config_button(wxCommandEvent& event)
     wxFileDialog* fd = new wxFileDialog(this, _("Load display configuration"), wxT(""), wxT(""), wxT("*.xml"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
     if (fd->ShowModal() == wxID_OK)
     {
-        wxString message;
-        message << _("Reading a display configuration file: ") << fd->GetPath();
-        wxLogMessage(message);
+        ostringstream os;
+        os << _("Reading a display configuration file: ") << (const char*) (fd->GetPath().mb_str());
+        GILVIEWER_LOG_MESSAGE(os.str());
 
-        std::string loadname((const char*) (fd->GetPath().mb_str()) );
+        string loadname((const char*) (fd->GetPath().mb_str()) );
         if (filesystem::extension(loadname) != ".xml")
         {
-            wxLogMessage(_("Display configuration file must have the extension .xml !"), _("Error!"));
+            GILVIEWER_LOG_ERROR("Display configuration file must have the extension .xml !");
             return;
         }
 
@@ -843,20 +798,20 @@ void layer_control::on_delete_all_rows_button(wxCommandEvent& event)
     while( m_rows.size() > 0 )
     {
         wxCommandEvent event;
-        event.SetInt(m_rows.size());
+        event.SetId(static_cast<unsigned int> (m_rows.size()+ID_DELETE));
         on_delete_button(event);
     }
 }
 
 void layer_control::create_new_image_layer_with_parameters(const ImageLayerParameters &parameters)
 {
-    std::string filename(parameters.path.c_str());
+    string filename(parameters.path.c_str());
     string extension(filesystem::extension(filename));
     extension = extension.substr(1,extension.size()-1);
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
@@ -883,21 +838,21 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
         this->m_layers.back()->notifyLayerControl_();
         this->m_layers.back()->notifyLayerSettingsControl_();
     }
-    catch (std::exception &e)
+    catch (const std::exception &e)
     {
-        GILVIEWER_LOG_EXCEPTION("")
-    }
+        GILVIEWER_LOG_EXCEPTION(e.what())
+            }
 }
 
 void layer_control::create_new_vector_layer_with_parameters(const VectorLayerParameters &parameters)
 {
-    std::string filename(parameters.path.c_str());
+    string filename(parameters.path.c_str());
     string extension(filesystem::extension(filename));
     extension = extension.substr(1,extension.size()-1);
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         add_layer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...
@@ -937,6 +892,74 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
     }
     catch (std::exception &e)
     {
-        GILVIEWER_LOG_EXCEPTION("")
+        GILVIEWER_LOG_EXCEPTION(e.what())
+            }
+}
+
+class idClientData : public wxClientData
+{
+    unsigned int m_id;
+public:
+    idClientData(unsigned int id) : m_id(id) {}
+    inline unsigned int id() const { return m_id; }
+};
+
+
+template void layer_control::update_control<vector_layer>(wxControlWithItems *control, bool notified);
+template void layer_control::update_control<image_layer >(wxControlWithItems *control, bool notified);
+
+template<typename T>
+void layer_control::update_control(wxControlWithItems *control, bool notified)
+{
+    // get the layer_id of the currently selected layer
+    int layer_id = -1;
+    wxArrayString non_layers;
+    int control_id = control->GetSelection();
+    for(unsigned int i= 0;i<control->GetCount();++i)
+    {
+        idClientData * icd = static_cast<idClientData*>( control->GetClientData(i) );
+        if(!icd) non_layers.Add(control->GetString(i));
+        else if(control_id == (int) i) layer_id = icd->id();
     }
+
+    // clear the control
+    control->Clear();
+    control->Append(non_layers);
+
+    // add the matching layers to the control, while selecting in the control the selected layer, if still present
+    control_id = 0;
+    layer_control::const_iterator itb=begin(), ite=end();
+    for(unsigned int i=0;itb!=ite;++itb,++i)
+    {
+        if(!rows()[i]->m_nameStaticText->selected()) continue;
+        if(!dynamic_pointer_cast<T>((*itb))) continue;
+        unsigned int id = (*itb)->getId();
+        wxString text((*itb)->filename().c_str(), *wxConvCurrent);
+        idClientData *data = new idClientData(id);
+        int appended_id = control->Append(text, data);
+        if(layer_id==(int) id) control_id = appended_id;
+    }
+    if(!control->IsEmpty()) control->SetSelection(control_id);
+    if(notified)
+        m_notifications.push_back(boost::bind(&layer_control::update_control<T>,this,control,false));
+}
+
+void layer_control::notify()
+{
+    for(std::vector<boost::function<void()> >::iterator it=m_notifications.begin(); it!=m_notifications.end(); ++it)
+        (*it)();
+}
+
+
+layer::ptrLayerType layer_control::selected_layer(wxControlWithItems *control) const
+{
+    int id_control = control->GetSelection();
+    if(id_control==wxNOT_FOUND)
+    {
+        GILVIEWER_LOG_MESSAGE("[rectangles2footprints_plugin::process] You must select an image layer");
+        return layer::ptrLayerType() ;
+    }
+    // Now, retrieve the layers in the layer_control from their ids
+    unsigned int id_layer = static_cast<idClientData *>( control->GetClientData(id_control) )->id();
+    return get_layer_with_id( id_layer );
 }

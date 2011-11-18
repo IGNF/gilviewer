@@ -36,15 +36,13 @@ Authors:
 
 ***********************************************************************/
 
-#ifndef VECTORLAYERGENERIC_H_
-#define VECTORLAYERGENERIC_H_
+#ifndef VECTOR_LAYER_GHOST_HPP
+#define VECTOR_LAYER_GHOST_HPP
 
-#include <utility>
 #include <vector>
 
 #include <wx/pen.h>
 #include <wx/brush.h>
-#include <wx/gdicmn.h>
 
 #include "layer_transform.hpp"
 #include "boost/variant.hpp"
@@ -62,10 +60,10 @@ public:
     // input types
     struct Nothing {};
     typedef wxRealPoint Point;
-    typedef std::pair<wxRealPoint,wxRealPoint> Rectangle;
-    typedef std::pair<wxRealPoint,double> Circle;
-    class Polyline : public std::vector<wxRealPoint> {};
-    class Polygon : public std::vector<wxRealPoint> {};
+    typedef std::pair<Point,Point> Rectangle;
+    typedef std::pair<Point,double> Circle;
+    class Polyline : public std::vector<Point> {};
+    class Polygon : public std::vector<Point> {};
     typedef boost::variant<Nothing,Point,Rectangle,Circle,Polyline,Polygon> variant_input;
 
 
@@ -75,7 +73,8 @@ public:
     template<typename T> void reset()
     {
         m_input = T();
-        m_complete = true;
+        m_complete = false;
+        m_num_inputs = 0;
     }
 
     // drawing and geometry modifications
@@ -95,17 +94,21 @@ public:
     const layer_transform& transform() const { return m_layer_transform; }
 
     // input is ready for consumption
-    inline bool complete() const { return m_complete; }
+    bool complete() const { return m_complete; }
     inline void complete(bool c) { m_complete = c; }
+    inline unsigned int num_inputs() const { return m_num_inputs; }
 
     // get the input
     const variant_input& get() const { return m_input; }
     template<typename T> inline const T* get() const { return boost::get<T>(&m_input); }
 
+    bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap );
+
 private:
     layer_transform m_layer_transform;
     variant_input m_input;
     bool m_complete;
+    unsigned int m_num_inputs;
 };
 
-#endif /*VECTORLAYERGENERIC_H_*/
+#endif /*VECTOR_LAYER_GHOST_HPP*/

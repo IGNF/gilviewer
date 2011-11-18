@@ -1,23 +1,22 @@
 set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES}
                                            ${Boost_LIBRARIES}
-                                           ${TIFF_LIBRARIES}
                                            ${JPEG_LIBRARIES}
-                                           tinyxml)                                
+                                           tinyxml
+                                            )
 if(WIN32)    
 else()
     set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES}
                                            ${PNG_LIBRARIES}
-                                           ${ZLIB_LIBRARIES})
+                                           ${ZLIB_LIBRARIES} )
 endif()
 
 # Option to choose to use GDAL/OGR
-option(USE_GDAL_OGR "Build GilViewer with GDAL/OGR" OFF)
+# Find GDAL
+find_package(GDAL QUIET)
+option(USE_GDAL_OGR "Build GilViewer with GDAL/OGR" GDAL_FOUND)
 if(USE_GDAL_OGR)
-    # Find GDAL
-    find_package(GDAL)
     if(GDAL_FOUND)
-        include_directories(${GDAL_INCLUDE_DIR})
-        set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${GDAL_LIBRARY} )
+ #       set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${GDAL_LIBRARY} )
     else()
         message(FATAL_ERROR "GDAL not found!")
     endif()
@@ -27,13 +26,13 @@ else()
 endif()
 
 # Option to choose to use CGAL
-option(USE_CGAL "Build GilViewer with CGAL" OFF)
+# Find CGAL
+find_package(CGAL COMPONENTS Core QUIET)
+option(USE_CGAL "Build GilViewer with CGAL" CGAL_FOUND)
 if(USE_CGAL)
-    # Find CGAL
-    find_package(CGAL COMPONENTS Core)
     if(CGAL_FOUND)
-        include( ${CGAL_USE_FILE} )
-        set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${CGAL_LIBRARIES}  ${CGAL_3RD_PARTY_LIBRARIES} )
+#        include( ${CGAL_USE_FILE} )
+#        set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${CGAL_LIBRARIES}  ${CGAL_3RD_PARTY_LIBRARIES} )
     else()
         message(FATAL_ERROR "CGAL not found!")
     endif()
@@ -50,6 +49,19 @@ else()
     set( GILVIEWER_USE_GDALJP2 0 )
 endif()
 
+find_package(TIFF REQUIRED)
+if(TIFF_FOUND)
+    include_directories(${TIFF_INCLUDE_DIR})
+	# Try to find tiffio.hxx
+	find_path( FIND_TIFFIO_HXX tiffio.hxx PATH ${TIFF_INCLUDE_DIR} )
+	if( NOT FIND_TIFFIO_HXX )
+		message( "Unable to find tiffio.hxx --> adding a path to a file taken somewhere (may be risky?)" )
+		include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/extern/tiff )
+	endif()
+    set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${TIFF_LIBRARIES} )
+else()
+    message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
+endif()
 
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config.hpp.cmake.in ${CMAKE_CURRENT_SOURCE_DIR}/src/GilViewer/config/config.hpp )
@@ -73,4 +85,27 @@ ADD_LIBRARY( GilViewer ${GILVIEWER_LIBRARY_TYPE} ${ALL_VIEWER_SOURCES} ${ALL_VIE
 TARGET_LINK_LIBRARIES( GilViewer ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} )
 IF(WIN32)
     SET_TARGET_PROPERTIES(GilViewer PROPERTIES COMPILE_DEFINITIONS "${wxWidgets_DEFINITIONS}" )
+	if(${MSVC_VERSION} NOT EQUAL "")
+		if (${MSVC_VERSION} EQUAL 1600)
+			string(REGEX MATCH "UNICODE" WXDEFS_CONTAINS_UNICODE "${wxWidgets_DEFINITIONS}" )
+			string( COMPARE EQUAL "UNICODE" "${WXDEFS_CONTAINS_UNICODE}" WXDEFS_CONTAINS_UNICODE_BOOL )
+			if( ${WXDEFS_CONTAINS_UNICODE_BOOL} )
+				message( STATUS "wxWidgets_DEFINITIONS contains UNICODE" )
+			else()
+				add_definitions( /Zc:wchar_t- )
+				message( STATUS "wxWidgets_DEFINITIONS does NOT contain UNICODE" )
+			endif()
+		endif()
+	else()
+        if(${MSVC10})
+			string(REGEX MATCH "UNICODE" WXDEFS_CONTAINS_UNICODE "${wxWidgets_DEFINITIONS}" )
+			string( COMPARE EQUAL "UNICODE" "${WXDEFS_CONTAINS_UNICODE}" WXDEFS_CONTAINS_UNICODE_BOOL )
+			if( ${WXDEFS_CONTAINS_UNICODE_BOOL} )
+				message( STATUS "wxWidgets_DEFINITIONS contains UNICODE" )
+			else()
+				add_definitions( /Zc:wchar_t- )
+				message( STATUS "wxWidgets_DEFINITIONS does NOT contain UNICODE" )
+			endif()
+        endif()
+	endif()
 ENDIF(WIN32)

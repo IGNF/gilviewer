@@ -46,7 +46,7 @@ Authors:
 #include <wx/log.h>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
-#include "GilViewer/layers/ogr_vector_layer.hpp"
+#include "GilViewer/plugins/GDAL/ogr_vector_layer.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
 #include "GilViewer/convenient/macros_gilviewer.hpp"
 #include "sample_vector_layer_viewer.hpp"
@@ -62,8 +62,21 @@ using namespace std;
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-{ wxCMD_LINE_PARAM, NULL, NULL, wxString("Input files", wxConvUTF8), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-{ wxCMD_LINE_NONE } };
+    {   wxCMD_LINE_PARAM,
+    NULL,
+    NULL,
+#ifdef _WINDOWS
+    _("Input files"),
+#else
+   #if wxCHECK_VERSION(2,9,0)
+   "Input files",
+   #else
+   wxT("Input files"),
+   #endif
+#endif
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+    {   wxCMD_LINE_NONE } };
 
 #ifdef __LINUX__
 #	include <locale.h>
@@ -76,11 +89,6 @@ bool sample_vector_layer_app::OnInit()
 #ifdef __LINUX__
     setlocale(LC_ALL, "POSIX");
 #endif
-
-    register_all_file_formats();
-#if GILVIEWER_USE_GDAL
-    OGRRegisterAll();
-#endif // GILVIEWER_USE_GDAL
 
     try
     {
@@ -131,9 +139,8 @@ bool sample_vector_layer_app::OnInit()
     }
     catch( std::exception &e )
     {
-        GILVIEWER_LOG_EXCEPTION("Exception")
-        wxString message(oss.str().c_str(), *wxConvCurrent);
-	::wxMessageBox( message );
+        GILVIEWER_LOG_EXCEPTION(e.what())
+        wxMessageBox(_("Exception: see log!"), _("Exception!"), wxICON_ERROR);
     }
 
     return true;

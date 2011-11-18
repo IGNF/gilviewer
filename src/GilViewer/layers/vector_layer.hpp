@@ -54,9 +54,6 @@ public:
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
     virtual void update(int width, int height) {};
 
-    virtual std::string available_formats_wildcard() const;
-    virtual std::vector<std::string> available_formats_extensions() const;
-
     // Accessors
     virtual std::string layer_type_as_string() const {return "Vector";}
     virtual bool saveable() const {return true;}
@@ -66,6 +63,9 @@ public:
     virtual bool text_visibility() const { return m_is_text_visible; }
 
     virtual void clear();
+
+    virtual unsigned int num_polygons() const { return 0; }
+    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const {}
 
 private:
     // Textx display

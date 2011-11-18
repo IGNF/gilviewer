@@ -42,13 +42,13 @@ Authors:
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 
-#include "../layers/layer.hpp"
+#include "layer.hpp"
 
 class orientation_2d;
 class color_lookup_table;
 
 // forward declaration of image types
-struct image_type;
+struct gilviewer_image_type;
 struct view_type;
 struct variant_view_type;
 class alpha_image_type;
@@ -61,46 +61,27 @@ class image_layer : public layer
 public:
 
 
-    typedef image_type       image_t;
+    typedef gilviewer_image_type       image_t;
     typedef variant_view_type variant_view_t;
     typedef alpha_image_type alpha_image_t;
     typedef boost::shared_ptr<image_t      > image_ptr;
     typedef boost::shared_ptr<variant_view_t       > variant_view_ptr;
     typedef boost::shared_ptr<alpha_image_t> alpha_image_ptr;
 
-    //image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const view_ptr& view=view_ptr() );
     image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr() );
-    image_layer(const variant_view_ptr &variant_view_, const std::string &name_, const std::string &filename_="");
     virtual ~image_layer() {}
-/*
-    // local<->global transforms. Default: pixel-centered
-    virtual wxRealPoint from_local(const wxRealPoint &p) const
-    {
-        //wxPoint res=rotated_coordinate(p);
-        //wxRealPoint res=rotated_coordinate_from_local(p);
-        return transform().from_local(p);
-    }
-
-    virtual wxRealPoint to_local(const wxRealPoint &p) const
-    {
-        //wxRealPoint res=transform().to_local(p);
-        //return rotated_coordinate_to_local(p);
-        return transform().to_local(p);
-    }
-*/
 
 protected:
     void init();
 
 
 public:
-    static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer");
-    static ptrLayerType create_image_layer(const variant_view_ptr &variant_view_, const std::string &name);
+    static ptrLayerType create_image_layer(const image_ptr &image, const std::string &name ="Image Layer", const std::string& filename="", const variant_view_ptr& variant_view=variant_view_ptr());
 
     virtual void update(int width, int height);
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
 
-    virtual unsigned int nb_components() const ;
+    virtual size_t nb_components() const ;
     std::string type_channel() const;
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const;
     virtual std::string pixel_value(const wxRealPoint& p) const;
@@ -154,7 +135,6 @@ public:
     virtual image_ptr image() const { return m_img; }
     virtual variant_view_ptr  variant_view() const { return m_variant_view; }
 
-    virtual std::vector<std::string> available_formats_extensions() const;
     virtual std::string available_formats_wildcard() const;
     virtual bool saveable() const {return true;}
     virtual std::string get_layer_type_as_string() const {return "Image";}
@@ -175,7 +155,7 @@ public:
 
     double m_dx, m_dy;
 
-    std::pair<float, float> m_minmaxResult;
+    std::pair<double, double> m_minmaxResult;
 
     boost::shared_ptr<wxBitmap> m_bitmap;
     unsigned int m_red, m_green, m_blue;

@@ -41,8 +41,9 @@ Authors:
 #include <wx/brush.h>
 #include <wx/log.h>
 
-#include "../gui/vector_layer_settings_control.hpp"
-#include "../convenient/wxrealpoint.hpp"
+#include "GilViewer/gui/vector_layer_settings_control.hpp"
+#include "GilViewer/convenient/wxrealpoint.hpp"
+#include "GilViewer/convenient/utils.hpp"
 
 #include "simple_vector_layer.hpp"
 
@@ -51,13 +52,13 @@ Authors:
 using namespace std;
 
 simple_vector_layer::simple_vector_layer(const std::string& layer_name): vector_layer(),
-m_circles(std::vector<CircleType>() ),
-m_ellipses(std::vector<EllipseType>() ),
-m_rotatedellipses(std::vector<RotatedEllipseType> ()),
-m_arcs(std::vector<ArcType> ()),
-m_points(std::vector<PointType> ()),
-m_splines(std::vector< std::vector<PointType> > ()),
-m_polygons(std::vector< std::vector<PointType> > ())
+m_circles(std::vector<circle_type>() ),
+m_ellipses(std::vector<ellipse_type>() ),
+m_rotatedellipses(std::vector<rotated_ellipse_type> ()),
+m_arcs(std::vector<arc_type> ()),
+m_points(std::vector<point_type> ()),
+m_splines(std::vector< spline_type > ()),
+m_polygons(std::vector< polygon_type > ())
 {
     m_name=layer_name;
 
@@ -105,7 +106,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         points.reserve( m_rotatedellipses[i].controlPoints.size() );
         for (unsigned int j=0;j<m_rotatedellipses[i].controlPoints.size();++j)
             points.push_back(transform().from_local_int(m_rotatedellipses[i].controlPoints[j]));
-        dc.DrawSpline(points.size(),&points.front());
+        dc.DrawSpline(static_cast<int>(points.size()),&points.front());
     }
     for (unsigned int i=0;i<m_polygons.size();++i)
     {
@@ -113,7 +114,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
         points.reserve( m_polygons[i].size() );
         for (unsigned int j=0;j<m_polygons[i].size();++j)
             points.push_back(transform().from_local_int(m_polygons[i][j]));
-        dc.DrawPolygon( points.size() , &(points.front()) );
+        dc.DrawPolygon( static_cast<int>(points.size()) , &(points.front()) );
     }
 
     // 1D
@@ -123,7 +124,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     dc.SetPen(pen);
     for (unsigned int i = 0; i < m_arcs.size(); i++)
     {
-        const ArcType &local_tab = m_arcs[i];
+        const arc_type &local_tab = m_arcs[i];
         for (unsigned int j = 0; j < local_tab.arc_points.size() - 1; ++j)
         {
             wxPoint p = transform().from_local_int(local_tab.arc_points[j  ]);
@@ -134,10 +135,10 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
     // Splines
     for (unsigned int i=0;i<m_splines.size();++i)
     {
-        const std::vector<PointType>& spline = m_splines[i];
-        int n = spline.size();
+        const spline_type& spline = m_splines[i];
         std::vector<wxPoint> points;
-        for (int j=0;j<n;++j)
+        unsigned int n = static_cast<int>(spline.size());
+        for (unsigned int j=0;j<n;++j)
         {
             wxPoint p = transform().from_local_int(spline[j]);
             points.push_back(p);
@@ -172,7 +173,7 @@ void simple_vector_layer::draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent)
 
 void simple_vector_layer::add_circle(double x, double y, double radius)
 {
-    CircleType ct;
+    circle_type ct;
     ct.x = x;
     ct.y = y;
     ct.radius = radius;
@@ -181,8 +182,8 @@ void simple_vector_layer::add_circle(double x, double y, double radius)
 
 void simple_vector_layer::add_line(double x1, double y1, double x2, double y2)
 {
-    ArcType unArc;
-    PointType unPoint;
+    arc_type unArc;
+    point_type unPoint;
     unPoint.x = x1; unPoint.y = y1;
     unArc.arc_points.push_back(unPoint);
     unPoint.x = x2; unPoint.y = y2;
@@ -200,12 +201,12 @@ void simple_vector_layer::add_polyline( const std::vector<double> &x , const std
 
 void simple_vector_layer::add_point( double x , double y )
 {
-    PointType pt;
+    point_type pt;
     pt.x=x; pt.y=y;
     m_points.push_back(pt);
 }
 
-void simple_vector_layer::add_spline( std::vector<PointType> points )
+void simple_vector_layer::add_spline( spline_type points )
 {
     m_splines.push_back( points );
 }
@@ -216,7 +217,7 @@ void simple_vector_layer::add_polygon( const std::vector<double> &x , const std:
     m_polygons.resize(m_polygons.size()+1);
     for (unsigned int j=0;j<x.size();++j)
     {
-        PointType pt;
+        point_type pt;
         pt.x=x[j]; pt.y=y[j];
         m_polygons.back().push_back(pt);
     }
@@ -225,7 +226,7 @@ void simple_vector_layer::add_polygon( const std::vector<double> &x , const std:
 
 void simple_vector_layer::add_ellipse(double x_center, double y_center, double a, double b)
 {
-    EllipseType et;
+    ellipse_type et;
     et.x = x_center-a;
     et.y = y_center-b;
     et.a = a;
@@ -235,7 +236,7 @@ void simple_vector_layer::add_ellipse(double x_center, double y_center, double a
 
 void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double da, double db, double theta)
 {
-    RotatedEllipseType et;
+    rotated_ellipse_type et;
     et.x = dx_center;
     et.y = dy_center;
     et.a = da;
@@ -268,9 +269,9 @@ void simple_vector_layer::add_ellipse(double dx_center, double dy_center, double
 
 void simple_vector_layer::add_text( double x , double y , const std::string &text , const wxColour &color )
 {
-    PointType pt;
+    point_type pt;
     pt.x=x; pt.y=y;
-    m_texts.push_back( make_pair<PointType,string>(pt,text) );
+    m_texts.push_back( make_pair<point_type,string>(pt,text) );
 }
 
 void simple_vector_layer::clear()
@@ -284,24 +285,19 @@ void simple_vector_layer::clear()
     m_polygons.clear();
     m_texts.clear();
     // deallocate memory
-    vector<CircleType>().        swap(m_circles);
-    vector<EllipseType>().       swap(m_ellipses);
-    vector<RotatedEllipseType>().swap(m_rotatedellipses);
-    vector<ArcType>().           swap(m_arcs);
-    vector<PointType>().         swap(m_points);
-    vector<vector<PointType> >().swap(m_splines);
-    vector<vector<PointType> >().swap(m_polygons);
-    vector< pair<PointType,string> >().swap(m_texts);
+    vector<circle_type>().        swap(m_circles);
+    vector<ellipse_type>().       swap(m_ellipses);
+    vector<rotated_ellipse_type>().swap(m_rotatedellipses);
+    vector<arc_type>().           swap(m_arcs);
+    vector<point_type>().         swap(m_points);
+    vector<spline_type>().swap(m_splines);
+    vector<polygon_type>().swap(m_polygons);
+    vector<text_type>().swap(m_texts);
 }
 
 string simple_vector_layer::available_formats_wildcard() const
 {
-    ostringstream wildcard;
-    wildcard << "All available serialization (*.txt;*.xml;*.bin)|*.txt;*.TXT;*.xml;*.XML;*.bin;*.BIN|";
-    wildcard << "Serialization text (*.txt)|*.txt;*.TXT|";
-    wildcard << "Serialization xml (*.xml)|*.xml;*.XML|";
-    wildcard << "Serialization binary (*.bin)|*.bin;*.BIN";
-    return wildcard.str();
+    return gilviewer_utils::build_wx_wildcard_from_io_factory("Vector");
 }
 
 layer_settings_control* simple_vector_layer::build_layer_settings_control(unsigned int index, layer_control* parent)
@@ -323,39 +319,6 @@ std::string simple_vector_layer::infos()
     return m_infos;
 }
 
-
-template<typename P>
-void snap_segment(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p0, const P& _p1, wxRealPoint& psnap, bool& snapped )
-{
-    wxRealPoint p0(_p0.x,_p0.y), p1(_p1.x,_p1.y);
-    wxRealPoint u(q -p0);
-    wxRealPoint v(p1-p0);
-    double t = dot(u,v)/dot(v,v);
-    if(t<0 || t> 1) return;
-    wxRealPoint proj(p0+t*v);
-    double d = squared_distance(q,proj)*invzoom2;
-    if(d < d2[layer::SNAP_LINE] )
-    {
-        for(unsigned int k=0; k<layer::SNAP_LINE; ++k) d2[k]=0;
-        d2[layer::SNAP_LINE] = d;
-        psnap = trans.from_local(proj);
-        snapped = true;
-    }
-}
-
-template<typename P>
-void snap_point(const layer_transform& trans, double invzoom2, double d2[], const wxRealPoint& q, const P& _p, wxRealPoint& psnap, bool& snapped )
-{
-    wxRealPoint p(_p.x,_p.y);
-    double d = squared_distance(q,p)*invzoom2;
-    if(d < d2[layer::SNAP_POINT] )
-    {
-        for(unsigned int k=0; k<layer::SNAP_POINT; ++k) d2[k]=0;
-        d2[layer::SNAP_POINT] = d;
-        psnap = trans.from_local(p);
-        snapped = true;
-    }
-}
 
 bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
 {
@@ -412,19 +375,19 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
             for (unsigned int j=0;j<m_polygons[i].size();++j, p0=p1)
             {
                 p1 = wxRealPoint(m_polygons[i][j].x,m_polygons[i][j].y);
-                if(snap&SNAP_POINT) snap_point(transform(), invzoom2, d2, q, p1, psnap, snapped );
-                if(snap&SNAP_LINE ) snap_segment(transform(), invzoom2, d2, q, p0, p1, psnap, snapped );
+                if(snap&SNAP_POINT) snapped=snapped||snap_point(transform(), invzoom2, d2, q, p1, psnap );
+                if(snap&SNAP_LINE ) snapped=snapped||snap_segment(transform(), invzoom2, d2, q, p0, p1, psnap );
             }
         }
         for (unsigned int i = 0; i < m_arcs.size(); i++)
         {
-            const ArcType &arc = m_arcs[i];
+            const arc_type &arc = m_arcs[i];
             if(!arc.arc_points.empty() && (snap&SNAP_POINT))
-                snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap, snapped );
+                snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points.front(), psnap );
             for (unsigned int j = 0; j < arc.arc_points.size() - 1; ++j)
             {
-                if(snap&SNAP_POINT) snap_point(transform(), invzoom2, d2, q, arc.arc_points[j+1], psnap, snapped );
-                if(snap&SNAP_LINE ) snap_segment(transform(), invzoom2, d2, q, arc.arc_points[j], arc.arc_points[j+1], psnap, snapped );
+                if(snap&SNAP_POINT) snapped=snapped||snap_point(transform(), invzoom2, d2, q, arc.arc_points[j+1], psnap );
+                if(snap&SNAP_LINE ) snapped=snapped||snap_segment(transform(), invzoom2, d2, q, arc.arc_points[j], arc.arc_points[j+1], psnap );
             }
         }
     }
@@ -439,7 +402,7 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
 
         for (unsigned int i = 0; i < m_points.size(); i++)
         {
-            snap_point(transform(), invzoom2, d2, q, m_points[i], psnap, snapped );
+            snapped=snapped||snap_point(transform(), invzoom2, d2, q, m_points[i], psnap );
         }
 
         // Text
@@ -447,9 +410,19 @@ bool simple_vector_layer::snap( eSNAP snap, double d2[], const wxRealPoint& p, w
         {
             for (unsigned int i = 0; i < m_texts.size(); i++)
             {
-                snap_point(transform(), invzoom2, d2, q, m_texts[i].first, psnap, snapped );
+                snapped=snapped||snap_point(transform(), invzoom2, d2, q, m_texts[i].first, psnap );
             }
         }
     }
     return snapped;
+}
+
+unsigned int simple_vector_layer::num_polygons() const { return m_polygons.size(); }
+void simple_vector_layer::get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
+{
+    for(unsigned int j=0; j<m_polygons[i].size(); ++j)
+    {
+        x.push_back(m_polygons[i][j].x);
+        y.push_back(m_polygons[i][j].y);
+    }
 }

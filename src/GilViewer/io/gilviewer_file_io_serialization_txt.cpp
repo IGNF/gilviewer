@@ -50,7 +50,7 @@ Authors:
 using namespace boost;
 using namespace std;
 
-shared_ptr<layer> gilviewer_file_io_serialization_txt::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
+boost::shared_ptr<layer> gilviewer_file_io_serialization_txt::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
     simple_vector_layer simple_layer;
     {
@@ -61,12 +61,12 @@ shared_ptr<layer> gilviewer_file_io_serialization_txt::load(const string &filena
         ia >> BOOST_SERIALIZATION_NVP(simple_layer);
         // archive and stream closed when destructors are called
     }
-    return shared_ptr<layer>(new simple_vector_layer(simple_layer));
+    return boost::shared_ptr<layer>(new simple_vector_layer(simple_layer));
 }
 
-void gilviewer_file_io_serialization_txt::save(shared_ptr<layer> layer, const string &filename)
+void gilviewer_file_io_serialization_txt::save(boost::shared_ptr<layer> layer, const string &filename)
 {
-    shared_ptr<simple_vector_layer> simple_layer2 = dynamic_pointer_cast<simple_vector_layer>(layer);
+    boost::shared_ptr<simple_vector_layer> simple_layer2 = dynamic_pointer_cast<simple_vector_layer>(layer);
     if(!simple_layer2)
         throw invalid_argument("Bad layer type!\n");
 
@@ -83,16 +83,11 @@ void gilviewer_file_io_serialization_txt::save(shared_ptr<layer> layer, const st
 
 boost::shared_ptr<gilviewer_file_io_serialization_txt> create_gilviewer_file_io_serialization_txt()
 {
-    return shared_ptr<gilviewer_file_io_serialization_txt>(new gilviewer_file_io_serialization_txt());
+    return boost::shared_ptr<gilviewer_file_io_serialization_txt>(new gilviewer_file_io_serialization_txt());
 }
 
-bool gilviewer_file_io_serialization_txt::Register()
+bool gilviewer_file_io_serialization_txt::Register(gilviewer_io_factory *factory)
 {
-    gilviewer_io_factory::instance()->Register("txt", create_gilviewer_file_io_serialization_txt);
-    pair<string,string> familly_description = make_pair<string,string>("Serialization files","TXT files");
-    pair< string, pair<string,string> > to_insert = make_pair< string, pair<string,string> >( "txt", familly_description );
-    gilviewer_io_factory::instance()->metadata().insert( to_insert );
+    factory->insert("txt", "Vector", "Serialization", create_gilviewer_file_io_serialization_txt);
     return true;
 }
-
-bool register_serialization_txt_ok = gilviewer_file_io_serialization_txt::Register();

@@ -45,9 +45,6 @@ Authors:
 #include <vector>
 #include <cmath>
 
-#include <wx/gdicmn.h>
-#include <wx/colour.h>
-#include <wx/font.h>
 #include <wx/colour.h>
 
 #include "layer_transform.hpp"
@@ -65,14 +62,6 @@ class layer_control;
 class layer
 {
 public:
-/*
-  enum layerOrientation{
-      LO_0,
-      LO_90,
-      LO_180,
-      LO_270
-      };
-*/
     typedef boost::shared_ptr< layer > ptrLayerType;
     typedef std::vector<std::vector<double> > histogram_type;
 
@@ -150,29 +139,17 @@ public:
     virtual void alpha_channel(bool &useAlphaChannel, unsigned int &alphaChannel) const {}
     virtual boost::shared_ptr<color_lookup_table> colorlookuptable();
 
-    virtual unsigned int nb_components() const { return 0; }
+    virtual size_t nb_components() const { return 0; }
     virtual boost::shared_ptr<const histogram_type> histogram(double &min, double &max) const { return boost::shared_ptr<const histogram_type>(); }
     virtual std::string pixel_value(const wxRealPoint& p) const { return std::string(); }
     // Fin methodes specifiques ImageLayer
 
-    virtual std::vector<std::string> available_formats_extensions() const { return std::vector<std::string>(); }
-    virtual std::string available_formats_wildcard() const { return std::string(); }
+    virtual std::string available_formats_wildcard() const = 0;
 
     virtual void default_display_parameters() {}
 
     // Methodes specifiques VectorLayer
     virtual void add_vector_layer_content( const std::string &shapefileFileName ) {}
-
-    enum eSNAP //snap modes (may be bitwise-combined using the '&' operator)
-    {
-        SNAP_NONE = 0,
-        SNAP_GRID = 1,
-        SNAP_LINE = 2,
-        SNAP_INTERSECTION = 4,
-        SNAP_POINT = 8,
-        SNAP_ALL = 15,
-        SNAP_MAX_ID = SNAP_ALL+1,
-    };
 
     virtual bool snap( eSNAP snap, double d2[], const wxRealPoint& p, wxRealPoint& psnap ) { return false; }
     virtual void add_point( double x , double y ) {}

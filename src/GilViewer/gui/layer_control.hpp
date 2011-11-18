@@ -53,7 +53,7 @@ class global_settings_control;
 class vector_layer_ghost;
 class orientation_2d;
 class panel_viewer;
-class VectorLayer;
+class wxControlWithItems;
 
 /**
 * @brief Classe de gestion des differents calques.
@@ -76,6 +76,7 @@ public:
     
     /// Recuperation d'un calque par son Id
     layer::ptrLayerType get_layer_with_id(unsigned int id)const;
+    layer::ptrLayerType get_layer_with_filename(const std::string& filename)const;
     
     ///Cette methode permet de savoir s'il y a une orientation definie pour le viewer
     bool oriented() const {return m_isOrientationSet; }
@@ -118,9 +119,19 @@ public:
     void create_new_vector_layer_with_parameters( const VectorLayerParameters &parameters );
 
     void add_layers_from_files( const wxArrayString &names );
+    void add_layer_from_file( const wxString &name );
 
     ///Calque ghost
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
+
+public:
+    template<typename T>
+    void update_control(wxControlWithItems *control, bool notified = true);
+    layer::ptrLayerType selected_layer(wxControlWithItems *control) const;
+
+private:
+    std::vector<boost::function<void()> > m_notifications;
+    void notify();
 
 private:
     void on_close_window(wxCloseEvent& event);
