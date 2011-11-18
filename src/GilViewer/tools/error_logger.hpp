@@ -40,6 +40,7 @@ Authors:
 #define __GILVIEWER_WX_ERROR_LOGGER_HPP__
 
 #include <string>
+class wxColour;
 
 class gilviewer_wx_error_logger
 {
@@ -51,7 +52,7 @@ public:
     static void log_message(const std::string& message);
 
 private:
-    static void log_common(const std::string& message);
+    static void log_common(const std::string& message, wxColour* color);
 };
 
 #endif // __GILVIEWER_WX_ERROR_LOGGER_HPP__

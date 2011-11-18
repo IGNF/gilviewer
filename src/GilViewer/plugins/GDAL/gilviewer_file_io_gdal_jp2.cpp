@@ -1,9 +1,12 @@
 #include "gilviewer_file_io_gdal_jp2.hpp"
-#include "GilViewer/io/gilviewer_file_io_image.hpp"
-
-//#include <boost/gil/extension/io_new/jpeg_all.hpp>
+#include <boost/gil/extension/io_new/jpeg_all.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/convenient/utils.hpp"
+#include "GilViewer/layers/image_layer.hpp"
+#include "GilViewer/layers/image_types.hpp"
 
 #include "gdal_priv.h"
 #include <iostream>
@@ -20,15 +23,15 @@ shared_ptr<layer> gilviewer_file_io_gdal_jp2::load(const string &filename, const
 {
     static bool passer=false;
     if(!passer)
-            GDALAllRegister(); 
-typedef boost::gil::point2<std::ptrdiff_t> point_t;
-       if ( !exists(filename) )
-        {
-            GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
-            return layer::ptrLayerType();
-        }
+        GDALAllRegister();
+    typedef boost::gil::point2<std::ptrdiff_t> point_t;
+    if ( !exists(filename) )
+    {
+        GILVIEWER_LOG_ERROR("File " + filename + " does not exist");
+        return layer::ptrLayerType();
+    }
 
-   GDALDataset* hDataset = (GDALDataset*)GDALOpen( filename.c_str(), GA_ReadOnly );
+    GDALDataset* hDataset = (GDALDataset*)GDALOpen( filename.c_str(), GA_ReadOnly );
     if( hDataset == NULL )
     {
         GILVIEWER_LOG_ERROR("Pb to open file " + filename);
@@ -38,93 +41,92 @@ typedef boost::gil::point2<std::ptrdiff_t> point_t;
     unsigned int width=GDALGetRasterXSize( hDataset );
     unsigned int height=GDALGetRasterYSize( hDataset );
 
-        path path(system_complete(filename));
+    path path(system_complete(filename));
     //    string ext(BOOST_FILESYSTEM_STRING(path.extension());
 
-        image_layer::image_ptr image(new image_layer::image_t);
-        point_t origin( max(top_left_x, (ptrdiff_t)0), max(top_left_y, (ptrdiff_t)0) );
-        //point_t origin( 0,0 );
-        point_t size(dim_x,dim_y);
-        if(dim_x==0 && dim_y==0)
-            size = point_t(width,height);
+    image_layer::image_ptr image(new image_layer::image_t);
+    point_t origin( max(top_left_x, (ptrdiff_t)0), max(top_left_y, (ptrdiff_t)0) );
+    //point_t origin( 0,0 );
+    point_t size(dim_x,dim_y);
+    if(dim_x==0 && dim_y==0)
+        size = point_t(width,height);
 
-        try
-        {
+    try
+    {
 
-            if(hDataset->GetRasterCount()==3){
-                unsigned char * jpp=new unsigned char[width*height*3];
-                int *panBandMap = new int[3];
-                panBandMap[0]=1;
-                panBandMap[1]=2;
-                panBandMap[2]=3;
-                
-                 CPLErr status=hDataset->RasterIO(GF_Read, 0   , 0,width, height,(void*)jpp,width,height,GDT_Byte ,3, panBandMap,0,0,0);
-                 delete [] panBandMap;
-                if (status!=CE_None)        {
-                    GILVIEWER_LOG_ERROR("Pb to read file " + filename + " with GDAL ");
-                    return layer::ptrLayerType();
-                }
-                GDALClose( (GDALDatasetH) hDataset );
-                 boost::gil::rgb8_image_t rgb_im (width,height);
-                 boost::gil::rgb8_view_t outputView = boost::gil::view(rgb_im);
-                 unsigned int count=0;
-                 unsigned int offset=width*height;
-                 unsigned int offset2=width*height*2;
-                for (boost::gil::rgb8_view_t::iterator viewiterator = outputView.begin(); viewiterator != outputView.end(); ++viewiterator)
-                    {  *viewiterator=boost::gil::rgb8_pixel_t((int)jpp[count],
-                                                              (int)jpp[count+offset],
-                                                              (int)jpp[count+offset2]);
-                         count++;
-                    }
-                image->value=rgb_im;
-                delete [] jpp;
+        if(hDataset->GetRasterCount()==3){
+            unsigned char * jpp=new unsigned char[width*height*3];
+            int *panBandMap = new int[3];
+            panBandMap[0]=1;
+            panBandMap[1]=2;
+            panBandMap[2]=3;
+
+            CPLErr status=hDataset->RasterIO(GF_Read, 0   , 0,width, height,(void*)jpp,width,height,GDT_Byte ,3, panBandMap,0,0,0);
+            delete [] panBandMap;
+            if (status!=CE_None)        {
+                GILVIEWER_LOG_ERROR("Pb to read file " + filename + " with GDAL ");
+                return layer::ptrLayerType();
             }
-            else if(hDataset->GetRasterCount()==1){
-                unsigned short * jpp=new unsigned short[width*height];
-                int *panBandMap = new int[1];
-                panBandMap[0]=1;
-                
-                 CPLErr status=hDataset->RasterIO(GF_Read, 0   , 0,width, height,(void*)jpp,width,height,GDT_UInt16 ,1, panBandMap,0,0,0);
-                 delete [] panBandMap;
-                if (status!=CE_None)        {
-                    GILVIEWER_LOG_ERROR("Pb to read file " + filename + " with GDAL ");
-                    return layer::ptrLayerType();
-                }
-                GDALClose( (GDALDatasetH) hDataset );
-                 boost::gil::gray16_image_t rgb_im (width,height);
-                 boost::gil::gray16_view_t outputView = boost::gil::view(rgb_im);
-                 unsigned int count=0;
-                for (boost::gil::gray16_view_t::iterator viewiterator = outputView.begin(); viewiterator != outputView.end(); ++viewiterator)
-                    {  *viewiterator=boost::gil::gray16_pixel_t(jpp[count]);
-                         count++;
-                    }
-                image->value=rgb_im;
-                delete [] jpp;
+            GDALClose( (GDALDatasetH) hDataset );
+            boost::gil::rgb8_image_t rgb_im (width,height);
+            boost::gil::rgb8_view_t outputView = boost::gil::view(rgb_im);
+            unsigned int count=0;
+            unsigned int offset=width*height;
+            unsigned int offset2=width*height*2;
+            for (boost::gil::rgb8_view_t::iterator viewiterator = outputView.begin(); viewiterator != outputView.end(); ++viewiterator)
+            {  *viewiterator=boost::gil::rgb8_pixel_t((int)jpp[count],
+                                                      (int)jpp[count+offset],
+                                                      (int)jpp[count+offset2]);
+                count++;
             }
+            image->value=rgb_im;
+            delete [] jpp;
         }
-            catch( const std::exception &e )
-        {
-            //GILVIEWER_LOG_EXCEPTION("Image read error: " + filename);
-            return layer::ptrLayerType();
+        else if(hDataset->GetRasterCount()==1){
+            unsigned short * jpp=new unsigned short[width*height];
+            int *panBandMap = new int[1];
+            panBandMap[0]=1;
+
+            CPLErr status=hDataset->RasterIO(GF_Read, 0   , 0,width, height,(void*)jpp,width,height,GDT_UInt16 ,1, panBandMap,0,0,0);
+            delete [] panBandMap;
+            if (status!=CE_None)        {
+                GILVIEWER_LOG_ERROR("Pb to read file " + filename + " with GDAL ");
+                return layer::ptrLayerType();
+            }
+            GDALClose( (GDALDatasetH) hDataset );
+            boost::gil::gray16_image_t rgb_im (width,height);
+            boost::gil::gray16_view_t outputView = boost::gil::view(rgb_im);
+            unsigned int count=0;
+            for (boost::gil::gray16_view_t::iterator viewiterator = outputView.begin(); viewiterator != outputView.end(); ++viewiterator)
+            {  *viewiterator=boost::gil::gray16_pixel_t(jpp[count]);
+                count++;
+            }
+            image->value=rgb_im;
+            delete [] jpp;
         }
+    }
+    catch( const std::exception &e )
+    {
+        //GILVIEWER_LOG_EXCEPTION("Image read error: " + filename);
+        return layer::ptrLayerType();
+    }
 
-        layer::ptrLayerType layer(new image_layer(image, BOOST_FILESYSTEM_STRING(path.stem()), path.string()));
-        layer->add_orientation(filename);
-        layer->infos( build_and_get_infos(filename) );
+    layer::ptrLayerType layer(new image_layer(image, BOOST_FILESYSTEM_STRING(path.stem()), path.string()));
+    layer->add_orientation(filename);
+    layer->infos( build_and_get_infos(filename) );
 
-        return layer;
+    return layer;
 
 }
 
 void gilviewer_file_io_gdal_jp2::save(shared_ptr<layer> layer, const string &filename)
 {
-	std::cout<<"TO DO"<<std::endl;
     //save_gil_view<jpeg_tag>(layer, filename);
 }
 
 string gilviewer_file_io_gdal_jp2::build_and_get_infos(const std::string &filename)
 {
-        return "TODO";
+    return "TODO";
     ostringstream infos_str;
     /*infos_str << "Dimensions: " << info._width << "x" << info._height << "\n";
     infos_str << "Number of components: " << info._num_components << "\n";

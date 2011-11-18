@@ -46,69 +46,26 @@ Authors:
 
 void gilviewer_wx_error_logger::log_error(const std::string& message)
 {
-    wxLog* current_logger = wxLog::GetActiveTarget();
-    wxLogWindow* log_window = static_cast<wxLogWindow*>(current_logger);
-    wxWindowList& children = log_window->GetFrame()->GetChildren();
-    for(wxWindowList::Node* node=children.GetFirst();node;node=node->GetNext())
-    {
-        wxWindow* current_window = (wxWindow*)node->GetData();
-        wxTextCtrl* txtctrl = wxDynamicCast(current_window, wxTextCtrl);
-        if(txtctrl)
-        {
-            txtctrl->SetDefaultStyle(wxTextAttr(*wxRED));
-        }
-    }
-    #if wxMINOR_VERSION < 9
-        ::wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
-    #else
-        wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
-    #endif
+    gilviewer_wx_error_logger::log_common(message, new wxColour(255, 140, 0));
 }
 
 void gilviewer_wx_error_logger::log_exception(const std::string& message)
 {
-    wxLog* current_logger = wxLog::GetActiveTarget();
-    wxLogWindow* log_window = static_cast<wxLogWindow*>(current_logger);
-    wxWindowList& children = log_window->GetFrame()->GetChildren();
-    for(wxWindowList::Node* node=children.GetFirst();node;node=node->GetNext())
-    {
-        wxWindow* current_window = (wxWindow*)node->GetData();
-        wxTextCtrl* txtctrl = wxDynamicCast(current_window, wxTextCtrl);
-        if(txtctrl)
-        {
-            txtctrl->SetDefaultStyle(wxTextAttr(*wxRED));
-        }
-    }
-    #if wxMINOR_VERSION < 9
-        ::wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
-    #else
-        wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
-    #endif
+    gilviewer_wx_error_logger::log_common(message, const_cast<wxColour*>(wxRED) );
 }
 
 void gilviewer_wx_error_logger::log_warning(const std::string& message)
 {
-    wxLog* current_logger = wxLog::GetActiveTarget();
-    wxLogWindow* log_window = static_cast<wxLogWindow*>(current_logger);
-    wxWindowList& children = log_window->GetFrame()->GetChildren();
-    for(wxWindowList::Node* node=children.GetFirst();node;node=node->GetNext())
-    {
-        wxWindow* current_window = (wxWindow*)node->GetData();
-        wxTextCtrl* txtctrl = wxDynamicCast(current_window, wxTextCtrl);
-        if(txtctrl)
-        {
-            txtctrl->SetDefaultStyle(wxTextAttr(*wxGREEN));
-        }
-    }
-    #if wxMINOR_VERSION < 9
-        ::wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
-    #else
-        wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
-    #endif
+    gilviewer_wx_error_logger::log_common(message, new wxColour(148, 0, 211));
 }
 
 void gilviewer_wx_error_logger::log_message(const std::string& message)
 {
+    gilviewer_wx_error_logger::log_common(message, const_cast<wxColour*>(wxBLUE) );
+}
+
+void gilviewer_wx_error_logger::log_common(const std::string& message, wxColour* color)
+{
     wxLog* current_logger = wxLog::GetActiveTarget();
     wxLogWindow* log_window = static_cast<wxLogWindow*>(current_logger);
     wxWindowList& children = log_window->GetFrame()->GetChildren();
@@ -118,7 +75,7 @@ void gilviewer_wx_error_logger::log_message(const std::string& message)
         wxTextCtrl* txtctrl = wxDynamicCast(current_window, wxTextCtrl);
         if(txtctrl)
         {
-            txtctrl->SetDefaultStyle(wxTextAttr(*wxBLUE));
+            txtctrl->SetDefaultStyle(wxTextAttr(*color));
         }
     }
     #if wxMINOR_VERSION < 9
@@ -126,9 +83,4 @@ void gilviewer_wx_error_logger::log_message(const std::string& message)
     #else
         wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
     #endif
-}
-
-void gilviewer_wx_error_logger::log_common(const std::string& message)
-{
-    ;
 }
