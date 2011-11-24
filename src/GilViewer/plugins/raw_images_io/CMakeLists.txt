@@ -1,4 +1,4 @@
-option(USE_RAW_IMAGES_IO "Build GilViewer with RAW images IO file support" ON)
+option(USE_RAW_IMAGES_IO "Build GilViewer with RAW images IO file support" OFF)
 if(USE_RAW_IMAGES_IO)
     file( GLOB SRCS *.c *.cpp *.cxx *.h *.hpp *.hxx )
     add_library(GilViewer-raw_images_io SHARED ${SRCS})
