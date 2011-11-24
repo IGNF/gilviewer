@@ -244,7 +244,7 @@ shared_ptr<gilviewer_file_io_imageio> create_gilviewer_file_io_imageio()
 
 bool gilviewer_file_io_imageio::Register(gilviewer_io_factory *factory)
 {
-    const char *ext[]= { "bil", "jp2", "tif", "tiff", "jpg", "jpeg", "png" };
+    const char *ext[]= { "bil", "jp2", "tif", "tiff", "jpg", "jpeg", "png", "imageio" };
     const char **it = ext;
     const char **end = ext + (sizeof(ext)/sizeof(const char *));
     for(;it!=end;++it)

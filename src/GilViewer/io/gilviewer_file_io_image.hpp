@@ -49,7 +49,7 @@ Authors:
 #include <boost/gil/extension/io_new/detail/read_image.hpp>
 #include <boost/gil/extension/io_new/detail/read_image_info.hpp>
 
-//#include <xutility>
+#include <algorithm>
 #if _WINDOWS
 #   include <boost/config/platform/win32.hpp>
 #endif
