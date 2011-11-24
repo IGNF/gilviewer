@@ -55,7 +55,6 @@
 #include <wx/msgdlg.h>
 #include <wx/image.h>
 #include <wx/menu.h>
-#include <wx/log.h>
 #include <wx/statusbr.h>
 #include <wx/filedlg.h>
 
@@ -229,6 +228,7 @@ panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
     wxConfigBase *pConfig = wxConfigBase::Get();
     wxString str;
     pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
+	std::cout<<str.mb_str()<<std::endl;
     m_plugin_manager->register_plugins( (const char *) str.mb_str(), m_menuBar, dockmanager, m_parent);
 #endif // _WINDOWS
 
@@ -630,11 +630,21 @@ void panel_viewer::update_statusbar(const wxRealPoint& p) {
             ori = m_layerControl->orientation();
         }
 
-        m_parent->GetStatusBar()->SetFieldsCount(nb + 1); //+1 pour les coord en pixels
+        m_parent->GetStatusBar()->SetFieldsCount(nb + 2); //+1 pour les coord en pixels
 
         unsigned int count = 0;
         bool affichageCartoDone = false;
 
+
+        std::ostringstream coordGlob;
+                    coordGlob << "Coord Glob : (";
+                    coordGlob << p.x;
+                    coordGlob << ",";
+                    coordGlob << p.y;
+                    coordGlob << ")";
+                    m_parent->SetStatusText(wxString(coordGlob.str().c_str(), *wxConvCurrent), count);
+                    ++count;
+                    
         {
             std::ostringstream coordPixel;
             wxRealPoint q = m_ghostLayer->transform().to_local(p);

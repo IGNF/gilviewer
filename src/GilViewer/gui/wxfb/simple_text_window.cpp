@@ -5,13 +5,13 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#include "layer_infos_control.h"
+#include "simple_text_window.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
-layer_infos_control::layer_infos_control( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+simple_text_window::simple_text_window( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetSizeHints( wxSize( 371,337 ), wxSize( 1000,600 ) );
 	
 	wxBoxSizer* m_box_sizer;
 	m_box_sizer = new wxBoxSizer( wxVERTICAL );
@@ -30,19 +30,19 @@ layer_infos_control::layer_infos_control( wxWindow* parent, wxWindowID id, const
 	m_std_buttons_sizerOK = new wxButton( this, wxID_OK );
 	m_std_buttons_sizer->AddButton( m_std_buttons_sizerOK );
 	m_std_buttons_sizer->Realize();
-	m_flex_grid_sizer->Add( m_std_buttons_sizer, 1, wxALIGN_RIGHT, 5 );
+	m_flex_grid_sizer->Add( m_std_buttons_sizer, 1, wxALIGN_RIGHT|wxALL, 5 );
 	
-	m_box_sizer->Add( m_flex_grid_sizer, 1, wxEXPAND, 5 );
+	m_box_sizer->Add( m_flex_grid_sizer, 1, wxEXPAND|wxALL, 5 );
 	
 	this->SetSizer( m_box_sizer );
 	this->Layout();
 	
 	// Connect Events
-	m_std_buttons_sizerOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( layer_infos_control::OnOKButtonClick ), NULL, this );
+	m_std_buttons_sizerOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( simple_text_window::OnOKButtonClick ), NULL, this );
 }
 
-layer_infos_control::~layer_infos_control()
+simple_text_window::~simple_text_window()
 {
 	// Disconnect Events
-	m_std_buttons_sizerOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( layer_infos_control::OnOKButtonClick ), NULL, this );
+	m_std_buttons_sizerOK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( simple_text_window::OnOKButtonClick ), NULL, this );
 }

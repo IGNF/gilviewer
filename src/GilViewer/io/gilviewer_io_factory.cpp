@@ -2,6 +2,9 @@
 
 #include "gilviewer_file_io_bmp.hpp"
 #include "gilviewer_file_io_jpg.hpp"
+#ifndef _WINDOWS
+#   define PNG_SKIP_SETJMP_CHECK
+#endif
 #include "gilviewer_file_io_png.hpp"
 #include "gilviewer_file_io_pnm.hpp"
 #include "gilviewer_file_io_tiff.hpp"

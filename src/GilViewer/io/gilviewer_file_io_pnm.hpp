@@ -38,17 +38,15 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_PNM_HPP
 #define GILVIEWER_FILE_IO_PNM_HPP
 
+#include <boost/gil/extension/io_new/pnm_all.hpp>
 #include "gilviewer_file_io_image.hpp"
 
-class gilviewer_file_io_pnm : public gilviewer_file_io_image
+class gilviewer_file_io_pnm : public gilviewer_file_io_image<boost::gil::pnm_tag>
 {
 public:
     virtual ~gilviewer_file_io_pnm() {}
 
-    virtual boost::shared_ptr<layer> load(const std::string &filename, const std::ptrdiff_t top_left_x=0, const std::ptrdiff_t top_left_y=0, const std::ptrdiff_t dim_x=0, const std::ptrdiff_t dim_y=0);
-    virtual void save(boost::shared_ptr<layer> layer, const std::string &filename);
-
-    virtual std::string build_and_get_infos(const std::string &filename);
+    virtual std::string get_infos(const std::string &filename);
 
     virtual bool Register(gilviewer_io_factory *factory);
 };
