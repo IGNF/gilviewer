@@ -41,6 +41,7 @@ Authors:
 
 #include <wx/gdicmn.h>
 #include <cmath>
+#include <iostream>
 
 // convenience wxRealPoint operators
 #if wxMINOR_VERSION < 9
@@ -79,5 +80,6 @@ inline bool operator<(const wxRealPoint& p, const wxRealPoint &q)
 {
     return (p.x<q.x) || (p.x==q.x && p.y<q.y);
 }
+
 
 #endif // GILVIEWER_WXREALPOINT_HPP

@@ -5,8 +5,8 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __layer_infos_control__
-#define __layer_infos_control__
+#ifndef __simple_text_window__
+#define __simple_text_window__
 
 #include <wx/string.h>
 #include <wx/textctrl.h>
@@ -22,9 +22,9 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class layer_infos_control
+/// Class simple_text_window
 ///////////////////////////////////////////////////////////////////////////////
-class layer_infos_control : public wxFrame 
+class simple_text_window : public wxFrame 
 {
 	private:
 	
@@ -39,9 +39,9 @@ class layer_infos_control : public wxFrame
 	
 	public:
 		
-		layer_infos_control( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,337 ), long style = wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE|wxMAXIMIZE_BOX|wxTAB_TRAVERSAL );
-		~layer_infos_control();
+		simple_text_window( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 371,337 ), long style = wxDEFAULT_FRAME_STYLE|wxFRAME_NO_TASKBAR|wxMAXIMIZE_BOX|wxTAB_TRAVERSAL );
+		~simple_text_window();
 	
 };
 
-#endif //__layer_infos_control__
+#endif //__simple_text_window__

@@ -1,9 +1,6 @@
-
 #include "gilviewer_file_io_pk1.hpp"
 
 #include <boost/filesystem/convenience.hpp>
-#include <boost/variant/get.hpp>
-
 
 #include "GilViewer/io/gilviewer_io_factory.hpp"
 #include "GilViewer/layers/simple_vector_layer.hpp"
@@ -18,9 +15,9 @@ using namespace std;
 #include "GilViewer/plugins/plugin_base.hpp"
 IMPLEMENT_PLUGIN(gilviewer_file_io_pk1);
 
-shared_ptr<layer> gilviewer_file_io_pk1::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
+boost::shared_ptr<layer> gilviewer_file_io_pk1::load(const string &filename, const ptrdiff_t top_left_x, const ptrdiff_t top_left_y, const ptrdiff_t dim_x, const ptrdiff_t dim_y)
 {
-    shared_ptr<simple_vector_layer> shr_ptr=shared_ptr<simple_vector_layer>(new simple_vector_layer(filesystem::basename(filename)));
+    boost::shared_ptr<simple_vector_layer> shr_ptr=boost::shared_ptr<simple_vector_layer>(new simple_vector_layer(filesystem::basename(filename)));
     std::ifstream file(filename.c_str());
 		unsigned int offset=3;
     while(!file.eof()){
@@ -40,14 +37,14 @@ shared_ptr<layer> gilviewer_file_io_pk1::load(const string &filename, const ptrd
     return shr_ptr;
 }
 
-void gilviewer_file_io_pk1::save(shared_ptr<layer> layer, const string &filename)
+void gilviewer_file_io_pk1::save(boost::shared_ptr<layer> layer, const string &filename)
 {
     std::cout<<"TO DO";
 }
 
 boost::shared_ptr<gilviewer_file_io_pk1> create_gilviewer_file_io_pk1()
 {
-    return shared_ptr<gilviewer_file_io_pk1>(new gilviewer_file_io_pk1());
+    return boost::shared_ptr<gilviewer_file_io_pk1>(new gilviewer_file_io_pk1());
 }
 
 bool gilviewer_file_io_pk1::Register(gilviewer_io_factory *factory)

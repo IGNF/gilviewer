@@ -68,7 +68,7 @@ Authors:
 #include "../gui/vector_layer_settings_control.hpp"
 #include "../gui/image_layer_settings_control.hpp"
 #include "../gui/global_settings_control.hpp"
-#include "../gui/layer_infos_control_impl.h"
+#include "../gui/simple_text_window_impl.h"
 #include "../gui/layer_control_utils.hpp"
 #include "../gui/panel_viewer.hpp"
 #include "../gui/define_id.hpp"
@@ -111,10 +111,8 @@ BEGIN_EVENT_TABLE(layer_control, wxFrame)
         EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
         END_EVENT_TABLE();
 
-layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size)
-    : wxFrame(parent, id, title, pos, size, style)
-    , m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane)
-    , m_ori(shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
+layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size):
+wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
 {
     m_layers.reserve(100);
 
@@ -264,9 +262,10 @@ void layer_control::on_info_button(wxCommandEvent& event)
     wxString title(_("Infos: "));
     title << wxString(m_layers[id]->name().c_str(), *wxConvCurrent);
     //layer_infos_control *lic = new layer_infos_control(m_layers[id]->GetInfos(), this, wxID_ANY, title, wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL | wxCLOSE_BOX);
-    layer_infos_control_impl *lic = new layer_infos_control_impl(this);
-    lic->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
-    lic->Show();
+    simple_text_window_impl *layer_info_window = new simple_text_window_impl(this);
+    layer_info_window->m_text_control->AppendText(wxString(m_layers[id]->infos().c_str(), *wxConvCurrent));
+    layer_info_window->SetSize(layer_info_window->GetMinSize());
+    layer_info_window->Show();
 }
 
 void layer_control::on_save_button(wxCommandEvent& event)
@@ -291,7 +290,7 @@ void layer_control::on_save_button(wxCommandEvent& event)
         to_lower(extension);
         try
         {
-            shared_ptr<gilviewer_file_io> file_out = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+            boost::shared_ptr<gilviewer_file_io> file_out = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
             file_out->save(layers()[id],filename);
         }
         catch( std::exception &e )
@@ -340,7 +339,7 @@ void layer_control::on_refresh_button(wxCommandEvent& event)
     to_lower(ext);
     try
     {
-        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(ext);
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(ext);
         m_layers[id] = file->load(m_layers[id]->filename());
     }
     catch(const std::exception &e)
@@ -452,7 +451,7 @@ void layer_control::add_layer_from_file( const wxString &name )
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+            boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         add_layer( file->load(filename) );
         m_basicDrawPane->Refresh();
     }
@@ -467,12 +466,12 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     if (!layer) return;
 
     // On ajoute le calque dans le conteneur
-    layer->notify_layer_control( bind( &layer_control::update, this ) );
+    layer->notify_layer_control( boost::bind( &layer_control::update, this ) );
     m_layers.push_back(layer);
 
     // On construit le SettingsControl en fonction du type de calque ajoute
     layer_settings_control *settingscontrol = layer->build_layer_settings_control(static_cast<unsigned int>(m_layers.size())-1, this);
-    layer->notify_layer_settings_control( bind( &layer_settings_control::update, settingscontrol ) );
+    layer->notify_layer_settings_control( boost::bind( &layer_settings_control::update, settingscontrol ) );
     // On ajoute la ligne correspondante
     add_row(layer->name(), settingscontrol, layer->filename());
 
@@ -812,7 +811,7 @@ void layer_control::create_new_image_layer_with_parameters(const ImageLayerParam
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         layer::ptrLayerType ptr = file->load(filename);
         if (!ptr)
             return;
@@ -853,7 +852,7 @@ void layer_control::create_new_vector_layer_with_parameters(const VectorLayerPar
     to_lower(extension);
     try
     {
-        shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
         add_layer(file->load(filename) );
 
         // Et on sette l'ensemble des parametres qu'on a pu lire ...

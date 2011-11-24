@@ -43,11 +43,13 @@ Authors:
 #include <wx/frame.h>
 #include <wx/aboutdlg.h>
 
+//#include "../gui/simple_text_window_impl.h"
+class application_settings;
+
 class wxLogWindow;
 class wxStatusBar;
 class wxToolBar;
 class wxDialog;
-class application_settings;
 
 class basic_viewer_frame : public wxFrame
 {
@@ -57,6 +59,8 @@ public:
 
     wxAuiManager *dockManager() { return &m_dockManager; }
     application_settings* settings() const { return m_settings; }
+
+    //const simple_text_window_impl* log_window() { return m_logWindow; }
 
 protected:
     wxStatusBar* m_statusBar;

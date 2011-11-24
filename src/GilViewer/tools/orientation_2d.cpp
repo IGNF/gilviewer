@@ -49,7 +49,7 @@ bool orientation_2d::read_ori_from_image_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        GILVIEWER_LOG_ERROR("File " + filename + " does not exist")
+        GILVIEWER_LOG_WARNING("File " + filename + " does not exist")
         return false;
     }
 
@@ -72,7 +72,7 @@ bool orientation_2d::read_ori_from_ori_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        GILVIEWER_LOG_ERROR("File " + filename + " does not exist")
+        GILVIEWER_LOG_WARNING("File " + filename + " does not exist")
         return false;
     }
 
@@ -123,7 +123,7 @@ bool orientation_2d::read_ori_from_tfw_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        GILVIEWER_LOG_ERROR("File " + filename + " does not exist")
+        GILVIEWER_LOG_WARNING("File " + filename + " does not exist")
         return false;
     }
 
