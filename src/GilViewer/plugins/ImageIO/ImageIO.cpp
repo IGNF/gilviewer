@@ -1,8 +1,18 @@
 #include "ImageIO.hpp"
+
 #include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/layers/image_layer.hpp"
+#include "GilViewer/layers/image_types.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
+
 #include <ign/imageio/ImageInput.h>
 #include <ign/imageio/ImageOutput.h>
 #include <ign/imageio/Exception.h>
+
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/apply_visitor.hpp>
+
+#include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 
 using namespace boost;
 using namespace boost::gil;

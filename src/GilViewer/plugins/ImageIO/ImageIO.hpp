@@ -38,9 +38,9 @@ Authors:
 #ifndef GILVIEWER_FILE_IO_IMAGEIO_HPP
 #define GILVIEWER_FILE_IO_IMAGEIO_HPP
 
-#include "GilViewer/io/gilviewer_file_io_image.hpp"
+#include "GilViewer/io/gilviewer_file_io.hpp"
 
-class gilviewer_file_io_imageio : public gilviewer_file_io_image
+class gilviewer_file_io_imageio : public gilviewer_file_io
 {
 public:
     virtual ~gilviewer_file_io_imageio() {}
