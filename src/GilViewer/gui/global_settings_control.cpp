@@ -37,7 +37,10 @@ Authors:
 ***********************************************************************/
 
 #include "GilViewer/gui/global_settings_control.hpp"
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/msgdlg.h>
 #include <wx/textctrl.h>
 #include <wx/sizer.h>

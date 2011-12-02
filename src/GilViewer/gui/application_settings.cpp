@@ -36,6 +36,10 @@ Authors:
 
 ***********************************************************************/
 
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/icon.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>

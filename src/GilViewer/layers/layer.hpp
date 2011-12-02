@@ -38,7 +38,10 @@ Authors:
 
 #ifndef __LAYER_HPP__
 #define __LAYER_HPP__
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
