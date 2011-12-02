@@ -87,14 +87,16 @@ endif()
 FIND_PATH(GIL_MATIS float_images.hpp
 			PATH ${Boost_INCLUDE_DIRS}/boost/gil/extension/matis
 )
+
 IF(NOT GIL_MATIS)
         #MESSAGE(STATUS " gil matis not found ")
 	INSTALL(CODE "
 		 MESSAGE(STATUS \"install gil matis extension\")
-   		 EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory  
+   		 EXECUTE_PROCESS(COMMAND \"${CMAKE_COMMAND}\" -E copy_directory  
 		 		\"${CMAKE_SOURCE_DIR}/${INC_BOOST}/gil/extension/matis\" 
 				\"${Boost_INCLUDE_DIRS}/boost/gil/extension/matis\" )
 		" )
+	
 ELSE(NOT GIL_MATIS)
         #MESSAGE(STATUS " gil matis found : change file if different " ${INC_BOOST}/boost/gil/extension/matis)
 	FILE( GLOB MATIS_FILES ${INC_BOOST}/gil/extension/matis/*.hpp)

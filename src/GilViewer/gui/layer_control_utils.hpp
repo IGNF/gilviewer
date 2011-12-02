@@ -49,7 +49,10 @@ Authors:
 *   <li>LayerControlRow</li>
 * <ul>
 **/
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/stattext.h>
 
 class wxCheckBox;

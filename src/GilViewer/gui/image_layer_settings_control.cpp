@@ -40,7 +40,10 @@ Authors:
 #include <sstream>
 
 #include <boost/filesystem.hpp>
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/dcbuffer.h>
 #include <wx/minifram.h>
 #include <wx/button.h>
