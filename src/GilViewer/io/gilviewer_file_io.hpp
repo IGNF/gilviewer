@@ -37,7 +37,9 @@ Authors:
 ***********************************************************************/
 #ifndef GILVIEWER_FILE_IO_HPP
 #define GILVIEWER_FILE_IO_HPP
-
+#ifdef _DISABLE_C4251
+  #pragma warning( disable: 4251 )
+#endif
 #include <boost/shared_ptr.hpp>
 #include "GilViewer/plugins/plugin_base.hpp"
 

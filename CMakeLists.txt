@@ -13,7 +13,13 @@ PROJECT(GilViewer)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
-set(BUILD_SHARED_LIBS ON)
+#set(BUILD_SHARED_LIBS ON)
+if(WIN32)
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "build lib shared/static")
+else(WIN32)
+  set(BUILD_SHARED_LIBS ON CACHE BOOL "build lib shared/static")
+endif(WIN32)
+
 message( STATUS "Building in " ${CMAKE_BUILD_TYPE} " mode" )
  
 IF(UNIX) 
@@ -98,8 +104,9 @@ if(WIN32)
         #Visual C++, 32-bit, version 2008        1500 (vc90)
         #MSVC90  (Visual C++ 2008 SP1) MSVC_VERSION=1500 (Compiler  Version 15.00.30729.01)
         #MSVC100 (Visual C++ 2010) MSVC_VERSION=1600 (Compiler  Version 16.00.30319.01)
-		#MESSAGE(STATUS " MSVC 71 " ${MSVC71})
-		if(${MSVC_VERSION} NOT EQUAL "")
+		#MESSAGE(STATUS " MSVC 71  ${MSVC71}" )
+		if(MSVC_VERSION)
+		    message(STATUS " MSVC_VERSION = ${MSVC_VERSION}" )
 			if(${MSVC_VERSION} EQUAL 1310 OR ${MSVC_VERSION} EQUAL 1400 OR ${MSVC_VERSION} EQUAL 1500 OR ${MSVC_VERSION} EQUAL 1600 )
 			else()
 				aux_source_directory(${SRC_DIR}/gui/msvc SRC_MSVC)
@@ -127,6 +134,7 @@ else()
     message(FATAL_ERROR "JPEG not found ! Please set JPEG path ...")
 endif()
 
+
 if(NOT WIN32)
     find_package(PNG REQUIRED)
     if(PNG_FOUND)
@@ -141,7 +149,11 @@ if(NOT WIN32)
     else()
         message(FATAL_ERROR "ZLIB not found ! Please set ZLIB path ...")
     endif()
+endif(NOT WIN32)
+	
+set(wxWidgets_USE_STATIC OFF CACHE BOOL "use wxWidgets static lib")
 
+if(WIN32)
     #Find wxWidgets
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
         find_package(wxWidgets REQUIRED adv base core xml aui xrc html)
@@ -150,10 +162,10 @@ if(NOT WIN32)
     else()
         message(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
     endif()
-else()
+else(WIN32)
     #Find wxWidgets
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
-    set(wxWidgets_USE_STATIC OFF)
+    #set(wxWidgets_USE_STATIC OFF)
     find_package(wxWidgets REQUIRED adv base core xml aui xrc html zlib png expat)
     if(wxWidgets_FOUND)
         #add_definitions(${wxWidgets_DEFINITIONS})
@@ -164,7 +176,7 @@ else()
     else()
         message(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
     endif()
-endif()
+endif(WIN32)
 
 # Find BOOST
 set( Boost_ADDITIONAL_VERSIONS 
@@ -176,6 +188,7 @@ set( Boost_ADDITIONAL_VERSIONS
             "1.44.0" "1.44"
             "1.46" "1.46.1"
            "1.47" "1.47.0"
+		    "1.48" "1.48.0"
      )
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use boost static lib")
 set(Boost_USE_MULTITHREAD ON CACHE BOOL "use boost multi thread lib")

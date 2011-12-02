@@ -7,7 +7,10 @@
 
 #ifndef __simple_text_window__
 #define __simple_text_window__
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/string.h>
 #include <wx/textctrl.h>
 #include <wx/gdicmn.h>
