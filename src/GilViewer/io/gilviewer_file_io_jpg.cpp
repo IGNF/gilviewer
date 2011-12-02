@@ -1,7 +1,8 @@
 #include <stdio.h>
 
-#include "gilviewer_file_io_jpg.hpp"
 #include "gilviewer_io_factory.hpp"
+#include "gilviewer_file_io_jpg.hpp"
+
 
 using namespace boost;
 using namespace boost::gil;

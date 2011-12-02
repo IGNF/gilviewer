@@ -35,6 +35,10 @@
  License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
  ***********************************************************************/
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/menu.h>
 #include <wx/statusbr.h>
 #include <wx/toolbar.h>

@@ -38,7 +38,10 @@ Authors:
 
 #ifndef PANELVIEWER_HPP_
 #define PANELVIEWER_HPP_
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/dnd.h>
 #include <wx/panel.h>
 #include <wx/brush.h>

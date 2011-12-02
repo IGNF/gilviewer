@@ -44,7 +44,10 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/xrc/xmlres.h>
 #include <wx/dcbuffer.h>
 #include <wx/confbase.h>

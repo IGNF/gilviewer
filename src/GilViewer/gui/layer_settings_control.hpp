@@ -38,7 +38,10 @@ Authors:
 
 #ifndef __LAYER_SETTINGS_CONTROL_HPP__
 #define __LAYER_SETTINGS_CONTROL_HPP__
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/dialog.h>
 
 class layer_control;

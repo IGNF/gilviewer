@@ -38,7 +38,10 @@ Authors:
 
 #ifndef __GILVIEWER_WX_ERROR_LOGGER_HPP__
 #define __GILVIEWER_WX_ERROR_LOGGER_HPP__
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <string>
 class wxColour;
 
