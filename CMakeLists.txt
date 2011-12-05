@@ -153,7 +153,7 @@ endif(NOT WIN32)
 	
 set(wxWidgets_USE_STATIC OFF CACHE BOOL "use wxWidgets static lib")
 
-if(WIN32)
+if(NOT WIN32)
     #Find wxWidgets
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
         find_package(wxWidgets REQUIRED adv base core xml aui xrc html)
@@ -162,7 +162,7 @@ if(WIN32)
     else()
         message(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
     endif()
-else(WIN32)
+else(NOT WIN32)
     #Find wxWidgets
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
     #set(wxWidgets_USE_STATIC OFF)
@@ -176,7 +176,7 @@ else(WIN32)
     else()
         message(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
     endif()
-endif(WIN32)
+endif(NOT WIN32)
 
 # Find BOOST
 set( Boost_ADDITIONAL_VERSIONS 
