@@ -137,7 +137,7 @@ struct Arrangement {
     class ObjectCache : public std::map<wxRealPoint,Point_2> {};
 
     Arrangement() : m_pl(m_arrangement) {}
-/*
+    /*
     void load(const std::string& filename)
     {
         std::cout << "loading " << filename << std::endl;
@@ -240,7 +240,10 @@ struct Arrangement {
     {
         Point_2 p0 = cached_point(x1,y1);
         Point_2 p1 = cached_point(x2,y2);
-        CGAL::insert(m_arrangement,Curve_2(p0,p1));
+        if(p0==p1)
+            CGAL::insert_point(m_arrangement,p0,m_pl);
+        else
+            CGAL::insert(m_arrangement,Curve_2(p0,p1));
         m_cache.clear();
     }
     void add_polyline( const std::vector<double> &x , const std::vector<double> &y )
@@ -250,9 +253,13 @@ struct Arrangement {
         for(unsigned int i=1; i<x.size(); ++i, p0=p1)
         {
             p1 = cached_point(x[i],y[i]);
-            curves.push_back(Curve_2(p0,p1));
+            if(p0!=p1)
+                curves.push_back(Curve_2(p0,p1));
         }
-        CGAL::insert(m_arrangement,curves.begin(),curves.end());
+        if(curves.empty())
+            CGAL::insert_point(m_arrangement,p0,m_pl);
+        else
+            CGAL::insert(m_arrangement,curves.begin(),curves.end());
         m_cache.clear();
     }
 
@@ -263,9 +270,13 @@ struct Arrangement {
         for(unsigned int i=0; i<x.size(); ++i, p0=p1)
         {
             p1 = cached_point(x[i],y[i]);
-            curves.push_back(Curve_2(p0,p1));
+            if(p0!=p1)
+                curves.push_back(Curve_2(p0,p1));
         }
-        CGAL::insert(m_arrangement,curves.begin(),curves.end());
+        if(curves.empty())
+            CGAL::insert_point(m_arrangement,p0,m_pl);
+        else
+            CGAL::insert(m_arrangement,curves.begin(),curves.end());
         m_cache.clear();
     }
 
@@ -275,6 +286,13 @@ struct Arrangement {
         wxCoord x0,y0,w,h;
         dc.GetDeviceOrigin(&x0,&y0);
         dc.GetSize(&w,&h);
+
+//debugging
+        x0+=50;
+        y0+=50;
+        w-=100;
+        h-=100;
+
 
         for (fit = m_arrangement.faces_begin(); fit != m_arrangement.faces_end(); ++fit)
         {
@@ -331,7 +349,7 @@ struct Arrangement {
         for (vit = m_arrangement.vertices_begin(); vit != m_arrangement.vertices_end(); ++vit) {
             dc.SetPen(point_pen[vit->data().selected]);
             wxPoint p=trans.from_local_int(CGAL::to_double(vit->point().x()),CGAL::to_double(vit->point().y()));
-            dc.DrawLine(p,p);
+            if(p.x>=x0 && p.x<=x0+w && p.y>=y0 && p.y<=y0+h ) dc.DrawLine(p,p);
         }
     }
 
@@ -482,6 +500,49 @@ void cgal_vector_layer::load(const std::string& filename_)
 {
     m_arrangement->load(filename_);
     filename( system_complete(filename_).string() );
+}
+
+
+void cgal_vector_layer::load(const vector_layer& layer)
+{
+    name(layer.name()+"_CGAL");
+    transform() = layer.transform();
+    // 0D
+    for (unsigned int i = 0; i < layer.num_points(); ++i)
+    {
+        double x,y;
+        layer.get_point(i,x,y);
+        m_arrangement->add_point(x,y);
+    }
+    // 1D
+    for (unsigned int i = 0; i < layer.num_lines();++i)
+    {
+        double x1, y1, x2, y2;
+        layer.get_line(i,x1,y1,x2,y2);
+        m_arrangement->add_line(x1,y1,x2,y2);
+    }
+    for (unsigned int i=0;i<layer.num_polygons();++i)
+    {
+        std::vector<double> x, y;
+        layer.get_polygon(i,x,y);
+        m_arrangement->add_polygon(x,y);
+    }
+    for (unsigned int i = 0; i < layer.num_polylines();++i)
+    {
+        std::vector<double> x, y;
+        layer.get_polyline(i,x,y);
+        m_arrangement->add_polyline(x,y);
+    }
+}
+
+cgal_vector_layer::cgal_vector_layer(const vector_layer& layer)
+{
+    m_arrangement = new Arrangement;
+    load(layer);
+    m_infos = "CGAL vector layer";
+    default_display_parameters();
+    notifyLayerSettingsControl_();
+    m_selection_color = wxColour(255, 255, 0); //*wxYELLOW;
 }
 
 cgal_vector_layer::cgal_vector_layer(const string &layer_name)

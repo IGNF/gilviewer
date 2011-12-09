@@ -49,33 +49,27 @@ bool orientation_2d::read_ori_from_image_file(const string &filename)
 {
     if ( !boost::filesystem::exists(filename) )
     {
-        GILVIEWER_LOG_WARNING("File " + filename + " does not exist")
+        GILVIEWER_LOG_WARNING("File " + filename + " does not exist");
         return false;
     }
 
     string basename = boost::filesystem::basename(filename);
     string path = boost::filesystem::path(filename).branch_path().string();
 
-    if( !read_ori_from_ori_file(path+"/"+basename+".ori") )
-    {
-        if( !read_ori_from_tfw_file(path+"/"+basename+".tfw") &&
-            !read_ori_from_tfw_file(path+"/"+basename+".jgw") )
-                return false;
-        return true;
-    }
-    else
-        return true;
-
+    if( read_ori_from_ori_file(path+"/"+basename+".ori") ) return true;
+    if( read_ori_from_ori_file(path+"/"+basename+".ORI") ) return true;
+    if( read_ori_from_tfw_file(path+"/"+basename+".tfw") ) return true;
+    if( read_ori_from_tfw_file(path+"/"+basename+".TFW") ) return true;
+    if( read_ori_from_tfw_file(path+"/"+basename+".jgw") ) return true;
+    if( read_ori_from_tfw_file(path+"/"+basename+".JGW") ) return true;
+    if( read_ori_from_hdr_file(path+"/"+basename+".hdr") ) return true;
+    if( read_ori_from_hdr_file(path+"/"+basename+".HDR") ) return true;
+    return false;
 }
 
 bool orientation_2d::read_ori_from_ori_file(const string &filename)
 {
-    if ( !boost::filesystem::exists(filename) )
-    {
-        GILVIEWER_LOG_WARNING("File " + filename + " does not exist")
-        return false;
-    }
-
+    if ( !boost::filesystem::exists(filename) ) return false;
     ifstream fileOri(filename.c_str() , ifstream::in );
 
 #ifndef WIN32
@@ -98,7 +92,7 @@ bool orientation_2d::read_ori_from_ori_file(const string &filename)
     if (carto != "CARTO")
     {
         GILVIEWER_LOG_ERROR("Bad ORI format (not CARTO)")
-        return false;
+                return false;
     }
 
     fileOri >> m_originX >> m_originY;
@@ -110,23 +104,118 @@ bool orientation_2d::read_ori_from_ori_file(const string &filename)
     if(pasX != pasY)
     {
         GILVIEWER_LOG_ERROR("Unsupported orientaton: X and Y steps are different")
-        return false;
+                return false;
     }
     else
-	m_step = pasX;
+        m_step = pasX;
 
     fileOri.close();
     return true;
 }
 
-bool orientation_2d::read_ori_from_tfw_file(const string &filename)
+
+#include <boost/algorithm/string/case_conv.hpp>
+bool orientation_2d::read_ori_from_hdr_file(const string &filename)
 {
-    if ( !boost::filesystem::exists(filename) )
+    if ( !boost::filesystem::exists(filename) ) return false;
+    ifstream fic(filename.c_str() , ifstream::in );
+
+    if (!fic.good()) return false;
+
+    unsigned int nc, nl;
+    double pas_x, pas_y;
+    double position_origine_x, position_origine_y;
+
+    unsigned short good = 0;
+
+    while (fic.good())
     {
-        GILVIEWER_LOG_WARNING("File " + filename + " does not exist")
-        return false;
+        std::string s;
+        fic >> s;
+        if (!fic.good())
+            break;
+        boost::algorithm::to_upper(s);
+
+        //			if ( s == "MAPUNITS") { fic >> s; }
+        //			else if( s == "METERS") { fic >> s; }
+        //			else
+        if (s == "ULXMAP")
+        {
+            fic >> position_origine_x;
+            good |= 1;
+        }
+        else if (s == "ULYMAP")
+        {
+            fic >> position_origine_y;
+            good |= 2;
+        }
+        else if (s == "XDIM")
+        {
+            fic >> pas_x;
+            good |= 4;
+        }
+        else if (s == "YDIM")
+        {
+            fic >> pas_y;
+            good |= 8;
+        }
+        else if (s == "NROWS")
+        {
+            fic >> nc;
+            good |= 16;
+        }
+        else if (s == "NCOLS")
+        {
+            fic >> nl;
+            good |= 32;
+        }
+        else if (s == "PROJECTION")
+        {
+            std::string systeme;
+            fic >> systeme;
+            //std::cout << "Fichier HDR, projection lue : " << systeme << std::endl;
+
+            if (systeme == "LAMBERT1")
+                m_zoneCarto = 1;
+            else if (systeme == "LAMBERT2")
+                m_zoneCarto = 2;
+            else if (systeme == "LAMBERT3")
+                m_zoneCarto = 3;
+            else if (systeme == "LAMBERT4")
+                m_zoneCarto = 4;
+            else if (systeme == "LAMBERT93")
+                m_zoneCarto = 93;
+            else
+                GILVIEWER_LOG_ERROR("Projection non supportée : " << systeme);
+        }
+
+        getline(fic, s);
     }
 
+    if (good != 63) return false;
+
+    m_originX = position_origine_x + 0.5 * pas_x;
+    m_originY = position_origine_y - 0.5 * pas_y;
+
+
+    m_sizeX = nc;
+    m_sizeY = nl;
+    if(pas_x != pas_y)
+    {
+        GILVIEWER_LOG_ERROR("Unsupported orientaton: X and Y steps are different")
+                return false;
+    }
+    else
+        m_step = pas_x;
+
+    fic.close();
+    return true;
+}
+
+
+bool orientation_2d::read_ori_from_tfw_file(const string &filename)
+{
+    if ( !boost::filesystem::exists(filename) ) return false;
     ifstream fileTFW(filename.c_str() , ifstream::in );
 
 #ifndef WIN32
@@ -158,7 +247,7 @@ bool orientation_2d::read_ori_from_tfw_file(const string &filename)
     if(pasX != pasY)
     {
         GILVIEWER_LOG_ERROR("Unsupported orientaton: X and Y steps are different")
-        return false;
+                return false;
     }
     else
         m_step = pasX;

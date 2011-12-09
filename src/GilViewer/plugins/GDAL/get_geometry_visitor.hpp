@@ -47,25 +47,23 @@ Authors:
 
 #include "ogr_vector_layer.hpp"
 
-class get_polygons_visitor : public boost::static_visitor<>
+template<typename Geometry>
+class get_geometry_visitor : public boost::static_visitor<>
 {
 public:
-    get_polygons_visitor() {}
+    get_geometry_visitor() {}
 
     template <typename T>
     void operator()(T* operand)
     {
-        //throw std::invalid_argument("Unhandled geometry type!");
-        //std::cout << "[draw_geometry_visitor] Unhandled geometry type!" << std::endl;
     }
 
-    std::vector<OGRPolygon*> m_polygons;
-};
+    void operator()(Geometry* operand)
+    {
+        m_geometries.push_back(operand);
+    }
 
-template <>
-void get_polygons_visitor::operator()(OGRPolygon* operand)
-{
-    m_polygons.push_back(operand);
-}
+    std::vector<Geometry*> m_geometries;
+};
 
 #endif // GET_GEOMETRY_VISITOR_HPP

@@ -153,6 +153,10 @@ public:
     /// Accessors
     virtual unsigned int num_polygons() const;
     virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
+    virtual unsigned int num_points() const;
+    virtual void get_point(unsigned int i, double &x , double &y ) const;
+    virtual unsigned int num_polylines() const;
+    virtual void get_polyline(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
 
     virtual void clear();
 

@@ -88,6 +88,8 @@ public:
     //@{
     /// Reads an image orientation from a .ori file
     bool read_ori_from_ori_file(const std::string &filename);
+    /// Reads an image orientation from a .hdr file
+    bool read_ori_from_hdr_file(const std::string &filename);
     /// Reads an image orientation from a .tfw file
     bool read_ori_from_tfw_file(const std::string &filename);
     /// @brief Reads an image orientation associated to an image file (.ori or .tfw)

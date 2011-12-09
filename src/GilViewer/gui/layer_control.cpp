@@ -443,22 +443,25 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
 }
 
 
-void layer_control::add_layer_from_file( const wxString &name )
+layer::ptrLayerType layer_control::add_layer_from_file( const wxString &name )
 {
     string filename((const char*) (name.mb_str()) );
     string extension(filesystem::extension(filename));
     extension = extension.substr(1,extension.size()-1);
     to_lower(extension);
+    layer::ptrLayerType layer;
     try
     {
-            boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
-        add_layer( file->load(filename) );
+        boost::shared_ptr<gilviewer_file_io> file = PatternSingleton<gilviewer_io_factory>::instance()->create_object(extension);
+        layer = file->load(filename);
+        add_layer( layer );
         m_basicDrawPane->Refresh();
     }
     catch (const std::exception &e)
     {
         GILVIEWER_LOG_EXCEPTION(e.what());
     }
+    return layer;
 }
 
 void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transform)
@@ -519,8 +522,7 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
         double translationInitY = m_ori->origin_y();
 
         double newzoom_factor = m_ori->step();
-        //layer->zoom_factor(newzoom_factor * m_layers[0]->zoom_factor());
-        layer->transform().zoom_factor(m_layers[0]->transform().zoom_factor());
+        layer->transform().zoom_factor(newzoom_factor*m_layers[0]->transform().zoom_factor());
         layer->transform().translation_x(translationInitX + m_layers[0]->transform().translation_x() * newzoom_factor);
         layer->transform().translation_y(translationInitY + m_layers[0]->transform().translation_y() * newzoom_factor);
     }

@@ -119,7 +119,7 @@ public:
     void create_new_vector_layer_with_parameters( const VectorLayerParameters &parameters );
 
     void add_layers_from_files( const wxArrayString &names );
-    void add_layer_from_file( const wxString &name );
+    layer::ptrLayerType add_layer_from_file( const wxString &name );
 
     ///Calque ghost
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;

@@ -39,6 +39,7 @@ Authors:
 #define CGAL_VECTOR_LAYER_HPP
 
 #include "GilViewer/layers/vector_layer.hpp"
+#include "GilViewer/layers/simple_vector_layer.hpp"
 
 #include <boost/mpl/vector.hpp>
 #include <boost/variant/variant.hpp>
@@ -54,6 +55,8 @@ class cgal_vector_layer : public vector_layer
 public:
     /// Constructeur a partir d'un nom de calque et d'un fichier shapefile
     cgal_vector_layer(const std::string &layer_name, const std::string &filename);
+    /// Constructeur par import depuis un calque vecteur
+    cgal_vector_layer(const vector_layer &layer);
     /// Constructeur vide: pour creer un layer a remplir a la main ...
     cgal_vector_layer(const std::string &layer_name="default name");
     /// @param layerName Le nom du calque
@@ -61,6 +64,7 @@ public:
     virtual ~cgal_vector_layer();
 
     void load(const std::string& filename);
+    void load(const vector_layer& layer);
 
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const;
     virtual void update(int, int) {}

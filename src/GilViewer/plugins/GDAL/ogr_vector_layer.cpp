@@ -58,14 +58,14 @@ using namespace std;
 using namespace boost::filesystem;
 
 ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filename_): vector_layer(),
-        m_nb_geometries(0),
-    m_nb_linear_rings(0),
-    m_nb_line_strings(0),
-    m_nb_multiline_strings(0),
-    m_nb_multipoints(0),
-    m_nb_points(0),
-    m_nb_multipolygons(0),
-    m_nb_polygons(0)
+m_nb_geometries(0),
+m_nb_linear_rings(0),
+m_nb_line_strings(0),
+m_nb_multiline_strings(0),
+m_nb_multipoints(0),
+m_nb_points(0),
+m_nb_multipolygons(0),
+m_nb_polygons(0)
 {
     name(layer_name);
     filename( system_complete(filename_).string() );
@@ -176,7 +176,7 @@ ogr_vector_layer::ogr_vector_layer(const string &layer_name, const string &filen
     catch(const exception &e)
     {
         GILVIEWER_LOG_EXCEPTION("[Exception propagated]")
-        throw logic_error(e.what());
+                throw logic_error(e.what());
     }
 }
 
@@ -358,25 +358,108 @@ void ogr_vector_layer::clear()
     vector< pair< internal_point_type , string > >().swap(m_texts);
 }
 
-vector<OGRPolygon*> ogr_vector_layer::polygons() const
-{
-    get_polygons_visitor gpv;
-    gpv.m_polygons.reserve(m_nb_polygons);
-    for(unsigned int i=0;i<m_geometries_features.size();++i)
-        boost::apply_visitor( gpv, m_geometries_features[i].first );
-    return gpv.m_polygons;
-}
-
 unsigned int ogr_vector_layer::num_polygons() const { return m_nb_polygons; }
 
 void ogr_vector_layer::get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
 {
-    vector<OGRPolygon*> p = polygons();
+    get_geometry_visitor<OGRPolygon> getter;
+    getter.m_geometries.reserve(m_nb_polygons);
+
+    for(unsigned int j=0;j<m_geometries_features.size();++j)
+        boost::apply_visitor( getter, m_geometries_features[j].first );
+
+    vector<OGRPolygon*>& p(getter.m_geometries);
     for(int j=0; j<p[i]->getExteriorRing()->getNumPoints(); ++j)
     {
         x.push_back(p[i]->getExteriorRing()->getX(j));
         y.push_back(p[i]->getExteriorRing()->getY(j));
     }
 }
+
+unsigned int ogr_vector_layer::num_points() const { return m_nb_points; }
+void ogr_vector_layer::get_point(unsigned int i, double &x , double &y ) const
+{
+    get_geometry_visitor<OGRPoint> getter;
+    getter.m_geometries.reserve(m_nb_points);
+    for(unsigned int j=0;j<m_geometries_features.size();++j)
+        boost::apply_visitor( getter, m_geometries_features[j].first );
+    vector<OGRPoint*>& p(getter.m_geometries);
+    x = p[i]->getX();
+    y = p[i]->getY();
+}
+
+unsigned int ogr_vector_layer::num_polylines() const {
+    unsigned int res = m_nb_line_strings;
+    get_geometry_visitor<OGRMultiLineString> getter;
+    getter.m_geometries.reserve(m_nb_multiline_strings);
+    for(unsigned int j=0;j<m_geometries_features.size();++j)
+        boost::apply_visitor( getter, m_geometries_features[j].first );
+    vector<OGRMultiLineString*>& p(getter.m_geometries);
+    for(unsigned int j=0; j<p.size(); ++j)
+        res += p[j]->getNumGeometries();
+    return res;
+}
+
+void ogr_vector_layer::get_polyline(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
+{
+    if(i<m_nb_line_strings)
+    {
+        get_geometry_visitor<OGRLineString> getter;
+        getter.m_geometries.reserve(m_nb_line_strings);
+
+        for(unsigned int j=0;j<m_geometries_features.size();++j)
+            boost::apply_visitor( getter, m_geometries_features[j].first );
+
+        vector<OGRLineString*>& p(getter.m_geometries);
+        for(int j=0; j<p[i]->getNumPoints(); ++j)
+        {
+            x.push_back(p[i]->getX(j));
+            y.push_back(p[i]->getY(j));
+        }
+    }
+    else
+    {
+        i-=m_nb_line_strings;
+        get_geometry_visitor<OGRMultiLineString> getter;
+        getter.m_geometries.reserve(m_nb_multiline_strings);
+
+        for(unsigned int j=0;j<m_geometries_features.size();++j)
+            boost::apply_visitor( getter, m_geometries_features[j].first );
+
+        vector<OGRMultiLineString*>& p(getter.m_geometries);
+        for(unsigned int j=0; j<p.size(); ++j)
+        {
+            unsigned int n = p[j]->getNumGeometries();
+            if(i<n)
+            {
+                OGRLineString *line = dynamic_cast<OGRLineString *>(p[j]->getGeometryRef(i));
+                if(!line)
+                {
+                    cout << "The geometry "<<i<<" of the OGRMultiLineString "<<j<<" is not an OGRLineString !!!" << endl;
+                    break;
+                }
+                else
+                {
+                    for(int k=0; k<line->getNumPoints(); ++k)
+                    {
+                        x.push_back(line->getX(k));
+                        y.push_back(line->getY(k));
+                    }
+                }
+                break;
+            }
+            i-=n;
+        }
+    }
+}
+
+/*
+void draw_geometry_visitor::operator()(OGRLinearRing* operand) const
+void draw_geometry_visitor::operator()(OGRMultiPoint* operand) const
+void draw_geometry_visitor::operator()(OGRMultiPolygon* operand) const
+*/
+
+
+
 
 // TODO: notify, settings control, shared_ptr, IMAGE or GEOGRAPHIC coordinates ...

@@ -67,6 +67,15 @@ public:
     virtual unsigned int num_polygons() const { return 0; }
     virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const {}
 
+    virtual unsigned int num_points() const { return 0; }
+    virtual void get_point(unsigned int i, double &x , double &y ) const {}
+
+    virtual unsigned int num_polylines() const { return 0; }
+    virtual void get_polyline(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const {}
+
+    virtual unsigned int num_lines() const { return 0; }
+    virtual void get_line(unsigned int i, double& x1 , double& y1 , double& x2 , double& y2 ) const {}
+
 private:
     // Textx display
     bool m_is_text_visible;

@@ -103,13 +103,16 @@ public:
     virtual void add_ellipse(double x_center, double y_center, double a, double b);
     virtual void add_ellipse(double x_center, double y_center, double a, double b, double theta);
 
+    virtual unsigned int num_polygons() const;
+    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
+    virtual unsigned int num_points() const;
+    virtual void get_point(unsigned int i, double &x , double &y ) const;
+    virtual unsigned int num_polylines() const;
+    virtual void get_polyline(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
+
     virtual void clear();
 
     typedef OGRPolygon* polygon_type;
-    std::vector<OGRPolygon*> polygons() const;
-
-    virtual unsigned int num_polygons() const;
-    virtual void get_polygon(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const;
 
 private:
     std::vector<std::pair<geometry_types,OGRFeature*> > m_geometries_features;

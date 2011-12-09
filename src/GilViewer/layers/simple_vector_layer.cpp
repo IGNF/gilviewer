@@ -426,3 +426,20 @@ void simple_vector_layer::get_polygon(unsigned int i, std::vector<double> &x , s
         y.push_back(m_polygons[i][j].y);
     }
 }
+
+
+unsigned int simple_vector_layer::num_points() const { return m_points.size(); }
+void simple_vector_layer::get_point(unsigned int i, double &x , double &y ) const
+{
+    x = m_points[i].x;
+    y = m_points[i].y;
+}
+unsigned int simple_vector_layer::num_polylines() const { return m_arcs.size(); }
+void simple_vector_layer::get_polyline(unsigned int i, std::vector<double> &x , std::vector<double> &y ) const
+{
+    for(unsigned int j=0; j<m_arcs[i].arc_points.size(); ++j)
+    {
+        x.push_back(m_arcs[i].arc_points[j].x);
+        y.push_back(m_arcs[i].arc_points[j].y);
+    }
+}
