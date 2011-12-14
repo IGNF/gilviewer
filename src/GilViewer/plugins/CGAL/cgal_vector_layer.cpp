@@ -1,5 +1,5 @@
 /***********************************************************************
-
+  
 This file is part of the GilViewer project source files.
 
 GilViewer is an open source 2D viewer (raster and vector) based on Boost
@@ -9,31 +9,31 @@ GIL and wxWidgets.
 Homepage:
 
         http://code.google.com/p/gilviewer
-
+            
 Copyright:
-
+            
         Institut Geographique National (2011)
-
+        
 Authors:
-
+        
         Mathieu Brédif
-
-
-
-
+        
+        
+        
+        
     GilViewer is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+    
     GilViewer is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
-
+    
     You should have received a copy of the GNU Lesser General Public
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
-
+    
 ***********************************************************************/
 #include "cgal_vector_layer.hpp"
 
@@ -73,7 +73,7 @@ struct Vertex_data {
 struct Halfedge_data {
     Halfedge_data() : selected(false) {}
     bool selected;
-
+    
 };
 
 struct Face_data {
@@ -91,8 +91,9 @@ bool clip( wxPoint& p, wxPoint& q, wxCoord x0, wxCoord y0, wxCoord x1, wxCoord y
     double b[] = { q.x, q.y };
     double tmin = 0, tmax = 1;
     for(int i=0; i<2; ++i) {
-        if(d[i]==0 && (p0[i]<r0[i] || p0[i]>r1[i])) {
-            return false;
+        if(d[i]==0) {
+            if (p0[i]<r0[i] || p0[i]>r1[i])
+                return false;
         } else {
             int j = 1-i, k = (d[i] > 0);
             int l = 1-k;
@@ -106,6 +107,33 @@ bool clip( wxPoint& p, wxPoint& q, wxCoord x0, wxCoord y0, wxCoord x1, wxCoord y
     }
     p.x = wxCoord(a[0]); p.y = wxCoord(a[1]);
     q.x = wxCoord(b[0]); q.y = wxCoord(b[1]);
+    return true;
+}
+
+
+bool clip( std::vector<wxPoint>& v, unsigned int i0, wxCoord x0)
+{
+    typedef std::vector<wxPoint>::iterator iterator;
+    iterator prev=v.end()-1;
+    for(iterator it=v.begin()+i0; it!=v.end(); prev=it,++it)
+    {
+        if(it->x >= x0) continue;
+        it->x = x0;///////////////// fixes rounding issues but is incorrect!!!! TODO!!!
+    }
+    return true;
+}
+
+bool clip( std::vector<wxPoint>& v, unsigned int i0, wxCoord x0, wxCoord y0, wxCoord x1, wxCoord y1 )
+{
+    typedef std::vector<wxPoint>::iterator iterator;
+    if(!clip(v, i0, x0)) return false;
+    for(iterator it=v.begin()+i0; it!=v.end(); ++it) { it->x = -it->x; }
+    if(!clip(v, i0,-x1)) return false;
+    for(iterator it=v.begin()+i0; it!=v.end(); ++it) { std::swap(it->x,it->y); }
+    if(!clip(v, i0, y0)) return false;
+    for(iterator it=v.begin()+i0; it!=v.end(); ++it) { it->x = -it->x; }
+    if(!clip(v, i0,-y1)) return false;
+    for(iterator it=v.begin()+i0; it!=v.end(); ++it) { wxCoord x = -it->y; it->y = -it->x; it->x=x; }
     return true;
 }
 
@@ -123,7 +151,7 @@ struct Arrangement {
     typedef Arrangement_2::Edge_const_iterator       Edge_const_iterator;
     typedef Arrangement_2::Face_const_iterator       Face_const_iterator;
     typedef Arrangement_2::Isolated_vertex_iterator       Isolated_vertex_iterator;
-
+    
     typedef Arrangement_2::Vertex_const_handle    Vertex_const_handle;
     typedef Arrangement_2::Halfedge_const_handle  Halfedge_const_handle;
     typedef Arrangement_2::Face_const_handle      Face_const_handle;
@@ -132,23 +160,23 @@ struct Arrangement {
     typedef Arrangement_2::Face_handle      Face_handle;
     typedef CGAL::Arr_walk_along_line_point_location<Arrangement_2> Point_location; // does not seem to work with Arr_trapezoid_ric_point_location
     typedef Arrangement_2::Inner_ccb_const_iterator Inner_ccb_const_iterator;
-
-
+    
+    
     class ObjectCache : public std::map<wxRealPoint,Point_2> {};
-
+    
     Arrangement() : m_pl(m_arrangement) {}
     /*
     void load(const std::string& filename)
     {
         std::cout << "loading " << filename << std::endl;
         boost::filesystem::path file(boost::filesystem::system_complete(filename));
-
+        
         std::string ext = BOOST_FILESYSTEM_STRING(file.extension());
         if(ext==".cgal") load_cgal(filename);
         else if(ext==".shp") load_shp(filename);
         else std::cerr << "unknown file type" << std::endl;
     }
-
+    
     void load_shp(const std::string& filename)
     {
         std::cout << "loading as an shp " << filename << std::endl;
@@ -159,7 +187,7 @@ struct Arrangement {
             oss << "[" << __FUNCTION__ << ", l. " << __LINE__ << "]: Exception --> Problem reading file " << filename << std::endl;
             throw std::ios_base::failure(oss.str());
         }
-
+        
         // Infos
         int nbEntities, type;
         double minBound[4], maxBound[4];
@@ -203,7 +231,7 @@ struct Arrangement {
             //   add_polygon(x,y);
         }
     }
-
+    
     void load_cgal(const std::string& filename)
     */
     void load(const std::string& filename)
@@ -217,10 +245,10 @@ struct Arrangement {
         }
         f >> m_arrangement;
     }
-
+    
     void save(const std::string& filename) const
     {
-
+        
         std::ofstream f(filename.c_str());
         if (! f.is_open()) // Always test file open
         {
@@ -229,7 +257,7 @@ struct Arrangement {
         }
         f << m_arrangement;
     }
-
+    
     void add_point( double x , double y )
     {
         Point_2 p = cached_point(x,y);
@@ -262,7 +290,7 @@ struct Arrangement {
             CGAL::insert(m_arrangement,curves.begin(),curves.end());
         m_cache.clear();
     }
-
+    
     void add_polygon( const std::vector<double> &x , const std::vector<double> &y )
     {
         std::vector<Curve_2> curves;
@@ -279,31 +307,30 @@ struct Arrangement {
             CGAL::insert(m_arrangement,curves.begin(),curves.end());
         m_cache.clear();
     }
-
+    
     void draw(wxDC &dc, wxPen point_pen[2], wxPen line_pen[2], wxPen poly_pen[2], wxBrush poly_brush[2], wxCoord x, wxCoord y, bool transparent, const layer_transform& trans) const {
         Face_const_iterator fit;
-
+        
         wxCoord x0,y0,w,h;
         dc.GetDeviceOrigin(&x0,&y0);
         dc.GetSize(&w,&h);
+        //debugging
 
-//debugging
         x0+=50;
         y0+=50;
         w-=100;
         h-=100;
-
-
+        
         for (fit = m_arrangement.faces_begin(); fit != m_arrangement.faces_end(); ++fit)
         {
             if (fit->is_unbounded()) continue;
             dc.SetPen(poly_pen[fit->data().selected]);
             dc.SetBrush(poly_brush[fit->data().selected]);
-
+            
             unsigned int n = 1+fit->number_of_inner_ccbs();
             std::vector<int> count;
             std::vector<wxPoint> points;
-
+            
             int prev_size = 0;
             { // outer ccb
                 Arrangement_2::Ccb_halfedge_const_circulator curr, first;
@@ -314,9 +341,10 @@ struct Arrangement {
                     p=trans.from_local_int(CGAL::to_double(curr->target()->point().x()),CGAL::to_double(curr->target()->point().y()));
                     points.push_back(p);
                 } while ((++curr) != first);
+                clip(points,prev_size,x0,y0,x0+w,y0+h);
                 count.push_back(points.size()-prev_size);
                 prev_size = points.size();
-
+                
             }
 
             for(Inner_ccb_const_iterator it = fit->inner_ccbs_begin(); it != fit->inner_ccbs_end(); ++it)
@@ -329,12 +357,13 @@ struct Arrangement {
                     p=trans.from_local_int(CGAL::to_double(curr->target()->point().x()),CGAL::to_double(curr->target()->point().y()));
                     points.push_back(p);
                 } while ((++curr) != first);
+                clip(points,prev_size,x0,y0,x0+w,y0+h);
                 count.push_back(points.size()-prev_size);
                 prev_size = points.size();
             }
             dc.DrawPolyPolygon(n,&(count.front()),&(points.front()),0,0,wxWINDING_RULE);
         }
-
+        
         Edge_const_iterator eit;
         for (eit = m_arrangement.edges_begin(); eit != m_arrangement.edges_end(); ++eit)
         {
@@ -344,7 +373,7 @@ struct Arrangement {
             if( clip(p1,p2,x0,y0,x0+w,y0+h) )
                 dc.DrawLine(p1,p2);
         }
-
+        
         Vertex_const_iterator vit;
         for (vit = m_arrangement.vertices_begin(); vit != m_arrangement.vertices_end(); ++vit) {
             dc.SetPen(point_pen[vit->data().selected]);
@@ -352,7 +381,7 @@ struct Arrangement {
             if(p.x>=x0 && p.x<=x0+w && p.y>=y0 && p.y<=y0+h ) dc.DrawLine(p,p);
         }
     }
-
+    
     void select(const layer_transform& trans, double d2[], const wxRealPoint& p)
     {
         wxLogMessage(_("selecting"));
@@ -361,7 +390,7 @@ struct Arrangement {
         Vertex_const_handle   v;
         Halfedge_const_handle h;
         Face_const_handle     f;
-
+        
         if      (CGAL::assign (f, obj)) {
             m_arrangement.non_const_handle(f)->data().selected = !m_arrangement.non_const_handle(f)->data().selected;
         }
@@ -375,7 +404,7 @@ struct Arrangement {
         }
         m_cache.clear();
     }
-
+    
     CGAL::Object snap(const layer_transform& trans, double d2[], const wxRealPoint& p, wxRealPoint& psnap )
     {
         FT zoom = trans.zoom_factor();
@@ -383,13 +412,13 @@ struct Arrangement {
         wxRealPoint plocal = trans.to_local(p);
         Point_2 q(plocal.x,plocal.y);
         Point_2 qsnap(q);
-
+        
         CGAL::Object obj = m_pl.locate (q);
-
+        
         Vertex_const_handle   v;
         Halfedge_const_handle h;
         Face_const_handle     f;
-
+        
         if (CGAL::assign (f, obj)) {
             Arrangement_2::Ccb_halfedge_const_circulator curr, first;
             if (!f->is_unbounded())
@@ -403,7 +432,7 @@ struct Arrangement {
                         h = curr;
                     }
                 } while ((++curr) != first);
-
+                
             }
             for(Inner_ccb_const_iterator it = f->inner_ccbs_begin(); it != f->inner_ccbs_end(); ++it)
             {
@@ -416,12 +445,12 @@ struct Arrangement {
                         h = curr;
                     }
                 } while ((++curr) != first);
-
+                
             }
             // trickery : ArrangementDcelFace misses a const iterator
             Arrangement_2& arr = (Arrangement_2&) m_arrangement;
             Face_handle g = arr.non_const_handle(f);
-
+            
             for(Isolated_vertex_iterator it = g->isolated_vertices_begin(); it != g->isolated_vertices_end(); ++it)
             {
                 FT d = CGAL::squared_distance(it->point(),q)*invzoom2;
@@ -429,12 +458,12 @@ struct Arrangement {
                     d2[SNAP_POINT]=CGAL::to_double(d);
                     v = it;
                 }
-
+                
             }
         }
-
+        
         if(CGAL::assign (h, obj)) d2[SNAP_LINE]=0;
-
+        
         if(h!=Halfedge_const_handle())
         {
             for(unsigned int i=0; i<SNAP_LINE;++i) d2[i]=0;
@@ -451,7 +480,7 @@ struct Arrangement {
             if(v==Vertex_const_handle())
             {
                 obj = CGAL::make_object(h);
-
+                
                 Segment_2 s(h->source()->point(),h->target()->point());
                 // implementation de qsnap = project(q,s);
                 Vector_2 u = q-s.source();
@@ -459,32 +488,32 @@ struct Arrangement {
                 qsnap = s.source()+v*((u*v)/v.squared_length());
             }
         }
-
+        
         if(CGAL::assign (v, obj))  d2[SNAP_POINT]=0;
-
+        
         if(v!=Vertex_const_handle())
         {
             for(unsigned int i=0; i<SNAP_LINE; ++i) d2[i]=0;
             obj = CGAL::make_object(v);
             qsnap = v->point();
         }
-
+        
         psnap = trans.from_local(CGAL::to_double(qsnap.x()),CGAL::to_double(qsnap.y()));
         wxRealPoint psnaplocal = trans.to_local(psnap);
         m_cache[psnaplocal] = qsnap;
         return obj;
     }
-
-
+    
+    
     void clear() { m_arrangement.clear(); }
-
+    
             private:
     Point_2 cached_point(double x, double y) const {
         ObjectCache::const_iterator it = m_cache.find(wxRealPoint(x,y));
         if (it != m_cache.end()) return it->second;
         return Point_2(x,y);
     }
-
+    
     Arrangement_2 m_arrangement;
     Point_location m_pl;
     CGAL::Object m_snap;
@@ -620,7 +649,7 @@ void cgal_vector_layer::add_polygon( const std::vector<double> &x , const std::v
 }
 
 /*
-
+  
 void cgal_vector_layer::add_text( double x , double y , const std::string &text , const wxColour &color)
 {
     internal_point_type pt;
