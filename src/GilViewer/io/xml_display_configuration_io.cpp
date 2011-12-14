@@ -40,7 +40,10 @@ Authors:
 
 #include <sstream>
 #include <boost/filesystem.hpp>
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 

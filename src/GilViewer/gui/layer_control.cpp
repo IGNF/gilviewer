@@ -35,7 +35,6 @@ Authors:
     License along with GilViewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ***********************************************************************/
-
 #include <list>
 #include <sstream>
 #include <stdexcept>
@@ -44,7 +43,10 @@ Authors:
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/bind.hpp>
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/scrolwin.h>
 #include <wx/toolbar.h>
 #include <wx/bmpbuttn.h>

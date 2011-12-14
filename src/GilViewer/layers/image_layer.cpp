@@ -46,7 +46,10 @@ Authors:
 #include <boost/gil/algorithm.hpp>
 #include "boost/gil/extension/numeric/sampler.hpp"
 #include "boost/gil/extension/numeric/resample.hpp"
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/dc.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>

@@ -18,6 +18,7 @@ endif()
 
 add_executable( GilViewerApp ${SYSTEM_NAME} ${VIEWER_APP_SOURCES} )
 target_link_libraries( GilViewerApp ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} GilViewer )
+message(STATUS " GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ")
 
 message( STATUS "*** Scanning samples ***" )
 file( GLOB list "samples/*" )
