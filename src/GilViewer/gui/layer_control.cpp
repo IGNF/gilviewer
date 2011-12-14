@@ -956,9 +956,9 @@ void layer_control::notify()
 layer::ptrLayerType layer_control::selected_layer(wxControlWithItems *control) const
 {
     int id_control = control->GetSelection();
-    if(id_control==wxNOT_FOUND)
+    if(id_control==wxNOT_FOUND || !control->GetClientData(id_control))
     {
-        GILVIEWER_LOG_MESSAGE("[rectangles2footprints_plugin::process] You must select an image layer");
+        GILVIEWER_LOG_MESSAGE("No selected layer");
         return layer::ptrLayerType() ;
     }
     // Now, retrieve the layers in the layer_control from their ids
