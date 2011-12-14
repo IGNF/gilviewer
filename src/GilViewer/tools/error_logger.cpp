@@ -69,7 +69,7 @@ void gilviewer_wx_error_logger::log_common(const std::string& message, wxColour*
     wxLog* current_logger = wxLog::GetActiveTarget();
     wxLogWindow* log_window = static_cast<wxLogWindow*>(current_logger);
     wxWindowList& children = log_window->GetFrame()->GetChildren();
-    for(wxWindowList::Node* node=children.GetFirst();node;node=node->GetNext())
+    for(wxWindowList::compatibility_iterator node=children.GetFirst();node;node=node->GetNext())
     {
         wxWindow* current_window = (wxWindow*)node->GetData();
         wxTextCtrl* txtctrl = wxDynamicCast(current_window, wxTextCtrl);

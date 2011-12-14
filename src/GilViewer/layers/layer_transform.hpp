@@ -41,6 +41,10 @@ Authors:
 
 
 #include <iostream>
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/gdicmn.h>
 class layer_transform {
     void rotated_coordinate_to_local(double gx, double gy, double& lx, double& ly) const;

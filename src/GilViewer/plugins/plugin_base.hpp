@@ -1,6 +1,10 @@
 #ifndef __PLUGIN_BASE_HPP__
 #define __PLUGIN_BASE_HPP__
 
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <wx/wx.h>
 
 #ifdef _WINDOWS

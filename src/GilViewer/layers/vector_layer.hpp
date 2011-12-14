@@ -38,7 +38,10 @@ Authors:
 
 #ifndef __VECTOR_LAYER_HPP__
 #define __VECTOR_LAYER_HPP__
-
+#ifdef WIN32
+	#pragma warning(disable : 4251)
+	#pragma warning(disable : 4275)
+#endif
 #include <boost/bind.hpp>
 
 #include "../layers/layer.hpp"
