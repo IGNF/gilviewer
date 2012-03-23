@@ -40,6 +40,7 @@ Authors:
 #define MACROSGILVIEWER_HPP_
 
 #include "../tools/error_logger.hpp"
+#include <sstream>
 
 /**
  * Un ensemble de macros pour faciliter la vie de l'utilisateur ...
@@ -173,7 +174,7 @@ Authors:
 
 #define GILVIEWER_LOG_EXCEPTION(txt) \
     { \
-    ostringstream oss; \
+    std::ostringstream oss; \
     oss << "[EXCEPTION]: " << txt; \
     oss << e.what() << endl; \
     INTERNAL_LOG_INFOS() \
@@ -182,21 +183,21 @@ Authors:
 
 #define GILVIEWER_LOG_ERROR(txt) \
     { \
-    ostringstream oss; \
+    std::ostringstream oss; \
     oss << "[ERROR]: " << txt; \
     gilviewer_wx_error_logger::log_error(oss.str()); \
     }
 
 #define GILVIEWER_LOG_WARNING(txt) \
     { \
-    ostringstream oss; \
+    std::ostringstream oss; \
     oss << "[WARNING]: " << txt; \
     gilviewer_wx_error_logger::log_warning(oss.str()); \
     }
 
 #define GILVIEWER_LOG_MESSAGE(txt) \
     { \
-    ostringstream oss; \
+    std::ostringstream oss; \
     oss << "[MESSAGE]: " << txt; \
     gilviewer_wx_error_logger::log_message(oss.str()); \
     }
