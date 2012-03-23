@@ -25,22 +25,6 @@ else()
     set( GILVIEWER_USE_GDAL_OGR 0 )
 endif()
 
-# Option to choose to use CGAL
-# Find CGAL
-find_package(CGAL COMPONENTS Core QUIET)
-option(USE_CGAL "Build GilViewer with CGAL" CGAL_FOUND)
-if(USE_CGAL)
-    if(CGAL_FOUND)
-#        include( ${CGAL_USE_FILE} )
-#        set( GILVIEWER_LINK_EXTERNAL_LIBRARIES ${GILVIEWER_LINK_EXTERNAL_LIBRARIES} ${CGAL_LIBRARIES}  ${CGAL_3RD_PARTY_LIBRARIES} )
-    else()
-        message(FATAL_ERROR "CGAL not found!")
-    endif()
-    set( GILVIEWER_USE_CGAL 1 )
-else()
-    set( GILVIEWER_USE_CGAL 0 )
-endif()
-
 # Option to choose to use GDAL_JP2
 option(USE_GDAL_JP2 "Build GilVeiwer with GDAL and JP2" OFF)
 if(USE_GDAL_JP2)
