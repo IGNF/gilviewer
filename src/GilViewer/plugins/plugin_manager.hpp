@@ -40,7 +40,6 @@ Authors:
 #define __PLUGIN_MANAGER_HPP__
 #include <vector>
 
-#include "../tools/pattern_singleton.hpp"
 #include "../tools/pattern_factory.hpp"
 #include "plugin_base.hpp"
 class wxMenuBar;

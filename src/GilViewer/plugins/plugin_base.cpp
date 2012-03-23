@@ -6,8 +6,9 @@
 
 #include <wx/dynlib.h>
 
-#include "../convenient/macros_gilviewer.hpp"
-#include "../io/gilviewer_io_factory.hpp"
+#include "GilViewer/tools/pattern_singleton.hpp"
+#include "GilViewer/convenient/macros_gilviewer.hpp"
+#include "GilViewer/io/gilviewer_io_factory.hpp"
 
 using namespace std;
 using namespace boost;
