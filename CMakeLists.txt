@@ -293,6 +293,5 @@ INCLUDE( ${CMAKE_CONFIG_DIR}/GilViewer_build_plugins.cmake )
 ###
 message( STATUS "**************" )
 message( STATUS "With GDAL     --> " ${USE_GDAL_OGR} )
-message( STATUS "With CGAL     --> " ${USE_CGAL} )
 message( STATUS "With GDAL_JP2 --> " ${USE_GDAL_JP2} )
 message( STATUS "**************" )
