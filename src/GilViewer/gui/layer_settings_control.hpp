@@ -43,6 +43,7 @@ Authors:
 	#pragma warning(disable : 4275)
 #endif
 #include <wx/dialog.h>
+#include <string>
 
 class layer_control;
 
