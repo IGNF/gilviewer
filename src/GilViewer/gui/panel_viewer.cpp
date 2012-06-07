@@ -801,16 +801,35 @@ wxRealPoint panel_viewer::snap(const wxRealPoint& p) const
 
 void panel_viewer::geometry_add_point(const wxRealPoint& p, bool final)
 {
-    if(vectorlayerghost()->complete()) vectorlayerghost()->reset();
-    if(m_ghostLayer->add_point(p,final)) geometry_end();
+    if(vectorlayerghost()->complete())
+        vectorlayerghost()->reset();
+    if(m_ghostLayer->add_point(p,final))
+        geometry_end();
     Refresh();
 }
-void panel_viewer::geometry_move_relative  (const wxRealPoint& p) { m_ghostLayer->move_relative(p); execute_mode(); }
-void panel_viewer::geometry_move_absolute  (const wxRealPoint& p) { m_ghostLayer->move_absolute(p); execute_mode(); }
-void panel_viewer::geometry_update_absolute(const wxRealPoint& p) { m_ghostLayer->update_absolute(p); execute_mode(); }
-void panel_viewer::geometry_update_relative(const wxRealPoint& p) { m_ghostLayer->update_relative(p); execute_mode(); }
+void panel_viewer::geometry_move_relative  (const wxRealPoint& p)
+{
+    m_ghostLayer->move_relative(p);
+    execute_mode();
+}
+void panel_viewer::geometry_move_absolute  (const wxRealPoint& p)
+{
+    m_ghostLayer->move_absolute(p);
+    execute_mode();
+}
+void panel_viewer::geometry_update_absolute(const wxRealPoint& p)
+{
+    m_ghostLayer->update_absolute(p);
+    execute_mode();
+}
+void panel_viewer::geometry_update_relative(const wxRealPoint& p)
+{
+    m_ghostLayer->update_relative(p);
+    execute_mode();
+}
 
-void panel_viewer::geometry_end() {
+void panel_viewer::geometry_end()
+{
     execute_mode();
 }
 

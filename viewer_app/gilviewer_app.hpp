@@ -53,7 +53,7 @@ class gilviewer_app: public wxApp
     gilviewer_frame *m_frame;
 };
 
-DECLARE_APP(gilviewer_app);
+DECLARE_APP(gilviewer_app)
 
 /*! \page tutorial1 Tutorial: an application on top of libGilViewer
  *  This tutorial explains how to build an application on top of <i>libGilViewer</i>. It is a minimal sample to benefits from the raster

@@ -63,8 +63,8 @@ public:
 private:
     panel_viewer* m_panelviewer;
 
-    DECLARE_EVENT_TABLE();
-    DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
+    DECLARE_EVENT_TABLE()
+    DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE()
 };
 
 #endif // __FRAME_VIEWER_HPP__

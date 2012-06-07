@@ -89,7 +89,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 #	include <locale.h>
 #endif
 
-IMPLEMENT_APP(sample_subimage_app);
+IMPLEMENT_APP(sample_subimage_app)
 
 bool sample_subimage_app::OnInit()
 {

@@ -81,7 +81,7 @@ protected:
     void on_show_hide_log_window(wxCommandEvent& event);
     void on_application_settings(wxCommandEvent& event);
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 };
 
 #endif /* BASICVIEWERFRAME_H_ */
