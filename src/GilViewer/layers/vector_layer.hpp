@@ -55,7 +55,7 @@ public:
 
     // Abstract interface
     virtual void draw(wxDC &dc, wxCoord x, wxCoord y, bool transparent) const {}
-    virtual void update(int width, int height) {};
+    virtual void update(int width, int height) {}
 
     // Accessors
     virtual std::string layer_type_as_string() const {return "Vector";}

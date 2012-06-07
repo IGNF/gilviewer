@@ -110,10 +110,10 @@ public:
     virtual void layer_orientation(layerOrientation orientation) { m_layer_orientation = orientation; }
     virtual inline layerOrientation layer_orientation() const { return m_layer_orientation; }
 */
-    inline virtual double center_x() {return 0.;}
-    inline virtual double center_y() {return 0.;}
+    virtual double center_x() {return 0.;}
+    virtual double center_y() {return 0.;}
         
-    inline unsigned int getId()const{return m_id;}
+    unsigned int getId()const{return m_id;}
 
     virtual void has_ori(bool hasOri) { m_hasOri = hasOri; }
     virtual bool has_ori() const { return m_hasOri; }

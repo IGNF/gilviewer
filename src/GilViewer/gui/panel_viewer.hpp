@@ -70,7 +70,6 @@ public:
 
     static void Register(wxFrame* parent, wxAuiManager *dockmanager);
 
-
     virtual ~panel_viewer() {}
 
     void add_layer( const layer::ptrLayerType &layer, bool has_transform = false);
@@ -80,7 +79,7 @@ public:
     layer_control* layercontrol() const;
 
     // On la met en public pour pouvoir y acceder depuis le FrameViewer (salete de windows, il faut bien le reconnaitre ...)
-    DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
+    DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE()
 
     wxToolBar* main_toolbar(wxWindow* parent, wxAuiManager *dockmanager);
     wxToolBar* mode_and_geometry_toolbar(wxWindow* parent, wxAuiManager *dockmanager);
@@ -122,7 +121,7 @@ public:
     inline eSNAP snap() { return m_snap; }
     inline boost::shared_ptr<vector_layer_ghost> vectorlayerghost() { return m_ghostLayer; }
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 protected:
     wxFrame* m_parent;
@@ -136,19 +135,13 @@ protected:
 */
     wxToolBar* m_mainToolbar;
     wxToolBar* m_modeAndGeometryToolbar;
-
-    /// The main menu bar
-    wxMenuBar* m_menuBar;
-    /// The menu 'File'
-    wxMenu *m_menuFile;
-    /// The menu 'About'
-    wxMenu *m_menuAbout;
-
+    wxMenuBar* m_menuBar;               // The main menu bar
+    wxMenu *m_menuFile;                 // The menu 'File'
+    wxMenu *m_menuAbout;                // The menu 'About'
     wxBrush m_bgbrush;
 
     bool m_mouseMovementStarted;
     wxRealPoint m_mouseMovementInit;
-
     wxRealPoint m_translationDrag;
 
     // Le controle des couches
@@ -208,7 +201,6 @@ protected:
     panel_viewer(wxFrame* parent, wxAuiManager *dockmanager);
     friend panel_viewer* create_panel_viewer(wxFrame* parent, wxAuiManager *dockmanager);
 
-    
     wxRealPoint snap(const wxRealPoint& p) const;
 
     template<typename Event>

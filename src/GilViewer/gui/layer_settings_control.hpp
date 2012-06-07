@@ -50,7 +50,7 @@ class layer_control;
 class layer_settings_control : public wxDialog
 {
 public:
-    layer_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){;}
+    layer_settings_control(layer_control *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Layer settings"), const wxPoint &pos=wxDefaultPosition, const wxSize &size=wxDefaultSize, const long style=wxDEFAULT_FRAME_STYLE) : wxDialog( (wxWindow*)parent, id, title, pos, size, style){}
     ~layer_settings_control() {}
 
     // Cette methode permet de mettre a jour l'interface lorsque des changements sont fait a partir du code (changement de style, de couleur ...)

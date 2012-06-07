@@ -66,7 +66,7 @@ public:
 
     void write_config();
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 
 
 private:

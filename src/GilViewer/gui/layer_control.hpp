@@ -83,7 +83,7 @@ public:
     ///Recupere l'orientation du viewer
     boost::shared_ptr<orientation_2d> orientation() const;
 
-    inline unsigned int number_of_layers() { return m_numberOfLayers; }
+    unsigned int number_of_layers() { return m_numberOfLayers; }
 
     void update();
 
@@ -104,10 +104,10 @@ public:
     const_reverse_iterator rend() const { return m_layers.rend();}
 
     LayerContainerType layers() const {return m_layers;}
+    panel_viewer* panelviewer() {return m_basicDrawPane;}
 
-    inline panel_viewer* panelviewer() {return m_basicDrawPane;}
-
-    inline std::vector< boost::shared_ptr<layer_control_row> > rows() const { return m_rows; }
+    typedef std::vector< boost::shared_ptr<layer_control_row> > LayerCtrlRowContainerType;
+    LayerCtrlRowContainerType rows() const {return m_rows; }
 
     /// Cette methode permet d'ajouter un calque existant (image ou shapefile ...)
     void on_open_layer(wxCommandEvent& event);
@@ -124,10 +124,12 @@ public:
     ///Calque ghost
     boost::shared_ptr<vector_layer_ghost> m_ghostLayer;
 
-public:
     template<typename T>
     void update_control(wxControlWithItems *control, bool notified = true);
     layer::ptrLayerType selected_layer(wxControlWithItems *control) const;
+
+    bool is_activated(const layer::ptrLayerType& l) const; // myirci: added 24.04.2012
+
 
 private:
     std::vector<boost::function<void()> > m_notifications;
@@ -135,53 +137,38 @@ private:
 
 private:
     void on_close_window(wxCloseEvent& event);
-    /// Cette methode permet d'afficher les informations sur le calque
-    void on_info_button(wxCommandEvent& event);
-    /// Cette methode permet de sauvegarder le calque
-    void on_save_button(wxCommandEvent& event);
-    /// Cette methode permet de supprimer le calque
-    void on_delete_button(wxCommandEvent& event);
-    /// Cette methode permet d'acceder aux parametres d'affichage du calque
-    void on_settings_button(wxCommandEvent& event);
+    void on_info_button(wxCommandEvent& event);     // Cette methode permet d'afficher les informations sur le calque
+    void on_save_button(wxCommandEvent& event);     // Cette methode permet de sauvegarder le calque
+    void on_delete_button(wxCommandEvent& event);   // Cette methode permet de supprimer le calque
+    void on_settings_button(wxCommandEvent& event); // Cette methode permet d'acceder aux parametres d'affichage du calque
     void on_center_button(wxCommandEvent& event);
     void on_refresh_button(wxCommandEvent& event);
     void on_check_visibility(wxCommandEvent& event);
     void on_check_transformable(wxCommandEvent& event);
-    /// Cette methode permet de remettre l'ensemble des calques a leur position initiale, de reinitialiser les transformations, de tout rendre visible et transformable
-    void on_reset(wxCommandEvent& event);
-    /// Cette methode permet de deplacer (vers le haut) les calques selectionnes
-    void on_layer_up(wxCommandEvent& event);
-    /// Cette methode permet de deplacer (vers le bas) les calques selectionnes
-    void on_layer_down(wxCommandEvent& event);
-    /// Cette methode permet d'inverser la visibilite des calques selectionnes
-    void on_visibility_button(wxCommandEvent& event);
-    /// Cette methode permet d'inverser le comportement des calques selectionnes par rapport aux transformations
-    void on_transformation_button(wxCommandEvent& event);
-    /// Cette methode permet d'afficher l'interface de reglages des parametres globaux (pas grand chose pour l'instant ...)
-    void on_global_settings_button(wxCommandEvent& event);
-    /// Cette methode permet de sauvegarder dans un fichier XML les layers affiches ainsi que la configuration d'affichage courante
-    void on_save_display_config_button(wxCommandEvent& event);
-    /// Cette methode permet de lire a partir d'un fichier XML les layers affiches ainsi que la configuration d'affichage courante
-    void on_load_display_config_button(wxCommandEvent& event);
-    /// Cette methode permet de supprimer tous les layers affiches
-    void on_delete_all_rows_button(wxCommandEvent& event);
+    void on_reset(wxCommandEvent& event);           // Cette methode permet de remettre l'ensemble des calques a leur position initiale,
+                                                    // de reinitialiser les transformations, de tout rendre visible et transformable
+    void on_layer_up(wxCommandEvent& event);        // Cette methode permet de deplacer (vers le haut) les calques selectionnes
+    void on_layer_down(wxCommandEvent& event);      // Cette methode permet de deplacer (vers le bas) les calques selectionnes
+    void on_visibility_button(wxCommandEvent& event);       // Cette methode permet d'inverser la visibilite des calques selectionnes
+    void on_transformation_button(wxCommandEvent& event);   // Cette methode permet d'inverser le comportement des calques selectionnes par rapport aux transformations
+    void on_global_settings_button(wxCommandEvent& event);  // Cette methode permet d'afficher l'interface de reglages des parametres globaux (pas grand chose pour l'instant ...)
+    void on_save_display_config_button(wxCommandEvent& event); // Cette methode permet de sauvegarder dans un fichier XML les layers affiches ainsi que la configuration d'affichage courante
+    void on_load_display_config_button(wxCommandEvent& event); // Cette methode permet de lire a partir d'un fichier XML les layers affiches ainsi que la configuration d'affichage courante
+    void on_delete_all_rows_button(wxCommandEvent& event);     // Cette methode permet de supprimer tous les layers affiches
 
-    /// Cette methode permet de construire la barre d'outils
-    void init_toolbar(wxToolBar* toolBar);
 
-    /// Cette methode permet d'ajouter une ligne dans le LayerControl (elle est appelee lors de l'ajout d'un calque)
-    void add_row(const std::string &name , layer_settings_control *layersettings , const std::string &tooltip = "" );
-
+    void init_toolbar(wxToolBar* toolBar);                     // Cette methode permet de construire la barre d'outils
+    void add_row(const std::string &name , layer_settings_control *layersettings , const std::string &tooltip = "" );  // Cette methode permet d'ajouter une ligne dans le LayerControl
+                                                                                                                       // (elle est appelee lors de l'ajout d'un calque)
     wxScrolledWindow    *m_scroll;
 
 protected:
-    wxFlexGridSizer     *m_sizer;
-    wxBoxSizer          *inner_sizer;
-    unsigned int        m_numberOfLayers;
-    panel_viewer* m_basicDrawPane;
-    LayerContainerType  m_layers;
-    // La, il faudrait mettre un boost::shared_array ...
-    std::vector< boost::shared_ptr<layer_control_row> > m_rows;
+    wxFlexGridSizer*            m_sizer;
+    wxBoxSizer*                 inner_sizer;
+    unsigned int                m_numberOfLayers;
+    panel_viewer*               m_basicDrawPane;
+    LayerContainerType          m_layers;
+    LayerCtrlRowContainerType   m_rows;
 
     //Orientation generale du viewer
     boost::shared_ptr<orientation_2d> m_ori;
@@ -189,7 +176,7 @@ protected:
 
     global_settings_control* m_globalSettingsControl;
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // __LAYER_CONTROL_HPP__

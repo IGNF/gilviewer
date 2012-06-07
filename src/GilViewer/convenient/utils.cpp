@@ -78,7 +78,6 @@ namespace gilviewer_utils
         }
     }
 
-
     string build_wx_wildcard_from_io_factory(const std::string& family, const std::string& group)
     {
         ostringstream wildcard;
