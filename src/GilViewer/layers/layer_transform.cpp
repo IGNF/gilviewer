@@ -28,8 +28,8 @@ void layer_transform::from_local(double lx, double ly, double& gx, double& gy) c
 
 void layer_transform::to_local(double gx, double gy, double& lx, double& ly) const
 {
-    double rx =                m_zoomFactor*gx -m_translationX;
-    double ry = m_coordinates*(m_zoomFactor*gy -m_translationY); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
+    double rx = m_zoomFactor*gx - m_translationX;
+    double ry = m_coordinates*(m_zoomFactor*gy - m_translationY); // should mathematically be a division by m_coordinates, but since it is either 1 or -1, multiplication is fine
     rotated_coordinate_to_local(rx,ry,lx,ly);
 }
 

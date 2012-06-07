@@ -72,9 +72,12 @@ public:
     {}
     layer_transform& operator =(const layer_transform& l){
         m_zoomFactor=l.m_zoomFactor;
-        m_translationX=l.m_translationX;m_translationY=l.m_translationY;
+        m_translationX=l.m_translationX;
+        m_translationY=l.m_translationY;
         m_coordinates=l.m_coordinates;
-        m_h=l.m_h;m_w=l.m_w;m_layer_orientation=l.m_layer_orientation;
+        m_h=l.m_h;
+        m_w=l.m_w;
+        m_layer_orientation=l.m_layer_orientation;
         return *this;
     }
 

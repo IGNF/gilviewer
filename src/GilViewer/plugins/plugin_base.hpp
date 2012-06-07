@@ -45,7 +45,7 @@ protected:
     wxAuiManager *m_manager;
 
 private:
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 };
 
 

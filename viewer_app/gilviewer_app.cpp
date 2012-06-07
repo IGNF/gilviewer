@@ -81,7 +81,7 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {   wxCMD_LINE_NONE } };
 
 
-IMPLEMENT_APP(gilviewer_app);
+IMPLEMENT_APP(gilviewer_app)
 
 bool gilviewer_app::OnInit()
 {

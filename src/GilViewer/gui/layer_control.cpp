@@ -43,6 +43,7 @@ Authors:
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 #ifdef WIN32
 	#pragma warning(disable : 4251)
 	#pragma warning(disable : 4275)
@@ -111,7 +112,7 @@ BEGIN_EVENT_TABLE(layer_control, wxFrame)
         EVT_BUTTON(wxID_SAVE,layer_control::on_save_display_config_button)
         EVT_BUTTON(wxID_OPEN,layer_control::on_load_display_config_button)
         EVT_BUTTON(ID_DELETE_ALL_ROWS,layer_control::on_delete_all_rows_button)
-        END_EVENT_TABLE();
+        END_EVENT_TABLE()
 
 layer_control::layer_control(panel_viewer* DrawPane, wxFrame* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size):
 wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghost), m_basicDrawPane(DrawPane), m_ori(boost::shared_ptr<orientation_2d>(new orientation_2d)), m_isOrientationSet(false)
@@ -272,13 +273,12 @@ void layer_control::on_info_button(wxCommandEvent& event)
 
 void layer_control::on_save_button(wxCommandEvent& event)
 {
-    // On commence par recupere l'indice du calque
     unsigned int id = static_cast<unsigned int> (event.GetId()) - static_cast<unsigned int> (ID_SAVE);
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
     string file = m_layers[id]->filename();
 
 #if wxMINOR_VERSION < 9
-    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
+    wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent),
                                                 wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
 #else
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent), 
@@ -298,7 +298,7 @@ void layer_control::on_save_button(wxCommandEvent& event)
         catch( std::exception &e )
         {
             GILVIEWER_LOG_EXCEPTION(e.what())
-                }
+        }
     }
 }
 
@@ -347,8 +347,10 @@ void layer_control::on_refresh_button(wxCommandEvent& event)
     catch(const std::exception &e)
     {
         GILVIEWER_LOG_EXCEPTION("Unable to refresh layer!")
-                return;
+        return;
     }
+
+    m_layers[id]->default_display_parameters(); // myirci
 
     m_layers[id]->needs_update(true);
     m_basicDrawPane->Refresh();
@@ -444,7 +446,6 @@ void layer_control::add_layers_from_files(const wxArrayString &names)
     m_basicDrawPane->SetCursor(wxCursor(wxCURSOR_ARROW));
 }
 
-
 layer::ptrLayerType layer_control::add_layer_from_file( const wxString &name )
 {
     string filename((const char*) (name.mb_str()) );
@@ -470,15 +471,12 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
 {
     if (!layer) return;
 
-    // On ajoute le calque dans le conteneur
-    layer->notify_layer_control( boost::bind( &layer_control::update, this ) );
+    layer->notify_layer_control( boost::bind( &layer_control::update, this ) );  // Add the layer to the container (On ajoute le calque dans le conteneur)
     m_layers.push_back(layer);
 
-    // On construit le SettingsControl en fonction du type de calque ajoute
-    layer_settings_control *settingscontrol = layer->build_layer_settings_control(static_cast<unsigned int>(m_layers.size())-1, this);
+    layer_settings_control *settingscontrol = layer->build_layer_settings_control(static_cast<unsigned int>(m_layers.size())-1, this); // On construit le SettingsControl en fonction du type de calque ajoute
     layer->notify_layer_settings_control( boost::bind( &layer_settings_control::update, settingscontrol ) );
-    // On ajoute la ligne correspondante
-    add_row(layer->name(), settingscontrol, layer->filename());
+    add_row(layer->name(), settingscontrol, layer->filename()); // On ajoute la ligne correspondante
 
     //Si c'est un calque image avec ori et que c'est le premier on met en place l'orientation generale du viewer
     if (!m_isOrientationSet && m_layers.size() == 1 && layer->has_ori())
@@ -491,11 +489,10 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     {
         GILVIEWER_LOG_MESSAGE("Warning! Image orientation will not be used, because there is no orientation defined for the first displayed image!");
     }
-    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori() && !has_transform)
+    else if (!m_isOrientationSet && m_layers.size() > 1 && !layer->has_ori() && !has_transform && "Vector" != layer->layer_type_as_string()) // myirci: last condition is added
     {
         GILVIEWER_LOG_MESSAGE("Image layer position initialised with respect to first image!");
-        layer->transform()=m_ghostLayer->transform();
-
+        layer->transform() = m_ghostLayer->transform();
     }
 
     //Si il y a une orientation definie pour le viewer et pour le nouveau calque image on initialise correctement
@@ -531,20 +528,14 @@ void layer_control::add_layer(const layer::ptrLayerType &layer, bool has_transfo
     layer->default_display_parameters();
     layer->notifyLayerSettingsControl_();
 
-
-    if(m_isOrientationSet)
-        layer->transform().resolution(m_ori->step());
-    else
-    {
-        layer->transform().resolution(1.);
-    }
+    if(m_isOrientationSet) {layer->transform().resolution(m_ori->step()); }
+    else { layer->transform().resolution(1.); }
 
     Refresh();
     m_parent->Refresh();
     m_basicDrawPane->Refresh();
     notify();
 }
-
 
 layer::ptrLayerType layer_control::get_layer_with_id(unsigned int id)const{
     for(LayerContainerType::const_iterator it=m_layers.begin();it!=m_layers.end();++it)
@@ -562,7 +553,6 @@ layer::ptrLayerType layer_control::get_layer_with_filename(const string&filename
 
     return layer::ptrLayerType() ;
 }
-
 
 void layer_control::delete_layer(unsigned int index){
     if(m_layers.size()<=index)
@@ -908,7 +898,6 @@ public:
     inline unsigned int id() const { return m_id; }
 };
 
-
 template void layer_control::update_control<vector_layer>(wxControlWithItems *control, bool notified);
 template void layer_control::update_control<image_layer >(wxControlWithItems *control, bool notified);
 
@@ -954,7 +943,6 @@ void layer_control::notify()
         (*it)();
 }
 
-
 layer::ptrLayerType layer_control::selected_layer(wxControlWithItems *control) const
 {
     int id_control = control->GetSelection();
@@ -966,4 +954,17 @@ layer::ptrLayerType layer_control::selected_layer(wxControlWithItems *control) c
     // Now, retrieve the layers in the layer_control from their ids
     unsigned int id_layer = static_cast<idClientData *>( control->GetClientData(id_control) )->id();
     return get_layer_with_id( id_layer );
+}
+
+bool layer_control::is_activated(const layer::ptrLayerType& l) const
+{
+    if(!l.get()) {
+        return false;
+    }
+    for(unsigned int i = 0; i < m_layers.size(); ++i) {
+        if( (l->getId() == m_layers[i]->getId()) && m_rows[i]->m_nameStaticText->selected()) {
+            return true;
+        }
+    }
+    return false;
 }

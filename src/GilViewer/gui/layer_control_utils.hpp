@@ -42,7 +42,7 @@ Authors:
 /**
 * @brief This headers contains some classes and structs used in the LayerControl class:
 * <ul>
-* 	<li>SelectableStaticText</li>
+*   <li>SelectableStaticText</li>
 *   <li>paramBase</li>
 *   <li>paramImageLayer</li>
 *   <li>paramVectorLayer</li>
@@ -79,13 +79,13 @@ public:
     /// @param name Control name
     selectable_static_text(wxWindow* parent, layer_control* layercontrol, wxWindowID id, const wxString& label, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALIGN_LEFT, const wxString& name = wxT("staticText")) : wxStaticText(parent,id,label,pos,size, wxBG_STYLE_CUSTOM, name), m_parent(layercontrol), m_isSelected(false)
     {
-	    //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+        //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
         m_unselectedColour.Set( 100 , 50 , 50 );
         m_selectedColour.Set( 255 , 50 , 50 );
         SetForegroundColour( m_unselectedColour );
-    };
+    }
     /// Destructor
-    virtual ~selectable_static_text() {};
+    virtual ~selectable_static_text() {}
 
     /// Getter for the selection flag
     bool selected() const { return m_isSelected; }
@@ -105,7 +105,7 @@ private:
     /// Flag indicating if the text is selected
     bool m_isSelected;
 
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 };
 
 struct param_base
@@ -156,18 +156,18 @@ public:
         ~layer_control_row(){}
 
         selectable_static_text	*m_nameStaticText;
-	wxCheckBox				*m_visibilityCheckBox;
-	wxCheckBox				*m_transformationCheckBox;
-	wxBitmapButton			*m_infoButton;
-	wxBitmapButton			*m_saveButton;
-	wxBitmapButton			*m_deleteButton;
-	wxBitmapButton			*m_settingsButton;
-        //wxBitmapButton			*m_center_button;
-        wxBitmapButton			*m_refresh_button;
-	wxBoxSizer				*m_boxSizer;
-	layer_control			*m_parent;
+        wxCheckBox		*m_visibilityCheckBox;
+        wxCheckBox		*m_transformationCheckBox;
+        wxBitmapButton		*m_infoButton;
+        wxBitmapButton		*m_saveButton;
+        wxBitmapButton		*m_deleteButton;
+        wxBitmapButton		*m_settingsButton;
+        //wxBitmapButton	*m_center_button;
+        wxBitmapButton		*m_refresh_button;
+        wxBoxSizer		*m_boxSizer;
+        layer_control		*m_parent;
 	layer_settings_control	*m_layerSettingsControl;
-	unsigned int			m_index;
+        unsigned int		m_index;
 };
 
 #endif // __LAYER_CONTROL_UTILS_HPP__
