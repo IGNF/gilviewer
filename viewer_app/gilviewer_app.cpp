@@ -89,9 +89,6 @@ bool gilviewer_app::OnInit()
     setlocale(LC_ALL, "POSIX");
 #endif
 
-    // Langage
-    set_langage(wxLANGUAGE_FRENCH);
-
     // Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
     wxArrayString cmdFiles;
     wxString cmdFilename;
@@ -123,6 +120,9 @@ bool gilviewer_app::OnInit()
         wxString message(e.what(), *wxConvCurrent);
 	wxMessageBox( message );
     }
+
+    // Langage
+    set_langage(wxLANGUAGE_FRENCH);
 
     return true;
 }
@@ -158,17 +158,19 @@ void gilviewer_app::set_langage(unsigned int language_id)
 
         if(! locale->IsOk() )
         {
-            GILVIEWER_LOG_MESSAGE("Selected language is wrong!")
+            GILVIEWER_LOG_ERROR("Selected language is wrong!")
             delete locale;
             locale = new wxLocale( wxLANGUAGE_ENGLISH );
             language = wxLANGUAGE_ENGLISH;
+            GILVIEWER_LOG_WARNING("Setting language to english!")
         }
     }
     else
     {
-        GILVIEWER_LOG_MESSAGE("Selected language is wrong!")
+        GILVIEWER_LOG_ERROR("Selected language is wrong!")
         locale = new wxLocale( wxLANGUAGE_ENGLISH );
         language = wxLANGUAGE_ENGLISH;
+        GILVIEWER_LOG_WARNING("Setting language to english!")
     }
 }
 
