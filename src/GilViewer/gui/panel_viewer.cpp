@@ -231,7 +231,9 @@ panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
     wxConfigBase *pConfig = wxConfigBase::Get();
     wxString str;
     pConfig->Read(wxT("/Paths/Plugins"), &str, wxString(plugins_dir.c_str(), *wxConvCurrent));
-	std::cout<<str.mb_str()<<std::endl;
+    std::ostringstream path_mes;
+    path_mes << "Plugins path --> " << str.mb_str();
+    GILVIEWER_LOG_MESSAGE(path_mes.str());
     m_plugin_manager->register_plugins( (const char *) str.mb_str(), m_menuBar, dockmanager, m_parent);
 #endif // _WINDOWS
 
