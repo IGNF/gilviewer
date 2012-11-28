@@ -8,15 +8,15 @@ GIL and wxWidgets.
 
 Homepage:
 
-	http://code.google.com/p/gilviewer
+    http://code.google.com/p/gilviewer
 
 Copyright:
 
-	Institut Geographique National (2009)
+    Institut Geographique National (2009)
 
 Authors:
 
-	Olivier Tournaire, Adrien Chauve
+    Olivier Tournaire, Adrien Chauve
 
 
 
@@ -36,8 +36,8 @@ Authors:
 
 ***********************************************************************/
 #ifdef WIN32
-	#pragma warning(disable : 4251)
-	#pragma warning(disable : 4275)
+    #pragma warning(disable : 4251)
+    #pragma warning(disable : 4275)
 #endif
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
@@ -51,7 +51,7 @@ Authors:
 #include "gilviewer_app.hpp"
 
 #ifdef __LINUX__
-#	include <locale.h>
+#   include <locale.h>
 #endif
 
 #include "GilViewer/config/config.hpp"
@@ -89,6 +89,9 @@ bool gilviewer_app::OnInit()
     setlocale(LC_ALL, "POSIX");
 #endif
 
+    // Langage
+    set_langage(wxLANGUAGE_FRENCH);
+
     // Parsing command line: it is possible to pass files, e.g. for a "Open with" contextual menu command in file explorer
     wxArrayString cmdFiles;
     wxString cmdFilename;
@@ -111,18 +114,15 @@ bool gilviewer_app::OnInit()
     try
     {
         m_frame = new gilviewer_frame((wxFrame *)NULL, wxID_ANY, _("GilViewer"), wxPoint(50,50), wxSize(800,600));
-	    m_frame->AddLayersFromFiles( cmdFiles );
-	    m_frame->Show();
+        m_frame->AddLayersFromFiles( cmdFiles );
+        m_frame->Show();
     }
     catch( const std::exception &e )
     {
         GILVIEWER_LOG_EXCEPTION(e.what())
         wxString message(e.what(), *wxConvCurrent);
-	wxMessageBox( message );
+    wxMessageBox( message );
     }
-
-    // Langage
-    set_langage(wxLANGUAGE_FRENCH);
 
     return true;
 }
@@ -144,14 +144,14 @@ void gilviewer_app::set_langage(unsigned int language_id)
         #endif
         locale = new wxLocale( language,flags);
 
-#		ifdef __WXGTK__
+#       ifdef __WXGTK__
         // add locale search paths
         locale->AddCatalogLookupPathPrefix(wxT("/usr"));
         locale->AddCatalogLookupPathPrefix(wxT("/usr/local"));
         wxStandardPaths* paths = (wxStandardPaths*) &wxStandardPaths::Get();
         wxString prefix = paths->GetInstallPrefix();
         locale->AddCatalogLookupPathPrefix( prefix );
-#		endif // __WXGTK__
+#       endif // __WXGTK__
 
         locale->AddCatalog(wxT("libGilViewer"));
         locale->AddCatalog(wxT("GilViewerApp"));
