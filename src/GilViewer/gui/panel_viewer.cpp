@@ -45,8 +45,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 #ifdef WIN32
-	#pragma warning(disable : 4251)
-	#pragma warning(disable : 4275)
+    #pragma warning(disable : 4251)
+    #pragma warning(disable : 4275)
 #endif
 #include <wx/xrc/xmlres.h>
 #include <wx/dcbuffer.h>
@@ -244,6 +244,7 @@ panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
     for(vector<factory_key>::const_iterator it=ids.begin(); it!=ids.end(); ++it)
         mes << it->extension << " ";
     GILVIEWER_LOG_MESSAGE(mes.str());
+    SetFocus();
 }
 
 wxToolBar* panel_viewer::main_toolbar(wxWindow* parent, wxAuiManager *dockmanager) {
@@ -379,6 +380,7 @@ void panel_viewer::on_left_down(wxMouseEvent &event) {
     default:
         break;
     }
+    event.Skip();
 }
 
 void panel_viewer::on_left_up(wxMouseEvent &event) {
