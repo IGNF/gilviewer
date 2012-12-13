@@ -195,7 +195,7 @@ set( Boost_ADDITIONAL_VERSIONS
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use boost static lib")
 set(Boost_USE_MULTITHREAD ON CACHE BOOL "use boost multi thread lib")
 set(BOOST_ROOT "" CACHE PATH "path to boost root directory")
-set(Boost_NO_SYSTEM_PATHS TRUE CACHE BOOL "use boost path env variable")
+set(Boost_NO_SYSTEM_PATHS FALSE CACHE BOOL "use boost path env variable")
 FIND_PACKAGE( Boost 1.37 COMPONENTS filesystem system thread serialization )
 IF( NOT Boost_FOUND )
     MESSAGE(FATAL_ERROR "Boost not found ! Please set Boost path ...")
