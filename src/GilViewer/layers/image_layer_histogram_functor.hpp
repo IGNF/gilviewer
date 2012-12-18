@@ -49,9 +49,15 @@ struct histogram_functor
     const static std::size_t histogram_size = 256;
 
     histogram_functor(const double mini, const double maxi):
-        m_scale(255. / (maxi-mini)),
-        m_offset(-mini * m_scale)
-    {}
+        m_scale(.0),
+        m_offset(.0)
+    {
+        if(mini < maxi)
+        {
+            m_scale = (histogram_size - 1.) / (maxi - mini);
+            m_offset = - mini * m_scale;
+        }
+    }
 
     template <typename ViewType>
     typename boost::enable_if_c<
