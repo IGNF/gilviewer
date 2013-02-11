@@ -595,6 +595,15 @@ void layer_control::delete_layer(unsigned int index){
     notify();
 }
 
+void layer_control::delete_layer_by_layer_id(unsigned int id) {
+    for(unsigned int i = 0; i < m_layers.size(); ++i) {
+        if(m_layers[i]->getId() == id) {
+            delete_layer(i);
+            break;
+        }
+    }
+}
+
 boost::shared_ptr<orientation_2d> layer_control::orientation() const
 {
     return m_ori;

@@ -1,4 +1,4 @@
-/***********************************************************************
+    /***********************************************************************
 
 This file is part of the GilViewer project source files.
 
@@ -72,6 +72,7 @@ public:
     void add_layer(const layer::ptrLayerType &layer, bool has_transform = false);
     /// Cette methode permet de supprimer un calque
     void delete_layer(unsigned int index);
+    void delete_layer_by_layer_id(unsigned int id);
     void delete_all_layer(){wxCommandEvent event;on_delete_all_rows_button(event);}
     
     /// Recuperation d'un calque par son Id

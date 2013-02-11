@@ -64,9 +64,9 @@ m_splines(std::vector< spline_type > ()),
 m_polygons(std::vector< polygon_type > ())
 {
     m_name=layer_name;
-
     filename( "" );
     default_display_parameters();
+    transform().coordinates(-1);
     notifyLayerSettingsControl_();
 }
 

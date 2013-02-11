@@ -202,7 +202,7 @@ bool snap_point(const layer_transform& trans, double invzoom2, double d2[], cons
 {
     wxRealPoint p(_p.x,_p.y);
     double d = squared_distance(q,p)*invzoom2;
-    if(d >= d2[SNAP_POINT] ) return false;
+    if(d > d2[SNAP_POINT] ) return false;
     for(unsigned int k=0; k<SNAP_POINT; ++k) d2[k]=0;
     d2[SNAP_POINT] = d;
     psnap = trans.from_local(p);
