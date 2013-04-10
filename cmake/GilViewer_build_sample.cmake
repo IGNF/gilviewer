@@ -12,7 +12,7 @@ if(UNIX)
 	endif()
 endif()
 if(WIN32)
-	set( SYSTEM_NAME WIN32 )
+    set( SYSTEM_NAME WIN32 )
 	set( VIEWER_APP_SOURCES ${VIEWER_APP_SOURCES} ./viewer_app/GilViewer.rc )
 endif()
 
