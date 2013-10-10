@@ -558,7 +558,7 @@ public:
         }
         else
         {
-            init_image( images
+            this->init_image( images
                       , this->_info
                       );
 

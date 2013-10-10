@@ -263,7 +263,7 @@ public:
             {
                 this->get_info();
             }
-            init_image( images
+            this->init_image( images
                        , this->_info
                        );
 
