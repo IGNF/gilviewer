@@ -8,6 +8,8 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 ##
 ################################################
 
+# set(CMAKE_BUILD_TYPE Debug)
+
 #Nom du projet
 PROJECT(GilViewer)
 

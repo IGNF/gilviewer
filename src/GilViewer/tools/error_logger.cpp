@@ -80,7 +80,7 @@ void gilviewer_wx_error_logger::log_common(const std::string& message, wxColour*
             txtctrl->SetDefaultStyle(wxTextAttr(*color));
         }
     }
-    #if wxMINOR_VERSION < 9
+    #if (wxMAJOR_VERSION < 3 && wxMINOR_VERSION < 9)
         ::wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
     #else
         wxLogMessage( wxString(message.c_str(), *wxConvCurrent) );
