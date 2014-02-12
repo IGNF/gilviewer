@@ -96,6 +96,9 @@ BEGIN_EVENT_TABLE(basic_viewer_frame,wxFrame)
     //m_logWindow = new simple_text_window_impl(this);
     m_logWindow = new wxLogWindow(this, _("Log window"));
     m_logWindow->Show(m_isLogWindowVisible);
+#if ((wxMAJOR_VERSION == 2 && wxMINOR_VERSION > 8) || wxMAJOR_VERSION > 2)
+    m_logWindow->PassMessages(false);
+#endif
     wxLog::SetActiveTarget(m_logWindow);
 
     //ToolBar

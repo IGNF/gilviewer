@@ -132,7 +132,11 @@ wxFrame(parent, id, title, pos, size, style), m_ghostLayer(new vector_layer_ghos
     wxBoxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
 
     // On initialise le sizer qui permet de gerer efficacement le positionnement des controles des differentes lignes
+#if ((wxMAJOR_VERSION == 2 && wxMINOR_VERSION > 8) || wxMAJOR_VERSION > 2)
+    m_sizer = new wxFlexGridSizer(4, 5, 5);
+#else
     m_sizer = new wxFlexGridSizer(1, 4, 5, 5);
+#endif
 
     m_scroll = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("scroll"));
     m_scroll->SetScrollRate(20,20);//,50,50);
@@ -277,7 +281,7 @@ void layer_control::on_save_button(wxCommandEvent& event)
     wxString wildcard(m_layers[id]->available_formats_wildcard().c_str(), *wxConvCurrent);
     string file = m_layers[id]->filename();
 
-#if wxMINOR_VERSION < 9
+#if (wxMAJOR_VERSION < 3 && wxMINOR_VERSION < 9)
     wxFileDialog *fileDialog = new wxFileDialog(NULL, _("Save layer"), wxT(""), wxString(file.c_str(), *wxConvCurrent),
                                                 wildcard, wxFD_SAVE | wxFD_CHANGE_DIR | wxOVERWRITE_PROMPT);
 #else

@@ -44,7 +44,7 @@ Authors:
 #include <iostream>
 
 // convenience wxRealPoint operators
-#if wxMINOR_VERSION < 9
+#if (wxMAJOR_VERSION < 3 && wxMINOR_VERSION < 9)
 inline wxRealPoint& operator+=(wxRealPoint& p, const wxRealPoint&q)
 {
     p=p+q;
@@ -58,7 +58,7 @@ inline wxRealPoint operator-(const wxRealPoint&p)
 }
 
 
-#if wxMINOR_VERSION < 9
+#if (wxMAJOR_VERSION < 3 && wxMINOR_VERSION < 9)
 inline wxRealPoint operator*(double d, const wxRealPoint&p)
 {
     return wxRealPoint(d*p.x,d*p.y);
