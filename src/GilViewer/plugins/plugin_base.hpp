@@ -22,6 +22,7 @@ class plugin_base
 {
 public:
     virtual bool Register(gilviewer_io_factory *) { return true; }
+    virtual ~plugin_base() {}
 };
 
 //our plugin will contain GUI in itself - therefore we need to make it extend wxEvtHandler (or wxDialog for that matter)
@@ -30,6 +31,7 @@ class wx_plugin_base : public plugin_base, public wxFrame
 public:
     wx_plugin_base();
     wx_plugin_base(const wxString &title);
+    virtual ~wx_plugin_base() {}
 
     virtual void on_mouse_move(wxMouseEvent &event) {}
     virtual void on_close(wxCloseEvent& event) { Hide(); }
