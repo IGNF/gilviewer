@@ -59,8 +59,8 @@ string gilviewer_file_io_tiff::get_infos(const std::string &filename)
 
     switch(_info._planar_configuration)
     {
-    case PLANARCONFIG_CONTIG:   planar_config_str = "SAMPLEFORMAT_UINT"; break;
-    case PLANARCONFIG_SEPARATE: planar_config_str = "SAMPLEFORMAT_INT"; break;
+    case PLANARCONFIG_CONTIG:   planar_config_str = "PLANARCONFIG_CONTIG"; break;
+    case PLANARCONFIG_SEPARATE: planar_config_str = "PLANARCONFIG_SEPARATE"; break;
     default:                    planar_config_str = "Unknow..."; break;
     }
 

@@ -45,8 +45,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 #ifdef WIN32
-    #pragma warning(disable : 4251)
-    #pragma warning(disable : 4275)
+#pragma warning(disable : 4251)
+#pragma warning(disable : 4275)
 #endif
 #include <wx/xrc/xmlres.h>
 #include <wx/dcbuffer.h>
@@ -81,23 +81,23 @@
 #endif
 
 BEGIN_EVENT_TABLE(panel_viewer, wxPanel)
-        EVT_PAINT(panel_viewer::on_paint)
-        EVT_SIZE(panel_viewer::on_size)
-        EVT_MOTION(panel_viewer::on_mouse_move)
-        EVT_LEFT_DOWN(panel_viewer::on_left_down)
-        EVT_LEFT_UP(panel_viewer::on_left_up)
-        EVT_MIDDLE_DOWN(panel_viewer::on_middle_down)
-        EVT_RIGHT_DOWN(panel_viewer::on_right_down)
-        EVT_LEFT_DCLICK(panel_viewer::on_left_double_click)
-        EVT_RIGHT_DCLICK(panel_viewer::on_right_double_click)
-        EVT_MOUSEWHEEL(panel_viewer::on_mouse_wheel)
-        EVT_KEY_DOWN(panel_viewer::on_keydown)
-        ADD_GILVIEWER_EVENTS_TO_TABLE(panel_viewer)
-        END_EVENT_TABLE()
+EVT_PAINT(panel_viewer::on_paint)
+EVT_SIZE(panel_viewer::on_size)
+EVT_MOTION(panel_viewer::on_mouse_move)
+EVT_LEFT_DOWN(panel_viewer::on_left_down)
+EVT_LEFT_UP(panel_viewer::on_left_up)
+EVT_MIDDLE_DOWN(panel_viewer::on_middle_down)
+EVT_RIGHT_DOWN(panel_viewer::on_right_down)
+EVT_LEFT_DCLICK(panel_viewer::on_left_double_click)
+EVT_RIGHT_DCLICK(panel_viewer::on_right_double_click)
+EVT_MOUSEWHEEL(panel_viewer::on_mouse_wheel)
+EVT_KEY_DOWN(panel_viewer::on_keydown)
+ADD_GILVIEWER_EVENTS_TO_TABLE(panel_viewer)
+END_EVENT_TABLE()
 
-        IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(panel_viewer,this)
+IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(panel_viewer,this)
 
-        using namespace std;
+using namespace std;
 
 void panel_viewer::on_size(wxSizeEvent &e) {
     for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it)
@@ -131,17 +131,17 @@ layer_control* panel_viewer::layercontrol() const {
 
 
 panel_viewer::panel_viewer(wxFrame* parent, wxAuiManager *dockmanager) :
-        wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
-        //m_menuMain(NULL),
-        m_mouseMovementStarted(false), m_translationDrag(0, 0),
-        // Construction des differentes fenetres liees au PanelViewer :
-        //      - layer control
-        m_layerControl(new layer_control(this, parent, wxID_ANY, _("Layers control"))),
-        //      - applications settings
-        //reference au ghostLayer du LayerControl
-        m_ghostLayer(layercontrol()->m_ghostLayer),
-        //Setting des modes d'interface :
-        m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL)
+    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS), m_parent(parent), m_mainToolbar(NULL), m_modeAndGeometryToolbar(NULL), m_menuBar(NULL),
+    //m_menuMain(NULL),
+    m_mouseMovementStarted(false), m_translationDrag(0, 0),
+    // Construction des differentes fenetres liees au PanelViewer :
+    //      - layer control
+    m_layerControl(new layer_control(this, parent, wxID_ANY, _("Layers control"))),
+    //      - applications settings
+    //reference au ghostLayer du LayerControl
+    m_ghostLayer(layercontrol()->m_ghostLayer),
+    //Setting des modes d'interface :
+    m_mode(MODE_NAVIGATION), m_snap(SNAP_ALL)
 {
 
 #if wxUSE_DRAG_AND_DROP
@@ -331,8 +331,8 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
     if (!dc.IsOk())
         return;
 
-    dc.SetBackgroundMode    ( wxSOLID);     
-    dc.SetBackground    (m_bgbrush);     
+    dc.SetBackgroundMode    ( wxSOLID);
+    dc.SetBackground    (m_bgbrush);
     dc.Clear();
     wxSize tailleImage(this->GetSize());
     int dx = static_cast<int> (m_translationDrag.x);
@@ -345,7 +345,7 @@ void panel_viewer::on_paint(wxPaintEvent& evt) {
                     (*it)->update(tailleImage.GetX(), tailleImage.GetY());
                 } catch (const std::exception &e) {
                     GILVIEWER_LOG_EXCEPTION(e.what())
-                    wxMessageBox( _("Exception: see log!"), _("Exception!"), wxICON_ERROR);
+                            wxMessageBox( _("Exception: see log!"), _("Exception!"), wxICON_ERROR);
                     return;
                 }
                 (*it)->needs_update(false);
@@ -427,13 +427,13 @@ void panel_viewer::on_left_double_click(wxMouseEvent &event) {
     switch(mode(event))
     {
     case MODE_NAVIGATION :
-        {
-            wxConfigBase *pConfig = wxConfigBase::Get();
-            double zoom_;
-            pConfig->Read(wxT("/Options/Zoom"), &zoom_, 0.5);
-            zoom(zoom_, event);
-            break;
-        }
+    {
+        wxConfigBase *pConfig = wxConfigBase::Get();
+        double zoom_;
+        pConfig->Read(wxT("/Options/Zoom"), &zoom_, 0.5);
+        zoom(zoom_, event);
+        break;
+    }
     default:
         break;
     }
@@ -444,13 +444,13 @@ void panel_viewer::on_right_double_click(wxMouseEvent &event) {
     switch(mode(event))
     {
     case MODE_NAVIGATION :
-        {
-            wxConfigBase *pConfig = wxConfigBase::Get();
-            double dezoom;
-            pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
-            zoom(dezoom, event);
-            break;
-        }
+    {
+        wxConfigBase *pConfig = wxConfigBase::Get();
+        double dezoom;
+        pConfig->Read(wxT("/Options/Dezoom"), &dezoom, 2.);
+        zoom(dezoom, event);
+        break;
+    }
     default:
         break;
     }
@@ -621,69 +621,42 @@ void panel_viewer::open_custom_format(const std::string &filename) {
 
 void panel_viewer::update_statusbar(const wxRealPoint& p) {
     // On n'update que lorsque la status bar existe chez le parent ...
-    if (m_parent->GetStatusBar()) {
-        unsigned int nb = 0;
-        for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-            if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
-                nb++;
-        }
+    if (!m_parent->GetStatusBar()) return;
+    unsigned int nb = 0;
+    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+        if ((*it)->visible()) // && ((*it)->GetPixelValue(i, j).length() != 0))
+            nb++;
+    }
+    if (nb == 0) return;
 
-        if (nb == 0)
-            return;
+    m_parent->GetStatusBar()->SetFieldsCount(nb + 1); //+1 pour les coord en pixels
+    unsigned int count = 0;
 
-        boost::shared_ptr<orientation_2d> ori = boost::shared_ptr<orientation_2d>(new orientation_2d);
-        if (m_layerControl->oriented()) {
-            ++nb; //on affiche aussi les coord carto dans ce cas
-            ori = m_layerControl->orientation();
-        }
+    wxRealPoint q = m_ghostLayer->transform().to_local(p);
+    std::ostringstream oss_coord;
+    oss_coord << "Screen(" << p.x << "," << p.y << ") Image(" << q.x << "," << q.y << ")";
 
-        m_parent->GetStatusBar()->SetFieldsCount(nb + 2); //+1 pour les coord en pixels
+    if (m_layerControl->oriented())
+    {
+        boost::shared_ptr<orientation_2d> ori = m_layerControl->orientation();
+        // MB : coordonnees carto du ghost layer, a verifier....
+        int x_carto = static_cast<int>(ori->origin_x() + ori->step() * (-m_ghostLayer->transform().translation_x() + p.x * m_ghostLayer->transform().zoom_factor()));
+        int y_carto = static_cast<int>(ori->origin_y() + ori->step() * (m_ghostLayer->transform().translation_y() - p.y * m_ghostLayer->transform().zoom_factor()));
+        oss_coord << " Carto(" << x_carto << "," << y_carto << ")";
+    }
+    m_parent->SetStatusText(wxString(oss_coord.str().c_str(), *wxConvCurrent), count++);
 
-        unsigned int count = 0;
-        bool affichageCartoDone = false;
-
-
-        std::ostringstream coordGlob;
-                    coordGlob << "Coord Glob : (";
-                    coordGlob << p.x;
-                    coordGlob << ",";
-                    coordGlob << p.y;
-                    coordGlob << ")";
-                    m_parent->SetStatusText(wxString(coordGlob.str().c_str(), *wxConvCurrent), count);
-                    ++count;
-                    
+    for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
+        if ((*it)->visible())
         {
-            std::ostringstream coordPixel;
-            wxRealPoint q = m_ghostLayer->transform().to_local(p);
-            coordPixel << "Global (" << q.x << "," << q.y << ")";
-            m_parent->SetStatusText(wxString(coordPixel.str().c_str(), *wxConvCurrent), count);
-            ++count;
-
-            if (!affichageCartoDone && m_layerControl->oriented()) {
-                // MB : coordonnées carto du ghost layer, a vérifier....
-                affichageCartoDone = true;
-                std::ostringstream coordCarto;
-                coordCarto << "Carto : (";
-                coordCarto << static_cast<int> (ori->origin_x() + ori->step() * (-m_ghostLayer->transform().translation_x() + p.x * m_ghostLayer->transform().zoom_factor()));
-                coordCarto << ",";
-                coordCarto << static_cast<int> (ori->origin_y() + ori->step() * (m_ghostLayer->transform().translation_y() - p.y * m_ghostLayer->transform().zoom_factor()));
-                coordCarto << ")";
-                m_parent->SetStatusText(wxString(coordCarto.str().c_str(), *wxConvCurrent), count);
-                ++count;
-            }
-        }
-        for (layer_control::iterator it = m_layerControl->begin(); it != m_layerControl->end(); ++it) {
-            if ((*it)->visible())
-            {
-                wxRealPoint q = (*it)->transform().to_local(p);
-                std::ostringstream affichage;
-                affichage << boost::filesystem::basename((*it)->name());
-                affichage << "-" << 100. / (*it)->transform().zoom_factor() << "% : ";
-                affichage << "("<<q.x<<","<<q.y<<") ";
-                affichage << (*it)->pixel_value(p);
-                m_parent->SetStatusText(wxString(affichage.str().c_str(), *wxConvCurrent), count);
-                ++count;
-            }
+            wxRealPoint q = (*it)->transform().to_local(p);
+            std::string layer_name = boost::filesystem::basename((*it)->name());
+            std::ostringstream affichage;
+            if(layer_name.size() > 20) affichage << "..." << layer_name.substr(layer_name.size()-17,17);
+            else affichage << layer_name;
+            affichage << "-" << 100. / (*it)->transform().zoom_factor() << "% ";
+            affichage << "("<<q.x<<","<<q.y<<") " << (*it)->pixel_value(p);
+            m_parent->SetStatusText(wxString(affichage.str().c_str(), *wxConvCurrent), count++);
         }
     }
 }
@@ -713,7 +686,7 @@ void panel_viewer::add_layer(const layer::ptrLayerType &layer, bool has_transfor
         m_layerControl->add_layer(layer, has_transform);
     } catch (const std::exception &e) {
         GILVIEWER_LOG_EXCEPTION(e.what())
-            }
+    }
 }
 
 void panel_viewer::delete_layer( unsigned int index){
@@ -874,7 +847,7 @@ void panel_viewer::crop() {
 
         } catch (std::exception &e) {
             GILVIEWER_LOG_EXCEPTION(e.what())
-                wxMessageBox(_("Exception: see log!"), _("Exception!"), wxICON_ERROR);
+                    wxMessageBox(_("Exception: see log!"), _("Exception!"), wxICON_ERROR);
         }
     }
 }
