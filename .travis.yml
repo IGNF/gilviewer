@@ -1,0 +1,27 @@
+language: cpp
+compiler: 
+  - gcc
+  
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - xsltproc
+    - libxerces-c-dev
+    - xsdcxx
+    - libjpeg-dev
+    - zlib1g-dev
+    - libpng++-dev
+    - libwxgtk2.8-dev
+    - libtiff5-dev
+    
+install:
+  # Get boost
+  - wget https://github.com/Viq111/travis-container-packets/releases/download/boost-1.57.0/boost.tar.bz2
+  - tar -xjf boost.tar.bz2
+  - rm boost.tar.bz2
+  - export BOOST_ROOT=$(pwd)/boost
+
+script:
+  - mkdir build && cd build && cmake .. && make
