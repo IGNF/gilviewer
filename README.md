@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/IGNF/gilviewer.svg?branch=master)](https://travis-ci.org/IGNF/gilviewer)
+
 GilViewer
 
 GilViewer is an open source 2D viewer (raster and vector) based on Boost
