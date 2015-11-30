@@ -13,6 +13,7 @@ addons:
     - libjpeg-dev
     - zlib1g-dev
     - libpng++-dev
+    - libwxbase2.8-dev
     - libwxgtk2.8-dev
     - libtiff5-dev
     
