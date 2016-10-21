@@ -11,11 +11,11 @@ and Shapelib (http://shapelib.maptools.org/).
 
 Homepage: 
 
-	http://code.google.com/p/gilviewer
+	https://github.com/IGNF/gilviewer
 	
 Copyright:
 	
-	Institut Geographique National (2009)
+	Institut Geographique National (2009-2016)
 
 Authors: 
 
