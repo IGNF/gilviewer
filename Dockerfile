@@ -11,6 +11,7 @@ RUN apt-get -y -qq update && apt-get -y --fix-missing install $BUILD_PACKAGES \
 && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-Wno-unused-local-typedefs .. \
 && make install \
 && cp GilViewerApp /usr/local/bin \
+&& cd .. \
 && rm -rf gilviewer \
 && AUTO_ADDED_PACKAGES=`apt-mark showauto` \
 && apt-get remove --purge -y $BUILD_PACKAGES $AUTO_ADDED_PACKAGES \
